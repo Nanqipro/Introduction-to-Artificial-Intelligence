@@ -25,10 +25,27 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   response => {
     console.log('收到响应:', response.status, response.data)
+    // 处理后端统一响应格式
+    if (response.data && response.data.code === 200) {
+      return response.data.data
+    }
     return response.data
   },
   error => {
     console.error('响应错误:', error.response?.status, error.response?.data || error.message)
+
+    // 处理后端错误响应
+    if (error.response?.data?.message) {
+      const errorMessage = error.response.data.message
+      console.error('后端错误信息:', errorMessage)
+      return Promise.reject(new Error(errorMessage))
+    }
+
+    // 处理网络错误
+    if (!error.response) {
+      return Promise.reject(new Error('网络连接失败，请检查网络设置'))
+    }
+
     return Promise.reject(error)
   }
 )

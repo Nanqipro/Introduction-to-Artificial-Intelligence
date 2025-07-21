@@ -128,20 +128,17 @@ export default {
     async loadChapter() {
       this.loading = true
       this.error = null
-      
+
       try {
-        const response = await chapterApi.getChapterById(this.id)
-        if (response.code === 200) {
-          this.chapter = response.data
-        } else {
-          this.error = response.message || '获取章节详情失败'
-        }
+        const chapter = await chapterApi.getChapterById(this.id)
+        this.chapter = chapter
+        console.log('加载章节详情成功:', this.chapter)
       } catch (error) {
         console.error('加载章节详情失败:', error)
-        if (error.response?.status === 404) {
+        if (error.message && error.message.includes('章节不存在')) {
           this.error = '章节不存在'
         } else {
-          this.error = '网络连接失败，请检查后端服务是否启动'
+          this.error = error.message || '网络连接失败，请检查后端服务是否启动'
         }
       } finally {
         this.loading = false
@@ -149,10 +146,8 @@ export default {
     },
     async loadAllChapters() {
       try {
-        const response = await chapterApi.getChapterOverview()
-        if (response.code === 200) {
-          this.allChapters = response.data
-        }
+        const chapters = await chapterApi.getChapterOverview()
+        this.allChapters = chapters || []
       } catch (error) {
         console.error('加载章节列表失败:', error)
       }

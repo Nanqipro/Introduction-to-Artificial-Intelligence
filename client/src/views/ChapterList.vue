@@ -81,17 +81,14 @@ export default {
     async loadChapters() {
       this.loading = true
       this.error = null
-      
+
       try {
-        const response = await chapterApi.getChapterOverview()
-        if (response.code === 200) {
-          this.chapters = response.data
-        } else {
-          this.error = response.message || '获取章节列表失败'
-        }
+        const chapters = await chapterApi.getChapterOverview()
+        this.chapters = chapters || []
+        console.log('加载章节列表成功:', this.chapters)
       } catch (error) {
         console.error('加载章节失败:', error)
-        this.error = '网络连接失败，请检查后端服务是否启动'
+        this.error = error.message || '网络连接失败，请检查后端服务是否启动'
       } finally {
         this.loading = false
       }
