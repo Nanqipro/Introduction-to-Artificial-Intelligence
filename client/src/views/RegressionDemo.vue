@@ -42,14 +42,16 @@
       </transition>
       <div class="params">
         <template v-if="!is3D">
-          <template v-if="mode === 'linear'">
-            <span>{{ lang==='zh' ? '斜率' : 'Slope' }}: <b>{{ fitParams.slope?.toFixed(2) ?? '--' }}</b></span>
-            <span>{{ lang==='zh' ? '截距' : 'Intercept' }}: <b>{{ fitParams.intercept?.toFixed(2) ?? '--' }}</b></span>
-          </template>
-          <template v-else>
-            <span>{{ lang==='zh' ? '权重' : 'Weight' }}: <b>{{ fitParams.w?.toFixed(2) ?? '--' }}</b></span>
-            <span>{{ lang==='zh' ? '偏置' : 'Bias' }}: <b>{{ fitParams.b?.toFixed(2) ?? '--' }}</b></span>
-          </template>
+          <div class="fit-params-row">
+            <template v-if="mode === 'linear'">
+              <span>{{ lang==='zh' ? '斜率' : 'Slope' }}: <b>{{ fitParams.slope?.toFixed(2) ?? '--' }}</b></span>
+              <span>{{ lang==='zh' ? '截距' : 'Intercept' }}: <b>{{ fitParams.intercept?.toFixed(2) ?? '--' }}</b></span>
+            </template>
+            <template v-else>
+              <span>{{ lang==='zh' ? '权重' : 'Weight' }}: <b>{{ fitParams.w?.toFixed(2) ?? '--' }}</b></span>
+              <span>{{ lang==='zh' ? '偏置' : 'Bias' }}: <b>{{ fitParams.b?.toFixed(2) ?? '--' }}</b></span>
+            </template>
+          </div>
         </template>
         <template v-else>
           <span>w₁: <b>{{ fitParams.w1?.toFixed(2) ?? '--' }}</b></span>
@@ -87,6 +89,22 @@
         <button class="btn mode-btn" :class="{active: !is3D}" @click="is3D = false">2D</button>
         <button class="btn mode-btn" :class="{active: is3D}" @click="is3D = true">3D</button>
       </div>
+      <div class="fit-anim-controls fit-anim-controls-main">
+        <template v-if="mode === 'linear'">
+          <button class="btn" @click="startLinearFitAnim" :disabled="linearAnim">{{ lang==='zh' ? '开始拟合' : 'Start Fit' }}</button>
+          <button class="btn" @click="pauseLinearFitAnim" :disabled="!linearAnim || linearPaused">{{ lang==='zh' ? '暂停' : 'Pause' }}</button>
+          <button class="btn" @click="resumeLinearFitAnim" :disabled="!linearAnim || !linearPaused">{{ lang==='zh' ? '继续' : 'Resume' }}</button>
+          <button class="btn" @click="resetLinearFitAnim">{{ lang==='zh' ? '重置' : 'Reset' }}</button>
+          <span>{{ lang==='zh' ? '拟合步数' : 'Step' }}: {{ linearStep }}/{{ linearMaxSteps }}</span>
+        </template>
+        <template v-else>
+          <button class="btn" @click="startLogisticFitAnim" :disabled="logisticAnim">{{ lang==='zh' ? '开始拟合' : 'Start Fit' }}</button>
+          <button class="btn" @click="pauseLogisticFitAnim" :disabled="!logisticAnim || logisticPaused">{{ lang==='zh' ? '暂停' : 'Pause' }}</button>
+          <button class="btn" @click="resumeLogisticFitAnim" :disabled="!logisticAnim || !logisticPaused">{{ lang==='zh' ? '继续' : 'Resume' }}</button>
+          <button class="btn" @click="resetLogisticFitAnim">{{ lang==='zh' ? '重置' : 'Reset' }}</button>
+          <span>{{ lang==='zh' ? '拟合步数' : 'Step' }}: {{ logisticStep }}/{{ logisticMaxSteps }}</span>
+        </template>
+      </div>
       <div class="chart-card">
         <Plotly3D v-if="is3D" :data="plotlyProps.data" :layout="plotlyProps.layout" :style="plotlyProps.style" />
         <Line ref="chartRef" v-else :data="chartData" :options="chartOptions" />
@@ -106,9 +124,9 @@
               </thead>
               <tbody>
                 <tr v-for="(row, i) in inputRows" :key="i">
-                  <td><input type="number" v-model.number="row.x" /></td>
-                  <td><input type="number" v-model.number="row.y" /></td>
-                  <td v-if="is3D"><input type="number" v-model.number="row.z" /></td>
+                  <td><input type="number" v-model.number="row.x" min="0" /></td>
+                  <td><input type="number" v-model.number="row.y" min="0" /></td>
+                  <td v-if="is3D"><input type="number" v-model.number="row.z" min="0" /></td>
                   <td><button class="del-btn" @click="removeRow(i)">×</button></td>
                 </tr>
               </tbody>
@@ -152,26 +170,223 @@ const chartRef = ref(null);
 let draggingIdx = null;
 let dragOffset = { x: 0, y: 0 };
 
+// 线性回归拟合动画相关状态
+const linearAnim = ref(false);
+const linearPaused = ref(false);
+const linearStep = ref(0);
+const linearMaxSteps = 30;
+const linearSlope = ref(1);
+const linearIntercept = ref(0);
+let linearTimer = null;
+
+// 控制回归线显示的状态
+const showFitLine = ref(true);
+
+// 修改线性回归动画启动逻辑
+function startLinearFitAnim() {
+  if (linearAnim.value) return;
+  linearAnim.value = false;
+  linearPaused.value = false;
+  linearStep.value = 0;
+  linearSlope.value = 1;
+  linearIntercept.value = 0;
+  showFitLine.value = false;
+  if (linearTimer) clearTimeout(linearTimer);
+  setTimeout(() => {
+    showFitLine.value = true;
+    linearAnim.value = true;
+    runLinearAnimStep();
+  }, 600);
+}
+function pauseLinearFitAnim() {
+  linearPaused.value = true;
+}
+function resumeLinearFitAnim() {
+  if (!linearAnim.value) return;
+  linearPaused.value = false;
+  runLinearAnimStep();
+}
+function resetLinearFitAnim() {
+  linearAnim.value = false;
+  linearPaused.value = false;
+  linearStep.value = 0;
+  linearSlope.value = 1;
+  linearIntercept.value = 0;
+  showFitLine.value = false;
+  if (linearTimer) clearTimeout(linearTimer);
+}
+function runLinearAnimStep() {
+  if (!linearAnim.value || linearPaused.value) return;
+  const x = xData.value;
+  const y = yData.value;
+  let w = linearSlope.value;
+  let b = linearIntercept.value;
+  const lr = 0.002; // 步长可适当调大
+  let dw = 0, db = 0;
+  for (let i = 0; i < x.length; i++) {
+    const pred = w * x[i] + b;
+    dw += (pred - y[i]) * x[i];
+    db += (pred - y[i]);
+  }
+  w -= lr * dw / x.length;
+  b -= lr * db / x.length;
+  linearSlope.value = w;
+  linearIntercept.value = b;
+  linearStep.value++;
+  if (linearStep.value < linearMaxSteps) {
+    linearTimer = setTimeout(runLinearAnimStep, 10);
+  } else {
+    linearAnim.value = false;
+  }
+}
+
+// 逻辑回归拟合动画相关状态
+const logisticAnim = ref(false); // 是否正在拟合
+const logisticPaused = ref(false); // 是否暂停
+const logisticStep = ref(0);
+const logisticMaxSteps = 30; // 动画步数
+const logisticW = ref(1);
+const logisticB = ref(0);
+let logisticTimer = null;
+
+// 修改逻辑回归动画启动逻辑
+function startLogisticFitAnim() {
+  if (logisticAnim.value) return;
+  logisticAnim.value = false;
+  logisticPaused.value = false;
+  logisticStep.value = 0;
+  logisticW.value = 1;
+  logisticB.value = 0;
+  showFitLine.value = false;
+  if (logisticTimer) clearTimeout(logisticTimer);
+  setTimeout(() => {
+    showFitLine.value = true;
+    logisticAnim.value = true;
+    runLogisticAnimStep();
+  }, 600);
+}
+function pauseLogisticFitAnim() {
+  logisticPaused.value = true;
+}
+function resumeLogisticFitAnim() {
+  if (!logisticAnim.value) return;
+  logisticPaused.value = false;
+  runLogisticAnimStep();
+}
+function resetLogisticFitAnim() {
+  logisticAnim.value = false;
+  logisticPaused.value = false;
+  logisticStep.value = 0;
+  logisticW.value = 1;
+  logisticB.value = 0;
+  showFitLine.value = false;
+  if (logisticTimer) clearTimeout(logisticTimer);
+}
+function runLogisticAnimStep() {
+  if (!logisticAnim.value || logisticPaused.value) return;
+  const x = xData.value;
+  const y = yData.value;
+  let w = logisticW.value;
+  let b = logisticB.value;
+  const lr = 0.02; // 步长可适当调大
+  let dw = 0, db = 0;
+  for (let i = 0; i < x.length; i++) {
+    const z = w * x[i] + b;
+    const pred = 1 / (1 + Math.exp(-z));
+    dw += (pred - y[i]) * x[i];
+    db += (pred - y[i]);
+  }
+  w -= lr * dw / x.length;
+  b -= lr * db / x.length;
+  logisticW.value = w;
+  logisticB.value = b;
+  logisticStep.value++;
+  if (logisticStep.value < logisticMaxSteps) {
+    logisticTimer = setTimeout(runLogisticAnimStep, 10);
+  } else {
+    logisticAnim.value = false;
+  }
+}
+
+function randomNormal(mean = 0, std = 1) {
+  // Box-Muller transform
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return mean + std * Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
 function randomizeData() {
   // 用时间戳扰动，保证每次都不同
   const seed = Date.now() + Math.random();
   function rand() { return Math.random() + (seed % 1e3) * 1e-6; }
   if (!is3D.value) {
-    xData.value = Array.from({ length: N }, (_, i) => i / (N - 1) * 10 + rand());
+    xData.value = Array.from({ length: N }, (_, i) => {
+      let val;
+      if (Math.random() < 0.5) {
+        val = Math.random() * 12 + rand();
+      } else {
+        val = randomNormal(6, 2.4) + rand();
+      }
+      return Number(Math.max(0, Math.min(12, val)).toFixed(2));
+    });
     if (mode.value === 'linear') {
-      yData.value = xData.value.map(x => 2 * x + 1 + (rand() - 0.5) * Math.min(noise.value, 3));
+      yData.value = xData.value.map(x => {
+        const y = 2 * x + 1 + (rand() - 0.5) * Math.min(noise.value, 3);
+        return Number(Math.max(0, Math.min(12, y)).toFixed(2));
+      });
     } else {
-      yData.value = xData.value.map(x => 1 / (1 + Math.exp(-(1.2 * x - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1));
+      yData.value = xData.value.map(x => {
+        const y = 1 / (1 + Math.exp(-(1.2 * x - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1);
+        return Number(Math.max(0, Math.min(1, y)).toFixed(2));
+      });
     }
   } else {
-    xData.value = Array.from({ length: N }, () => Math.random() * 10 + rand());
-    yData.value = Array.from({ length: N }, () => Math.random() * 10 + rand());
+    xData.value = Array.from({ length: N }, () => {
+      let val;
+      if (Math.random() < 0.5) {
+        val = Math.random() * 12 + rand();
+      } else {
+        val = randomNormal(6, 2.4) + rand();
+      }
+      return Number(Math.max(0, Math.min(12, val)).toFixed(2));
+    });
+    yData.value = Array.from({ length: N }, () => {
+      let val;
+      if (Math.random() < 0.5) {
+        val = Math.random() * 12 + rand();
+      } else {
+        val = randomNormal(6, 2.4) + rand();
+      }
+      return Number(Math.max(0, Math.min(12, val)).toFixed(2));
+    });
     if (mode.value === 'linear') {
-      zData.value = xData.value.map((x, i) => 2 * x + 1.5 * yData.value[i] + 3 + (rand() - 0.5) * Math.min(noise.value, 3));
+      zData.value = xData.value.map((x, i) => {
+        const z = 2 * x + 1.5 * yData.value[i] + 3 + (rand() - 0.5) * Math.min(noise.value, 3);
+        return Number(Math.max(0, Math.min(12, z)).toFixed(2));
+      });
     } else {
-      zData.value = xData.value.map((x, i) => 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1));
+      zData.value = xData.value.map((x, i) => {
+        const z = 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) * 12 + (rand() - 0.5) * Math.min(noise.value, 1);
+        return Number(Math.max(0, Math.min(12, z)).toFixed(2));
+      });
     }
   }
+  // 拟合动画相关状态重置
+  showFitLine.value = false;
+  // 线性回归动画状态
+  linearAnim.value = false;
+  linearPaused.value = false;
+  linearStep.value = 0;
+  linearSlope.value = 1;
+  linearIntercept.value = 0;
+  if (linearTimer) clearTimeout(linearTimer);
+  // 逻辑回归动画状态
+  logisticAnim.value = false;
+  logisticPaused.value = false;
+  logisticStep.value = 0;
+  logisticW.value = 1;
+  logisticB.value = 0;
+  if (logisticTimer) clearTimeout(logisticTimer);
 }
 function addRow() {
   if (!is3D.value) {
@@ -186,14 +401,14 @@ function removeRow(i) {
 function applyInput() {
   if (!is3D.value) {
     if (inputRows.value.length > 0) {
-      xData.value = inputRows.value.map(r => r.x);
-      yData.value = inputRows.value.map(r => r.y);
+      xData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.x)).toFixed(2)));
+      yData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.y)).toFixed(2)));
     }
   } else {
     if (inputRows.value.length > 0) {
-      xData.value = inputRows.value.map(r => r.x);
-      yData.value = inputRows.value.map(r => r.y);
-      zData.value = inputRows.value.map(r => r.z);
+      xData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.x)).toFixed(2)));
+      yData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.y)).toFixed(2)));
+      zData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.z)).toFixed(2)));
     }
   }
   showInput.value = false;
@@ -255,8 +470,8 @@ function onCanvasDown(e) {
     const yScale = chart.scales.y;
     const xVal = xScale.getValueForPixel(x);
     const yVal = yScale.getValueForPixel(y);
-    xData.value.push(xVal);
-    yData.value.push(yVal);
+    xData.value.push(Number(Math.max(0, Math.min(12, xVal)).toFixed(2)));
+    yData.value.push(Number(Math.max(0, Math.min(12, yVal)).toFixed(2)));
   }
 }
 function onCanvasMove(e) {
@@ -266,8 +481,8 @@ function onCanvasMove(e) {
   const { x, y } = getCanvasXY(e);
   const xScale = chart.scales.x;
   const yScale = chart.scales.y;
-  xData.value[draggingIdx] = xScale.getValueForPixel(x);
-  yData.value[draggingIdx] = yScale.getValueForPixel(y);
+  xData.value[draggingIdx] = Number(Math.max(0, Math.min(12, xScale.getValueForPixel(x))).toFixed(2));
+  yData.value[draggingIdx] = Number(Math.max(0, Math.min(12, yScale.getValueForPixel(y))).toFixed(2));
 }
 function onCanvasUp(e) {
   if (is3D.value) return;
@@ -355,12 +570,36 @@ function logisticFit3D(x, y, z) {
   }
   return { w1, w2, b };
 }
+// 新增：2D逻辑回归拟合函数
+function logisticFit2D(x, y) {
+  if (logisticAnim.value || logisticPaused.value) {
+    return { w: logisticW.value, b: logisticB.value };
+  }
+  // 静态：直接拟合
+  let w = 1, b = 0;
+  const lr = 0.1, steps = 1000;
+  for (let step = 0; step < steps; step++) {
+    let dw = 0, db = 0;
+    for (let i = 0; i < x.length; i++) {
+      const z = w * x[i] + b;
+      const pred = 1 / (1 + Math.exp(-z));
+      dw += (pred - y[i]) * x[i];
+      db += (pred - y[i]);
+    }
+    w -= lr * dw / x.length;
+    b -= lr * db / x.length;
+  }
+  return { w, b };
+}
 const fitParams = computed(() => {
   if (!is3D.value) {
     if (mode.value === 'linear') {
+      if (linearAnim.value || linearPaused.value) {
+        return { slope: linearSlope.value, intercept: linearIntercept.value };
+      }
       return linearFit(xData.value, yData.value);
     } else {
-      return { w: 1, b: 0 }; // 2D逻辑回归参数略
+      return logisticFit2D(xData.value, yData.value);
     }
   } else {
     if (mode.value === 'linear') {
@@ -370,11 +609,11 @@ const fitParams = computed(() => {
     }
   }
 });
+// chartData中根据showFitLine控制回归线显示
 const chartData = computed(() => {
   if (!is3D.value) {
     if (mode.value === 'linear') {
-      const { slope, intercept } = linearFit(xData.value, yData.value);
-      // 生成有序的x用于画直线
+      const { slope, intercept } = fitParams.value;
       const xMin = Math.min(...xData.value);
       const xMax = Math.max(...xData.value);
       const fitLineX = [];
@@ -384,60 +623,76 @@ const chartData = computed(() => {
         fitLineX.push(x);
         fitLineY.push(slope * x + intercept);
       }
-      // 计算所有y值的范围
       const allY = [...yData.value, ...fitLineY];
       const yMin = Math.min(...allY);
       const yMax = Math.max(...allY);
+      const datasets = [
+        {
+          label: lang.value==='zh' ? '数据点' : 'Data',
+          data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
+          pointRadius: 5,
+          showLine: false,
+          backgroundColor: '#b0b3b8',
+          borderColor: '#b0b3b8',
+          type: 'scatter',
+        }
+      ];
+      if (showFitLine.value) {
+        datasets.push({
+          label: lang.value==='zh' ? '线性回归拟合' : 'Linear Fit',
+          data: fitLineX.map((x, i) => ({ x, y: fitLineY[i] })),
+          borderColor: linearAnim.value ? '#ffb300' : '#4e8cff',
+          borderWidth: linearAnim.value ? 4 : 2,
+          borderDash: linearAnim.value ? [8, 6] : undefined,
+          fill: false,
+          pointRadius: 0,
+          tension: 0,
+          type: 'line',
+          showLine: true,
+        });
+      }
       return {
-        datasets: [
-          {
-            label: lang.value==='zh' ? '数据点' : 'Data',
-            data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
-            pointRadius: 5,
-            showLine: false,
-            backgroundColor: '#b0b3b8',
-            borderColor: '#b0b3b8',
-            type: 'scatter',
-          },
-          {
-            label: lang.value==='zh' ? '线性回归拟合' : 'Linear Fit',
-            data: fitLineX.map((x, i) => ({ x, y: fitLineY[i] })),
-            borderColor: '#4e8cff',
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0,
-            type: 'line',
-            showLine: true,
-          }
-        ],
+        datasets,
         yRange: { yMin, yMax }
       };
     } else {
-      // 逻辑回归保持原样，但回归线数据需为(x, y)对
+      const { w, b } = fitParams.value;
+      const xMin = Math.min(...xData.value);
+      const xMax = Math.max(...xData.value);
+      const fitLineX = [];
+      const fitLineY = [];
+      for (let i = 0; i <= 100; i++) {
+        const x = xMin + (xMax - xMin) * i / 100;
+        fitLineX.push(x);
+        fitLineY.push(1 / (1 + Math.exp(-(w * x + b))));
+      }
+      const datasets = [
+        {
+          label: lang.value==='zh' ? '数据点' : 'Data',
+          data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
+          pointRadius: 5,
+          showLine: false,
+          backgroundColor: '#b0b3b8',
+          borderColor: '#b0b3b8',
+          type: 'scatter',
+        }
+      ];
+      if (showFitLine.value) {
+        datasets.push({
+          label: lang.value==='zh' ? '逻辑回归拟合' : 'Logistic Fit',
+          data: fitLineX.map((x, i) => ({ x, y: fitLineY[i] })),
+          borderColor: logisticAnim.value ? '#ff4d4f' : '#4e8cff',
+          borderWidth: logisticAnim.value ? 4 : 2,
+          borderDash: logisticAnim.value ? [8, 6] : undefined,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.1,
+          type: 'line',
+          showLine: true,
+        });
+      }
       return {
-        datasets: [
-          {
-            label: lang.value==='zh' ? '数据点' : 'Data',
-            data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
-            pointRadius: 5,
-            showLine: false,
-            backgroundColor: '#b0b3b8',
-            borderColor: '#b0b3b8',
-            type: 'scatter',
-          },
-          {
-            label: lang.value==='zh' ? '逻辑回归拟合' : 'Logistic Fit',
-            data: xData.value.map(x => ({ x, y: 1 / (1 + Math.exp(-(1.2 * x - 6))) })),
-            borderColor: '#4e8cff',
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0.1,
-            type: 'line',
-            showLine: true,
-          }
-        ]
+        datasets
       };
     }
   }
@@ -558,12 +813,6 @@ const plotlyProps = computed(() => {
   };
 });
 const chartOptions = computed(() => {
-  let yMin, yMax;
-  if (!is3D.value && mode.value === 'linear' && chartData.value && chartData.value.yRange) {
-    const margin = (chartData.value.yRange.yMax - chartData.value.yRange.yMin) * 0.05 || 1;
-    yMin = chartData.value.yRange.yMin - margin;
-    yMax = chartData.value.yRange.yMax + margin;
-  }
   return {
     responsive: true,
     parsing: false,
@@ -572,11 +821,11 @@ const chartOptions = computed(() => {
       title: { display: false }
     },
     scales: {
-      x: { title: { display: true, text: 'X' }, type: 'linear' },
+      x: { title: { display: true, text: 'X' }, type: 'linear', min: 0, max: 15 },
       y: {
         title: { display: true, text: 'Y' },
-        min: !is3D.value && mode.value === 'linear' ? yMin : 0,
-        max: !is3D.value && mode.value === 'linear' ? yMax : (mode.value === 'logistic' ? 1.2 : undefined)
+        min: 0,
+        max: mode.value === 'logistic' ? 1.5 : 15
       }
     }
   };
@@ -584,7 +833,6 @@ const chartOptions = computed(() => {
 </script>
 
 <style scoped lang="scss">
-@use '@/styles/variables.scss' as *;
 .regression-demo-grid {
   display: grid;
   grid-template-columns: 1fr 2.2fr;
@@ -861,6 +1109,37 @@ input[type="range"] {
   color: $text-color;
   box-shadow: 0 4px 16px rgba(176,179,184,0.18);
 }
+.logistic-anim-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
+.fit-params-row {
+  display: flex;
+  gap: 2em;
+  font-size: 1.08em;
+  color: $accent-color-light;
+  margin-left: 0.5em;
+  justify-content: flex-start;
+  margin-bottom: 0.5em;
+}
+.fit-anim-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  justify-content: center;
+  margin: 0.5em 0 1em 0;
+  flex-wrap: wrap;
+}
+.fit-anim-controls-main {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  justify-content: center;
+  margin: 0.5em 0 1em 0;
+  flex-wrap: wrap;
+}
 @media (max-width: 900px) {
   .regression-demo-grid {
     grid-template-columns: 1fr;
@@ -876,6 +1155,13 @@ input[type="range"] {
     max-width: 99vw;
     width: 98vw;
     padding: 1em 0.5em 1.2em 0.5em;
+  }
+  .fit-params-row, .fit-anim-controls, .fit-anim-controls-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+    margin-left: 0;
+    width: 100%;
   }
 }
 .fade-enter-active, .fade-leave-active {
