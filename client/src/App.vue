@@ -7,7 +7,7 @@
     <footer class="app-footer">
       <div class="footer-content">
         <p>&copy; 2024 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
-        <p class="footer-tech">基于 Vue.js + Spring Boot 构建</p>
+        <p class="footer-tech">由GOODLAB开发团队构建</p>
       </div>
     </footer>
   </div>
