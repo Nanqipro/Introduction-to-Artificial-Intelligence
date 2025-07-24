@@ -29,6 +29,10 @@
           <el-icon><Notebook /></el-icon>
           章节
         </el-menu-item>
+        <el-menu-item index="/regression-demo">
+          <el-icon><TrendCharts /></el-icon>
+          回归演示
+        </el-menu-item>
         <el-menu-item index="/about">
           <el-icon><InfoFilled /></el-icon>
           关于
@@ -41,7 +45,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
-import { House, Notebook, InfoFilled } from '@element-plus/icons-vue'
+import { House, Notebook, InfoFilled, TrendCharts } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const activePath = computed(() => route.path)
