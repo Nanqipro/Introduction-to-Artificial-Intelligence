@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import ChapterList from '../views/ChapterList.vue'
 import ChapterDetail from '../views/ChapterDetail.vue'
 import About from '../views/About.vue'
+import Chapter6 from '../views/Chapter6.vue'
 
 const routes = [
   {
@@ -30,6 +31,14 @@ const routes = [
     path: '/regression-demo',
     name: 'RegressionDemo',
     component: () => import('@/views/RegressionDemo.vue')
+  },
+  {
+    path: '/chapter6',
+    name: 'Chapter6',
+    component: Chapter6,
+    meta: {
+      title: '第六章：第一个人工智能项目'
+    }
   }
 ]
 

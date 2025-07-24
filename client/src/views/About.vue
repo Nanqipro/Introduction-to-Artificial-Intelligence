@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="20" :md="16">
         <!-- 页面头部 -->
         <div class="page-header">
-          <h1 class="page-title">关于本项目</h1>
+          <h1 class="page-title">关于本平台</h1>
           <p class="page-description">
             了解《人工智能概论与应用》数字化教材平台的开发背景、技术架构和团队信息
           </p>
