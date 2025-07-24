@@ -182,19 +182,22 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .chapter-detail {
+  background: #23272e;
   min-height: 100vh;
-  background: #fff;
+  padding: 2rem 0;
 }
 
 .chapter-nav {
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background: rgba(41,44,51,0.92);
+  border-bottom: 1px solid rgba(57,59,64,0.18);
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  backdrop-filter: blur(4px);
 }
 
 .nav-container {
@@ -209,37 +212,49 @@ export default {
 .nav-back {
   background: none;
   border: none;
-  color: #667eea;
+  color: #8fa1b3;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   padding: 0.5rem 0;
-  transition: color 0.3s ease;
+  transition: color 0.2s;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .nav-back:hover {
-  color: #5a6fd8;
+  color: #b0b3b8;
 }
 
 .nav-title {
-  font-weight: 500;
-  color: #333;
-  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f5f6fa;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 1rem;
+  background: #292c33;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(57,59,64,0.18);
 }
 
 .chapter-content {
-  padding: 2rem 0;
+  color: #f5f6fa;
+  font-size: 1.08rem;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
 }
 
 .chapter-header {
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .chapter-meta {
@@ -249,41 +264,43 @@ export default {
 }
 
 .chapter-badge {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #18191a, #232526);
+  color: #8fa1b3;
+  padding: 0.5rem 1.2rem;
   border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(143,161,179,0.08);
+  letter-spacing: 1px;
 }
 
 .chapter-type {
-  color: #666;
-  background: #f8f9fa;
+  color: #8fa1b3;
+  background: #23272e;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .chapter-title {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: 2rem;
+  color: #f5f6fa;
+  font-weight: 900;
+  letter-spacing: 1px;
 }
 
 .chapter-summary {
+  color: #b0b3b8;
   font-size: 1.1rem;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.7;
 }
 
 .chapter-info {
   display: flex;
   gap: 2rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .info-item {
@@ -292,16 +309,16 @@ export default {
 }
 
 .info-label {
-  color: #666;
+  color: #8fa1b3;
 }
 
 .info-value {
-  color: #333;
-  font-weight: 500;
+  color: #f5f6fa;
+  font-weight: 600;
 }
 
 .info-value.published {
-  color: #28a745;
+  color: #8fa1b3;
 }
 
 .chapter-body {
@@ -311,7 +328,7 @@ export default {
 .content-text {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #333;
+  color: #f5f6fa;
 }
 
 .content-text :deep(p) {
@@ -323,24 +340,28 @@ export default {
   justify-content: space-between;
   gap: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid rgba(57,59,64,0.18);
 }
 
 .pagination-btn {
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
+  background: #23272e;
+  border: 1px solid rgba(57,59,64,0.18);
+  border-radius: 12px;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.18s, background 0.18s, border 0.18s;
   flex: 1;
   max-width: 300px;
+  color: #8fa1b3;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 .pagination-btn:hover {
-  border-color: #667eea;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: #31343b;
+  border-color: #8fa1b3;
+  box-shadow: 0 4px 16px #8fa1b3;
+  color: #f5f6fa;
 }
 
 .pagination-btn.prev {
@@ -355,14 +376,14 @@ export default {
 .btn-label {
   display: block;
   font-size: 0.8rem;
-  color: #666;
+  color: #8fa1b3;
   margin-bottom: 0.25rem;
 }
 
 .btn-title {
   display: block;
-  font-weight: 500;
-  color: #333;
+  font-weight: 700;
+  color: #f5f6fa;
 }
 
 .loading-container, .error-container {
@@ -373,8 +394,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border: 4px solid #393b40;
+  border-top: 4px solid #8fa1b3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -391,32 +412,43 @@ export default {
 }
 
 .error-container h3 {
-  color: #333;
+  color: #f5f6fa;
   margin-bottom: 0.5rem;
 }
 
 .error-container p {
-  color: #666;
+  color: #b0b3b8;
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: #667eea;
-  color: white;
+  background: #18191a;
+  color: #f5f6fa;
+  border: none;
 }
 
 .btn-primary:hover {
-  background: #5a6fd8;
+  background: #232526;
+  color: #b0b3b8;
+  border-color: #232526;
   transform: translateY(-1px);
+}
+
+.back-link {
+  color: #8fa1b3;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-right: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -425,23 +457,22 @@ export default {
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
   .chapter-title {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
-  
   .chapter-info {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
   .chapter-pagination {
     flex-direction: column;
   }
-  
   .pagination-btn {
     max-width: none;
     text-align: center;
+  }
+  .container {
+    padding: 1.2rem 0.5rem;
   }
 }
 </style>

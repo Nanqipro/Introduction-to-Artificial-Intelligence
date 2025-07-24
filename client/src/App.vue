@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 /* 全局样式重置 */
 * {
   margin: 0;
@@ -54,7 +54,7 @@ body {
 }
 
 .app-footer {
-  background: #333;
+  background: $primary-color-light;
   color: white;
   padding: 2rem 0;
   margin-top: auto;

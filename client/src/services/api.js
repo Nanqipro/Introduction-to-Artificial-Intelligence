@@ -2,7 +2,6 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -24,7 +23,7 @@ api.interceptors.request.use(
 // 响应拦截器
 api.interceptors.response.use(
   response => {
-    console.log('收到响应:', response.status, response.data)
+    console.log('收到响应123:', response.status, response.data)
     // 处理后端统一响应格式
     if (response.data && response.data.code === 200) {
       return response.data.data
@@ -54,37 +53,37 @@ api.interceptors.response.use(
 export const chapterApi = {
   // 获取章节概览列表
   getChapterOverview() {
-    return api.get('/chapters')
+    return api.get('/api/chapters')
   },
-  
+
   // 获取所有章节
   getAllChapters() {
-    return api.get('/chapters/all')
+    return api.get('/api/chapters/all')
   },
-  
+
   // 根据ID获取章节详情
   getChapterById(id) {
-    return api.get(`/chapters/${id}`)
+    return api.get(`/api/chapters/${id}`)
   },
-  
+
   // 创建章节
   createChapter(chapter) {
-    return api.post('/chapters', chapter)
+    return api.post('/api/chapters', chapter)
   },
-  
+
   // 更新章节
   updateChapter(id, chapter) {
-    return api.put(`/chapters/${id}`, chapter)
+    return api.put(`/api/chapters/${id}`, chapter)
   },
-  
+
   // 删除章节
   deleteChapter(id) {
-    return api.delete(`/chapters/${id}`)
+    return api.delete(`/api/chapters/${id}`)
   },
-  
+
   // 健康检查
   healthCheck() {
-    return api.get('/chapters/health')
+    return api.get('/api/chapters/health')
   }
 }
 

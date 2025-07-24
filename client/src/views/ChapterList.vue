@@ -108,10 +108,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .chapter-list {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: #23272e;
   padding: 2rem 0;
 }
 
@@ -128,13 +128,15 @@ export default {
 
 .page-title {
   font-size: 2.5rem;
-  color: #333;
+  color: #fff;
   margin-bottom: 1rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
 }
 
 .page-description {
   font-size: 1.1rem;
-  color: #666;
+  color: #b0b3b8;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -147,19 +149,22 @@ export default {
 }
 
 .chapter-item {
-  background: white;
-  border-radius: 12px;
+  background: #292c33;
+  border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid #e9ecef;
+  transition: box-shadow 0.18s, background 0.18s, border 0.18s;
+  border: 1px solid rgba(57,59,64,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .chapter-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  border-color: #667eea;
+  background: #31343b;
+  box-shadow: 0 8px 32px #8fa1b3;
+  border-color: #8fa1b3;
 }
 
 .chapter-header {
@@ -170,34 +175,38 @@ export default {
 }
 
 .chapter-badge {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(135deg, #18191a, #232526);
+  color: #8fa1b3;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(143,161,179,0.08);
+  letter-spacing: 1px;
 }
 
 .chapter-type {
-  color: #666;
-  font-size: 0.9rem;
-  background: #f8f9fa;
+  color: #8fa1b3;
+  font-size: 0.95rem;
+  background: #23272e;
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
+  font-weight: 600;
 }
 
 .chapter-title {
   font-size: 1.5rem;
-  color: #333;
+  color: #f5f6fa;
   margin-bottom: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .chapter-summary {
-  color: #666;
+  color: #b0b3b8;
   line-height: 1.6;
   margin-bottom: 1.5rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
 }
 
 .chapter-footer {
@@ -210,25 +219,27 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.95rem;
+  color: #8fa1b3;
+  font-weight: 600;
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ccc;
+  background: #393b40;
 }
 
 .status-dot.published {
-  background: #28a745;
+  background: #8fa1b3;
 }
 
 .read-more {
-  color: #667eea;
-  font-weight: 500;
-  font-size: 0.9rem;
+  color: #8fa1b3;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
 }
 
 .loading-container, .error-container, .empty-container {
@@ -239,8 +250,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border: 4px solid #393b40;
+  border-top: 4px solid #8fa1b3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -257,31 +268,33 @@ export default {
 }
 
 .error-container h3, .empty-container h3 {
-  color: #333;
+  color: #f5f6fa;
   margin-bottom: 0.5rem;
 }
 
 .error-container p, .empty-container p {
-  color: #666;
+  color: #b0b3b8;
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: #667eea;
-  color: white;
+  background: #18191a;
+  color: #f5f6fa;
+  border: none;
 }
 
 .btn-primary:hover {
-  background: #5a6fd8;
+  background: #232526;
+  border-color: #232526;
   transform: translateY(-1px);
 }
 
@@ -289,17 +302,14 @@ export default {
   .page-title {
     font-size: 2rem;
   }
-  
   .chapter-item {
     padding: 1.5rem;
   }
-  
   .chapter-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
   .chapter-footer {
     flex-direction: column;
     align-items: flex-start;
