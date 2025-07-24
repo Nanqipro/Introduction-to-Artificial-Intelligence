@@ -89,7 +89,7 @@
       </div>
       <div class="chart-card">
         <Plotly3D v-if="is3D" :data="plotlyProps.data" :layout="plotlyProps.layout" :style="plotlyProps.style" />
-        <Line v-else :data="chartData" :options="chartOptions" />
+        <Line ref="chartRef" v-else :data="chartData" :options="chartOptions" />
       </div>
       <transition name="fade">
         <div v-if="showInput" class="input-dialog">
@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { Line } from 'vue-chartjs';
 import Plotly3D from './Plotly3D.vue';
 import {
@@ -148,21 +148,28 @@ const yData = ref([]);
 const zData = ref([]); // 3D only
 const showInput = ref(false);
 const inputRows = ref([]);
+const chartRef = ref(null);
+let draggingIdx = null;
+let dragOffset = { x: 0, y: 0 };
+
 function randomizeData() {
+  // 用时间戳扰动，保证每次都不同
+  const seed = Date.now() + Math.random();
+  function rand() { return Math.random() + (seed % 1e3) * 1e-6; }
   if (!is3D.value) {
-    xData.value = Array.from({ length: N }, (_, i) => i / (N - 1) * 10);
+    xData.value = Array.from({ length: N }, (_, i) => i / (N - 1) * 10 + rand());
     if (mode.value === 'linear') {
-      yData.value = xData.value.map(x => 2 * x + 1 + (Math.random() - 0.5) * Math.min(noise.value, 3));
+      yData.value = xData.value.map(x => 2 * x + 1 + (rand() - 0.5) * Math.min(noise.value, 3));
     } else {
-      yData.value = xData.value.map(x => 1 / (1 + Math.exp(-(1.2 * x - 6))) + (Math.random() - 0.5) * Math.min(noise.value, 0.1));
+      yData.value = xData.value.map(x => 1 / (1 + Math.exp(-(1.2 * x - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1));
     }
   } else {
-    xData.value = Array.from({ length: N }, () => Math.random() * 10);
-    yData.value = Array.from({ length: N }, () => Math.random() * 10);
+    xData.value = Array.from({ length: N }, () => Math.random() * 10 + rand());
+    yData.value = Array.from({ length: N }, () => Math.random() * 10 + rand());
     if (mode.value === 'linear') {
-      zData.value = xData.value.map((x, i) => 2 * x + 1.5 * yData.value[i] + 3 + (Math.random() - 0.5) * Math.min(noise.value, 3));
+      zData.value = xData.value.map((x, i) => 2 * x + 1.5 * yData.value[i] + 3 + (rand() - 0.5) * Math.min(noise.value, 3));
     } else {
-      zData.value = xData.value.map((x, i) => 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) + (Math.random() - 0.5) * Math.min(noise.value, 0.1));
+      zData.value = xData.value.map((x, i) => 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1));
     }
   }
 }
@@ -202,15 +209,95 @@ watch(showInput, (v) => {
     }
   }
 });
-watch(is3D, () => {
-  randomizeData();
+watch(mode, (newMode, oldMode) => {
+  // 只有回归类型发生变化时才切换到2D并生成新数据
+  if (newMode !== oldMode) {
+    if (is3D.value) is3D.value = false;
+    randomizeData();
+  }
 });
-watch(mode, () => {
-  if (is3D.value) is3D.value = false;
-  randomizeData();
+watch(is3D, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    randomizeData();
+  }
+});
+function getCanvasXY(e) {
+  const rect = chartRef.value?.canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  return { x, y };
+}
+function getNearestPointIdx(e) {
+  if (!chartRef.value) return -1;
+  const chart = chartRef.value.chart;
+  const { x, y } = getCanvasXY(e);
+  let minDist = 16, idx = -1;
+  chart.getDatasetMeta(0).data.forEach((pt, i) => {
+    const dx = pt.x - x, dy = pt.y - y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < minDist) { minDist = dist; idx = i; }
+  });
+  return idx;
+}
+function onCanvasDown(e) {
+  if (is3D.value) return;
+  if (e.button === 2) return; // 右键
+  const idx = getNearestPointIdx(e);
+  if (idx >= 0) {
+    draggingIdx = idx;
+    document.body.style.cursor = 'grabbing';
+  } else {
+    // 添加点
+    const chart = chartRef.value.chart;
+    const { x, y } = getCanvasXY(e);
+    // 反算x轴值
+    const xScale = chart.scales.x;
+    const yScale = chart.scales.y;
+    const xVal = xScale.getValueForPixel(x);
+    const yVal = yScale.getValueForPixel(y);
+    xData.value.push(xVal);
+    yData.value.push(yVal);
+  }
+}
+function onCanvasMove(e) {
+  if (is3D.value) return;
+  if (draggingIdx === null) return;
+  const chart = chartRef.value.chart;
+  const { x, y } = getCanvasXY(e);
+  const xScale = chart.scales.x;
+  const yScale = chart.scales.y;
+  xData.value[draggingIdx] = xScale.getValueForPixel(x);
+  yData.value[draggingIdx] = yScale.getValueForPixel(y);
+}
+function onCanvasUp(e) {
+  if (is3D.value) return;
+  draggingIdx = null;
+  document.body.style.cursor = '';
+}
+function onCanvasRightClick(e) {
+  if (is3D.value) return;
+  e.preventDefault();
+  const idx = getNearestPointIdx(e);
+  if (idx >= 0) {
+    xData.value.splice(idx, 1);
+    yData.value.splice(idx, 1);
+  }
+}
+watch([xData, yData], () => {
+  nextTick(() => chartRef.value?.chart?.update());
 });
 onMounted(() => {
   randomizeData();
+  nextTick(() => {
+    const canvas = chartRef.value?.canvas;
+    if (canvas) {
+      canvas.addEventListener('mousedown', onCanvasDown);
+      canvas.addEventListener('mousemove', onCanvasMove);
+      canvas.addEventListener('mouseup', onCanvasUp);
+      canvas.addEventListener('mouseleave', onCanvasUp);
+      canvas.addEventListener('contextmenu', onCanvasRightClick);
+    }
+  });
 });
 function linearFit(x, y) {
   const n = x.length;
