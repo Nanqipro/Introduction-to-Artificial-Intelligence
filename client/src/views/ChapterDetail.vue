@@ -41,7 +41,12 @@
 
         <!-- 章节正文 -->
         <div class="chapter-body">
-          <div class="content-text" v-html="formatContent(chapter.content)"></div>
+          <!-- 第六章特殊处理：显示交互式内容 -->
+          <div v-if="isChapter6" class="interactive-chapter">
+            <Chapter6Interactive />
+          </div>
+          <!-- 其他章节显示普通内容 -->
+          <div v-else class="content-text" v-html="formatContent(chapter.content)"></div>
         </div>
 
         <!-- 章节导航 -->
@@ -84,9 +89,13 @@
 
 <script>
 import { chapterApi } from '../services/api'
+import Chapter6Interactive from '../components/chapter6/Chapter6Interactive.vue'
 
 export default {
   name: 'ChapterDetail',
+  components: {
+    Chapter6Interactive
+  },
   props: {
     id: {
       type: String,
@@ -102,6 +111,13 @@ export default {
     }
   },
   computed: {
+    isChapter6() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '6' ||
+        this.chapter.title.includes('第一个人工智能项目') ||
+        this.id === '6'
+      )
+    },
     prevChapter() {
       if (!this.chapter || !this.allChapters.length) return null
       const currentIndex = this.allChapters.findIndex(ch => ch.id === this.chapter.id)

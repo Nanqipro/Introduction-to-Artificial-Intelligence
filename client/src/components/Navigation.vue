@@ -29,10 +29,6 @@
           <el-icon><Notebook /></el-icon>
           章节
         </el-menu-item>
-        <el-menu-item index="/chapter6">
-          <el-icon><Cpu /></el-icon>
-          第六章实践
-        </el-menu-item>
         <el-menu-item index="/regression-demo">
           <el-icon><TrendCharts /></el-icon>
           回归演示
@@ -49,7 +45,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
-import { House, Notebook, InfoFilled, TrendCharts, Cpu } from '@element-plus/icons-vue'
+import { House, Notebook, InfoFilled, TrendCharts } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const activePath = computed(() => route.path)

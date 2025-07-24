@@ -129,12 +129,12 @@ input, textarea, select {
 /* 选择文本样式 */
 ::selection {
   background: #b0b3b8;
-  color: #18191a;
+  color: #ffffff;
 }
 
 ::-moz-selection {
   background: #b0b3b8;
-  color: #18191a;
+  color: #ffffff;
 }
 
 /* 工具类 */

@@ -585,12 +585,12 @@ onUnmounted(() => {
   // 全局选中样式
   ::selection {
     background: $accent-color;
-    color: $primary-color;
+    color: #ffffff;
   }
 
   ::-moz-selection {
     background: $accent-color;
-    color: $primary-color;
+    color: #ffffff;
   }
 }
 

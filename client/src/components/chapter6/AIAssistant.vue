@@ -607,12 +607,12 @@ onMounted(() => {
   // 全局选中样式
   ::selection {
     background: $accent-color;
-    color: $primary-color;
+    color: #ffffff;
   }
 
   ::-moz-selection {
     background: $accent-color;
-    color: $primary-color;
+    color: #ffffff;
   }
 }
 
@@ -862,12 +862,12 @@ onMounted(() => {
               // 消息文本选中样式
               ::selection {
                 background: $accent-color;
-                color: $primary-color;
+                color: #ffffff;
               }
 
               ::-moz-selection {
                 background: $accent-color;
-                color: $primary-color;
+                color: #ffffff;
               }
 
               :deep(p) {
@@ -896,12 +896,12 @@ onMounted(() => {
                 // 代码块选中样式
                 ::selection {
                   background: $accent-color-light;
-                  color: $primary-color;
+                  color: #ffffff;
                 }
 
                 ::-moz-selection {
                   background: $accent-color-light;
-                  color: $primary-color;
+                  color: #ffffff;
                 }
               }
             }
@@ -957,12 +957,12 @@ onMounted(() => {
 
             &::selection {
               background: $accent-color;
-              color: $primary-color;
+              color: #ffffff;
             }
 
             &::-moz-selection {
               background: $accent-color;
-              color: $primary-color;
+              color: #ffffff;
             }
           }
 

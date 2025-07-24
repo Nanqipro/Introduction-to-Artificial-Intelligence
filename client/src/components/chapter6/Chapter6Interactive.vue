@@ -1,53 +1,112 @@
 <template>
-  <div class="chapter6-container">
-    <!-- 章节头部 -->
-    <div class="chapter-header">
-      <div class="header-content">
-        <h1 class="chapter-title">
-          <el-icon><Cpu /></el-icon>
-          第六章：第一个人工智能项目
-        </h1>
-        <p class="chapter-subtitle">
-          通过猫狗识别项目，体验完整的AI开发流程
-        </p>
-        <div class="progress-bar">
+  <div class="chapter6-interactive">
+    <!-- 交互式学习介绍 -->
+    <div class="interactive-intro">
+      <el-card class="intro-card">
+        <div class="intro-content">
+          <h2>
+            <el-icon><Cpu /></el-icon>
+            交互式学习体验
+          </h2>
+          <p>通过多种创新的教学方式，体验完整的AI项目开发流程</p>
+          <div class="features-grid">
+            <div class="feature-item">
+              <el-icon><Document /></el-icon>
+              <span>Python基础</span>
+            </div>
+            <div class="feature-item">
+              <el-icon><Edit /></el-icon>
+              <span>代码实践</span>
+            </div>
+            <div class="feature-item">
+              <el-icon><DataLine /></el-icon>
+              <span>数据流程</span>
+            </div>
+            <div class="feature-item">
+              <el-icon><Connection /></el-icon>
+              <span>模型结构</span>
+            </div>
+            <div class="feature-item">
+              <el-icon><Trophy /></el-icon>
+              <span>游戏化学习</span>
+            </div>
+            <div class="feature-item">
+              <el-icon><ChatDotRound /></el-icon>
+              <span>AI助手</span>
+            </div>
+          </div>
+        </div>
+      </el-card>
+    </div>
+
+    <!-- 进度概览 -->
+    <div class="progress-overview">
+      <el-card class="progress-card">
+        <template #header>
+          <span>学习进度概览</span>
+        </template>
+        <div class="progress-content">
           <el-progress 
             :percentage="overallProgress" 
-            :stroke-width="8"
+            :stroke-width="12"
             :show-text="true"
             status="success"
           />
-          <span class="progress-text">学习进度: {{ overallProgress }}%</span>
+          <p class="progress-text">总体完成度: {{ overallProgress }}%</p>
         </div>
-      </div>
+      </el-card>
     </div>
 
     <!-- 导航标签页 -->
     <div class="chapter-navigation">
       <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="chapter-tabs">
         <el-tab-pane label="Python基础" name="python-basics">
-          <el-icon><Document /></el-icon>
-          Python基础
+          <template #label>
+            <span class="tab-label">
+              <el-icon><Document /></el-icon>
+              Python基础
+            </span>
+          </template>
         </el-tab-pane>
         <el-tab-pane label="代码实践" name="code-practice">
-          <el-icon><Edit /></el-icon>
-          代码实践
+          <template #label>
+            <span class="tab-label">
+              <el-icon><Edit /></el-icon>
+              代码实践
+            </span>
+          </template>
         </el-tab-pane>
         <el-tab-pane label="数据流程" name="data-flow">
-          <el-icon><DataLine /></el-icon>
-          数据流程
+          <template #label>
+            <span class="tab-label">
+              <el-icon><DataLine /></el-icon>
+              数据流程
+            </span>
+          </template>
         </el-tab-pane>
         <el-tab-pane label="模型结构" name="model-structure">
-          <el-icon><Connection /></el-icon>
-          模型结构
+          <template #label>
+            <span class="tab-label">
+              <el-icon><Connection /></el-icon>
+              模型结构
+            </span>
+          </template>
         </el-tab-pane>
         <el-tab-pane label="游戏化学习" name="gamified-learning">
-          <el-icon><Trophy /></el-icon>
-          游戏化学习
+          <template #label>
+            <span class="tab-label">
+              <el-icon><Trophy /></el-icon>
+              游戏化学习
+            </span>
+          </template>
         </el-tab-pane>
         <el-tab-pane label="AI助手" name="ai-assistant">
-          <el-icon><ChatDotRound /></el-icon>
-          AI助手
+          <template #label>
+            <span class="tab-label">
+              <el-icon><ChatDotRound /></el-icon>
+              AI助手
+            </span>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -101,19 +160,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { 
   Cpu, Document, Edit, DataLine, Connection, 
   Trophy, ChatDotRound 
 } from '@element-plus/icons-vue'
 
 // 导入组件
-import PythonBasics from '../components/chapter6/PythonBasics.vue'
-import CodeEditor from '../components/chapter6/CodeEditor.vue'
-import DataFlowVisualization from '../components/chapter6/DataFlowVisualization.vue'
-import NetworkVisualization from '../components/chapter6/NetworkVisualization.vue'
-import GameifiedLearning from '../components/chapter6/GameifiedLearning.vue'
-import AIAssistant from '../components/chapter6/AIAssistant.vue'
+import PythonBasics from './PythonBasics.vue'
+import CodeEditor from './CodeEditor.vue'
+import DataFlowVisualization from './DataFlowVisualization.vue'
+import NetworkVisualization from './NetworkVisualization.vue'
+import GameifiedLearning from './GameifiedLearning.vue'
+import AIAssistant from './AIAssistant.vue'
 
 // 响应式数据
 const activeTab = ref('python-basics')
@@ -169,120 +228,117 @@ const getTabLabel = (tabName) => {
   }
   return labels[tabName] || tabName
 }
-
-onMounted(() => {
-  console.log('第六章页面已加载')
-})
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
-.chapter6-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-  padding: 0;
-
+.chapter6-interactive {
   // 全局选中样式
   ::selection {
     background: $accent-color;
     color: #ffffff;
   }
-
+  
   ::-moz-selection {
     background: $accent-color;
     color: #ffffff;
   }
+}
 
-  // Element Plus 组件样式覆盖
-  :deep(.el-input__inner) {
-    background: $secondary-color !important;
-    border-color: $border-color !important;
-    color: $text-color !important;
-
-    &::placeholder {
-      color: $text-secondary-color !important;
+.interactive-intro {
+  margin-bottom: 2rem;
+  
+  .intro-card {
+    background: $primary-color;
+    border: 1px solid $border-color;
+    
+    :deep(.el-card__body) {
+      background: $primary-color;
     }
-
-    &::selection {
-      background: $accent-color !important;
-      color: #ffffff !important;
+    
+    .intro-content {
+      text-align: center;
+      
+      h2 {
+        color: $text-color;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        
+        .el-icon {
+          margin-right: 0.5rem;
+          color: $accent-color;
+        }
+      }
+      
+      p {
+        color: $text-secondary-color;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        
+        .feature-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem;
+          background: $secondary-color;
+          border-radius: 8px;
+          border: 1px solid $border-color;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(176, 179, 184, 0.2);
+          }
+          
+          .el-icon {
+            font-size: 2rem;
+            color: $accent-color;
+            margin-bottom: 0.5rem;
+          }
+          
+          span {
+            color: $text-color;
+            font-weight: 600;
+          }
+        }
+      }
     }
-
-    &::-moz-selection {
-      background: $accent-color !important;
-      color: #ffffff !important;
-    }
-  }
-
-  :deep(.el-textarea__inner) {
-    background: $secondary-color !important;
-    border-color: $border-color !important;
-    color: $text-color !important;
-
-    &::placeholder {
-      color: $text-secondary-color !important;
-    }
-
-    &::selection {
-      background: $accent-color !important;
-      color: #ffffff !important;
-    }
-
-    &::-moz-selection {
-      background: $accent-color !important;
-      color: #ffffff !important;
-    }
-  }
-
-  :deep(.el-select .el-input__inner) {
-    background: $secondary-color !important;
-    border-color: $border-color !important;
-    color: $text-color !important;
   }
 }
 
-.chapter-header {
-  background: rgba(35, 39, 46, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 2rem 0;
-  text-align: center;
-  border-bottom: 1px solid $border-color;
-
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  .chapter-title {
-    font-size: 3rem;
-    color: $text-color;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
-    .el-icon {
-      margin-right: 1rem;
-      color: $accent-color;
+.progress-overview {
+  margin-bottom: 2rem;
+  
+  .progress-card {
+    background: $primary-color;
+    border: 1px solid $border-color;
+    
+    :deep(.el-card__header) {
+      background: $secondary-color;
+      border-bottom: 1px solid $border-color;
+      color: $text-color;
+      font-weight: 600;
     }
-  }
-
-  .chapter-subtitle {
-    font-size: 1.2rem;
-    color: $text-secondary-color;
-    margin-bottom: 2rem;
-  }
-
-  .progress-bar {
-    max-width: 400px;
-    margin: 0 auto;
-
-    .progress-text {
-      color: $text-secondary-color;
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      display: block;
+    
+    :deep(.el-card__body) {
+      background: $primary-color;
+    }
+    
+    .progress-content {
+      text-align: center;
+      
+      .progress-text {
+        margin-top: 1rem;
+        color: $text-secondary-color;
+        font-size: 1.1rem;
+      }
     }
   }
 }
@@ -291,42 +347,39 @@ onMounted(() => {
   background: rgba(35, 39, 46, 0.95);
   backdrop-filter: blur(10px);
   padding: 0 2rem;
-
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  
   .chapter-tabs {
-    max-width: 1200px;
-    margin: 0 auto;
-
     :deep(.el-tabs__header) {
       margin: 0;
       border-bottom: 2px solid $border-color;
     }
-
+    
     :deep(.el-tabs__item) {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
-      padding: 1rem 2rem;
+      padding: 1rem 1.5rem;
       color: $text-secondary-color;
-
+      
       &.is-active {
         color: $accent-color;
       }
-
+      
       &:hover {
         color: $accent-color-light;
       }
-
-      .el-icon {
-        margin-right: 0.5rem;
-      }
+    }
+    
+    .tab-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
   }
 }
 
 .chapter-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-
   .content-section {
     background: $secondary-color;
     border-radius: 12px;
@@ -342,29 +395,29 @@ onMounted(() => {
   right: 20px;
   z-index: 1000;
   animation: slideInRight 0.5s ease-out;
-
+  
   .achievement-card {
     background: linear-gradient(135deg, $accent-color, $accent-color-light);
     border: none;
     box-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
-
+    
     .achievement-content {
       display: flex;
       align-items: center;
-
+      
       .achievement-icon {
         font-size: 2rem;
         color: $primary-color;
         margin-right: 1rem;
       }
-
+      
       .achievement-text {
         h3 {
           margin: 0 0 0.5rem 0;
           color: $primary-color;
           font-weight: 700;
         }
-
+        
         p {
           margin: 0;
           color: $primary-color-light;
@@ -387,14 +440,8 @@ onMounted(() => {
 
 // 响应式设计
 @media (max-width: 768px) {
-  .chapter-header {
-    .chapter-title {
-      font-size: 2rem;
-    }
-    
-    .chapter-subtitle {
-      font-size: 1rem;
-    }
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
   
   .chapter-navigation {
@@ -404,10 +451,6 @@ onMounted(() => {
       font-size: 0.9rem;
       padding: 0.8rem 1rem;
     }
-  }
-  
-  .chapter-content {
-    padding: 1rem;
   }
 }
 </style>
