@@ -372,36 +372,74 @@ const fitParams = computed(() => {
 });
 const chartData = computed(() => {
   if (!is3D.value) {
-    let fitY = [];
     if (mode.value === 'linear') {
       const { slope, intercept } = linearFit(xData.value, yData.value);
-      fitY = xData.value.map(x => slope * x + intercept);
+      // 生成有序的x用于画直线
+      const xMin = Math.min(...xData.value);
+      const xMax = Math.max(...xData.value);
+      const fitLineX = [];
+      const fitLineY = [];
+      for (let i = 0; i <= 100; i++) {
+        const x = xMin + (xMax - xMin) * i / 100;
+        fitLineX.push(x);
+        fitLineY.push(slope * x + intercept);
+      }
+      // 计算所有y值的范围
+      const allY = [...yData.value, ...fitLineY];
+      const yMin = Math.min(...allY);
+      const yMax = Math.max(...allY);
+      return {
+        datasets: [
+          {
+            label: lang.value==='zh' ? '数据点' : 'Data',
+            data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
+            pointRadius: 5,
+            showLine: false,
+            backgroundColor: '#b0b3b8',
+            borderColor: '#b0b3b8',
+            type: 'scatter',
+          },
+          {
+            label: lang.value==='zh' ? '线性回归拟合' : 'Linear Fit',
+            data: fitLineX.map((x, i) => ({ x, y: fitLineY[i] })),
+            borderColor: '#4e8cff',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0,
+            type: 'line',
+            showLine: true,
+          }
+        ],
+        yRange: { yMin, yMax }
+      };
     } else {
-      fitY = xData.value.map(x => 1 / (1 + Math.exp(-(1.2 * x - 6))));
+      // 逻辑回归保持原样，但回归线数据需为(x, y)对
+      return {
+        datasets: [
+          {
+            label: lang.value==='zh' ? '数据点' : 'Data',
+            data: xData.value.map((x, i) => ({ x, y: yData.value[i] })),
+            pointRadius: 5,
+            showLine: false,
+            backgroundColor: '#b0b3b8',
+            borderColor: '#b0b3b8',
+            type: 'scatter',
+          },
+          {
+            label: lang.value==='zh' ? '逻辑回归拟合' : 'Logistic Fit',
+            data: xData.value.map(x => ({ x, y: 1 / (1 + Math.exp(-(1.2 * x - 6))) })),
+            borderColor: '#4e8cff',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0.1,
+            type: 'line',
+            showLine: true,
+          }
+        ]
+      };
     }
-    return {
-      labels: xData.value.map(x => x.toFixed(2)),
-      datasets: [
-        {
-          label: lang.value==='zh' ? '数据点' : 'Data',
-          data: yData.value,
-          pointRadius: 5,
-          showLine: false,
-          backgroundColor: '#b0b3b8',
-          borderColor: '#b0b3b8',
-          type: 'scatter',
-        },
-        {
-          label: mode.value === 'linear' ? (lang.value==='zh' ? '线性回归拟合' : 'Linear Fit') : (lang.value==='zh' ? '逻辑回归拟合' : 'Logistic Fit'),
-          data: fitY,
-          borderColor: '#4e8cff',
-          borderWidth: 2,
-          fill: false,
-          pointRadius: 0,
-          tension: 0.1,
-        }
-      ]
-    };
   }
   return null;
 });
@@ -519,17 +557,30 @@ const plotlyProps = computed(() => {
     style: { width: '100%', height: '420px' }
   };
 });
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: { display: true },
-    title: { display: false }
-  },
-  scales: {
-    x: { title: { display: true, text: 'X' } },
-    y: { title: { display: true, text: 'Y' }, min: 0, max: mode.value === 'linear' ? undefined : 1.2 }
+const chartOptions = computed(() => {
+  let yMin, yMax;
+  if (!is3D.value && mode.value === 'linear' && chartData.value && chartData.value.yRange) {
+    const margin = (chartData.value.yRange.yMax - chartData.value.yRange.yMin) * 0.05 || 1;
+    yMin = chartData.value.yRange.yMin - margin;
+    yMax = chartData.value.yRange.yMax + margin;
   }
-};
+  return {
+    responsive: true,
+    parsing: false,
+    plugins: {
+      legend: { display: true },
+      title: { display: false }
+    },
+    scales: {
+      x: { title: { display: true, text: 'X' }, type: 'linear' },
+      y: {
+        title: { display: true, text: 'Y' },
+        min: !is3D.value && mode.value === 'linear' ? yMin : 0,
+        max: !is3D.value && mode.value === 'linear' ? yMax : (mode.value === 'logistic' ? 1.2 : undefined)
+      }
+    }
+  };
+});
 </script>
 
 <style scoped lang="scss">
