@@ -128,8 +128,13 @@ input, textarea, select {
 
 /* 选择文本样式 */
 ::selection {
-  background: #667eea;
-  color: white;
+  background: #b0b3b8;
+  color: #18191a;
+}
+
+::-moz-selection {
+  background: #b0b3b8;
+  color: #18191a;
 }
 
 /* 工具类 */

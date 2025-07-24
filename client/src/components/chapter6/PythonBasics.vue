@@ -369,6 +369,17 @@ watch(overallProgress, (newProgress) => {
   padding: 2rem;
   background: $secondary-color;
   min-height: 100vh;
+
+  // 全局选中样式
+  ::selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  ::-moz-selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
 }
 
 .basics-header {
@@ -484,6 +495,17 @@ watch(overallProgress, (newProgress) => {
             line-height: 1.5;
             overflow-x: auto;
             color: $text-color;
+
+            // 代码块内的选中样式
+            ::selection {
+              background: $accent-color;
+              color: $primary-color;
+            }
+
+            ::-moz-selection {
+              background: $accent-color;
+              color: $primary-color;
+            }
 
             code {
               background: none;

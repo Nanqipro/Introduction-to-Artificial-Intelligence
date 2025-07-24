@@ -359,6 +359,17 @@ onMounted(() => {
   padding: 2rem;
   background: $secondary-color;
   min-height: 100vh;
+
+  // 全局选中样式
+  ::selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  ::-moz-selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
 }
 
 .editor-header {
@@ -464,6 +475,17 @@ onMounted(() => {
         outline: 2px solid $accent-color;
         border-color: $accent-color;
       }
+
+      // 文本选中样式
+      &::selection {
+        background: $accent-color;
+        color: $primary-color;
+      }
+
+      &::-moz-selection {
+        background: $accent-color;
+        color: $primary-color;
+      }
     }
   }
   
@@ -502,6 +524,17 @@ onMounted(() => {
         margin: 0;
         white-space: pre-wrap;
         border: 1px solid $border-color;
+
+        // 输出文本选中样式
+        ::selection {
+          background: $accent-color;
+          color: $primary-color;
+        }
+
+        ::-moz-selection {
+          background: $accent-color;
+          color: $primary-color;
+        }
       }
 
       .error-text {

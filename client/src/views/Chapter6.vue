@@ -182,6 +182,64 @@ onMounted(() => {
   min-height: 100vh;
   background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
   padding: 0;
+
+  // 全局选中样式
+  ::selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  ::-moz-selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  // Element Plus 组件样式覆盖
+  :deep(.el-input__inner) {
+    background: $secondary-color !important;
+    border-color: $border-color !important;
+    color: $text-color !important;
+
+    &::placeholder {
+      color: $text-secondary-color !important;
+    }
+
+    &::selection {
+      background: $accent-color !important;
+      color: $primary-color !important;
+    }
+
+    &::-moz-selection {
+      background: $accent-color !important;
+      color: $primary-color !important;
+    }
+  }
+
+  :deep(.el-textarea__inner) {
+    background: $secondary-color !important;
+    border-color: $border-color !important;
+    color: $text-color !important;
+
+    &::placeholder {
+      color: $text-secondary-color !important;
+    }
+
+    &::selection {
+      background: $accent-color !important;
+      color: $primary-color !important;
+    }
+
+    &::-moz-selection {
+      background: $accent-color !important;
+      color: $primary-color !important;
+    }
+  }
+
+  :deep(.el-select .el-input__inner) {
+    background: $secondary-color !important;
+    border-color: $border-color !important;
+    color: $text-color !important;
+  }
 }
 
 .chapter-header {

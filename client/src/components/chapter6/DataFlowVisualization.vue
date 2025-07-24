@@ -473,6 +473,17 @@ onUnmounted(() => {
   padding: 2rem;
   background: $secondary-color;
   min-height: 100vh;
+
+  // 全局选中样式
+  ::selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  ::-moz-selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
 }
 
 .flow-header {

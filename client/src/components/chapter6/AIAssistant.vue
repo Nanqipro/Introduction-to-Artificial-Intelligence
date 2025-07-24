@@ -603,6 +603,17 @@ onMounted(() => {
   padding: 2rem;
   background: $secondary-color;
   min-height: 100vh;
+
+  // 全局选中样式
+  ::selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  ::-moz-selection {
+    background: $accent-color;
+    color: $primary-color;
+  }
 }
 
 .assistant-header {
@@ -848,6 +859,17 @@ onMounted(() => {
             .message-text {
               color: $text-color;
 
+              // 消息文本选中样式
+              ::selection {
+                background: $accent-color;
+                color: $primary-color;
+              }
+
+              ::-moz-selection {
+                background: $accent-color;
+                color: $primary-color;
+              }
+
               :deep(p) {
                 margin: 0 0 0.5rem 0;
                 color: $text-color;
@@ -870,6 +892,17 @@ onMounted(() => {
                 border-radius: 4px;
                 font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
                 border: 1px solid $border-color;
+
+                // 代码块选中样式
+                ::selection {
+                  background: $accent-color-light;
+                  color: $primary-color;
+                }
+
+                ::-moz-selection {
+                  background: $accent-color-light;
+                  color: $primary-color;
+                }
               }
             }
           }
@@ -911,11 +944,33 @@ onMounted(() => {
       
       .input-container {
         margin-bottom: 1rem;
-        
+
         .message-input {
+          :deep(.el-input__inner) {
+            background: $secondary-color;
+            border-color: $border-color;
+            color: $text-color;
+
+            &::placeholder {
+              color: $text-secondary-color;
+            }
+
+            &::selection {
+              background: $accent-color;
+              color: $primary-color;
+            }
+
+            &::-moz-selection {
+              background: $accent-color;
+              color: $primary-color;
+            }
+          }
+
           :deep(.el-input-group__append) {
             padding: 0;
-            
+            background: $secondary-color;
+            border-color: $border-color;
+
             .el-button {
               border-radius: 0 4px 4px 0;
             }
