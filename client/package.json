@@ -9,12 +9,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.10.0",
+    "chart.js": "^4.5.0",
+    "element-plus": "^2.10.4",
+    "plotly.js": "^3.0.3",
+    "plotly.js-dist-min": "^3.0.3",
+    "uuid": "^11.1.0",
     "vue": "^3.5.17",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",
+    "sass-embedded": "^1.89.2",
     "vite": "^7.0.4"
   }
 }

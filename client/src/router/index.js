@@ -25,6 +25,11 @@ const routes = [
     path: '/about',
     name: 'About',
     component: About
+  },
+  {
+    path: '/regression-demo',
+    name: 'RegressionDemo',
+    component: () => import('@/views/RegressionDemo.vue')
   }
 ]
 

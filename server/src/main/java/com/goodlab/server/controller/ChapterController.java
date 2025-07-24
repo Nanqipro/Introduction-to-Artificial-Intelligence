@@ -15,7 +15,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/chapters")
-@CrossOrigin(origins = "*") // 允许跨域访问
 public class ChapterController {
     
     @Autowired
