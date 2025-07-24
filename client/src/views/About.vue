@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="20" :md="16">
         <!-- 页面头部 -->
         <div class="page-header">
-          <h1 class="page-title">关于本项目</h1>
+          <h1 class="page-title">关于本平台</h1>
           <p class="page-description">
             了解《人工智能概论与应用》数字化教材平台的开发背景、技术架构和团队信息
           </p>
@@ -25,7 +25,7 @@
         </el-card>
 
         <!-- 技术架构 -->
-        <el-card class="mb-4">
+        <!-- <el-card class="mb-4">
           <template #header>
             <el-icon><Cpu /></el-icon>
             <span class="ml-1"> 技术架构</span>
@@ -68,7 +68,7 @@
               </el-card>
             </el-col>
           </el-row>
-        </el-card>
+        </el-card> -->
 
         <!-- 教材信息 -->
         <el-card class="mb-4">
@@ -126,14 +126,21 @@
               <el-card shadow="never">
                 <div class="contact-icon">📧</div>
                 <h4>邮箱联系</h4>
-                <p>contact@goodlab.com</p>
+                <p>xuz@ncu.edu.cn</p>
               </el-card>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-card shadow="never">
                 <div class="contact-icon">🐙</div>
                 <h4>GitHub</h4>
-                <p>项目开源地址和问题反馈</p>
+                <p>
+                  <a href="https://github.com/Nanqipro/Introduction-to-Artificial-Intelligence/tree/zj"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     class="github-link">
+                    项目开源地址和问题反馈
+                  </a>
+                </p>
               </el-card>
             </el-col>
           </el-row>
@@ -224,5 +231,14 @@ import { InfoFilled, Notebook, UserFilled, Message, Cpu } from '@element-plus/ic
   gap: 0.3rem 0.3rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+}
+.github-link {
+  color: #58a6ff !important;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.github-link:hover {
+  color: #79c0ff !important;
+  text-decoration: underline;
 }
 </style>
