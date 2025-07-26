@@ -30,6 +30,15 @@ const routes = [
     path: '/regression-demo',
     name: 'RegressionDemo',
     component: () => import('@/views/RegressionDemo.vue')
+  },
+  {
+    path: '/network-training',
+    name: 'NetworkTraining',
+    component: () => import('@/views/NetworkTraining.vue'),
+    meta: {
+      title: '神经网络训练实验室',
+      description: '交互式神经网络训练可视化'
+    }
   }
 ]
 

@@ -435,7 +435,7 @@ import {
 import Chart from 'chart.js/auto'
 
 // 定义事件
-const emit = defineEmits(['progress-update'])
+const emit = defineEmits(['progress-update', 'training-complete'])
 
 // 响应式数据
 const networkContainer = ref(null)
@@ -483,6 +483,7 @@ const trainingLogs = ref([])
 // Chart.js 实例
 let chartInstance = null
 let animationId = null
+let nodeInteractionCount = 0
 
 // 样本图像数据
 const sampleImages = ref([
@@ -675,6 +676,14 @@ const trainingLoop = () => {
   } else {
     isTraining.value = false
     addLog('success', '训练完成！')
+
+    // 发射训练完成事件
+    emit('training-complete', {
+      accuracy: currentAccuracy.value,
+      loss: currentLoss.value,
+      epochs: currentEpoch.value,
+      nodeInteractions: getNodeInteractionCount()
+    })
   }
 }
 
@@ -860,6 +869,9 @@ const toggleNode = (layerId, nodeIndex) => {
     const node = layer.nodes[nodeIndex]
     node.active = !node.active
     node.disabled = !node.active
+
+    // 增加交互计数
+    nodeInteractionCount++
 
     // 更新节点外观
     if (node.active) {
@@ -1054,6 +1066,10 @@ const addLog = (type, message) => {
 
 const clearLog = () => {
   trainingLogs.value = []
+}
+
+const getNodeInteractionCount = () => {
+  return nodeInteractionCount
 }
 
 // 监听器
