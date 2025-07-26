@@ -134,6 +134,18 @@
                   <el-radio label="activation">激活值</el-radio>
                 </el-radio-group>
               </div>
+
+              <div class="config-item">
+                <el-button
+                  @click="showNetworkStructureDialog = true"
+                  type="primary"
+                  size="small"
+                  style="width: 100%;"
+                >
+                  <el-icon><Edit /></el-icon>
+                  自定义网络结构
+                </el-button>
+              </div>
             </div>
           </el-card>
         </el-col>
@@ -423,6 +435,114 @@
         </div>
       </el-card>
     </div>
+
+    <!-- 网络结构配置对话框 -->
+    <el-dialog
+      v-model="showNetworkStructureDialog"
+      title="自定义神经网络结构"
+      width="700px"
+      :before-close="handleCloseStructureDialog"
+      :close-on-click-modal="true"
+      :close-on-press-escape="true"
+      destroy-on-close
+    >
+      <div class="structure-config-content">
+        <div class="config-header">
+          <el-alert
+            title="配置说明"
+            description="您可以自定义每层神经元的数量（1-10个），输入层固定为1个，输出层固定为2个（猫、狗分类）"
+            type="info"
+            :closable="false"
+            show-icon
+          />
+        </div>
+
+        <div class="layer-configs">
+          <div
+            v-for="(layer, index) in layerConfigs"
+            :key="layer.id"
+            class="layer-config-item"
+            :class="{ disabled: layer.fixed }"
+          >
+            <div class="layer-info">
+              <div class="layer-icon">
+                <el-icon>
+                  <component :is="layer.icon" />
+                </el-icon>
+              </div>
+              <div class="layer-details">
+                <h4>{{ layer.name }}</h4>
+                <p>{{ layer.description }}</p>
+              </div>
+            </div>
+
+            <div class="layer-control">
+              <el-input-number
+                v-model="layer.nodeCount"
+                :min="1"
+                :max="10"
+                :disabled="layer.fixed"
+                @change="validateNodeCount(layer, $event)"
+                size="small"
+                style="width: 120px;"
+              />
+              <span class="unit-text">个神经元</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="structure-preview">
+          <h4>网络结构预览</h4>
+          <div class="preview-network">
+            <div
+              v-for="(layer, index) in layerConfigs"
+              :key="layer.id"
+              class="preview-layer"
+            >
+              <div class="layer-name">{{ layer.name }}</div>
+              <div class="layer-nodes">
+                <div
+                  v-for="i in layer.nodeCount"
+                  :key="i"
+                  class="preview-node"
+                  :class="{ fixed: layer.fixed }"
+                ></div>
+              </div>
+              <div class="node-count">{{ layer.nodeCount }}个</div>
+
+              <!-- 连接线 -->
+              <div
+                v-if="index < layerConfigs.length - 1"
+                class="layer-connection"
+              ></div>
+            </div>
+          </div>
+
+          <div class="total-stats">
+            <div class="stat-item">
+              <span class="stat-label">总层数：</span>
+              <span class="stat-value">{{ layerConfigs.length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">总神经元：</span>
+              <span class="stat-value">{{ totalNeurons }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">预估参数：</span>
+              <span class="stat-value">{{ estimatedParameters }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="resetToDefault">恢复默认</el-button>
+          <el-button @click="closeStructureDialog">取消</el-button>
+          <el-button type="primary" @click="applyNetworkStructure">应用配置</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -430,8 +550,9 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import {
   Connection, Refresh, VideoPlay, VideoPause, Loading, Picture, Upload, Setting,
-  TrendCharts, Close, Document
+  TrendCharts, Close, Document, Edit, Grid, Crop, Flag
 } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import Chart from 'chart.js/auto'
 
 // 定义事件
@@ -480,6 +601,67 @@ const connections = ref([])
 // 训练日志
 const trainingLogs = ref([])
 
+// 网络结构配置
+const showNetworkStructureDialog = ref(false)
+const layerConfigs = ref([
+  {
+    id: 'input',
+    name: '输入层',
+    description: '接收图像数据',
+    icon: 'Picture',
+    nodeCount: 1,
+    fixed: true
+  },
+  {
+    id: 'conv1',
+    name: '卷积层1',
+    description: '特征提取',
+    icon: 'Grid',
+    nodeCount: 6,
+    fixed: false
+  },
+  {
+    id: 'pool1',
+    name: '池化层1',
+    description: '降维处理',
+    icon: 'Crop',
+    nodeCount: 3,
+    fixed: false
+  },
+  {
+    id: 'conv2',
+    name: '卷积层2',
+    description: '深层特征',
+    icon: 'Grid',
+    nodeCount: 8,
+    fixed: false
+  },
+  {
+    id: 'pool2',
+    name: '池化层2',
+    description: '进一步降维',
+    icon: 'Crop',
+    nodeCount: 4,
+    fixed: false
+  },
+  {
+    id: 'fc1',
+    name: '全连接层',
+    description: '特征整合',
+    icon: 'Connection',
+    nodeCount: 6,
+    fixed: false
+  },
+  {
+    id: 'output',
+    name: '输出层',
+    description: '分类结果（猫/狗）',
+    icon: 'Flag',
+    nodeCount: 2,
+    fixed: true
+  }
+])
+
 // Chart.js 实例
 let chartInstance = null
 let animationId = null
@@ -501,78 +683,48 @@ const sampleImages = ref([
   }
 ])
 
-// 网络层定义
-const networkLayers = ref([
-  {
-    id: 'input',
-    name: '输入层',
-    nodes: [],
-    labelX: 100,
-    labelY: 30
-  },
-  {
-    id: 'conv1',
-    name: '卷积层1',
-    nodes: [],
-    labelX: 200,
-    labelY: 30
-  },
-  {
-    id: 'pool1',
-    name: '池化层1',
-    nodes: [],
-    labelX: 300,
-    labelY: 30
-  },
-  {
-    id: 'conv2',
-    name: '卷积层2',
-    nodes: [],
-    labelX: 400,
-    labelY: 30
-  },
-  {
-    id: 'pool2',
-    name: '池化层2',
-    nodes: [],
-    labelX: 500,
-    labelY: 30
-  },
-  {
-    id: 'fc1',
-    name: '全连接层1',
-    nodes: [],
-    labelX: 600,
-    labelY: 30
-  },
-  {
-    id: 'output',
-    name: '输出层',
-    nodes: [],
-    labelX: 700,
-    labelY: 30
-  }
-])
+// 网络层定义（动态生成）
+const networkLayers = ref([])
 
 // 计算属性
 const trainingProgress = computed(() => {
   return Math.round((currentEpoch.value / totalEpochs.value) * 100)
 })
 
+const totalNeurons = computed(() => {
+  return layerConfigs.value.reduce((total, layer) => total + layer.nodeCount, 0)
+})
+
+const estimatedParameters = computed(() => {
+  let params = 0
+  for (let i = 0; i < layerConfigs.value.length - 1; i++) {
+    const currentLayer = layerConfigs.value[i]
+    const nextLayer = layerConfigs.value[i + 1]
+    params += currentLayer.nodeCount * nextLayer.nodeCount
+  }
+  return params.toLocaleString()
+})
+
 // 方法
 const initializeNetwork = () => {
-  // 初始化网络结构
-  const layerSizes = [1, 6, 3, 16, 8, 120, 2] // 每层节点数
-  const layerPositions = [100, 200, 300, 400, 500, 600, 700] // X坐标
+  // 根据layerConfigs动态初始化网络结构
+  const layerPositions = []
+  const totalLayers = layerConfigs.value.length
+  const spacing = (networkWidth.value - 200) / (totalLayers - 1)
 
-  networkLayers.value.forEach((layer, layerIndex) => {
-    const nodeCount = layerSizes[layerIndex]
+  for (let i = 0; i < totalLayers; i++) {
+    layerPositions.push(100 + i * spacing)
+  }
+
+  // 更新networkLayers以匹配layerConfigs
+  networkLayers.value = layerConfigs.value.map((config, layerIndex) => {
+    const nodeCount = config.nodeCount
     const x = layerPositions[layerIndex]
     const startY = (networkHeight.value - (nodeCount - 1) * 40) / 2
 
-    layer.nodes = []
+    const nodes = []
     for (let i = 0; i < nodeCount; i++) {
-      layer.nodes.push({
+      nodes.push({
         x: x,
         y: startY + i * 40,
         radius: 15,
@@ -587,6 +739,14 @@ const initializeNetwork = () => {
         weight: Math.random() * 2 - 1,
         bias: Math.random() * 0.2 - 0.1
       })
+    }
+
+    return {
+      id: config.id,
+      name: config.name,
+      nodes: nodes,
+      labelX: x,
+      labelY: 30
     }
   })
 
@@ -1070,6 +1230,137 @@ const clearLog = () => {
 
 const getNodeInteractionCount = () => {
   return nodeInteractionCount
+}
+
+// 网络结构配置方法
+const validateNodeCount = (layer, newValue) => {
+  if (newValue > 10) {
+    ElMessage.warning({
+      message: `每层神经元数量不能超过10个！当前设置：${newValue}个`,
+      duration: 3000,
+      showClose: true
+    })
+    // 重置为10
+    layer.nodeCount = 10
+  } else if (newValue < 1) {
+    ElMessage.warning({
+      message: '每层至少需要1个神经元！',
+      duration: 3000,
+      showClose: true
+    })
+    // 重置为1
+    layer.nodeCount = 1
+  }
+}
+
+const handleCloseStructureDialog = (done) => {
+  // Element Plus 的 before-close 回调需要调用 done() 来关闭对话框
+  if (done) {
+    done()
+  } else {
+    // 如果没有 done 回调，直接关闭
+    showNetworkStructureDialog.value = false
+  }
+}
+
+const closeStructureDialog = () => {
+  showNetworkStructureDialog.value = false
+}
+
+const resetToDefault = () => {
+  ElMessageBox.confirm(
+    '确定要恢复到默认的网络结构吗？这将重置所有自定义配置。',
+    '确认重置',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(() => {
+    // 恢复默认配置
+    layerConfigs.value = [
+      {
+        id: 'input',
+        name: '输入层',
+        description: '接收图像数据',
+        icon: 'Picture',
+        nodeCount: 1,
+        fixed: true
+      },
+      {
+        id: 'conv1',
+        name: '卷积层1',
+        description: '特征提取',
+        icon: 'Grid',
+        nodeCount: 6,
+        fixed: false
+      },
+      {
+        id: 'pool1',
+        name: '池化层1',
+        description: '降维处理',
+        icon: 'Crop',
+        nodeCount: 3,
+        fixed: false
+      },
+      {
+        id: 'conv2',
+        name: '卷积层2',
+        description: '深层特征',
+        icon: 'Grid',
+        nodeCount: 8,
+        fixed: false
+      },
+      {
+        id: 'pool2',
+        name: '池化层2',
+        description: '进一步降维',
+        icon: 'Crop',
+        nodeCount: 4,
+        fixed: false
+      },
+      {
+        id: 'fc1',
+        name: '全连接层',
+        description: '特征整合',
+        icon: 'Connection',
+        nodeCount: 6,
+        fixed: false
+      },
+      {
+        id: 'output',
+        name: '输出层',
+        description: '分类结果（猫/狗）',
+        icon: 'Flag',
+        nodeCount: 2,
+        fixed: true
+      }
+    ]
+
+    ElMessage.success('已恢复默认网络结构')
+  }).catch(() => {
+    // 用户取消
+  })
+}
+
+const applyNetworkStructure = () => {
+  // 检查是否有训练正在进行
+  if (isTraining.value) {
+    ElMessage.warning('请先停止当前训练再修改网络结构')
+    return
+  }
+
+  // 应用新的网络结构
+  initializeNetwork()
+  showNetworkStructureDialog.value = false
+
+  ElMessage.success({
+    message: `网络结构已更新！总共${totalNeurons.value}个神经元，预估${estimatedParameters.value}个参数`,
+    duration: 4000,
+    showClose: true
+  })
+
+  addLog('info', `网络结构已更新：${layerConfigs.value.map(l => `${l.name}(${l.nodeCount})`).join(' → ')}`)
 }
 
 // 监听器
@@ -1660,6 +1951,193 @@ onUnmounted(() => {
 
         .log-message {
           flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// 网络结构配置对话框样式
+.structure-config-content {
+  .config-header {
+    margin-bottom: 2rem;
+  }
+
+  .layer-configs {
+    margin-bottom: 2rem;
+
+    .layer-config-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ecf0f1;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: #3498db;
+        background: #f8f9fa;
+      }
+
+      &.disabled {
+        background: #f5f5f5;
+        opacity: 0.7;
+
+        .layer-control {
+          opacity: 0.5;
+        }
+      }
+
+      .layer-info {
+        display: flex;
+        align-items: center;
+        flex: 1;
+
+        .layer-icon {
+          margin-right: 1rem;
+
+          .el-icon {
+            font-size: 1.5rem;
+            color: #3498db;
+          }
+        }
+
+        .layer-details {
+          h4 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 1rem;
+          }
+
+          p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .layer-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .unit-text {
+          color: #7f8c8d;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .structure-preview {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+
+    h4 {
+      margin: 0 0 1rem 0;
+      color: #2c3e50;
+    }
+
+    .preview-network {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      overflow-x: auto;
+
+      .preview-layer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 1rem;
+        position: relative;
+
+        .layer-name {
+          font-size: 0.8rem;
+          color: #7f8c8d;
+          margin-bottom: 0.5rem;
+          text-align: center;
+        }
+
+        .layer-nodes {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-bottom: 0.5rem;
+
+          .preview-node {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3498db;
+            border: 2px solid #2980b9;
+
+            &.fixed {
+              background: #e74c3c;
+              border-color: #c0392b;
+            }
+          }
+        }
+
+        .node-count {
+          font-size: 0.7rem;
+          color: #7f8c8d;
+        }
+
+        .layer-connection {
+          position: absolute;
+          right: -1rem;
+          top: 50%;
+          width: 2rem;
+          height: 2px;
+          background: #bdc3c7;
+          transform: translateY(-50%);
+
+          &::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -2px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid #bdc3c7;
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+          }
+        }
+      }
+    }
+
+    .total-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+
+      .stat-item {
+        text-align: center;
+        padding: 0.8rem;
+        background: white;
+        border-radius: 6px;
+
+        .stat-label {
+          display: block;
+          font-size: 0.8rem;
+          color: #7f8c8d;
+          margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+          display: block;
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #2c3e50;
         }
       }
     }

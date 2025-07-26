@@ -49,6 +49,94 @@ git clone <repository-url>
 cd Introduction-to-Artificial-Intelligence
 ```
 
+## ⚡ 快速启动命令 | Quick Start Commands
+
+### 前端启动 | Frontend Startup
+```bash
+# 进入前端目录 | Enter frontend directory
+cd client
+
+# 安装依赖 | Install dependencies
+npm install
+
+# 启动开发服务器 | Start development server
+npm run dev
+# 访问 | Access: http://localhost:5173
+
+# 构建生产版本 | Build for production
+npm run build
+
+# 预览生产版本 | Preview production build
+npm run preview
+```
+
+### 后端启动 | Backend Startup
+
+**方式一：使用 Maven Wrapper（推荐）| Method 1: Using Maven Wrapper (Recommended)**
+```bash
+# 进入后端目录 | Enter backend directory
+cd server
+
+# 启动应用 | Start application
+./mvnw spring-boot:run
+# 访问 | Access: http://localhost:8080
+
+# 清理并编译 | Clean and compile
+./mvnw clean compile
+
+# 运行测试 | Run tests
+./mvnw test
+
+# 打包应用 | Package application
+./mvnw clean package
+```
+
+**方式二：使用本地 Maven | Method 2: Using Local Maven**
+```bash
+# 进入后端目录 | Enter backend directory
+cd server
+
+# 启动应用 | Start application
+mvn spring-boot:run
+
+# 清理并编译 | Clean and compile
+mvn clean compile
+
+# 打包应用 | Package application
+mvn clean package
+```
+
+**方式三：运行打包后的应用 | Method 3: Run Packaged Application**
+```bash
+# 打包 | Package
+./mvnw clean package
+
+# 运行 JAR 文件 | Run JAR file
+java -jar target/server-0.0.1-SNAPSHOT.jar
+
+# 指定端口运行 | Run with specific port
+java -jar target/server-0.0.1-SNAPSHOT.jar --server.port=8081
+
+# 指定配置文件 | Run with specific profile
+java -jar target/server-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
+
+### 同时启动前后端 | Start Both Frontend and Backend
+
+**终端1 | Terminal 1:**
+```bash
+cd server
+./mvnw spring-boot:run
+```
+
+**终端2 | Terminal 2:**
+```bash
+cd client
+npm run dev
+```
+
+然后访问 | Then visit: http://localhost:5173
+
 2. **前端开发 | Frontend Development**
 ```bash
 cd client
@@ -232,6 +320,111 @@ A: 使用代码分割、预加载关键资源、优化图片大小等方式。
 - 邮箱: dev@goodlab.com
 - 文档: 查看项目Wiki
 
+## 🐛 故障排除 | Troubleshooting
+
+### 常见问题 | Common Issues
+
+#### 前端问题 | Frontend Issues
+
+**问题：npm install 失败**
+```bash
+# 清除缓存 | Clear cache
+npm cache clean --force
+
+# 删除 node_modules 重新安装 | Remove node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# 使用淘宝镜像 | Use Taobao registry
+npm install --registry https://registry.npmmirror.com
+```
+
+**问题：端口被占用**
+```bash
+# 查看端口占用 | Check port usage
+netstat -tulpn | grep :5173
+
+# 杀死占用进程 | Kill process
+kill -9 <PID>
+
+# 或者修改端口 | Or change port in vite.config.js
+export default {
+  server: {
+    port: 3000
+  }
+}
+```
+
+#### 后端问题 | Backend Issues
+
+**问题：JAVA_HOME 未设置**
+```bash
+# 检查 Java 版本 | Check Java version
+java -version
+
+# 设置 JAVA_HOME | Set JAVA_HOME
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+echo $JAVA_HOME
+
+# 永久设置 | Permanent setting (add to ~/.bashrc)
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**问题：Maven 编译失败**
+```bash
+# 清理项目 | Clean project
+./mvnw clean
+
+# 跳过测试编译 | Compile skipping tests
+./mvnw compile -DskipTests
+
+# 强制更新依赖 | Force update dependencies
+./mvnw clean compile -U
+```
+
+**问题：端口 8080 被占用**
+```bash
+# 查看端口占用 | Check port usage
+netstat -tulpn | grep :8080
+
+# 修改端口 | Change port in application.properties
+server.port=8081
+
+# 或者启动时指定端口 | Or specify port at startup
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+```
+
+### 环境检查命令 | Environment Check Commands
+
+```bash
+# 检查所有环境 | Check all environments
+echo "Node.js version:" && node --version
+echo "npm version:" && npm --version
+echo "Java version:" && java -version
+echo "Maven version:" && mvn --version
+
+# 检查端口状态 | Check port status
+netstat -tulpn | grep -E ":(5173|8080)"
+
+# 检查进程 | Check processes
+ps aux | grep -E "(node|java)" | grep -v grep
+```
+
+### 性能优化 | Performance Optimization
+
+```bash
+# 前端构建优化 | Frontend build optimization
+npm run build -- --mode production
+
+# 后端 JVM 优化 | Backend JVM optimization
+java -Xms512m -Xmx1024m -jar target/server-0.0.1-SNAPSHOT.jar
+
+# 开发模式热重载优化 | Development hot reload optimization
+npm run dev -- --host 0.0.0.0 --port 5173
+```
+
 ---
 
 📝 本文档持续更新中，如有疑问请及时反馈。
+💡 更多问题请查看项目 Issues 或联系开发团队。
