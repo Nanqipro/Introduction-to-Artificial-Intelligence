@@ -2,6 +2,63 @@
 
 > 基于《人工智能概论与应用》教材的交互式数字化学习平台，旨在为学生提供更加生动、有趣的人工智能学习体验。
 
+## ⚡ 快速启动
+
+### 🚀 一键启动脚本（推荐）
+
+**Linux/macOS:**
+```bash
+# 检查项目状态
+./check-status.sh
+
+# 启动前后端服务
+./start.sh
+
+# 只启动前端
+./start.sh frontend
+
+# 只启动后端
+./start.sh backend
+```
+
+**Windows:**
+```cmd
+# 检查项目状态
+check-status.bat
+
+# 启动前后端服务
+start.bat
+
+# 只启动前端
+start.bat frontend
+
+# 只启动后端
+start.bat backend
+```
+
+### 📋 手动启动命令
+
+**前端启动:**
+```bash
+cd client
+npm install
+npm run dev
+```
+访问：http://localhost:5173
+
+**后端启动:**
+```bash
+cd server
+./mvnw spring-boot:run
+```
+访问：http://localhost:8080
+
+### 🎯 核心功能
+- 🧠 **神经网络训练实验室** - 交互式可视化训练过程
+- 📊 **回归算法演示** - 机器学习算法可视化
+- 📚 **数字化教材** - 现代化的在线学习体验
+- 🎮 **交互式学习** - 点击、拖拽、实时反馈
+
 ## 📖 项目简介
 
 本项目是为《人工智能概论与应用》教材开发的数字化网页教材平台，通过现代化的Web技术将传统纸质教材转化为交互式的在线学习平台。项目采用前后端分离的架构，为学生提供更加直观、互动的学习方式，帮助学生更好地理解和掌握人工智能的核心概念和应用。
@@ -72,9 +129,9 @@ Introduction-to-Artificial-Intelligence/
 
 ### 环境要求
 
-- **Node.js**: >= 16.0.0
-- **Java**: >= 17
-- **Maven**: >= 3.6.0
+- **Node.js**: >= 16.0.0 (推荐使用 LTS 版本)
+- **Java**: >= 17 (OpenJDK 17 或 Oracle JDK 17)
+- **Maven**: >= 3.6.0 (或使用项目自带的 Maven Wrapper)
 
 ### 安装与运行
 
@@ -86,43 +143,145 @@ cd Introduction-to-Artificial-Intelligence
 
 #### 2. 启动前端服务
 ```bash
+# 进入前端目录
 cd client
+
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
 ```
-前端服务将在 `http://localhost:5173` 启动
+前端服务将在 `http://localhost:5173` 启动（如果端口被占用，会自动使用下一个可用端口如 5174）
 
 #### 3. 启动后端服务
+
+**方式一：使用 Maven Wrapper（推荐）**
 ```bash
+# 进入后端目录
 cd server
-mvn clean install
+
+# 使用 Maven Wrapper 启动（无需预安装 Maven）
+./mvnw spring-boot:run
+```
+
+**方式二：使用本地 Maven**
+```bash
+# 进入后端目录
+cd server
+
+# 清理并编译
+mvn clean compile
+
+# 启动 Spring Boot 应用
 mvn spring-boot:run
 ```
+
+**方式三：打包后运行**
+```bash
+# 进入后端目录
+cd server
+
+# 打包应用
+./mvnw clean package
+
+# 运行打包后的 JAR 文件
+java -jar target/server-0.0.1-SNAPSHOT.jar
+```
+
 后端服务将在 `http://localhost:8080` 启动
 
-## 📱 功能特性
+#### 4. 访问应用
+
+- **主页**: http://localhost:5173
+- **章节列表**: http://localhost:5173/chapters
+- **神经网络实验室**: http://localhost:5173/network-training
+- **回归演示**: http://localhost:5173/regression-demo
+- **后端API**: http://localhost:8080/api
+
+## � 启动脚本说明
+
+项目提供了便捷的启动脚本，支持一键启动和状态检查：
+
+### 启动脚本
+- **`start.sh`** (Linux/macOS) - 项目启动脚本
+- **`start.bat`** (Windows) - Windows 启动脚本
+
+**支持的命令:**
+```bash
+./start.sh [选项]
+
+选项:
+  frontend, fe    只启动前端
+  backend, be     只启动后端
+  both, all       同时启动前后端 (默认)
+  check           检查环境
+  help, -h        显示帮助信息
+```
+
+### 状态检查脚本
+- **`check-status.sh`** (Linux/macOS) - 项目状态检查
+- **`check-status.bat`** (Windows) - Windows 状态检查
+
+**检查内容:**
+- ✅ 项目结构完整性
+- ✅ 开发环境版本
+- ✅ 端口占用状态
+- ✅ 服务运行状态
+- ✅ 依赖安装情况
+
+### 使用示例
+```bash
+# 检查项目状态
+./check-status.sh
+
+# 启动所有服务
+./start.sh
+
+# 只启动前端开发服务器
+./start.sh frontend
+
+# 只启动后端API服务
+./start.sh backend
+
+# 查看帮助信息
+./start.sh help
+```
+
+## �📱 功能特性
 
 ### 🎨 用户界面
 - **响应式设计**: 支持桌面端、平板和移动端访问
-- **现代化UI**: 简洁美观的用户界面设计
+- **现代化UI**: 基于 Element Plus 的简洁美观界面设计
 - **交互式导航**: 便捷的章节导航和内容检索
-- **主题切换**: 支持明暗主题模式切换
+- **渐变主题**: 现代化的渐变色彩设计
+- **动画效果**: 流畅的过渡动画和交互反馈
 
 ### 📖 学习功能
 - **章节浏览**: 按章节组织的结构化内容展示
 - **多媒体支持**: 图片、图表、动画等多媒体内容展示
-- **搜索功能**: 快速查找相关知识点和概念
+- **交互式演示**: 机器学习算法的可视化演示
 - **学习进度**: 记录和跟踪学习进度
-- **书签收藏**: 收藏重要内容便于复习
-- **笔记功能**: 在线记录学习笔记
+- **实时反馈**: 即时的学习效果反馈
+
+### 🧠 AI 可视化功能
+- **神经网络训练实验室**: 交互式神经网络训练可视化
+  - 实时数据流动画
+  - 可点击的神经元节点
+  - 动态调整网络结构（1-10个神经元/层）
+  - 实时训练指标监控
+  - 猫狗分类演示
+- **回归算法演示**: 线性回归和多项式回归的可视化
+- **参数调节**: 实时调整学习率、批次大小等超参数
+- **训练日志**: 详细的训练过程记录
 
 ### 🔧 技术特性
-- **前后端分离**: 清晰的架构设计，便于维护和扩展
-- **RESTful API**: 标准化的接口设计
-- **模块化开发**: 组件化的前端架构
+- **前后端分离**: Vue 3 + Spring Boot 的现代化架构
+- **组件化开发**: 高度模块化的前端组件设计
 - **热重载**: 开发环境下的实时更新
-- **缓存优化**: 提升页面加载速度
-- **SEO友好**: 搜索引擎优化支持
+- **Chart.js 集成**: 专业的图表可视化
+- **SVG 动画**: 高性能的网络结构可视化
+- **响应式布局**: 适配各种屏幕尺寸
 
 ## 📸 项目截图
 
@@ -196,13 +355,16 @@ mvn spring-boot:run
 
 ## 🔧 开发指南
 
-### 前端开发
+### 前端开发命令
+
 ```bash
-# 安装依赖
+# 进入前端目录
 cd client
+
+# 安装依赖
 npm install
 
-# 开发模式
+# 启动开发服务器（热重载）
 npm run dev
 
 # 构建生产版本
@@ -210,56 +372,202 @@ npm run build
 
 # 预览生产版本
 npm run preview
+
+# 代码格式化
+npm run lint
+
+# 依赖更新
+npm update
 ```
 
-### 后端开发
+### 后端开发命令
+
 ```bash
-# 编译项目
+# 进入后端目录
 cd server
-mvn clean compile
 
-# 运行测试
-mvn test
+# 使用 Maven Wrapper（推荐）
+./mvnw clean compile          # 清理并编译
+./mvnw test                   # 运行测试
+./mvnw spring-boot:run        # 启动应用
+./mvnw clean package          # 打包应用
+./mvnw clean install          # 安装到本地仓库
 
-# 打包应用
-mvn clean package
+# 使用本地 Maven
+mvn clean compile             # 清理并编译
+mvn test                      # 运行测试
+mvn spring-boot:run           # 启动应用
+mvn clean package             # 打包应用
+mvn clean install             # 安装到本地仓库
 
-# 运行应用
+# 运行打包后的应用
 java -jar target/server-0.0.1-SNAPSHOT.jar
+
+# 指定配置文件运行
+java -jar target/server-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+
+# 指定端口运行
+java -jar target/server-0.0.1-SNAPSHOT.jar --server.port=8081
+```
+
+### 开发环境配置
+
+#### 前端环境变量
+在 `client/` 目录下创建 `.env.local` 文件：
+```env
+# API 基础地址
+VITE_API_BASE_URL=http://localhost:8080/api
+
+# 开发模式
+VITE_NODE_ENV=development
+```
+
+#### 后端配置
+在 `server/src/main/resources/` 目录下的 `application.properties`：
+```properties
+# 服务器端口
+server.port=8080
+
+# 数据库配置（如需要）
+# spring.datasource.url=jdbc:mysql://localhost:3306/ai_textbook
+# spring.datasource.username=root
+# spring.datasource.password=password
+
+# 日志级别
+logging.level.com.goodlab.server=DEBUG
 ```
 
 ### 代码规范
-- **前端**: 遵循Vue.js官方风格指南
-- **后端**: 遵循Spring Boot最佳实践
-- **提交信息**: 使用语义化提交规范
+- **前端**: 遵循 Vue.js 官方风格指南和 ESLint 规则
+- **后端**: 遵循 Spring Boot 最佳实践和 Java 编码规范
+- **提交信息**: 使用语义化提交规范 (Conventional Commits)
+- **组件命名**: 使用 PascalCase 命名 Vue 组件
+- **API 设计**: 遵循 RESTful API 设计原则
 
 ## 🐛 问题排查
 
 ### 常见问题
 
 **Q: 前端启动失败？**
-A: 请确保Node.js版本 >= 16.0.0，并清除node_modules重新安装依赖
+```bash
+# 检查 Node.js 版本
+node --version  # 应该 >= 16.0.0
+
+# 清除缓存并重新安装
+cd client
+rm -rf node_modules package-lock.json
+npm install
+```
 
 **Q: 后端编译错误？**
-A: 请确保Java版本 >= 17，并检查Maven配置
+```bash
+# 检查 Java 版本
+java -version   # 应该 >= 17
+
+# 检查 JAVA_HOME 环境变量
+echo $JAVA_HOME
+
+# 清理并重新编译
+cd server
+./mvnw clean compile
+```
 
 **Q: 端口冲突？**
-A: 可以在配置文件中修改默认端口号
+```bash
+# 前端端口修改（vite.config.js）
+export default {
+  server: {
+    port: 3000  // 修改为其他端口
+  }
+}
+
+# 后端端口修改（application.properties）
+server.port=8081
+```
+
+**Q: 神经网络可视化无法加载？**
+A: 确保 Chart.js 依赖已正确安装，检查浏览器控制台是否有 JavaScript 错误
+
+**Q: 对话框无法关闭？**
+A: 这是已知问题，已在最新版本中修复。请确保使用最新代码
+
+**Q: 网络结构配置不生效？**
+A: 确保在训练停止状态下修改网络结构，训练中无法修改
 
 ### 调试技巧
-- 使用浏览器开发者工具调试前端
-- 查看控制台日志排查后端问题
-- 使用IDE断点调试功能
+
+#### 前端调试
+```bash
+# 启用详细日志
+npm run dev -- --debug
+
+# 检查网络请求
+# 打开浏览器开发者工具 -> Network 标签页
+
+# Vue DevTools
+# 安装 Vue DevTools 浏览器扩展进行组件调试
+```
+
+#### 后端调试
+```bash
+# 启用调试模式
+./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+
+# 查看详细日志
+./mvnw spring-boot:run -Dlogging.level.com.goodlab.server=DEBUG
+
+# 检查应用健康状态
+curl http://localhost:8080/actuator/health
+```
+
+#### 环境检查
+```bash
+# 检查所有环境
+node --version
+java -version
+mvn --version
+
+# 检查端口占用
+netstat -tulpn | grep :5173  # 前端端口
+netstat -tulpn | grep :8080  # 后端端口
+
+# 检查进程
+ps aux | grep node    # 前端进程
+ps aux | grep java    # 后端进程
+```
 
 ## 📈 项目状态
 
+### 已完成功能 ✅
 - ✅ 基础架构搭建完成
-- ✅ 前端Vue.js框架集成
-- ✅ 后端Spring Boot框架集成
-- 🚧 教材内容数字化进行中
-- 🚧 交互式功能开发中
-- ⏳ 用户界面优化待开始
-- ⏳ 移动端适配待开始
+- ✅ 前端 Vue.js 3 + Vite 框架集成
+- ✅ 后端 Spring Boot 3 框架集成
+- ✅ Element Plus UI 组件库集成
+- ✅ 响应式页面布局设计
+- ✅ 章节导航和路由系统
+- ✅ 神经网络训练可视化实验室
+  - ✅ 实时数据流动画
+  - ✅ 交互式节点控制
+  - ✅ 动态网络结构配置
+  - ✅ 训练指标监控
+  - ✅ 猫狗分类演示
+- ✅ 回归算法演示页面
+- ✅ Chart.js 图表集成
+- ✅ SVG 动画效果
+- ✅ 移动端响应式适配
+
+### 进行中功能 🚧
+- 🚧 教材内容数字化转换
+- 🚧 更多 AI 算法可视化
+- 🚧 用户交互体验优化
+- 🚧 性能优化和代码重构
+
+### 待开发功能 ⏳
+- ⏳ 用户注册和登录系统
+- ⏳ 学习进度跟踪
+- ⏳ 在线练习和测验
+- ⏳ AI 助手功能
+- ⏳ 社区讨论功能
 
 ## 🔮 未来规划
 

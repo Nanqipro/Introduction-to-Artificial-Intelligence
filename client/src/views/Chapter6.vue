@@ -37,9 +37,9 @@
           <el-icon><DataLine /></el-icon>
           数据流程
         </el-tab-pane>
-        <el-tab-pane label="模型结构" name="model-structure">
+        <el-tab-pane label="神经网络实验室" name="network-training">
           <el-icon><Connection /></el-icon>
-          模型结构
+          神经网络实验室
         </el-tab-pane>
         <el-tab-pane label="游戏化学习" name="gamified-learning">
           <el-icon><Trophy /></el-icon>
@@ -69,9 +69,132 @@
         <DataFlowVisualization @progress-update="updateProgress" />
       </div>
 
-      <!-- 模型结构3D可视化 -->
-      <div v-show="activeTab === 'model-structure'" class="content-section">
-        <NetworkVisualization @progress-update="updateProgress" />
+      <!-- 神经网络训练实验室 - 直接跳转 -->
+      <div v-show="activeTab === 'network-training'" class="content-section">
+        <div class="network-training-entrance">
+          <el-card class="entrance-card">
+            <div class="entrance-content">
+              <div class="entrance-header">
+                <div class="icon-section">
+                  <el-icon class="main-icon"><Connection /></el-icon>
+                </div>
+                <div class="title-section">
+                  <h2>神经网络训练实验室</h2>
+                  <p class="subtitle">交互式深度学习体验平台</p>
+                </div>
+              </div>
+
+              <div class="features-grid">
+                <div class="feature-item">
+                  <el-icon><VideoPlay /></el-icon>
+                  <h4>实时训练可视化</h4>
+                  <p>观察数据在神经网络中的流动过程</p>
+                </div>
+
+                <div class="feature-item">
+                  <el-icon><Mouse /></el-icon>
+                  <h4>交互式节点控制</h4>
+                  <p>点击节点启用/禁用，影响训练结果</p>
+                </div>
+
+                <div class="feature-item">
+                  <el-icon><TrendCharts /></el-icon>
+                  <h4>动态指标监控</h4>
+                  <p>实时查看准确率和损失率变化</p>
+                </div>
+
+                <div class="feature-item">
+                  <el-icon><Picture /></el-icon>
+                  <h4>猫狗分类演示</h4>
+                  <p>体验完整的图像分类训练流程</p>
+                </div>
+              </div>
+
+              <div class="entrance-actions">
+                <el-button
+                  type="primary"
+                  size="large"
+                  @click="goToNetworkTraining"
+                  class="launch-button"
+                >
+                  <el-icon><Rocket /></el-icon>
+                  启动实验室
+                </el-button>
+
+                <el-button
+                  type="info"
+                  size="large"
+                  @click="showPreview = true"
+                  class="preview-button"
+                >
+                  <el-icon><View /></el-icon>
+                  预览功能
+                </el-button>
+              </div>
+
+              <div class="stats-section">
+                <div class="stat-item">
+                  <span class="stat-number">7</span>
+                  <span class="stat-label">网络层数</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">120+</span>
+                  <span class="stat-label">神经元节点</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">∞</span>
+                  <span class="stat-label">交互可能</span>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
+
+        <!-- 功能预览对话框 -->
+        <el-dialog
+          v-model="showPreview"
+          title="神经网络训练实验室 - 功能预览"
+          width="800px"
+        >
+          <div class="preview-content">
+            <div class="preview-section">
+              <h3>🎯 核心功能</h3>
+              <ul>
+                <li><strong>实时数据流可视化</strong>：观察数据在各个神经网络层之间的流动</li>
+                <li><strong>交互式节点控制</strong>：点击任意节点来启用/禁用，实时影响训练</li>
+                <li><strong>动态训练指标</strong>：准确率、损失率的实时监控和历史曲线</li>
+                <li><strong>猫狗分类演示</strong>：完整的图像分类训练流程体验</li>
+              </ul>
+            </div>
+
+            <div class="preview-section">
+              <h3>🚀 学习收获</h3>
+              <ul>
+                <li>深入理解神经网络的前向传播和反向传播过程</li>
+                <li>体验超参数对训练效果的实际影响</li>
+                <li>掌握神经网络结构与性能的关系</li>
+                <li>培养对深度学习的直观认知</li>
+              </ul>
+            </div>
+
+            <div class="preview-section">
+              <h3>⚡ 技术特色</h3>
+              <ul>
+                <li>基于Vue 3和SVG的高性能可视化</li>
+                <li>Chart.js驱动的专业图表展示</li>
+                <li>响应式设计，支持多设备访问</li>
+                <li>实时动画效果，流畅的用户体验</li>
+              </ul>
+            </div>
+          </div>
+
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="showPreview = false">关闭预览</el-button>
+              <el-button type="primary" @click="goToNetworkTraining">立即体验</el-button>
+            </span>
+          </template>
+        </el-dialog>
       </div>
 
       <!-- 游戏化学习 -->
@@ -102,26 +225,32 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { 
-  Cpu, Document, Edit, DataLine, Connection, 
-  Trophy, ChatDotRound 
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import {
+  Cpu, Document, Edit, DataLine, Connection,
+  Trophy, ChatDotRound, VideoPlay, Mouse, TrendCharts,
+  Picture, Rocket, View
 } from '@element-plus/icons-vue'
 
 // 导入组件
 import PythonBasics from '../components/chapter6/PythonBasics.vue'
 import CodeEditor from '../components/chapter6/CodeEditor.vue'
 import DataFlowVisualization from '../components/chapter6/DataFlowVisualization.vue'
-import NetworkVisualization from '../components/chapter6/NetworkVisualization.vue'
 import GameifiedLearning from '../components/chapter6/GameifiedLearning.vue'
 import AIAssistant from '../components/chapter6/AIAssistant.vue'
 
+// 路由
+const router = useRouter()
+
 // 响应式数据
 const activeTab = ref('python-basics')
+const showPreview = ref(false)
 const progressData = ref({
   'python-basics': 0,
   'code-practice': 0,
   'data-flow': 0,
-  'model-structure': 0,
+  'network-training': 0,
   'gamified-learning': 0,
   'ai-assistant': 0
 })
@@ -141,6 +270,20 @@ const overallProgress = computed(() => {
 // 方法
 const handleTabClick = (tab) => {
   console.log('切换到标签页:', tab.name)
+
+  // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
+  if (tab.name === 'network-training') {
+    goToNetworkTraining()
+    // 重置回之前的标签页，避免显示空白内容
+    setTimeout(() => {
+      activeTab.value = 'data-flow'
+    }, 100)
+  }
+}
+
+const goToNetworkTraining = () => {
+  router.push('/network-training')
+  ElMessage.success('正在启动神经网络训练实验室...')
 }
 
 const updateProgress = (tabName, progress) => {
@@ -163,7 +306,7 @@ const getTabLabel = (tabName) => {
     'python-basics': 'Python基础',
     'code-practice': '代码实践',
     'data-flow': '数据流程',
-    'model-structure': '模型结构',
+    'network-training': '神经网络实验室',
     'gamified-learning': '游戏化学习',
     'ai-assistant': 'AI助手'
   }
@@ -408,6 +551,229 @@ onMounted(() => {
   
   .chapter-content {
     padding: 1rem;
+  }
+}
+
+// 神经网络训练实验室入口样式
+.network-training-entrance {
+  .entrance-card {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+
+    .entrance-content {
+      padding: 2rem;
+
+      .entrance-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        .icon-section {
+          margin-right: 1.5rem;
+
+          .main-icon {
+            font-size: 4rem;
+            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+        }
+
+        .title-section {
+          h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+
+          .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin: 0;
+          }
+        }
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+
+        .feature-item {
+          text-align: center;
+          padding: 1.5rem;
+          background: rgba(102, 126, 234, 0.05);
+          border-radius: 12px;
+          border: 1px solid rgba(102, 126, 234, 0.1);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+          }
+
+          .el-icon {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+          }
+
+          h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 0.5rem 0;
+          }
+
+          p {
+            color: #7f8c8d;
+            margin: 0;
+            line-height: 1.5;
+          }
+        }
+      }
+
+      .entrance-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+
+        .launch-button {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border: none;
+          padding: 12px 32px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+          }
+        }
+
+        .preview-button {
+          padding: 12px 32px;
+          font-size: 1.1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+          }
+        }
+      }
+
+      .stats-section {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+
+        .stat-item {
+          text-align: center;
+
+          .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+          }
+
+          .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+.preview-content {
+  .preview-section {
+    margin-bottom: 2rem;
+
+    h3 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 0.5rem 0;
+        color: #7f8c8d;
+        line-height: 1.6;
+        border-bottom: 1px solid #ecf0f1;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        strong {
+          color: #2c3e50;
+        }
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .network-training-entrance {
+    .entrance-content {
+      padding: 1rem;
+
+      .entrance-header {
+        flex-direction: column;
+        text-align: center;
+
+        .icon-section {
+          margin-right: 0;
+          margin-bottom: 1rem;
+        }
+
+        .title-section h2 {
+          font-size: 2rem;
+        }
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .entrance-actions {
+        flex-direction: column;
+        align-items: center;
+
+        .launch-button,
+        .preview-button {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+
+      .stats-section {
+        gap: 1.5rem;
+      }
+    }
   }
 }
 </style>
