@@ -257,7 +257,7 @@ const getTabLabel = (tabName) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .chapter6-interactive {
   // 全局选中样式

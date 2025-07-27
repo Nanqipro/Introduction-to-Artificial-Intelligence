@@ -319,7 +319,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .chapter6-container {
   min-height: 100vh;

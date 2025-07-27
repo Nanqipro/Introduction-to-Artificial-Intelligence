@@ -597,7 +597,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
 
 .ai-assistant-container {
   padding: 2rem;

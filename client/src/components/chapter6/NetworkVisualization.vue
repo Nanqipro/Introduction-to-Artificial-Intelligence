@@ -1410,7 +1410,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .network-visualization-container {
   padding: 1.5rem;
