@@ -37,9 +37,9 @@
           <el-icon><DataLine /></el-icon>
           数据流程
         </el-tab-pane>
-        <el-tab-pane label="模型结构" name="model-structure">
+        <el-tab-pane label="神经网络实验室" name="network-training">
           <el-icon><Connection /></el-icon>
-          模型结构
+          神经网络实验室
         </el-tab-pane>
         <el-tab-pane label="游戏化学习" name="gamified-learning">
           <el-icon><Trophy /></el-icon>
@@ -69,8 +69,8 @@
         <DataFlowVisualization @progress-update="updateProgress" />
       </div>
 
-      <!-- 神经网络训练实验室入口 -->
-      <div v-show="activeTab === 'model-structure'" class="content-section">
+      <!-- 神经网络训练实验室 - 直接跳转 -->
+      <div v-show="activeTab === 'network-training'" class="content-section">
         <div class="network-training-entrance">
           <el-card class="entrance-card">
             <div class="entrance-content">
@@ -237,7 +237,6 @@ import {
 import PythonBasics from '../components/chapter6/PythonBasics.vue'
 import CodeEditor from '../components/chapter6/CodeEditor.vue'
 import DataFlowVisualization from '../components/chapter6/DataFlowVisualization.vue'
-import NetworkVisualization from '../components/chapter6/NetworkVisualization.vue'
 import GameifiedLearning from '../components/chapter6/GameifiedLearning.vue'
 import AIAssistant from '../components/chapter6/AIAssistant.vue'
 
@@ -251,7 +250,7 @@ const progressData = ref({
   'python-basics': 0,
   'code-practice': 0,
   'data-flow': 0,
-  'model-structure': 0,
+  'network-training': 0,
   'gamified-learning': 0,
   'ai-assistant': 0
 })
@@ -271,6 +270,15 @@ const overallProgress = computed(() => {
 // 方法
 const handleTabClick = (tab) => {
   console.log('切换到标签页:', tab.name)
+
+  // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
+  if (tab.name === 'network-training') {
+    goToNetworkTraining()
+    // 重置回之前的标签页，避免显示空白内容
+    setTimeout(() => {
+      activeTab.value = 'data-flow'
+    }, 100)
+  }
 }
 
 const goToNetworkTraining = () => {
@@ -298,7 +306,7 @@ const getTabLabel = (tabName) => {
     'python-basics': 'Python基础',
     'code-practice': '代码实践',
     'data-flow': '数据流程',
-    'model-structure': '模型结构',
+    'network-training': '神经网络实验室',
     'gamified-learning': '游戏化学习',
     'ai-assistant': 'AI助手'
   }

@@ -24,7 +24,7 @@
             </div>
             <div class="feature-item">
               <el-icon><Connection /></el-icon>
-              <span>模型结构</span>
+              <span>神经网络实验室</span>
             </div>
             <div class="feature-item">
               <el-icon><Trophy /></el-icon>
@@ -84,11 +84,11 @@
             </span>
           </template>
         </el-tab-pane>
-        <el-tab-pane label="模型结构" name="model-structure">
+        <el-tab-pane label="神经网络实验室" name="network-training">
           <template #label>
             <span class="tab-label">
               <el-icon><Connection /></el-icon>
-              模型结构
+              神经网络实验室
             </span>
           </template>
         </el-tab-pane>
@@ -128,9 +128,17 @@
         <DataFlowVisualization @progress-update="updateProgress" />
       </div>
 
-      <!-- 模型结构3D可视化 -->
-      <div v-show="activeTab === 'model-structure'" class="content-section">
-        <NetworkVisualization @progress-update="updateProgress" />
+      <!-- 神经网络实验室 - 直接跳转 -->
+      <div v-show="activeTab === 'network-training'" class="content-section">
+        <div class="network-training-redirect">
+          <el-card class="redirect-card">
+            <div class="redirect-content">
+              <el-icon class="redirect-icon"><Connection /></el-icon>
+              <h3>正在跳转到神经网络实验室...</h3>
+              <p>请稍候，系统正在为您启动交互式训练环境</p>
+            </div>
+          </el-card>
+        </div>
       </div>
 
       <!-- 游戏化学习 -->
@@ -161,18 +169,22 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { 
-  Cpu, Document, Edit, DataLine, Connection, 
-  Trophy, ChatDotRound 
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import {
+  Cpu, Document, Edit, DataLine, Connection,
+  Trophy, ChatDotRound
 } from '@element-plus/icons-vue'
 
 // 导入组件
 import PythonBasics from './PythonBasics.vue'
 import CodeEditor from './CodeEditor.vue'
 import DataFlowVisualization from './DataFlowVisualization.vue'
-import NetworkVisualization from './NetworkVisualization.vue'
 import GameifiedLearning from './GameifiedLearning.vue'
 import AIAssistant from './AIAssistant.vue'
+
+// 路由
+const router = useRouter()
 
 // 响应式数据
 const activeTab = ref('python-basics')
@@ -180,7 +192,7 @@ const progressData = ref({
   'python-basics': 0,
   'code-practice': 0,
   'data-flow': 0,
-  'model-structure': 0,
+  'network-training': 0,
   'gamified-learning': 0,
   'ai-assistant': 0
 })
@@ -200,6 +212,20 @@ const overallProgress = computed(() => {
 // 方法
 const handleTabClick = (tab) => {
   console.log('切换到标签页:', tab.name)
+
+  // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
+  if (tab.name === 'network-training') {
+    goToNetworkTraining()
+    // 重置回之前的标签页，避免显示空白内容
+    setTimeout(() => {
+      activeTab.value = 'data-flow'
+    }, 100)
+  }
+}
+
+const goToNetworkTraining = () => {
+  router.push('/network-training')
+  ElMessage.success('正在启动神经网络训练实验室...')
 }
 
 const updateProgress = (tabName, progress) => {
@@ -222,7 +248,7 @@ const getTabLabel = (tabName) => {
     'python-basics': 'Python基础',
     'code-practice': '代码实践',
     'data-flow': '数据流程',
-    'model-structure': '模型结构',
+    'network-training': '神经网络实验室',
     'gamified-learning': '游戏化学习',
     'ai-assistant': 'AI助手'
   }
@@ -435,6 +461,60 @@ const getTabLabel = (tabName) => {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+// 神经网络实验室重定向样式
+.network-training-redirect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+
+  .redirect-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+
+    :deep(.el-card__body) {
+      background: transparent;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .redirect-content {
+      color: white;
+
+      .redirect-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: pulse 2s infinite;
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
   }
 }
 

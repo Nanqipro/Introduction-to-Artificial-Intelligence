@@ -18,83 +18,101 @@
               <span><el-icon><VideoPlay /></el-icon> 训练控制</span>
             </template>
             <div class="training-controls">
-              <el-button
-                type="primary"
-                @click="startTraining"
-                :disabled="isTraining"
-                size="large"
-                style="width: 100%; margin-bottom: 10px;"
-              >
-                <el-icon><VideoPlay /></el-icon>
-                {{ isTraining ? '训练中...' : '开始训练' }}
-              </el-button>
+              <div class="control-buttons">
+                <el-button
+                  type="primary"
+                  @click="startTraining"
+                  :disabled="isTraining"
+                  size="large"
+                  class="control-button"
+                >
+                  <el-icon><VideoPlay /></el-icon>
+                  {{ isTraining ? '训练中...' : '开始训练' }}
+                </el-button>
 
-              <el-button
-                type="warning"
-                @click="pauseTraining"
-                :disabled="!isTraining"
-                size="large"
-                style="width: 100%; margin-bottom: 10px;"
-              >
-                <el-icon><VideoPause /></el-icon>
-                暂停训练
-              </el-button>
+                <el-button
+                  type="warning"
+                  @click="pauseTraining"
+                  :disabled="!isTraining"
+                  size="large"
+                  class="control-button"
+                >
+                  <el-icon><VideoPause /></el-icon>
+                  暂停训练
+                </el-button>
 
-              <el-button
-                type="info"
-                @click="resetTraining"
-                size="large"
-                style="width: 100%;"
-              >
-                <el-icon><Refresh /></el-icon>
-                重置训练
-              </el-button>
+                <el-button
+                  type="info"
+                  @click="resetTraining"
+                  size="large"
+                  class="control-button"
+                >
+                  <el-icon><Refresh /></el-icon>
+                  重置训练
+                </el-button>
+              </div>
 
-              <div class="speed-control" style="margin-top: 15px;">
-                <span>训练速度：</span>
+              <div class="speed-control">
+                <div class="speed-label">训练速度</div>
                 <el-slider
                   v-model="trainingSpeed"
                   :min="0.5"
                   :max="3"
                   :step="0.5"
                   show-stops
+                  class="speed-slider"
                 />
+                <div class="speed-value">{{ trainingSpeed }}x</div>
               </div>
             </div>
           </el-card>
         </el-col>
 
-        <!-- 输入数据选择 -->
+        <!-- 训练数据集选择 -->
         <el-col :span="8">
           <el-card class="control-card">
             <template #header>
-              <span><el-icon><Picture /></el-icon> 输入数据</span>
+              <span><el-icon><Document /></el-icon> 训练数据集</span>
             </template>
-            <div class="input-selection">
-              <div class="sample-images">
-                <div
-                  v-for="(sample, index) in sampleImages"
-                  :key="index"
-                  class="sample-item"
-                  :class="{ active: selectedSample === index }"
-                  @click="selectSample(index)"
-                >
-                  <img :src="sample.url" :alt="sample.label" />
-                  <span class="label">{{ sample.label }}</span>
+            <div class="dataset-selection">
+              <div class="dataset-info">
+                <div class="current-dataset">
+                  <span class="dataset-name">{{ selectedDataset.name }}</span>
+                  <span class="dataset-size">{{ selectedDataset.size }} 张图片</span>
+                </div>
+                <div class="dataset-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">猫:</span>
+                    <span class="stat-value">{{ selectedDataset.catCount }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">狗:</span>
+                    <span class="stat-value">{{ selectedDataset.dogCount }}</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="upload-area" @click="uploadImage">
-                <el-icon><Upload /></el-icon>
-                <span>上传自定义图片</span>
+              <div class="dataset-options">
+                <div
+                  v-for="(dataset, index) in availableDatasets"
+                  :key="index"
+                  class="dataset-item"
+                  :class="{ active: selectedDatasetIndex === index }"
+                  @click="selectDataset(index)"
+                >
+                  <div class="dataset-icon">
+                    <el-icon><Document /></el-icon>
+                  </div>
+                  <div class="dataset-details">
+                    <div class="dataset-title">{{ dataset.name }}</div>
+                    <div class="dataset-description">{{ dataset.description }}</div>
+                    <div class="dataset-meta">
+                      <span>{{ dataset.size }} 张</span>
+                      <span>{{ dataset.difficulty }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <input
-                ref="fileInput"
-                type="file"
-                accept="image/*"
-                @change="handleImageUpload"
-                style="display: none;"
-              />
             </div>
           </el-card>
         </el-col>
@@ -266,36 +284,7 @@
                 </g>
               </svg>
 
-              <!-- 输入图像显示 -->
-              <div class="input-image-display">
-                <img
-                  v-if="currentInputImage"
-                  :src="currentInputImage.url"
-                  :alt="currentInputImage.label"
-                  class="input-image"
-                />
-                <div class="image-info">
-                  <span>输入: {{ currentInputImage?.label || '无' }}</span>
-                </div>
-              </div>
 
-              <!-- 输出预测显示 -->
-              <div class="output-prediction">
-                <div class="prediction-item"
-                     v-for="(prob, label) in currentPrediction"
-                     :key="label"
-                     :class="{ winner: prob === Math.max(...Object.values(currentPrediction)) }"
-                >
-                  <span class="label">{{ label }}</span>
-                  <div class="probability-bar">
-                    <div
-                      class="probability-fill"
-                      :style="{ width: `${prob * 100}%` }"
-                    ></div>
-                  </div>
-                  <span class="probability">{{ (prob * 100).toFixed(1) }}%</span>
-                </div>
-              </div>
             </div>
           </el-card>
         </el-col>
@@ -549,8 +538,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import {
-  Connection, Refresh, VideoPlay, VideoPause, Loading, Picture, Upload, Setting,
-  TrendCharts, Close, Document, Edit, Grid, Crop, Flag
+  Connection, Refresh, VideoPlay, VideoPause, Setting,
+  TrendCharts, Close, Document, Edit
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Chart from 'chart.js/auto'
@@ -563,7 +552,6 @@ const networkContainer = ref(null)
 const networkSvg = ref(null)
 const chartContainer = ref(null)
 const metricsChart = ref(null)
-const fileInput = ref(null)
 
 // 训练状态
 const isTraining = ref(false)
@@ -586,12 +574,12 @@ const currentLoss = ref(1)
 const accuracyHistory = ref([])
 const lossHistory = ref([])
 
-// 当前选中的样本和节点
-const selectedSample = ref(0)
+// 当前选中的数据集和节点
+const selectedDatasetIndex = ref(0)
 const selectedNode = ref(null)
 
-// 当前输入和预测
-const currentInputImage = ref(null)
+// 当前数据集和预测
+const selectedDataset = computed(() => availableDatasets.value[selectedDatasetIndex.value])
 const currentPrediction = ref({ cat: 0.5, dog: 0.5 })
 
 // 数据流粒子
@@ -667,19 +655,47 @@ let chartInstance = null
 let animationId = null
 let nodeInteractionCount = 0
 
-// 样本图像数据
-const sampleImages = ref([
+// 可用数据集
+const availableDatasets = ref([
   {
-    url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAyMEM0MC44MzY2IDIwIDQ4IDI3LjE2MzQgNDggMzZDNDggNDQuODM2NiA0MC44MzY2IDUyIDMyIDUyQzIzLjE2MzQgNTIgMTYgNDQuODM2NiAxNiAzNkMxNiAyNy4xNjM0IDIzLjE2MzQgMjAgMzIgMjBaIiBmaWxsPSIjRkY2QjM1Ii8+CjxwYXRoIGQ9Ik0yOCAzMkMzMC4yMDkxIDMyIDMyIDMwLjIwOTEgMzIgMjhDMzIgMjUuNzkwOSAzMC4yMDkxIDI0IDI4IDI0QzI1Ljc5MDkgMjQgMjQgMjUuNzkwOSAyNCAyOEMyNCAzMC4yMDkxIDI1Ljc5MDkgMzIgMjggMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0zNiAzMkMzOC4yMDkxIDMyIDQwIDMwLjIwOTEgNDAgMjhDNDAgMjUuNzkwOSAzOC4yMDkxIDI0IDM2IDI0QzMzLjc5MDkgMjQgMzIgMjUuNzkwOSAzMiAyOEMzMiAzMC4yMDkxIDMzLjc5MDkgMzIgMzYgMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0yNCA0MEMzMiA0NCA0MCA0MCA0MCA0MEMzNiA0NCAyOCA0NCAyNCA0MFoiIGZpbGw9IiMyMTIxMjEiLz4KPC9zdmc+',
-    label: 'cat'
+    name: 'CIFAR-10 猫狗子集',
+    description: '经典的小图像数据集，32x32像素',
+    size: 12000,
+    catCount: 6000,
+    dogCount: 6000,
+    difficulty: '简单',
+    accuracy: 0.85,
+    trainingTime: '2-3分钟'
   },
   {
-    url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAyMEM0MC44MzY2IDIwIDQ4IDI3LjE2MzQgNDggMzZDNDggNDQuODM2NiA0MC44MzY2IDUyIDMyIDUyQzIzLjE2MzQgNTIgMTYgNDQuODM2NiAxNiAzNkMxNiAyNy4xNjM0IDIzLjE2MzQgMjAgMzIgMjBaIiBmaWxsPSIjOEI0NTEzIi8+CjxwYXRoIGQ9Ik0yOCAzMkMzMC4yMDkxIDMyIDMyIDMwLjIwOTEgMzIgMjhDMzIgMjUuNzkwOSAzMC4yMDkxIDI0IDI4IDI0QzI1Ljc5MDkgMjQgMjQgMjUuNzkwOSAyNCAyOEMyNCAzMC4yMDkxIDI1Ljc5MDkgMzIgMjggMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0zNiAzMkMzOC4yMDkxIDMyIDQwIDMwLjIwOTEgNDAgMjhDNDAgMjUuNzkwOSAzOC4yMDkxIDI0IDM2IDI0QzMzLjc5MDkgMjQgMzIgMjUuNzkwOSAzMiAyOEMzMiAzMC4yMDkxIDMzLjc5MDkgMzIgMzYgMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0yNCA0MEMzMiA0NCA0MCA0MCA0MCA0MEMzNiA0NCAyOCA0NCAyNCA0MFoiIGZpbGw9IiMyMTIxMjEiLz4KPC9zdmc+',
-    label: 'dog'
+    name: 'Kaggle 猫狗大战',
+    description: '高质量的猫狗图像，适合深度学习',
+    size: 25000,
+    catCount: 12500,
+    dogCount: 12500,
+    difficulty: '中等',
+    accuracy: 0.92,
+    trainingTime: '5-8分钟'
   },
   {
-    url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAyMEM0MC44MzY2IDIwIDQ4IDI3LjE2MzQgNDggMzZDNDggNDQuODM2NiA0MC44MzY2IDUyIDMyIDUyQzIzLjE2MzQgNTIgMTYgNDQuODM2NiAxNiAzNkMxNiAyNy4xNjM0IDIzLjE2MzQgMjAgMzIgMjBaIiBmaWxsPSIjRkZEQjAwIi8+CjxwYXRoIGQ9Ik0yOCAzMkMzMC4yMDkxIDMyIDMyIDMwLjIwOTEgMzIgMjhDMzIgMjUuNzkwOSAzMC4yMDkxIDI0IDI4IDI0QzI1Ljc5MDkgMjQgMjQgMjUuNzkwOSAyNCAyOEMyNCAzMC4yMDkxIDI1Ljc5MDkgMzIgMjggMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0zNiAzMkMzOC4yMDkxIDMyIDQwIDMwLjIwOTEgNDAgMjhDNDAgMjUuNzkwOSAzOC4yMDkxIDI0IDM2IDI0QzMzLjc5MDkgMjQgMzIgMjUuNzkwOSAzMiAyOEMzMiAzMC4yMDkxIDMzLjc5MDkgMzIgMzYgMzJaIiBmaWxsPSIjMjEyMTIxIi8+CjxwYXRoIGQ9Ik0yNCA0MEMzMiA0NCA0MCA0MCA0MCA0MEMzNiA0NCAyOCA0NCAyNCA0MFoiIGZpbGw9IiMyMTIxMjEiLz4KPC9zdmc+',
-    label: 'cat'
+    name: 'Oxford-IIIT Pet',
+    description: '包含多种猫狗品种的精细数据集',
+    size: 7349,
+    catCount: 3686,
+    dogCount: 3663,
+    difficulty: '困难',
+    accuracy: 0.88,
+    trainingTime: '3-5分钟'
+  },
+  {
+    name: '自定义小数据集',
+    description: '快速验证模型的小型数据集',
+    size: 1000,
+    catCount: 500,
+    dogCount: 500,
+    difficulty: '简单',
+    accuracy: 0.78,
+    trainingTime: '1分钟'
   }
 ])
 
@@ -753,8 +769,7 @@ const initializeNetwork = () => {
   // 初始化连接线
   initializeConnections()
 
-  // 设置当前输入图像
-  currentInputImage.value = sampleImages.value[selectedSample.value]
+  // 初始化完成，当前数据集通过计算属性自动设置
 }
 
 const initializeConnections = () => {
@@ -991,37 +1006,20 @@ const updateMetrics = () => {
   })
 }
 
-const selectSample = (index) => {
-  selectedSample.value = index
-  currentInputImage.value = sampleImages.value[index]
+const selectDataset = (index) => {
+  selectedDatasetIndex.value = index
 
   // 重新运行前向传播
   if (isTraining.value) {
     forwardPass()
   }
 
-  addLog('info', `选择了新的输入样本: ${currentInputImage.value.label}`)
+  const dataset = availableDatasets.value[index]
+  addLog('info', `选择了新的训练数据集: ${dataset.name}`)
+  addLog('info', `数据集包含 ${dataset.size} 张图片 (猫: ${dataset.catCount}, 狗: ${dataset.dogCount})`)
 }
 
-const uploadImage = () => {
-  fileInput.value?.click()
-}
 
-const handleImageUpload = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const newImage = {
-        url: e.target.result,
-        label: 'custom'
-      }
-      sampleImages.value.push(newImage)
-      selectSample(sampleImages.value.length - 1)
-    }
-    reader.readAsDataURL(file)
-  }
-}
 
 const toggleNode = (layerId, nodeIndex) => {
   const layer = networkLayers.value.find(l => l.id === layerId)
@@ -1370,8 +1368,8 @@ watch(visualizationMode, (newMode) => {
   }
 })
 
-watch(selectedSample, (newIndex) => {
-  selectSample(newIndex)
+watch(selectedDatasetIndex, (newIndex) => {
+  selectDataset(newIndex)
 })
 
 watch(learningRate, (newRate) => {
@@ -1416,7 +1414,7 @@ onUnmounted(() => {
 
 .network-visualization-container {
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
   min-height: 100vh;
 
   ::selection {
@@ -1435,19 +1433,19 @@ onUnmounted(() => {
   margin-bottom: 2rem;
 
   h2 {
-    color: #2c3e50;
+    color: $text-color;
     margin-bottom: 0.5rem;
     font-size: 2rem;
     font-weight: 600;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: #3498db;
+      color: $accent-color;
     }
   }
 
   p {
-    color: #7f8c8d;
+    color: $text-secondary-color;
     font-size: 1.1rem;
     max-width: 600px;
     margin: 0 auto;
@@ -1459,12 +1457,13 @@ onUnmounted(() => {
 
   .control-card {
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: none;
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    box-shadow: $box-shadow;
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+      color: $primary-color;
       border-radius: 12px 12px 0 0;
 
       span {
@@ -1478,16 +1477,210 @@ onUnmounted(() => {
       }
     }
 
-    .training-controls, .input-selection, .network-config {
+    :deep(.el-card__body) {
+      background: $secondary-color;
+      color: $text-color;
+    }
+
+    .training-controls, .dataset-selection, .network-config {
       padding: 1rem;
     }
 
-    .speed-control {
-      span {
-        color: #7f8c8d;
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-        display: block;
+    // 训练控制样式
+    .training-controls {
+      .control-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+
+        .control-button {
+          width: 100%;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          font-weight: 500;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+
+          .el-icon {
+            font-size: 1.1rem;
+          }
+
+          &:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .speed-control {
+        .speed-label {
+          color: $text-secondary-color;
+          font-size: 0.9rem;
+          font-weight: 500;
+          margin-bottom: 0.75rem;
+          display: block;
+        }
+
+        .speed-slider {
+          margin-bottom: 0.5rem;
+        }
+
+        .speed-value {
+          text-align: center;
+          color: $accent-color;
+          font-size: 0.85rem;
+          font-weight: 600;
+          padding: 0.25rem 0.5rem;
+          background: $primary-color;
+          border: 1px solid $border-color;
+          border-radius: 4px;
+          display: inline-block;
+          min-width: 40px;
+        }
+      }
+    }
+
+    // 数据集选择样式
+    .dataset-selection {
+      .dataset-info {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: $primary-color;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+
+        .current-dataset {
+          margin-bottom: 0.5rem;
+
+          .dataset-name {
+            display: block;
+            font-weight: 600;
+            color: $text-color;
+            font-size: 1.1rem;
+          }
+
+          .dataset-size {
+            color: $text-secondary-color;
+            font-size: 0.9rem;
+          }
+        }
+
+        .dataset-stats {
+          display: flex;
+          gap: 1rem;
+
+          .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+
+            .stat-label {
+              color: $text-secondary-color;
+              font-size: 0.9rem;
+            }
+
+            .stat-value {
+              color: $accent-color;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+
+      .dataset-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .dataset-item {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.75rem;
+          background: $secondary-color;
+          border: 1px solid $border-color;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: $primary-hover-color;
+            border-color: $accent-color;
+            transform: translateY(-1px);
+          }
+
+          &.active {
+            background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+            border-color: $accent-color;
+            color: $primary-color;
+
+            .dataset-icon {
+              color: $primary-color;
+            }
+
+            .dataset-details {
+              .dataset-title {
+                color: $primary-color;
+              }
+
+              .dataset-description {
+                color: rgba(24, 25, 26, 0.8);
+              }
+
+              .dataset-meta {
+                span {
+                  color: rgba(24, 25, 26, 0.7);
+                }
+              }
+            }
+          }
+
+          .dataset-icon {
+            font-size: 1.5rem;
+            color: $accent-color;
+            flex-shrink: 0;
+          }
+
+          .dataset-details {
+            flex: 1;
+
+            .dataset-title {
+              font-weight: 600;
+              color: $text-color;
+              margin-bottom: 0.25rem;
+              font-size: 0.95rem;
+            }
+
+            .dataset-description {
+              color: $text-secondary-color;
+              font-size: 0.85rem;
+              margin-bottom: 0.25rem;
+              line-height: 1.3;
+            }
+
+            .dataset-meta {
+              display: flex;
+              gap: 0.75rem;
+
+              span {
+                color: $text-secondary-color;
+                font-size: 0.8rem;
+                padding: 0.125rem 0.375rem;
+                background: $primary-color;
+                border-radius: 4px;
+              }
+            }
+          }
+        }
       }
     }
 
@@ -1575,12 +1768,13 @@ onUnmounted(() => {
 
   .network-card {
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: none;
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    box-shadow: $box-shadow;
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+      color: $primary-color;
       border-radius: 12px 12px 0 0;
 
       .network-header {
@@ -1609,7 +1803,7 @@ onUnmounted(() => {
       .network-svg {
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
         border-radius: 0 0 12px 12px;
 
         .connection-line {
@@ -1658,105 +1852,22 @@ onUnmounted(() => {
         }
       }
 
-      .input-image-display {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background: white;
-        border-radius: 8px;
-        padding: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-        .input-image {
-          width: 60px;
-          height: 60px;
-          border-radius: 4px;
-          display: block;
-        }
 
-        .image-info {
-          margin-top: 5px;
-          text-align: center;
 
-          span {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-          }
-        }
-      }
-
-      .output-prediction {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: white;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        min-width: 150px;
-
-        .prediction-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 10px;
-          gap: 10px;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          &.winner {
-            .label {
-              color: #e74c3c;
-              font-weight: 600;
-            }
-
-            .probability {
-              color: #e74c3c;
-              font-weight: 600;
-            }
-          }
-
-          .label {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            min-width: 30px;
-          }
-
-          .probability-bar {
-            flex: 1;
-            height: 8px;
-            background: #ecf0f1;
-            border-radius: 4px;
-            overflow: hidden;
-
-            .probability-fill {
-              height: 100%;
-              background: linear-gradient(90deg, #3498db, #e74c3c);
-              transition: width 0.3s ease;
-            }
-          }
-
-          .probability {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            min-width: 40px;
-            text-align: right;
-          }
-        }
-      }
     }
   }
 }
 
 .metrics-card {
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: none;
+  background: $secondary-color;
+  border: 1px solid $border-color;
+  box-shadow: $box-shadow;
 
   :deep(.el-card__header) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    color: $primary-color;
     border-radius: 12px 12px 0 0;
 
     span {
@@ -1828,12 +1939,13 @@ onUnmounted(() => {
 
   .node-details-card {
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    border: none;
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    box-shadow: 0 8px 24px rgba(24, 25, 26, 0.3);
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+      color: $primary-color;
       border-radius: 12px 12px 0 0;
 
       .node-header {
@@ -1885,12 +1997,13 @@ onUnmounted(() => {
 .training-log {
   .log-card {
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: none;
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    box-shadow: $box-shadow;
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+      color: $primary-color;
       border-radius: 12px 12px 0 0;
 
       .log-header {
@@ -2219,16 +2332,6 @@ onUnmounted(() => {
 
   .network-container {
     height: 400px !important;
-
-    .input-image-display,
-    .output-prediction {
-      position: relative !important;
-      top: auto !important;
-      left: auto !important;
-      right: auto !important;
-      margin: 10px;
-      display: inline-block;
-    }
   }
 
   .node-details-panel {
@@ -2250,6 +2353,97 @@ onUnmounted(() => {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 8px;
+  }
+}
+
+// Element Plus 组件样式覆盖
+:deep(.el-card__body) {
+  background: $secondary-color;
+  color: $text-color;
+}
+
+:deep(.el-button) {
+  &.el-button--primary {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    border: none;
+    color: $primary-color;
+
+    &:hover {
+      background: linear-gradient(135deg, $accent-color-light 0%, $accent-color 100%);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.el-button--default {
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+
+    &:hover {
+      background: $primary-hover-color;
+      border-color: $accent-color;
+    }
+  }
+}
+
+:deep(.el-slider) {
+  .el-slider__runway {
+    background: $border-color;
+  }
+
+  .el-slider__bar {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+  }
+
+  .el-slider__button {
+    border: 2px solid $accent-color;
+    background: $text-color;
+  }
+}
+
+:deep(.el-select) {
+  .el-input__inner {
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+
+    &:focus {
+      border-color: $accent-color;
+    }
+  }
+}
+
+:deep(.el-input) {
+  .el-input__inner {
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+
+    &:focus {
+      border-color: $accent-color;
+    }
+  }
+}
+
+:deep(.el-progress) {
+  .el-progress-bar__outer {
+    background: $border-color;
+  }
+
+  .el-progress-bar__inner {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+  }
+}
+
+:deep(.el-tag) {
+  background: $secondary-color;
+  border: 1px solid $border-color;
+  color: $text-color;
+
+  &.el-tag--success {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    border: none;
+    color: $primary-color;
   }
 }
 

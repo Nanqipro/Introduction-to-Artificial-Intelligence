@@ -327,14 +327,14 @@ onUnmounted(() => {
 
 .network-training-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
   padding: 0;
 }
 
 .page-header {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(35, 39, 46, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid $border-color;
   padding: 1.5rem 2rem;
   
   .header-content {
@@ -350,32 +350,33 @@ onUnmounted(() => {
       gap: 1rem;
       
       .back-button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
         border: none;
-        
+        color: $primary-color;
+
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          box-shadow: 0 4px 12px rgba(176, 179, 184, 0.4);
         }
       }
-      
+
       .title-section {
         .page-title {
           font-size: 2rem;
           font-weight: 600;
-          color: #2c3e50;
+          color: $text-color;
           margin: 0 0 0.5rem 0;
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          
+
           .el-icon {
-            color: #667eea;
+            color: $accent-color;
           }
         }
-        
+
         .page-subtitle {
-          color: #7f8c8d;
+          color: $text-secondary-color;
           margin: 0;
           font-size: 1.1rem;
         }
@@ -401,30 +402,34 @@ onUnmounted(() => {
   margin: 0 auto;
   
   .nav-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(35, 39, 46, 0.9);
     backdrop-filter: blur(10px);
-    border: none;
+    border: 1px solid $border-color;
     border-radius: 12px;
-    
+
+    :deep(.el-card__body) {
+      background: transparent;
+    }
+
     .nav-content {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
-      
+
       .nav-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem;
-        
+
         .el-icon {
-          color: #667eea;
+          color: $accent-color;
           font-size: 1.2rem;
         }
-        
+
         span {
           flex: 1;
-          color: #2c3e50;
+          color: $text-color;
           font-weight: 500;
         }
       }
@@ -440,61 +445,62 @@ onUnmounted(() => {
 
 .instructions-content {
   h3 {
-    color: #2c3e50;
+    color: $text-color;
     margin: 1.5rem 0 1rem 0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   p, li {
-    color: #7f8c8d;
+    color: $text-secondary-color;
     line-height: 1.6;
     margin-bottom: 0.5rem;
   }
-  
+
   ol, ul {
     padding-left: 1.5rem;
   }
-  
+
   strong {
-    color: #2c3e50;
+    color: $text-color;
   }
 }
 
 .completion-content {
   text-align: center;
-  
+
   .completion-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
-    
+
     .stat-item {
       padding: 1rem;
-      background: #f8f9fa;
+      background: $secondary-color;
+      border: 1px solid $border-color;
       border-radius: 8px;
-      
+
       .stat-label {
         display: block;
-        color: #7f8c8d;
+        color: $text-secondary-color;
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
       }
-      
+
       .stat-value {
         display: block;
-        color: #2c3e50;
+        color: $text-color;
         font-size: 1.5rem;
         font-weight: 600;
       }
     }
   }
-  
+
   .achievement-section {
     h4 {
-      color: #2c3e50;
+      color: $text-color;
       margin-bottom: 1rem;
     }
     
@@ -504,6 +510,79 @@ onUnmounted(() => {
       gap: 0.5rem;
       flex-wrap: wrap;
     }
+  }
+}
+
+// 对话框样式覆盖
+:deep(.el-dialog) {
+  background: $secondary-color;
+  border: 1px solid $border-color;
+
+  .el-dialog__header {
+    background: $primary-color;
+    border-bottom: 1px solid $border-color;
+    padding: 1rem 1.5rem;
+
+    .el-dialog__title {
+      color: $text-color;
+      font-weight: 600;
+    }
+
+    .el-dialog__headerbtn {
+      .el-dialog__close {
+        color: $text-secondary-color;
+
+        &:hover {
+          color: $text-color;
+        }
+      }
+    }
+  }
+
+  .el-dialog__body {
+    background: $secondary-color;
+    color: $text-color;
+    padding: 1.5rem;
+  }
+
+  .el-dialog__footer {
+    background: $secondary-color;
+    border-top: 1px solid $border-color;
+    padding: 1rem 1.5rem;
+  }
+}
+
+// 按钮样式覆盖
+:deep(.el-button) {
+  &.el-button--primary {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    border: none;
+    color: $primary-color;
+
+    &:hover {
+      background: linear-gradient(135deg, $accent-color-light 0%, $accent-color 100%);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.el-button--info {
+    background: $secondary-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+
+    &:hover {
+      background: $primary-hover-color;
+      border-color: $accent-color;
+    }
+  }
+}
+
+// 标签样式覆盖
+:deep(.el-tag) {
+  &.el-tag--success {
+    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    border: none;
+    color: $primary-color;
   }
 }
 
