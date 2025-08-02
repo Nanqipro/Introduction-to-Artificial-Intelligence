@@ -49,6 +49,30 @@
           <div v-else class="content-text" v-html="formatContent(chapter.content)"></div>
         </div>
 
+        <!-- 答题系统入口 -->
+        <div class="quiz-section">
+          <div class="quiz-header">
+            <h3 class="quiz-title">📚 知识测验</h3>
+            <p class="quiz-description">完成本章节的学习后，可以参加知识测验来检验学习成果</p>
+          </div>
+          <div class="quiz-actions">
+            <button @click="startQuiz" class="btn btn-quiz">
+              <span class="btn-icon">🎯</span>
+              <span class="btn-text">开始测验</span>
+            </button>
+            <div class="quiz-info">
+              <span class="info-item">
+                <span class="info-icon">⏱️</span>
+                <span class="info-text">预计用时: 10-15分钟</span>
+              </span>
+              <span class="info-item">
+                <span class="info-icon">🏆</span>
+                <span class="info-text">可获得奖励和成就</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- 章节导航 -->
         <nav class="chapter-pagination">
           <button 
@@ -174,6 +198,9 @@ export default {
     goToChapter(id) {
       this.$router.push(`/chapters/${id}`)
     },
+    startQuiz() {
+      this.$router.push(`/quiz/${this.id}`)
+    },
     getChapterType(type) {
       const typeMap = {
         'prologue': '序章',
@@ -199,20 +226,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/variables.scss';
+
 .chapter-detail {
-  background: #23272e;
+  background: $secondary-color;
   min-height: 100vh;
   padding: 2rem 0;
 }
 
 .chapter-nav {
-  background: rgba(41,44,51,0.92);
-  border-bottom: 1px solid rgba(57,59,64,0.18);
+  background: $nav-bg;
+  border-bottom: 1px solid $nav-border;
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: $nav-shadow;
   backdrop-filter: blur(4px);
 }
 
@@ -228,22 +257,22 @@ export default {
 .nav-back {
   background: none;
   border: none;
-  color: #8fa1b3;
+  color: $accent-color;
   cursor: pointer;
   font-size: 0.95rem;
   padding: 0.5rem 0;
   transition: color 0.2s;
   font-weight: 600;
   letter-spacing: 0.5px;
-}
-
-.nav-back:hover {
-  color: #b0b3b8;
+  
+  &:hover {
+    color: $nav-back-hover;
+  }
 }
 
 .nav-title {
   font-weight: 700;
-  color: #f5f6fa;
+  color: $text-color;
   font-size: 1.05rem;
   letter-spacing: 1px;
 }
@@ -251,15 +280,15 @@ export default {
 .container {
   max-width: 900px;
   margin: 0 auto;
-  background: #292c33;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  background: $card-bg;
+  border-radius: $card-radius;
+  box-shadow: $card-shadow;
   padding: 2.5rem 2rem;
-  border: 1px solid rgba(57,59,64,0.18);
+  border: 1px solid $card-border;
 }
 
 .chapter-content {
-  color: #f5f6fa;
+  color: $text-color;
   font-size: 1.08rem;
   line-height: 1.8;
   margin-bottom: 2.5rem;
@@ -280,19 +309,19 @@ export default {
 }
 
 .chapter-badge {
-  background: linear-gradient(135deg, #18191a, #232526);
-  color: #8fa1b3;
+  background: $chapter-badge-bg;
+  color: $accent-color;
   padding: 0.5rem 1.2rem;
   border-radius: 20px;
   font-size: 1rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(143,161,179,0.08);
+  box-shadow: $chapter-badge-shadow;
   letter-spacing: 1px;
 }
 
 .chapter-type {
-  color: #8fa1b3;
-  background: #23272e;
+  color: $accent-color;
+  background: $chapter-type-bg;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.95rem;
@@ -301,13 +330,13 @@ export default {
 
 .chapter-title {
   font-size: 2rem;
-  color: #f5f6fa;
+  color: $text-color;
   font-weight: 900;
   letter-spacing: 1px;
 }
 
 .chapter-summary {
-  color: #b0b3b8;
+  color: $text-secondary-color;
   font-size: 1.1rem;
   margin-bottom: 2rem;
   line-height: 1.7;
@@ -325,16 +354,16 @@ export default {
 }
 
 .info-label {
-  color: #8fa1b3;
+  color: $accent-color;
 }
 
 .info-value {
-  color: #f5f6fa;
+  color: $text-color;
   font-weight: 600;
-}
-
-.info-value.published {
-  color: #8fa1b3;
+  
+  &.published {
+    color: $accent-color;
+  }
 }
 
 .chapter-body {
@@ -344,11 +373,11 @@ export default {
 .content-text {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #f5f6fa;
-}
-
-.content-text :deep(p) {
-  margin-bottom: 1.5rem;
+  color: $text-color;
+  
+  :deep(p) {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .chapter-pagination {
@@ -356,50 +385,129 @@ export default {
   justify-content: space-between;
   gap: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(57,59,64,0.18);
+  border-top: 1px solid $card-header-border;
+}
+
+.quiz-section {
+  background: $secondary-color;
+  border-radius: $card-radius;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $card-border;
+}
+
+.quiz-header {
+  margin-bottom: 1.5rem;
+}
+
+.quiz-title {
+  font-size: 1.4rem;
+  color: $text-color;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.quiz-description {
+  color: $text-secondary-color;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.quiz-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-quiz {
+  background: $btn-primary-bg;
+  color: $text-color;
+  border: none;
+  border-radius: $btn-radius;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $btn-shadow;
+  }
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+.quiz-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quiz-info .info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $accent-color;
+  font-size: 0.9rem;
+}
+
+.info-icon {
+  font-size: 1rem;
 }
 
 .pagination-btn {
-  background: #23272e;
-  border: 1px solid rgba(57,59,64,0.18);
-  border-radius: 12px;
+  background: $chapter-pagination-bg;
+  border: 1px solid $card-border;
+  border-radius: $btn-radius;
   padding: 1rem;
   cursor: pointer;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
   flex: 1;
   max-width: 300px;
-  color: #8fa1b3;
+  color: $accent-color;
   font-weight: 600;
   font-size: 1rem;
-}
-
-.pagination-btn:hover {
-  background: #31343b;
-  border-color: #8fa1b3;
-  box-shadow: 0 4px 16px #8fa1b3;
-  color: #f5f6fa;
-}
-
-.pagination-btn.prev {
-  text-align: left;
-}
-
-.pagination-btn.next {
-  text-align: right;
-  margin-left: auto;
+  
+  &:hover {
+    background: $chapter-pagination-hover;
+    border-color: $chapter-pagination-hover-border;
+    box-shadow: $chapter-pagination-hover-shadow;
+    color: $text-color;
+  }
+  
+  &.prev {
+    text-align: left;
+  }
+  
+  &.next {
+    text-align: right;
+    margin-left: auto;
+  }
 }
 
 .btn-label {
   display: block;
   font-size: 0.8rem;
-  color: #8fa1b3;
+  color: $accent-color;
   margin-bottom: 0.25rem;
 }
 
 .btn-title {
   display: block;
   font-weight: 700;
-  color: #f5f6fa;
+  color: $text-color;
 }
 
 .loading-container, .error-container {
@@ -410,8 +518,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #393b40;
-  border-top: 4px solid #8fa1b3;
+  border: 4px solid $loading-border;
+  border-top: 4px solid $loading-spinner;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -423,44 +531,44 @@ export default {
 }
 
 .error-icon {
-  font-size: 4rem;
+  font-size: $error-icon-size;
   margin-bottom: 1rem;
 }
 
 .error-container h3 {
-  color: #f5f6fa;
+  color: $text-color;
   margin-bottom: 0.5rem;
 }
 
 .error-container p {
-  color: #b0b3b8;
+  color: $text-secondary-color;
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 12px;
+  border-radius: $btn-radius;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: #18191a;
-  color: #f5f6fa;
+  background: $primary-color;
+  color: $text-color;
   border: none;
-}
-
-.btn-primary:hover {
-  background: #232526;
-  color: #b0b3b8;
-  border-color: #232526;
-  transform: translateY(-1px);
+  
+  &:hover {
+    background: $primary-hover-color;
+    color: $text-secondary-color;
+    border-color: $primary-hover-color;
+    transform: translateY(-1px);
+  }
 }
 
 .back-link {
-  color: #8fa1b3;
+  color: $accent-color;
   font-size: 1rem;
   text-decoration: underline;
   cursor: pointer;
@@ -473,20 +581,25 @@ export default {
     align-items: flex-start;
     gap: 0.5rem;
   }
+  
   .chapter-title {
     font-size: 1.3rem;
   }
+  
   .chapter-info {
     flex-direction: column;
     gap: 0.5rem;
   }
+  
   .chapter-pagination {
     flex-direction: column;
   }
+  
   .pagination-btn {
     max-width: none;
     text-align: center;
   }
+  
   .container {
     padding: 1.2rem 0.5rem;
   }

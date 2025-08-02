@@ -109,9 +109,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .chapter-list {
   min-height: 100vh;
-  background: #23272e;
+  background: $secondary-color;
   padding: 2rem 0;
 }
 
@@ -128,7 +129,7 @@ export default {
 
 .page-title {
   font-size: 2.5rem;
-  color: #fff;
+  color: $text-color;
   margin-bottom: 1rem;
   font-weight: 900;
   letter-spacing: 1.5px;
@@ -136,7 +137,7 @@ export default {
 
 .page-description {
   font-size: 1.1rem;
-  color: #b0b3b8;
+  color: $text-secondary-color;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -145,26 +146,26 @@ export default {
 .chapters-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: $list-item-gap;
 }
 
 .chapter-item {
-  background: #292c33;
-  border-radius: 16px;
+  background: $card-bg;
+  border-radius: $card-radius;
   padding: 2rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  box-shadow: $card-shadow;
   cursor: pointer;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
-  border: 1px solid rgba(57,59,64,0.18);
+  border: 1px solid $card-border;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.chapter-item:hover {
-  background: #31343b;
-  box-shadow: 0 8px 32px #8fa1b3;
-  border-color: #8fa1b3;
+  
+  &:hover {
+    background: $list-item-hover-bg;
+    box-shadow: $list-item-hover-shadow;
+    border-color: $list-item-hover-border;
+  }
 }
 
 .chapter-header {
@@ -175,20 +176,20 @@ export default {
 }
 
 .chapter-badge {
-  background: linear-gradient(135deg, #18191a, #232526);
-  color: #8fa1b3;
+  background: $chapter-badge-bg;
+  color: $accent-color;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(143,161,179,0.08);
+  box-shadow: $chapter-badge-shadow;
   letter-spacing: 1px;
 }
 
 .chapter-type {
-  color: #8fa1b3;
+  color: $accent-color;
   font-size: 0.95rem;
-  background: #23272e;
+  background: $chapter-type-bg;
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   font-weight: 600;
@@ -196,14 +197,14 @@ export default {
 
 .chapter-title {
   font-size: 1.5rem;
-  color: #f5f6fa;
+  color: $text-color;
   margin-bottom: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .chapter-summary {
-  color: #b0b3b8;
+  color: $text-secondary-color;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   font-size: 1.05rem;
@@ -220,23 +221,23 @@ export default {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  color: #8fa1b3;
+  color: $accent-color;
   font-weight: 600;
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: $status-dot-size;
+  height: $status-dot-size;
   border-radius: 50%;
-  background: #393b40;
-}
-
-.status-dot.published {
-  background: #8fa1b3;
+  background: $status-dot-unpublished;
+  
+  &.published {
+    background: $status-dot-published;
+  }
 }
 
 .read-more {
-  color: #8fa1b3;
+  color: $accent-color;
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
@@ -250,8 +251,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #393b40;
-  border-top: 4px solid #8fa1b3;
+  border: 4px solid $loading-border;
+  border-top: 4px solid $loading-spinner;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -263,53 +264,56 @@ export default {
 }
 
 .error-icon, .empty-icon {
-  font-size: 4rem;
+  font-size: $empty-icon-size;
   margin-bottom: 1rem;
 }
 
 .error-container h3, .empty-container h3 {
-  color: #f5f6fa;
+  color: $text-color;
   margin-bottom: 0.5rem;
 }
 
 .error-container p, .empty-container p {
-  color: #b0b3b8;
+  color: $text-secondary-color;
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 12px;
+  border-radius: $btn-radius;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: #18191a;
-  color: #f5f6fa;
+  background: $primary-color;
+  color: $text-color;
   border: none;
-}
-
-.btn-primary:hover {
-  background: #232526;
-  border-color: #232526;
-  transform: translateY(-1px);
+  
+  &:hover {
+    background: $primary-hover-color;
+    border-color: $primary-hover-color;
+    transform: translateY(-1px);
+  }
 }
 
 @media (max-width: 768px) {
   .page-title {
     font-size: 2rem;
   }
+  
   .chapter-item {
     padding: 1.5rem;
   }
+  
   .chapter-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
+  
   .chapter-footer {
     flex-direction: column;
     align-items: flex-start;

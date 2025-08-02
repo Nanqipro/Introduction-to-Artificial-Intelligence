@@ -155,74 +155,95 @@ import { InfoFilled, Notebook, UserFilled, Message, Cpu } from '@element-plus/ic
 </script>
 
 <style lang="scss">
+
 .mb-4 { margin-bottom: 2rem; }
 .page-header { text-align: center; margin-bottom: 3rem; }
-.page-title { font-size: 2.5rem; color: #fff; margin-bottom: 1rem; font-weight: 900; letter-spacing: 1.5px; }
-.page-description { font-size: 1.1rem; color: #b0b3b8; max-width: 600px; margin: 0 auto; line-height: 1.6; }
-.book-description { margin-top: 1.5rem; color: #b0b3b8; line-height: 1.6; }
-.contact-icon { font-size: 2rem; margin-bottom: 0.5rem; color: #8fa1b3; }
+.page-title { 
+  font-size: 2.5rem; 
+  color: $text-color; 
+  margin-bottom: 1rem; 
+  font-weight: 900; 
+  letter-spacing: 1.5px; 
+}
+.page-description { 
+  font-size: 1.1rem; 
+  color: $text-secondary-color; 
+  max-width: 600px; 
+  margin: 0 auto; 
+  line-height: 1.6; 
+}
+.book-description { 
+  margin-top: 1.5rem; 
+  color: $text-secondary-color; 
+  line-height: 1.6; 
+}
+.contact-icon { 
+  font-size: 2rem; 
+  margin-bottom: 0.5rem; 
+  color: $accent-color; 
+}
 
 /* Element Plus 卡片和描述组件深色主题适配 */
 .el-card {
-  background: #292c33 !important;
-  color: #f5f6fa !important;
-  border: 1px solid rgba(57,59,64,0.18) !important;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-  border-radius: 16px;
+  background: $card-bg !important;
+  color: $text-color !important;
+  border: 1px solid $card-border !important;
+  box-shadow: $card-shadow;
+  border-radius: $card-radius;
 }
 .el-card__header {
   background: transparent !important;
-  color: #f5f6fa !important;
+  color: $text-color !important;
   font-weight: 700;
   font-size: 1.1rem;
-  border-bottom: 1px solid rgba(57,59,64,0.10);
+  border-bottom: 1px solid $card-header-border;
 }
 .el-descriptions__title {
-  color: #f5f6fa !important;
+  color: $text-color !important;
   font-weight: 700;
 }
 .el-descriptions__label {
-  color: #8fa1b3 !important;
+  color: $accent-color !important;
   font-weight: 600;
 }
 .el-descriptions__cell {
-  color: #f5f6fa !important;
+  color: $text-color !important;
 }
 .el-tag {
-  background: #23272e !important;
-  color: #8fa1b3 !important;
+  background: $tag-bg !important;
+  color: $tag-color !important;
   border: none;
   font-weight: 600;
   border-radius: 8px;
 }
 .el-divider {
-  background: rgba(57,59,64,0.18) !important;
+  background: $divider-bg !important;
 }
 .el-card h3, .el-card h4 {
-  color: #f5f6fa;
+  color: $text-color;
   font-weight: 700;
 }
 .el-card p {
-  color: #b0b3b8;
+  color: $text-secondary-color;
 }
 .about {
   min-height: 100vh;
-  background: #23272e;
+  background: $secondary-color;
   padding: 2rem 0;
 }
 .about .el-descriptions,
 .about .el-descriptions__body,
 .about .el-descriptions__table {
-  background: transparent !important;
+  background: $descriptions-bg !important;
 }
 .about .el-descriptions__cell,
 .about .el-descriptions__label {
-  background: #292c33 !important;
-  color: #f5f6fa !important;
-  border-color: rgba(57,59,64,0.18) !important;
+  background: $descriptions-cell-bg !important;
+  color: $text-color !important;
+  border-color: $descriptions-border !important;
 }
 .about .el-descriptions__label {
-  color: #8fa1b3 !important;
+  color: $accent-color !important;
   font-weight: 600;
 }
 .tech-tags {
@@ -233,12 +254,13 @@ import { InfoFilled, Notebook, UserFilled, Message, Cpu } from '@element-plus/ic
   margin-bottom: 0.5rem;
 }
 .github-link {
-  color: #58a6ff !important;
+  color: $link-color !important;
   text-decoration: none;
   transition: color 0.3s ease;
-}
-.github-link:hover {
-  color: #79c0ff !important;
-  text-decoration: underline;
+  
+  &:hover {
+    color: $link-hover-color !important;
+    text-decoration: underline;
+  }
 }
 </style>

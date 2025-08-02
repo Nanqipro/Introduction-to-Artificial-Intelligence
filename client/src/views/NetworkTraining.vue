@@ -38,7 +38,7 @@
           <div class="nav-item">
             <el-icon><Document /></el-icon>
             <span>实验说明</span>
-            <el-button @click="showInstructions = true" type="text" size="small">
+            <el-button @click="showInstructions = true" link size="small">
               查看
             </el-button>
           </div>

@@ -25,6 +25,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import './styles/variables.scss';
+
 /* 全局样式重置 */
 * {
   margin: 0;
@@ -39,8 +41,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  color: #333;
-  background: #f8f9fa;
+  color: $body-color;
+  background: $body-bg;
 }
 
 #app {
@@ -54,21 +56,21 @@ body {
 }
 
 .app-footer {
-  background: $primary-color-light;
-  color: white;
-  padding: 2rem 0;
+  background: $footer-bg;
+  color: $footer-color;
+  padding: $spacing-lg 0;
   margin-top: auto;
 }
 
 .footer-content {
-  max-width: 1200px;
+  max-width: $footer-max-width;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 $spacing-sm;
   text-align: center;
 }
 
 .footer-content p {
-  margin-bottom: 0.5rem;
+  margin-bottom: $spacing-xs;
 }
 
 .footer-tech {
@@ -78,20 +80,20 @@ body {
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: $scrollbar-width;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: $scrollbar-track;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: $scrollbar-thumb;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: $scrollbar-thumb-hover;
 }
 
 /* 响应式图片 */
@@ -102,12 +104,12 @@ img {
 
 /* 链接样式 */
 a {
-  color: #667eea;
+  color: $link-color;
   text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* 按钮基础样式 */
@@ -122,19 +124,19 @@ input, textarea, select {
 
 /* 焦点样式 */
 :focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid $focus-color;
   outline-offset: 2px;
 }
 
 /* 选择文本样式 */
 ::selection {
-  background: #b0b3b8;
-  color: #ffffff;
+  background: $selection-bg;
+  color: $selection-color;
 }
 
 ::-moz-selection {
-  background: #b0b3b8;
-  color: #ffffff;
+  background: $selection-bg;
+  color: $selection-color;
 }
 
 /* 工具类 */
@@ -150,20 +152,20 @@ input, textarea, select {
   text-align: right;
 }
 
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
+.mb-1 { margin-bottom: $spacing-xs; }
+.mb-2 { margin-bottom: $spacing-sm; }
+.mb-3 { margin-bottom: $spacing-md; }
+.mb-4 { margin-bottom: $spacing-lg; }
 
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
+.mt-1 { margin-top: $spacing-xs; }
+.mt-2 { margin-top: $spacing-sm; }
+.mt-3 { margin-top: $spacing-md; }
+.mt-4 { margin-top: $spacing-lg; }
 
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
-.p-4 { padding: 2rem; }
+.p-1 { padding: $spacing-xs; }
+.p-2 { padding: $spacing-sm; }
+.p-3 { padding: $spacing-md; }
+.p-4 { padding: $spacing-lg; }
 
 /* 响应式工具类 */
 @media (max-width: 768px) {
