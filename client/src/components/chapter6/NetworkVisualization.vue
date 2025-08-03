@@ -428,13 +428,29 @@
     <!-- 网络结构配置对话框 -->
     <el-dialog
       v-model="showNetworkStructureDialog"
-      title="自定义神经网络结构"
       width="700px"
       :before-close="handleCloseStructureDialog"
       :close-on-click-modal="true"
       :close-on-press-escape="true"
-      destroy-on-close
+      :destroy-on-close="true"
+      :modal="true"
+      :lock-scroll="true"
+      :append-to-body="true"
     >
+      <template #header>
+        <div class="dialog-header">
+          <span class="dialog-title">自定义神经网络结构</span>
+          <el-button
+            @click="forceCloseStructureDialog"
+            type="danger"
+            size="small"
+            :icon="Close"
+            circle
+            title="强制关闭"
+            style="margin-left: auto;"
+          />
+        </div>
+      </template>
       <div class="structure-config-content">
         <div class="config-header">
           <el-alert
@@ -1252,17 +1268,40 @@ const validateNodeCount = (layer, newValue) => {
 }
 
 const handleCloseStructureDialog = (done) => {
-  // Element Plus 的 before-close 回调需要调用 done() 来关闭对话框
-  if (done) {
-    done()
-  } else {
-    // 如果没有 done 回调，直接关闭
+  try {
+    // Element Plus 的 before-close 回调需要调用 done() 来关闭对话框
+    console.log('Closing structure dialog, done function:', typeof done)
+
+    // 先更新状态
     showNetworkStructureDialog.value = false
+
+    // 然后调用 done() 让 Element Plus 处理关闭逻辑
+    if (done && typeof done === 'function') {
+      done()
+    }
+  } catch (error) {
+    console.error('Error closing structure dialog:', error)
+    // 即使出错也要确保对话框能关闭
+    showNetworkStructureDialog.value = false
+    if (done && typeof done === 'function') {
+      done()
+    }
   }
 }
 
 const closeStructureDialog = () => {
+  console.log('Manually closing structure dialog')
   showNetworkStructureDialog.value = false
+}
+
+// 强制关闭弹框的方法，用于处理特殊情况
+const forceCloseStructureDialog = () => {
+  console.log('Force closing structure dialog')
+  showNetworkStructureDialog.value = false
+  // 使用 nextTick 确保 DOM 更新
+  nextTick(() => {
+    showNetworkStructureDialog.value = false
+  })
 }
 
 const resetToDefault = () => {
@@ -1396,6 +1435,18 @@ onMounted(async () => {
 
   // 监听进度变化
   emit('progress-update', 'network-training', trainingProgress.value)
+
+  // 添加键盘事件监听器，处理弹框关闭
+  const handleKeydown = (event) => {
+    if (event.key === 'Escape' && showNetworkStructureDialog.value) {
+      console.log('ESC key pressed, force closing dialog')
+      forceCloseStructureDialog()
+    }
+  }
+  document.addEventListener('keydown', handleKeydown)
+
+  // 保存事件监听器引用以便清理
+  window.dialogKeydownHandler = handleKeydown
 })
 
 onUnmounted(() => {
@@ -1406,6 +1457,12 @@ onUnmounted(() => {
     chartInstance.destroy()
   }
   isTraining.value = false
+
+  // 清理键盘事件监听器
+  if (window.dialogKeydownHandler) {
+    document.removeEventListener('keydown', window.dialogKeydownHandler)
+    delete window.dialogKeydownHandler
+  }
 })
 </script>
 
@@ -2443,6 +2500,20 @@ onUnmounted(() => {
   &.el-tag--success {
     background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
     border: none;
+    color: $primary-color;
+  }
+}
+
+// 对话框头部样式
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  .dialog-title {
+    font-size: 18px;
+    font-weight: 600;
     color: $primary-color;
   }
 }
