@@ -126,11 +126,14 @@
                 <tr v-for="(row, i) in inputRows" :key="i">
                   <td><input type="number" v-model.number="row.x" min="0" /></td>
                   <td><input type="number" v-model.number="row.y" min="0" /></td>
-                  <td v-if="is3D"><input type="number" v-model.number="row.z" min="0" /></td>
+                  <td v-if="is3D"><input type="number" v-model.number="row.z" :min="mode === 'logistic' ? 0 : 0" :max="mode === 'logistic' ? 1 : 12" /></td>
                   <td><button class="del-btn" @click="removeRow(i)">×</button></td>
                 </tr>
               </tbody>
             </table>
+            <div v-if="is3D && mode === 'logistic'" class="input-tip">
+              {{ lang==='zh' ? '提示：Z值应在0-1之间（概率值）' : 'Tip: Z values should be between 0-1 (probability)' }}
+            </div>
             <div class="input-actions">
               <button class="btn" @click="addRow">{{ lang==='zh' ? '添加行' : 'Add Row' }}</button>
               <button class="btn" @click="applyInput">{{ lang==='zh' ? '应用' : 'Apply' }}</button>
@@ -366,8 +369,8 @@ function randomizeData() {
       });
     } else {
       zData.value = xData.value.map((x, i) => {
-        const z = 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) * 12 + (rand() - 0.5) * Math.min(noise.value, 1);
-        return Number(Math.max(0, Math.min(12, z)).toFixed(2));
+        const z = 1 / (1 + Math.exp(-(1.2 * x + 0.8 * yData.value[i] - 6))) + (rand() - 0.5) * Math.min(noise.value, 0.1);
+        return Number(Math.max(0, Math.min(1, z)).toFixed(2));
       });
     }
   }
@@ -408,7 +411,11 @@ function applyInput() {
     if (inputRows.value.length > 0) {
       xData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.x)).toFixed(2)));
       yData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.y)).toFixed(2)));
-      zData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.z)).toFixed(2)));
+      if (mode.value === 'logistic') {
+        zData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(1, r.z)).toFixed(2)));
+      } else {
+        zData.value = inputRows.value.map(r => Number(Math.max(0, Math.min(12, r.z)).toFixed(2)));
+      }
     }
   }
   showInput.value = false;
@@ -560,9 +567,11 @@ function logisticFit3D(x, y, z) {
     for (let i = 0; i < x.length; i++) {
       const z_pred = w1 * x[i] + w2 * y[i] + b;
       const pred = 1 / (1 + Math.exp(-z_pred));
-      dw1 += (pred - z[i]) * x[i];
-      dw2 += (pred - z[i]) * y[i];
-      db  += (pred - z[i]);
+      // 确保z值在0-1范围内
+      const z_normalized = Math.max(0, Math.min(1, z[i]));
+      dw1 += (pred - z_normalized) * x[i];
+      dw2 += (pred - z_normalized) * y[i];
+      db  += (pred - z_normalized);
     }
     w1 -= lr * dw1 / x.length;
     w2 -= lr * dw2 / x.length;
@@ -800,7 +809,7 @@ const plotlyProps = computed(() => {
           zerolinecolor: '#b0b3b8',
           color: '#b0b3b8',
           showaxesarrow: true,
-          ...(mode.value === 'logistic' ? { range: [0, 1.2] } : {})
+          ...(mode.value === 'logistic' ? { range: [0, 1] } : {})
         },
         aspectmode: 'cube',
         bgcolor: 'rgba(24,25,26,0.01)'
@@ -1074,6 +1083,13 @@ input[type="range"] {
 }
 .del-btn:hover {
   color: #ff4d4f;
+}
+.input-tip {
+  color: $accent-color-light;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+  text-align: center;
+  font-style: italic;
 }
 .input-actions {
   display: flex;

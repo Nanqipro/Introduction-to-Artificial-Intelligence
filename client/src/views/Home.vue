@@ -88,14 +88,12 @@ export default {
   methods: {
     async loadChapters() {
       try {
-        const response = await chapterApi.getChapterOverview()
-        if (response.code === 200) {
-          this.chapters = response.data
-        } else {
-          console.error('获取章节失败:', response.message)
-        }
+        const chapters = await chapterApi.getChapterOverview()
+        this.chapters = chapters || []
+        console.log('Home页面加载章节成功:', this.chapters)
       } catch (error) {
         console.error('加载章节失败:', error)
+        this.chapters = []
       }
     },
     goToChapter(id) {

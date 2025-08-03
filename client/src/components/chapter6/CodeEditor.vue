@@ -353,7 +353,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .code-editor-container {
   padding: 2rem;

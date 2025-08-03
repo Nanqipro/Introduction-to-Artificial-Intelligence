@@ -504,7 +504,7 @@ watch(playerExp, (newExp) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .gamified-learning-container {
   padding: 2rem;

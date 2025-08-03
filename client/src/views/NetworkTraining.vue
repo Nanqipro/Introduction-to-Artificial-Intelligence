@@ -38,7 +38,7 @@
           <div class="nav-item">
             <el-icon><Document /></el-icon>
             <span>实验说明</span>
-            <el-button @click="showInstructions = true" type="text" size="small">
+            <el-button @click="showInstructions = true" link size="small">
               查看
             </el-button>
           </div>
@@ -323,7 +323,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .network-training-page {
   min-height: 100vh;

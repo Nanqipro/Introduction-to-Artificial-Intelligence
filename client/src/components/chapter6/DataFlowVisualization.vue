@@ -467,7 +467,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .data-flow-container {
   padding: 2rem;

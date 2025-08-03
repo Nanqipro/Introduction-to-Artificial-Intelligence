@@ -2,6 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
+  baseURL: 'http://localhost:8082',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -84,6 +85,88 @@ export const chapterApi = {
   // 健康检查
   healthCheck() {
     return api.get('/api/chapters/health')
+  }
+}
+
+// 答题系统相关API
+export const quizApi = {
+  // 根据章节获取题目
+  getQuestionsByChapter(chapterId) {
+    return api.get(`/api/quiz/questions/${chapterId}`)
+  },
+
+  // 保存答题结果
+  saveQuizResult(result) {
+    return api.post('/api/quiz/results', result)
+  },
+
+  // 获取用户答题历史
+  getUserQuizHistory() {
+    return api.get('/api/quiz/history')
+  },
+
+  // 获取用户统计信息
+  getUserStats() {
+    return api.get('/api/quiz/stats')
+  },
+
+  // 获取排行榜
+  getLeaderboard() {
+    return api.get('/api/quiz/leaderboard')
+  }
+}
+
+// 管理员相关API
+export const adminApi = {
+  // 获取所有题目
+  getAllQuestions() {
+    return api.get('/api/admin/questions')
+  },
+
+  // 根据ID获取题目
+  getQuestionById(id) {
+    return api.get(`/api/admin/questions/${id}`)
+  },
+
+  // 创建题目
+  createQuestion(question) {
+    return api.post('/api/admin/questions', question)
+  },
+
+  // 更新题目
+  updateQuestion(id, question) {
+    return api.put(`/api/admin/questions/${id}`, question)
+  },
+
+  // 删除题目
+  deleteQuestion(id) {
+    return api.delete(`/api/admin/questions/${id}`)
+  },
+
+  // 导入Excel文件
+  importQuestions(file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    return api.post('/api/admin/questions/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
+
+  // 获取题目统计
+  getQuestionStats() {
+    return api.get('/api/admin/questions/stats')
+  },
+
+  // 根据章节获取题目
+  getQuestionsByChapter(chapterId) {
+    return api.get(`/api/admin/questions/chapter/${chapterId}`)
+  },
+
+  // 健康检查
+  healthCheck() {
+    return api.get('/api/admin/health')
   }
 }
 

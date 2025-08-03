@@ -148,8 +148,8 @@
               <div class="config-item">
                 <span>显示模式：</span>
                 <el-radio-group v-model="visualizationMode" size="small">
-                  <el-radio label="dataflow">数据流</el-radio>
-                  <el-radio label="activation">激活值</el-radio>
+                  <el-radio value="dataflow">数据流</el-radio>
+                  <el-radio value="activation">激活值</el-radio>
                 </el-radio-group>
               </div>
 
@@ -349,7 +349,7 @@
         <template #header>
           <div class="node-header">
             <span>节点详情 - {{ selectedNode.layerName }} 第{{ selectedNode.nodeIndex + 1 }}个节点</span>
-            <el-button @click="selectedNode = null" type="text" size="small">
+            <el-button @click="selectedNode = null" link size="small">
               <el-icon><Close /></el-icon>
             </el-button>
           </div>
@@ -407,7 +407,7 @@
         <template #header>
           <div class="log-header">
             <span><el-icon><Document /></el-icon> 训练日志</span>
-            <el-button @click="clearLog" type="text" size="small">清空日志</el-button>
+            <el-button @click="clearLog" link size="small">清空日志</el-button>
           </div>
         </template>
 
@@ -1410,7 +1410,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .network-visualization-container {
   padding: 1.5rem;

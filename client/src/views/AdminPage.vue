@@ -1,0 +1,1002 @@
+<template>
+  <div class="admin-page">
+    <!-- 页面头部 -->
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">管理员控制台</h1>
+        <p class="page-description">题目管理和Excel导入功能</p>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ stats.totalQuestions || 0 }}</span>
+            <span class="stat-label">总题目数</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ Object.keys(stats.chapterStats || {}).length }}</span>
+            <span class="stat-label">章节数</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ Object.keys(stats.typeStats || {}).length }}</span>
+            <span class="stat-label">题型数</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 操作区域 -->
+    <div class="actions-section">
+      <div class="action-buttons">
+        <button @click="showImportModal = true" class="btn btn-primary">
+          <span class="btn-icon">📤</span>
+          <span class="btn-text">导入Excel</span>
+        </button>
+        <button @click="showCreateModal = true" class="btn btn-secondary">
+          <span class="btn-icon">➕</span>
+          <span class="btn-text">添加题目</span>
+        </button>
+        <button @click="downloadTemplate" class="btn btn-outline">
+          <span class="btn-icon">📥</span>
+          <span class="btn-text">下载模板</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 题目列表 -->
+    <div class="questions-section">
+      <div class="section-header">
+        <h2 class="section-title">题目管理</h2>
+        <div class="filters">
+          <select v-model="selectedChapter" @change="filterQuestions" class="filter-select">
+            <option value="">所有章节</option>
+            <option v-for="chapter in chapters" :key="chapter" :value="chapter">
+              第{{ chapter }}章
+            </option>
+          </select>
+          <select v-model="selectedType" @change="filterQuestions" class="filter-select">
+            <option value="">所有题型</option>
+            <option value="choice">选择题</option>
+            <option value="true-false">判断题</option>
+            <option value="fill">填空题</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="questions-list" v-if="filteredQuestions.length > 0">
+        <div 
+          v-for="question in filteredQuestions" 
+          :key="question.id"
+          class="question-item"
+        >
+          <div class="question-header">
+            <div class="question-meta">
+              <span class="question-id">#{{ question.id }}</span>
+              <span class="question-chapter">第{{ question.chapterId }}章</span>
+              <span class="question-type" :class="getTypeClass(question.type)">
+                {{ getTypeText(question.type) }}
+              </span>
+              <span class="question-points">{{ question.points }}分</span>
+            </div>
+            <div class="question-actions">
+              <button @click="editQuestion(question)" class="btn-icon-btn">
+                ✏️
+              </button>
+              <button @click="deleteQuestion(question.id)" class="btn-icon-btn delete">
+                🗑️
+              </button>
+            </div>
+          </div>
+          <div class="question-content">
+            <h3 class="question-title">{{ question.title }}</h3>
+            <p class="question-description" v-if="question.description">{{ question.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" v-else>
+        <div class="empty-icon">📝</div>
+        <h3>暂无题目</h3>
+        <p>请先导入Excel文件或手动添加题目</p>
+      </div>
+    </div>
+
+    <!-- Excel导入模态框 -->
+    <div class="modal-overlay" v-if="showImportModal" @click="showImportModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>导入Excel文件</h3>
+          <button @click="showImportModal = false" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="upload-area" @click="triggerFileInput" @drop="handleFileDrop" @dragover.prevent>
+            <input 
+              ref="fileInput" 
+              type="file" 
+              accept=".xlsx,.xls" 
+              @change="handleFileSelect" 
+              style="display: none"
+            />
+            <div class="upload-content">
+              <div class="upload-icon">📁</div>
+              <p>点击选择文件或拖拽文件到此处</p>
+              <p class="upload-hint">支持 .xlsx 和 .xls 格式</p>
+            </div>
+          </div>
+          
+          <div v-if="selectedFile" class="file-info">
+            <div class="file-name">{{ selectedFile.name }}</div>
+            <div class="file-size">{{ formatFileSize(selectedFile.size) }}</div>
+          </div>
+
+          <div class="import-tips">
+            <h4>Excel文件格式说明：</h4>
+            <ul>
+              <li>第一行为标题行，从第二行开始为数据</li>
+              <li>列顺序：章节ID | 题型 | 题目 | 描述 | 选项 | 正确答案 | 分值 | 解释</li>
+              <li>题型：choice(选择题) | true-false(判断题) | fill(填空题)</li>
+              <li>选项：多个选项用 | 分隔</li>
+              <li>选择题答案：A=0, B=1, C=2, D=3</li>
+              <li>判断题答案：true/正确 或 false/错误</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="showImportModal = false" class="btn btn-secondary">取消</button>
+          <button @click="importQuestions" class="btn btn-primary" :disabled="!selectedFile || importing">
+            {{ importing ? '导入中...' : '开始导入' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 创建/编辑题目模态框 -->
+    <div class="modal-overlay" v-if="showCreateModal" @click="showCreateModal = false">
+      <div class="modal-content large" @click.stop>
+        <div class="modal-header">
+          <h3>{{ editingQuestion ? '编辑题目' : '添加题目' }}</h3>
+          <button @click="showCreateModal = false" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="saveQuestion" class="question-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>章节ID</label>
+                <input v-model="questionForm.chapterId" type="text" required />
+              </div>
+              <div class="form-group">
+                <label>题型</label>
+                <select v-model="questionForm.type" required>
+                  <option value="choice">选择题</option>
+                  <option value="true-false">判断题</option>
+                  <option value="fill">填空题</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>分值</label>
+                <input v-model="questionForm.points" type="number" min="1" max="100" required />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>题目</label>
+              <textarea v-model="questionForm.title" rows="3" required></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>描述</label>
+              <textarea v-model="questionForm.description" rows="2"></textarea>
+            </div>
+            
+            <div class="form-group" v-if="questionForm.type === 'choice'">
+              <label>选项</label>
+              <div class="options-list">
+                <div v-for="(option, index) in questionForm.options" :key="index" class="option-item">
+                  <input v-model="questionForm.options[index]" type="text" :placeholder="`选项 ${String.fromCharCode(65 + index)}`" />
+                  <button type="button" @click="removeOption(index)" class="remove-option">×</button>
+                </div>
+              </div>
+              <button type="button" @click="addOption" class="btn btn-outline">添加选项</button>
+            </div>
+            
+            <div class="form-group">
+              <label>正确答案</label>
+              <input v-model="questionForm.correctAnswer" type="text" required />
+            </div>
+            
+            <div class="form-group">
+              <label>解释</label>
+              <textarea v-model="questionForm.explanation" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button @click="showCreateModal = false" class="btn btn-secondary">取消</button>
+          <button @click="saveQuestion" class="btn btn-primary" :disabled="saving">
+            {{ saving ? '保存中...' : '保存' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { adminApi } from '../services/api'
+
+export default {
+  name: 'AdminPage',
+  data() {
+    return {
+      questions: [],
+      filteredQuestions: [],
+      stats: {},
+      selectedChapter: '',
+      selectedType: '',
+      chapters: ['1', '2', '3', '4', '5', '6', '7'],
+      showImportModal: false,
+      showCreateModal: false,
+      selectedFile: null,
+      importing: false,
+      saving: false,
+      editingQuestion: null,
+      questionForm: {
+        chapterId: '',
+        type: 'choice',
+        title: '',
+        description: '',
+        options: ['', '', '', ''],
+        correctAnswer: '',
+        points: 20,
+        explanation: ''
+      }
+    }
+  },
+  async mounted() {
+    await this.loadData()
+  },
+  methods: {
+    async loadData() {
+      try {
+        const [questions, stats] = await Promise.all([
+          adminApi.getAllQuestions(),
+          adminApi.getQuestionStats()
+        ])
+        this.questions = questions || []
+        this.filteredQuestions = [...this.questions]
+        this.stats = stats || {}
+      } catch (error) {
+        console.error('加载数据失败:', error)
+      }
+    },
+    filterQuestions() {
+      this.filteredQuestions = this.questions.filter(question => {
+        const chapterMatch = !this.selectedChapter || question.chapterId === this.selectedChapter
+        const typeMatch = !this.selectedType || question.type === this.selectedType
+        return chapterMatch && typeMatch
+      })
+    },
+    getTypeClass(type) {
+      const classMap = {
+        'choice': 'type-choice',
+        'true-false': 'type-tf',
+        'fill': 'type-fill'
+      }
+      return classMap[type] || ''
+    },
+    getTypeText(type) {
+      const textMap = {
+        'choice': '选择题',
+        'true-false': '判断题',
+        'fill': '填空题'
+      }
+      return textMap[type] || '题目'
+    },
+    triggerFileInput() {
+      this.$refs.fileInput.click()
+    },
+    handleFileSelect(event) {
+      const file = event.target.files[0]
+      if (file) {
+        this.selectedFile = file
+      }
+    },
+    handleFileDrop(event) {
+      event.preventDefault()
+      const file = event.dataTransfer.files[0]
+      if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+        this.selectedFile = file
+      }
+    },
+    formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    },
+    async importQuestions() {
+      if (!this.selectedFile) return
+      
+      this.importing = true
+      try {
+        const result = await adminApi.importQuestions(this.selectedFile)
+        if (result.success) {
+          alert(`导入成功！共导入 ${result.importedCount} 道题目`)
+          this.showImportModal = false
+          this.selectedFile = null
+          await this.loadData()
+        } else {
+          alert(`导入失败：${result.message}`)
+        }
+      } catch (error) {
+        console.error('导入失败:', error)
+        alert('导入失败：' + error.message)
+      } finally {
+        this.importing = false
+      }
+    },
+    downloadTemplate() {
+      // 创建Excel模板下载链接
+      const templateData = [
+        ['章节ID', '题型', '题目', '描述', '选项', '正确答案', '分值', '解释'],
+        ['1', 'choice', '人工智能的定义是什么？', '选择最准确的人工智能定义', '能够执行特定任务的计算机程序|模拟人类智能的计算机系统|能够学习的算法|自动化的机器', 'B', '20', '人工智能是模拟人类智能的计算机系统，能够执行通常需要人类智能的任务。'],
+        ['1', 'true-false', '图灵测试是判断机器是否具有智能的标准方法。', '', '', 'true', '15', '图灵测试由艾伦·图灵提出，通过判断机器能否在对话中让人类无法区分其是否为人类来测试智能。'],
+        ['1', 'fill', '人工智能之父是谁？', '请输入人名', '', '约翰·麦卡锡', '25', '约翰·麦卡锡在1956年的达特茅斯会议上首次提出"人工智能"这一术语。']
+      ]
+      
+      let csvContent = "data:text/csv;charset=utf-8,\uFEFF"
+      templateData.forEach(row => {
+        csvContent += row.join(',') + '\n'
+      })
+      
+      const link = document.createElement('a')
+      link.href = encodeURI(csvContent)
+      link.download = '题目导入模板.csv'
+      link.click()
+    },
+    editQuestion(question) {
+      this.editingQuestion = question
+      this.questionForm = {
+        chapterId: question.chapterId,
+        type: question.type,
+        title: question.title,
+        description: question.description || '',
+        options: question.options ? [...question.options] : ['', '', '', ''],
+        correctAnswer: String(question.correctAnswer),
+        points: question.points,
+        explanation: question.explanation || ''
+      }
+      this.showCreateModal = true
+    },
+    addOption() {
+      this.questionForm.options.push('')
+    },
+    removeOption(index) {
+      this.questionForm.options.splice(index, 1)
+    },
+    async saveQuestion() {
+      this.saving = true
+      try {
+        const questionData = {
+          chapterId: this.questionForm.chapterId,
+          type: this.questionForm.type,
+          title: this.questionForm.title,
+          description: this.questionForm.description,
+          options: this.questionForm.type === 'choice' ? this.questionForm.options.filter(opt => opt.trim()) : null,
+          correctAnswer: this.questionForm.correctAnswer,
+          points: this.questionForm.points,
+          explanation: this.questionForm.explanation
+        }
+        
+        if (this.editingQuestion) {
+          await adminApi.updateQuestion(this.editingQuestion.id, questionData)
+        } else {
+          await adminApi.createQuestion(questionData)
+        }
+        
+        this.showCreateModal = false
+        this.editingQuestion = null
+        this.resetQuestionForm()
+        await this.loadData()
+        alert(this.editingQuestion ? '题目更新成功' : '题目创建成功')
+      } catch (error) {
+        console.error('保存题目失败:', error)
+        alert('保存失败：' + error.message)
+      } finally {
+        this.saving = false
+      }
+    },
+    resetQuestionForm() {
+      this.questionForm = {
+        chapterId: '',
+        type: 'choice',
+        title: '',
+        description: '',
+        options: ['', '', '', ''],
+        correctAnswer: '',
+        points: 20,
+        explanation: ''
+      }
+    },
+    async deleteQuestion(id) {
+      if (!confirm('确定要删除这道题目吗？')) return
+      
+      try {
+        await adminApi.deleteQuestion(id)
+        await this.loadData()
+        alert('题目删除成功')
+      } catch (error) {
+        console.error('删除题目失败:', error)
+        alert('删除失败：' + error.message)
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+.admin-page {
+  background: $secondary-color;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.page-header {
+  background: linear-gradient(135deg, $card-bg, $secondary-color);
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid $card-border;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  color: $text-color;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: $text-secondary-color;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.stats-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: $card-bg;
+  border-radius: $card-radius;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $card-border;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 2rem;
+  color: $text-color;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: $accent-color;
+  font-size: 0.9rem;
+}
+
+.actions-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 2rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: $btn-radius;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: $btn-primary-bg;
+  color: $text-color;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $btn-shadow;
+  }
+}
+
+.btn-secondary {
+  background: $btn-secondary-bg;
+  color: $text-color;
+  
+  &:hover {
+    background: $btn-secondary-hover;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $btn-outline-color;
+  border: 2px solid $btn-outline-border;
+  
+  &:hover {
+    background: $btn-outline-color;
+    color: $text-color;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+.questions-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  color: $text-color;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-select {
+  padding: 0.5rem 1rem;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $form-radius;
+  color: $text-color;
+  font-size: 0.9rem;
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.question-item {
+  background: $card-bg;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $card-border;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.question-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.question-id {
+  color: $accent-color;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.question-chapter {
+  color: $info-color;
+  font-weight: 600;
+}
+
+.question-type {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  
+  &.type-choice {
+    background: $type-choice-bg;
+    color: $text-color;
+  }
+  
+  &.type-tf {
+    background: $type-tf-bg;
+    color: $text-color;
+  }
+  
+  &.type-fill {
+    background: $type-fill-bg;
+    color: $text-color;
+  }
+}
+
+.question-points {
+  color: $success-color;
+  font-weight: 600;
+}
+
+.question-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: $form-radius;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: rgba(143, 161, 179, 0.1);
+  }
+  
+  &.delete:hover {
+    background: rgba($error-color, 0.1);
+  }
+}
+
+.question-content {
+  color: $text-color;
+}
+
+.question-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.question-description {
+  color: $text-secondary-color;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: $accent-color;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $modal-overlay-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modal-content {
+  background: $modal-bg;
+  border-radius: $modal-radius;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  &.large {
+    max-width: 800px;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid $card-header-border;
+}
+
+.modal-header h3 {
+  color: $text-color;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: $accent-color;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: $form-radius;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: rgba(143, 161, 179, 0.1);
+  }
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid $card-header-border;
+}
+
+.upload-area {
+  border: 2px dashed $upload-border;
+  border-radius: $upload-radius;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    border-color: $upload-hover-border;
+  }
+}
+
+.upload-content {
+  color: $accent-color;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.upload-hint {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.file-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: $secondary-color;
+  border-radius: $form-radius;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-name {
+  color: $text-color;
+  font-weight: 600;
+}
+
+.file-size {
+  color: $accent-color;
+  font-size: 0.9rem;
+}
+
+.import-tips {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: $secondary-color;
+  border-radius: $upload-radius;
+  border-left: 4px solid $info-color;
+}
+
+.import-tips h4 {
+  color: $text-color;
+  margin-bottom: 1rem;
+}
+
+.import-tips ul {
+  color: $text-secondary-color;
+  line-height: 1.6;
+  padding-left: 1.5rem;
+}
+
+.question-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: $text-color;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.8rem 1rem;
+  background: $form-bg;
+  border: 1px solid $form-border;
+  border-radius: $form-radius;
+  color: $text-color;
+  font-size: 1rem;
+  
+  &:focus {
+    outline: none;
+    border-color: $form-focus-border;
+  }
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.option-item input {
+  flex: 1;
+}
+
+.remove-option {
+  background: $error-color;
+  color: $text-color;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: $error-hover;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filters {
+    width: 100%;
+  }
+  
+  .filter-select {
+    flex: 1;
+  }
+  
+  .question-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .question-meta {
+    width: 100%;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style> 

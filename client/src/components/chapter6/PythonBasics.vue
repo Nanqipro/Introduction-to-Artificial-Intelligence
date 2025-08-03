@@ -363,7 +363,7 @@ watch(overallProgress, (newProgress) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+
 
 .python-basics-container {
   padding: 2rem;
