@@ -41,6 +41,40 @@
         </el-menu-item>
       </el-menu>
       
+      <!-- 用户菜单 -->
+      <div class="user-section">
+        <!-- 未登录状态 -->
+        <div v-if="!isLoggedIn" class="auth-buttons">
+          <el-button type="primary" @click="goToPage('/login')">
+            登录
+          </el-button>
+        </div>
+
+        <!-- 已登录状态 -->
+        <el-dropdown v-else class="user-menu" trigger="click">
+          <div class="user-info">
+            <el-avatar :size="36" :src="currentUser?.userPic || ''">
+              <el-icon><User /></el-icon>
+            </el-avatar>
+            <span class="username">{{ currentUser?.nickname || currentUser?.username || '用户' }}</span>
+            <el-icon class="dropdown-icon"><ArrowDown /></el-icon>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="goToPage('/profile')">
+                <el-icon style="margin-right: 12px;"><User /></el-icon>
+                个人中心
+              </el-dropdown-item>
+              <div class="dropdown-divider"></div>
+              <el-dropdown-item @click="handleLogout">
+                <el-icon style="margin-right: 12px;"><SwitchButton /></el-icon>
+                退出登录
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+
       <!-- 更多菜单 -->
       <el-dropdown class="more-menu" trigger="click">
         <el-button class="more-btn" link>
@@ -71,16 +105,29 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { computed } from 'vue'
-import { House, Notebook, InfoFilled, TrendCharts, Connection, DataAnalysis, Setting, MoreFilled } from '@element-plus/icons-vue'
+import { computed, onMounted } from 'vue'
+import { House, Notebook, InfoFilled, TrendCharts, Connection, DataAnalysis, Setting, MoreFilled, User, ArrowDown, SwitchButton } from '@element-plus/icons-vue'
+import { useAuth } from '@/composables/useAuth'
 
 const route = useRoute()
 const router = useRouter()
+const { isLoggedIn, currentUser, logout, checkAuthStatus } = useAuth()
+
 const activePath = computed(() => route.path)
 
 const goToPage = (path) => {
   router.push(path)
 }
+
+const handleLogout = () => {
+  logout()
+  router.push('/')
+}
+
+// 初始化时检查认证状态
+onMounted(() => {
+  checkAuthStatus()
+})
 </script>
 
 <style scoped lang="scss">
@@ -273,6 +320,55 @@ const goToPage = (path) => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// 用户区域样式
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.auth-buttons {
+  .el-button {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+.user-menu {
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($accent-color, 0.1);
+  }
+
+  .username {
+    color: $text-color;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .dropdown-icon {
+    font-size: 0.8rem;
+    color: $text-secondary-color;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .dropdown-icon {
+    transform: rotate(180deg);
   }
 }
 

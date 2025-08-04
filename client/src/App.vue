@@ -14,18 +14,30 @@
 </template>
 
 <script>
+import { onMounted } from 'vue'
 import Navigation from './components/Navigation.vue'
+import { useAuth } from '@/composables/useAuth'
 
 export default {
   name: 'App',
   components: {
     Navigation
+  },
+  setup() {
+    const { checkAuthStatus } = useAuth()
+
+    // 应用启动时检查认证状态
+    onMounted(() => {
+      checkAuthStatus()
+    })
+
+    return {}
   }
 }
 </script>
 
 <style lang="scss">
-@import './styles/variables.scss';
+@use './styles/variables.scss' as *;
 
 /* 全局样式重置 */
 * {
