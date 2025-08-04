@@ -13,6 +13,13 @@ const api = axios.create({
 api.interceptors.request.use(
   config => {
     console.log('发送请求:', config.method?.toUpperCase(), config.url)
+
+    // 添加JWT token到请求头
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = token
+    }
+
     return config
   },
   error => {
@@ -24,15 +31,24 @@ api.interceptors.request.use(
 // 响应拦截器
 api.interceptors.response.use(
   response => {
-    console.log('收到响应123:', response.status, response.data)
+    console.log('收到响应:', response.status, response.data)
     // 处理后端统一响应格式
-    if (response.data && response.data.code === 200) {
-      return response.data.data
+    if (response.data && response.data.code === 0) {
+      return response.data
     }
     return response.data
   },
   error => {
     console.error('响应错误:', error.response?.status, error.response?.data || error.message)
+
+    // 处理401未授权错误
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
+      // 可以在这里触发登录页面跳转
+      window.location.href = '/login'
+      return Promise.reject(new Error('登录已过期，请重新登录'))
+    }
 
     // 处理后端错误响应
     if (error.response?.data?.message) {
@@ -167,6 +183,58 @@ export const adminApi = {
   // 健康检查
   healthCheck() {
     return api.get('/api/admin/health')
+  }
+}
+
+// 用户相关API
+export const userApi = {
+  // 用户注册
+  register(userData) {
+    const formData = new URLSearchParams()
+    formData.append('username', userData.username)
+    formData.append('password', userData.password)
+
+    return api.post('/user/register', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  },
+
+  // 用户登录
+  login(userData) {
+    const formData = new URLSearchParams()
+    formData.append('username', userData.username)
+    formData.append('password', userData.password)
+
+    return api.post('/user/login', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  },
+
+  // 获取用户信息
+  getUserInfo() {
+    return api.get('/user/userInfo')
+  },
+
+  // 更新用户基本信息
+  updateUserInfo(userInfo) {
+    return api.put('/user/update', userInfo)
+  },
+
+  // 更新用户头像
+  updateAvatar(avatarUrl) {
+    const params = new URLSearchParams()
+    params.append('avatarUrl', avatarUrl)
+
+    return api.patch(`/user/updateAvatar?${params.toString()}`)
+  },
+
+  // 更新用户密码
+  updatePassword(passwordData) {
+    return api.patch('/user/updatePwd', passwordData)
   }
 }
 

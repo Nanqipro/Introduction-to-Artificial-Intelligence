@@ -6,6 +6,8 @@ import About from '../views/About.vue'
 import QuizPage from '../views/QuizPage.vue'
 import StatsPage from '../views/StatsPage.vue'
 import AdminPage from '../views/AdminPage.vue'
+import LoginPage from '../views/LoginPage.vue'
+import UserProfile from '../views/UserProfile.vue'
 
 const routes = [
   {
@@ -68,7 +70,27 @@ const routes = [
     component: AdminPage,
     meta: {
       title: '管理员控制台',
-      description: '题目管理和Excel导入功能'
+      description: '题目管理和Excel导入功能',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/login',
+    name: 'LoginPage',
+    component: LoginPage,
+    meta: {
+      title: '用户登录',
+      description: '用户登录注册页面'
+    }
+  },
+  {
+    path: '/profile',
+    name: 'UserProfile',
+    component: UserProfile,
+    meta: {
+      title: '个人中心',
+      description: '用户个人信息管理',
+      requiresAuth: true
     }
   }
 ]
@@ -76,6 +98,25 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+
+  // 如果路由需要认证但用户未登录，跳转到登录页
+  if (to.meta.requiresAuth && !token) {
+    next('/login')
+    return
+  }
+
+  // 如果用户已登录且访问登录页，跳转到首页
+  if (to.name === 'LoginPage' && token) {
+    next('/')
+    return
+  }
+
+  next()
 })
 
 export default router
