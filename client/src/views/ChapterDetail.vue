@@ -170,8 +170,8 @@ export default {
       this.error = null
 
       try {
-        const chapter = await chapterApi.getChapterById(this.id)
-        this.chapter = chapter
+        const response = await chapterApi.getChapterById(this.id)
+        this.chapter = response.data
         console.log('加载章节详情成功:', this.chapter)
       } catch (error) {
         console.error('加载章节详情失败:', error)
@@ -186,8 +186,8 @@ export default {
     },
     async loadAllChapters() {
       try {
-        const chapters = await chapterApi.getChapterOverview()
-        this.allChapters = chapters || []
+        const response = await chapterApi.getChapterOverview()
+        this.allChapters = response.data || []
       } catch (error) {
         console.error('加载章节列表失败:', error)
       }

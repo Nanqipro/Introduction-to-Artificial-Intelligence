@@ -327,15 +327,42 @@ onUnmounted(() => {
 
 .network-training-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  position: relative;
   padding: 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
 }
 
 .page-header {
-  background: rgba(35, 39, 46, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid $border-color;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem 2rem;
+  position: relative;
+  z-index: 10;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(120, 119, 198, 0.1) 0%, rgba(255, 119, 198, 0.05) 100%);
+    pointer-events: none;
+  }
   
   .header-content {
     display: flex;
@@ -350,35 +377,58 @@ onUnmounted(() => {
       gap: 1rem;
       
       .back-button {
-        background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-        border: none;
-        color: $primary-color;
+          background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+          border: 1px solid #444;
+          color: white;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+          }
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(176, 179, 184, 0.4);
+          &:hover {
+            background: linear-gradient(135deg, #3c3c3c 0%, #2a2a2a 100%);
+            border-color: #666;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+            
+            &::before {
+              left: 100%;
+            }
+          }
         }
-      }
 
       .title-section {
         .page-title {
           font-size: 2rem;
           font-weight: 600;
-          color: $text-color;
+          color: #ffffff;
           margin: 0 0 0.5rem 0;
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 
           .el-icon {
-            color: $accent-color;
+            color: #ffffff;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
           }
         }
 
         .page-subtitle {
-          color: $text-secondary-color;
+          color: rgba(255, 255, 255, 0.7);
           margin: 0;
           font-size: 1.1rem;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
       }
     }
@@ -400,15 +450,33 @@ onUnmounted(() => {
   padding: 1rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  z-index: 5;
   
   .nav-card {
-    background: rgba(35, 39, 46, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid $border-color;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(120, 119, 198, 0.1) 0%, rgba(255, 119, 198, 0.05) 100%);
+      pointer-events: none;
+    }
 
     :deep(.el-card__body) {
       background: transparent;
+      position: relative;
+      z-index: 2;
     }
 
     .nav-content {
@@ -419,18 +487,29 @@ onUnmounted(() => {
       .nav-item {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+        }
 
         .el-icon {
-          color: $accent-color;
-          font-size: 1.2rem;
+          color: #ffffff;
+          font-size: 1.3rem;
+          filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
         }
 
         span {
           flex: 1;
-          color: $text-color;
+          color: rgba(255, 255, 255, 0.9);
           font-weight: 500;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
       }
     }
@@ -515,64 +594,149 @@ onUnmounted(() => {
 
 // 对话框样式覆盖
 :deep(.el-dialog) {
-  background: $secondary-color;
-  border: 1px solid $border-color;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    pointer-events: none;
+  }
 
   .el-dialog__header {
-    background: $primary-color;
-    border-bottom: 1px solid $border-color;
-    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem 2rem;
+    position: relative;
+    z-index: 2;
 
     .el-dialog__title {
-      color: $text-color;
+      color: #ffffff;
       font-weight: 600;
+      font-size: 1.2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .el-dialog__headerbtn {
       .el-dialog__close {
-        color: $text-secondary-color;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
 
         &:hover {
-          color: $text-color;
+          color: white;
+          transform: scale(1.1);
         }
       }
     }
   }
 
   .el-dialog__body {
-    background: $secondary-color;
-    color: $text-color;
-    padding: 1.5rem;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
   }
 
   .el-dialog__footer {
-    background: $secondary-color;
-    border-top: 1px solid $border-color;
-    padding: 1rem 1.5rem;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+    position: relative;
+    z-index: 2;
   }
 }
 
 // 按钮样式覆盖
 :deep(.el-button) {
   &.el-button--primary {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-    border: none;
-    color: $primary-color;
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+    border: 1px solid #444;
+    color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
 
     &:hover {
-      background: linear-gradient(135deg, $accent-color-light 0%, $accent-color 100%);
-      transform: translateY(-1px);
+      background: linear-gradient(135deg, #3c3c3c 0%, #2a2a2a 100%);
+      border-color: #666;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+      
+      &::before {
+        left: 100%;
+      }
+    }
+  }
+
+  &.el-button--success {
+    background: linear-gradient(135deg, #404040 0%, #2a2a2a 100%);
+    border: 1px solid #555;
+    color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #505050 0%, #3a3a3a 100%);
+      border-color: #777;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  &.el-button--warning {
+    background: linear-gradient(135deg, #3a3a3a 0%, #252525 100%);
+    border: 1px solid #666;
+    color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #4a4a4a 0%, #353535 100%);
+      border-color: #888;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
     }
   }
 
   &.el-button--info {
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    color: $text-color;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 
     &:hover {
-      background: $primary-hover-color;
-      border-color: $accent-color;
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
   }
 }
@@ -580,9 +744,122 @@ onUnmounted(() => {
 // 标签样式覆盖
 :deep(.el-tag) {
   &.el-tag--success {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-    border: none;
-    color: $primary-color;
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border: 1px solid #555;
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+      border-color: #777;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+    
+    .el-icon {
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    }
+  }
+}
+
+// 表单样式覆盖
+:deep(.el-form) {
+  .el-form-item__label {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .el-input {
+    .el-input__wrapper {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+        pointer-events: none;
+      }
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        transform: translateY(-1px);
+      }
+
+      &.is-focus {
+        border-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2), 0 8px 25px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .el-input__inner {
+        color: rgba(255, 255, 255, 0.9);
+        background: transparent;
+        position: relative;
+        z-index: 2;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+
+  .el-textarea {
+    .el-textarea__inner {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+        pointer-events: none;
+      }
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        transform: translateY(-1px);
+      }
+
+      &:focus {
+        border-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2), 0 8px 25px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
   }
 }
 

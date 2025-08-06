@@ -2,19 +2,23 @@ package com.goodlab.server.pojo;
 
 
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NonNull;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 
 
 @Data
+@Entity
+@Table(name = "user")
 public class User {
-    @NonNull
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;//主键ID
     private String username;//用户名
     @JsonIgnore
@@ -26,6 +30,18 @@ public class User {
     @Email
     private String email;//邮箱
     private String userPic;//用户头像地址
+    private Integer level = 1;//用户等级
+    private Integer experience = 0;//经验值
+    @Column(name = "total_score")
+    private Integer totalScore = 0;//总分数
+    @Column(name = "completed_chapters")
+    private Integer completedChapters = 0;//已完成章节数
+    @Column(name = "quiz_count")
+    private Integer quizCount = 0;//答题次数
+    @Column(name = "correct_answers")
+    private Integer correctAnswers = 0;//正确答案数
+    @Column(name = "create_time")
     private LocalDateTime createTime;//创建时间
+    @Column(name = "update_time")
     private LocalDateTime updateTime;//更新时间
 }

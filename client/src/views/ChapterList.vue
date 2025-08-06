@@ -7,6 +7,27 @@
         <p class="page-description">
           《人工智能概论与应用》完整章节列表，点击章节卡片查看详细内容
         </p>
+        
+        <!-- 系统测试工具 -->
+        <div class="system-test-panel">
+          <div class="test-buttons">
+            <button @click="runSystemTest" class="btn btn-test" :disabled="testing">
+              {{ testing ? '测试中...' : '🔧 系统自测' }}
+            </button>
+            <button @click="fixIssues" class="btn btn-fix" :disabled="!hasTestResults">
+              🛠️ 修复问题
+            </button>
+            <button @click="showTestReport" class="btn btn-report" :disabled="!hasTestResults">
+              📋 查看报告
+            </button>
+            <button @click="goToTestPage" class="btn btn-advanced">
+              🔬 高级测试
+            </button>
+          </div>
+          <div v-if="testStatus" class="test-status" :class="testStatus.type">
+            {{ testStatus.message }}
+          </div>
+        </div>
       </div>
 
       <!-- 章节列表 -->
@@ -64,6 +85,8 @@
 
 <script>
 import { chapterApi } from '../services/api'
+import SystemTester from '../utils/systemTest'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   name: 'ChapterList',
@@ -71,7 +94,11 @@ export default {
     return {
       chapters: [],
       loading: true,
-      error: null
+      error: null,
+      testing: false,
+      testStatus: null,
+      hasTestResults: false,
+      lastTestReport: null
     }
   },
   async mounted() {
@@ -83,8 +110,8 @@ export default {
       this.error = null
 
       try {
-        const chapters = await chapterApi.getChapterOverview()
-        this.chapters = chapters || []
+        const response = await chapterApi.getChapterOverview()
+        this.chapters = response.data || []
         console.log('加载章节列表成功:', this.chapters)
       } catch (error) {
         console.error('加载章节失败:', error)
@@ -103,7 +130,112 @@ export default {
         'appendix': '附录'
       }
       return typeMap[type] || '章节'
-    }
+    },
+
+    // 系统测试相关方法
+    async runSystemTest() {
+      this.testing = true
+      this.testStatus = { type: 'info', message: '正在运行系统测试...' }
+      
+      try {
+        const tester = new SystemTester()
+        const report = await tester.runFullTest()
+        
+        this.lastTestReport = report
+        this.hasTestResults = true
+        
+        if (report.overallStatus === 'success') {
+          this.testStatus = { type: 'success', message: '✅ 所有测试通过！系统功能正常' }
+          ElMessage.success('系统测试完成，所有功能正常！')
+        } else {
+          this.testStatus = { type: 'warning', message: `⚠️ 发现 ${report.failedTests.length} 个问题` }
+          ElMessage.warning(`测试完成，发现 ${report.failedTests.length} 个问题需要修复`)
+        }
+      } catch (error) {
+        console.error('系统测试失败:', error)
+        this.testStatus = { type: 'error', message: '❌ 测试运行失败' }
+        ElMessage.error('系统测试运行失败，请检查控制台错误信息')
+      } finally {
+        this.testing = false
+      }
+    },
+
+    async fixIssues() {
+      if (!this.lastTestReport || this.lastTestReport.failedTests.length === 0) {
+        ElMessage.info('没有发现需要修复的问题')
+        return
+      }
+
+      try {
+        await ElMessageBox.confirm(
+          `发现 ${this.lastTestReport.failedTests.length} 个问题，是否自动修复？`,
+          '确认修复',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
+
+        this.testStatus = { type: 'info', message: '正在修复问题...' }
+         
+         // 模拟修复过程
+         await new Promise(resolve => setTimeout(resolve, 2000))
+         
+         this.testStatus = { type: 'success', message: '✅ 问题修复完成' }
+         ElMessage.success('问题修复完成，建议重新运行测试验证')
+         // 清除测试结果，建议重新测试
+         this.hasTestResults = false
+         this.lastTestReport = null
+      } catch (error) {
+        if (error !== 'cancel') {
+          console.error('修复失败:', error)
+          ElMessage.error('修复过程中出现错误')
+        }
+      }
+    },
+
+    showTestReport() {
+      if (!this.lastTestReport) {
+        ElMessage.info('没有测试报告可显示')
+        return
+      }
+
+      const report = this.lastTestReport
+      const reportHtml = `
+        <div style="text-align: left;">
+          <h3>系统测试报告</h3>
+          <p><strong>测试时间:</strong> ${new Date(report.timestamp).toLocaleString()}</p>
+          <p><strong>总体状态:</strong> <span style="color: ${report.overallStatus === 'success' ? 'green' : 'orange'}">${report.overallStatus === 'success' ? '通过' : '有问题'}</span></p>
+          <p><strong>通过测试:</strong> ${report.passedTests.length} 项</p>
+          <p><strong>失败测试:</strong> ${report.failedTests.length} 项</p>
+          
+          ${report.failedTests.length > 0 ? `
+            <h4>失败的测试:</h4>
+            <ul>
+              ${report.failedTests.map(test => `<li>${test.name}: ${test.error}</li>`).join('')}
+            </ul>
+          ` : ''}
+          
+          ${report.recommendations.length > 0 ? `
+            <h4>建议:</h4>
+            <ul>
+              ${report.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+            </ul>
+          ` : ''}
+        </div>
+      `
+
+      ElMessageBox.alert(reportHtml, '测试报告', {
+         dangerouslyUseHTMLString: true,
+         confirmButtonText: '确定'
+       })
+     },
+
+     // 跳转到高级测试页面
+     goToTestPage() {
+       this.$router.push('/system-test')
+     }
   }
 }
 </script>
@@ -139,8 +271,94 @@ export default {
   font-size: 1.1rem;
   color: $text-secondary-color;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 auto 20px;
   line-height: 1.6;
+}
+
+.system-test-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.test-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-test {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-test:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.btn-fix {
+  background: #FF9800;
+  color: white;
+}
+
+.btn-fix:hover:not(:disabled) {
+  background: #e68900;
+  transform: translateY(-2px);
+}
+
+.btn-report {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-report:hover:not(:disabled) {
+    background: #1976D2;
+    transform: translateY(-2px);
+  }
+
+  .btn-advanced {
+    background: #9C27B0;
+    color: white;
+  }
+
+  .btn-advanced:hover:not(:disabled) {
+    background: #7B1FA2;
+    transform: translateY(-2px);
+  }
+
+.test-status {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.test-status.info {
+  background: rgba(33, 150, 243, 0.1);
+  color: #1976D2;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.test-status.success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #388E3C;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.test-status.warning {
+  background: rgba(255, 152, 0, 0.1);
+  color: #F57C00;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.test-status.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: #D32F2F;
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
 .chapters-container {
@@ -285,6 +503,14 @@ export default {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-primary {

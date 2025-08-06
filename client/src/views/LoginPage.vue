@@ -21,7 +21,7 @@
             v-model="formData.username"
             placeholder="请输入用户名"
             size="large"
-            prefix-icon="User"
+            :prefix-icon="User"
             clearable
           />
         </el-form-item>
@@ -32,7 +32,7 @@
             type="password"
             placeholder="请输入密码"
             size="large"
-            prefix-icon="Lock"
+            :prefix-icon="Lock"
             show-password
             clearable
           />
@@ -44,7 +44,7 @@
             type="password"
             placeholder="请确认密码"
             size="large"
-            prefix-icon="Lock"
+            :prefix-icon="Lock"
             show-password
             clearable
           />
@@ -77,6 +77,7 @@ import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { ElMessage } from 'element-plus'
+import { User, Lock } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { login, register } = useAuth()
@@ -169,73 +170,218 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
+  background: linear-gradient(135deg, $primary-color, $primary-gradient-end);
+  padding: $page-padding;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(176, 179, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
 }
 
 .login-card {
-  background: white;
-  border-radius: 16px;
-  padding: 3rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: $card-bg;
+  border-radius: $card-radius;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
+  border: 1px solid $card-border;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: $card-radius;
+    pointer-events: none;
+  }
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: $spacing-lg;
+  position: relative;
+  z-index: 2;
 }
 
 .brand-icon {
-  margin-bottom: 1rem;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: $spacing-md;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  width: 100px;
+  height: 100px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+  }
 }
 
 .login-title {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #333;
-  margin-bottom: 0.5rem;
+  color: $text-color;
+  margin-bottom: $spacing-xs;
+  background: linear-gradient(135deg, $text-color, $accent-color-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-subtitle {
-  color: #666;
-  font-size: 0.9rem;
+  color: $text-secondary-color;
+  font-size: 0.95rem;
+  font-weight: 400;
+  opacity: 0.9;
 }
 
 .login-form {
+  position: relative;
+  z-index: 2;
+  
   .el-form-item {
-    margin-bottom: 1.5rem;
+    margin-bottom: $spacing-md;
+    
+    :deep(.el-input) {
+      .el-input__wrapper {
+        background: $form-bg;
+        border: 1px solid $form-border;
+        border-radius: $form-radius;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        
+        &:hover {
+          border-color: $accent-color;
+        }
+        
+        &.is-focus {
+          border-color: $form-focus-border;
+          box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+      
+      .el-input__inner {
+        color: $text-color;
+        
+        &::placeholder {
+          color: $text-secondary-color;
+        }
+      }
+      
+      .el-input__prefix-inner,
+        .el-input__suffix-inner {
+          color: #ffffff !important;
+          opacity: 1;
+          font-size: 20px;
+          filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+        }
+    }
   }
 }
 
 .login-btn {
   width: 100%;
-  height: 48px;
-  font-size: 1rem;
+  height: 52px;
+  font-size: 1.1rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: $btn-radius;
+  background: $btn-primary-bg;
+  border: none;
+  box-shadow: $btn-shadow;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .form-footer {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: $spacing-md;
+  position: relative;
+  z-index: 2;
+  
+  .el-button {
+    color: $link-color;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      color: $link-hover-color;
+      transform: translateY(-1px);
+    }
+  }
 }
 
 @media (max-width: 480px) {
   .login-container {
-    padding: 1rem;
+    padding: $spacing-sm;
   }
   
   .login-card {
-    padding: 2rem;
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+  
+  .login-title {
+    font-size: 1.6rem;
+  }
+  
+  .login-subtitle {
+    font-size: 0.85rem;
   }
 }
 </style>

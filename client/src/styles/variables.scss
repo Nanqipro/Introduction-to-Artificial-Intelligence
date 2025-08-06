@@ -48,6 +48,7 @@ $form-bg: #23272e; // 表单背景色
 $form-border: rgba(57, 59, 64, 0.18); // 表单边框色
 $form-focus-border: #4a90e2; // 表单聚焦边框色
 $form-radius: 8px; // 表单圆角
+$input-radius: 8px; // 输入框圆角
 
 // 模态框通用变量
 $modal-overlay-bg: rgba(0, 0, 0, 0.8); // 模态框遮罩背景
@@ -144,3 +145,24 @@ $spacing-lg: 2rem; // 大间距
 $font-size-base: 16px;
 $border-radius: 10px;
 $box-shadow: 0 4px 24px rgba(24, 25, 26, 0.10);
+
+// UserProfile 页面专用变量 - 深色主题
+$card-background: rgba(42, 42, 42, 0.9);
+$header-background: linear-gradient(135deg, #333333, #404040);
+$text-primary: #ffffff;
+$text-secondary: #b0b3b8;
+$text-placeholder: #8e9297;
+$text-disabled: #6c757d;
+$input-background: rgba(60, 60, 60, 0.8);
+$profile-button-primary: #ffffff;
+$profile-button-danger: #f56565;
+$disabled-background: rgba(50, 50, 50, 0.6);
+$disabled-border: rgba(80, 80, 80, 0.5);
+$border-color: rgba(255, 255, 255, 0.1);
+$border-hover: #ffffff;
+$button-secondary: rgba(60, 60, 60, 0.8);
+$button-secondary-hover: rgba(80, 80, 80, 0.9);
+$primary-color: #6c6c6c;
+$primary-hover: #cccccc;
+$danger-color: #f56565;
+$danger-hover: #e53e3e;

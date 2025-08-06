@@ -8,6 +8,7 @@ import StatsPage from '../views/StatsPage.vue'
 import AdminPage from '../views/AdminPage.vue'
 import LoginPage from '../views/LoginPage.vue'
 import UserProfile from '../views/UserProfile.vue'
+import SystemTestPage from '../views/SystemTestPage.vue'
 
 const routes = [
   {
@@ -91,6 +92,15 @@ const routes = [
       title: '个人中心',
       description: '用户个人信息管理',
       requiresAuth: true
+    }
+  },
+  {
+    path: '/system-test',
+    name: 'SystemTestPage',
+    component: SystemTestPage,
+    meta: {
+      title: '系统测试',
+      description: '系统功能测试和诊断工具'
     }
   }
 ]

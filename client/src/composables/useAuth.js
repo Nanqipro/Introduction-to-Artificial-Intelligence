@@ -16,7 +16,7 @@ export function useAuth() {
     try {
       const response = await userApi.login(loginData)
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         token.value = response.data
         localStorage.setItem('token', response.data)
         
@@ -41,7 +41,7 @@ export function useAuth() {
     try {
       const response = await userApi.register(registerData)
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         ElMessage.success('注册成功，请登录')
         return { success: true }
       } else {
@@ -60,7 +60,7 @@ export function useAuth() {
     try {
       const response = await userApi.getUserInfo()
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         userInfo.value = response.data
         localStorage.setItem('userInfo', JSON.stringify(response.data))
         return { success: true, data: response.data }
@@ -78,7 +78,7 @@ export function useAuth() {
     try {
       const response = await userApi.updateUserInfo(updateData)
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         // 更新成功后重新获取用户信息
         await fetchUserInfo()
         ElMessage.success('更新成功')
@@ -99,7 +99,7 @@ export function useAuth() {
     try {
       const response = await userApi.updateAvatar(avatarUrl)
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         // 更新成功后重新获取用户信息
         await fetchUserInfo()
         ElMessage.success('头像更新成功')
@@ -120,7 +120,7 @@ export function useAuth() {
     try {
       const response = await userApi.updatePassword(passwordData)
       
-      if (response.code === 0) {
+      if (response.code === 200) {
         ElMessage.success('密码更新成功')
         return { success: true }
       } else {

@@ -228,10 +228,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { 
   Trophy, User, Check 
 } from '@element-plus/icons-vue'
+import { levelApi } from '../../services/api.js'
+import { ElMessage } from 'element-plus'
 
 // 定义事件
 const emit = defineEmits(['progress-update'])
@@ -245,6 +247,9 @@ const earnedBadges = ref([])
 const selectedChallenge = ref(null)
 const challengeStarted = ref(false)
 const challengeCompleted = ref(false)
+const userStats = ref({})
+const userAchievements = ref([])
+const learningRecords = ref([])
 
 // 挑战数据
 const challenges = ref([
@@ -382,6 +387,65 @@ const expToNextLevel = computed(() => {
   return Math.max(0, nextLevelExp - playerExp.value)
 })
 
+// 从后端获取用户数据
+const fetchUserData = async () => {
+  try {
+    // 获取用户统计信息
+    const statsResponse = await levelApi.getUserStats()
+    if (statsResponse.code === 200) {
+      userStats.value = statsResponse.data
+      playerLevel.value = statsResponse.data.level || 1
+      playerExp.value = statsResponse.data.experience || 0
+      completedChallenges.value = statsResponse.data.completedChapters || 0
+    }
+    
+    // 获取用户成就
+    const achievementsResponse = await levelApi.getUserAchievements()
+    if (achievementsResponse.code === 200) {
+      userAchievements.value = achievementsResponse.data
+      earnedBadges.value = achievementsResponse.data.map(a => a.achievementType)
+    }
+    
+    // 获取学习记录
+    const recordsResponse = await levelApi.getLearningRecords()
+    if (recordsResponse.code === 200) {
+      learningRecords.value = recordsResponse.data
+    }
+  } catch (error) {
+    console.error('获取用户数据失败:', error)
+    ElMessage.error('获取用户数据失败')
+  }
+}
+
+// 添加经验值到后端
+const addExperienceToBackend = async (experience, activityType, chapterId = null, score = null) => {
+  try {
+    const response = await levelApi.addExperience({
+      experience,
+      activityType,
+      chapterId,
+      score
+    })
+    
+    if (response.code === 200) {
+      const result = response.data
+      if (result.levelUp) {
+        ElMessage.success(`恭喜升级到 ${result.newLevel} 级！`)
+        showLevelUpAnimation()
+      }
+      
+      // 更新本地数据
+      playerLevel.value = result.newLevel
+      playerExp.value = result.newExperience
+      
+      return result
+    }
+  } catch (error) {
+    console.error('添加经验值失败:', error)
+    ElMessage.error('添加经验值失败')
+  }
+}
+
 // 方法
 const selectChallenge = (challenge) => {
   selectedChallenge.value = challenge
@@ -404,16 +468,21 @@ const checkTaskCompletion = () => {
   }
 }
 
-const completeChallenge = () => {
+const completeChallenge = async () => {
   challengeCompleted.value = true
   selectedChallenge.value.completed = true
   completedChallenges.value++
   
-  // 增加经验值
-  playerExp.value += selectedChallenge.value.exp
+  // 计算总分数
+  const totalScore = selectedChallenge.value.tasks.reduce((sum, task) => sum + (task.completed ? task.points : 0), 0)
   
-  // 检查升级
-  checkLevelUp()
+  // 添加经验值到后端
+  await addExperienceToBackend(
+    selectedChallenge.value.exp,
+    'challenge_completion',
+    selectedChallenge.value.id,
+    totalScore
+  )
   
   // 获得徽章
   if (selectedChallenge.value.badge) {
@@ -488,6 +557,11 @@ const getCurrentChallengeStatus = () => {
   if (selectedChallenge.value.unlocked) return '可挑战'
   return '未解锁'
 }
+
+// 组件挂载时获取用户数据
+onMounted(() => {
+  fetchUserData()
+})
 
 // 监听器
 watch(playerExp, (newExp) => {
