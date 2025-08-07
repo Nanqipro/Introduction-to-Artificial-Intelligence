@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://localhost:8082',
+  baseURL: '',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -111,6 +111,11 @@ export const quizApi = {
     return api.get(`/api/quiz/questions/${chapterId}`)
   },
 
+  // 获取题目（兼容性方法）
+  getQuestions(chapterId) {
+    return this.getQuestionsByChapter(chapterId)
+  },
+
   // 保存答题结果
   saveQuizResult(result) {
     return api.post('/api/quiz/results', result)
@@ -119,6 +124,11 @@ export const quizApi = {
   // 获取用户答题历史
   getUserQuizHistory() {
     return api.get('/api/quiz/history')
+  },
+
+  // 获取用户历史（兼容性方法）
+  getUserHistory() {
+    return this.getUserQuizHistory()
   },
 
   // 获取用户统计信息
@@ -219,6 +229,11 @@ export const userApi = {
     return api.get('/user/userInfo')
   },
 
+  // 获取当前用户（兼容性方法）
+  getCurrentUser() {
+    return this.getUserInfo()
+  },
+
   // 更新用户基本信息
   updateUserInfo(userInfo) {
     return api.put('/user/update', userInfo)
@@ -235,6 +250,39 @@ export const userApi = {
   // 更新用户密码
   updatePassword(passwordData) {
     return api.patch('/user/updatePwd', passwordData)
+  }
+}
+
+// 等级系统相关API
+export const levelApi = {
+  // 添加经验值
+  addExperience(experienceData) {
+    return api.post('/api/level/addExperience', experienceData)
+  },
+
+  // 获取用户统计信息
+  getUserStats() {
+    return api.get('/api/level/stats')
+  },
+
+  // 获取用户成就
+  getUserAchievements() {
+    return api.get('/api/level/achievements')
+  },
+
+  // 获取学习记录
+  getLearningRecords() {
+    return api.get('/api/level/records')
+  },
+
+  // 获取排行榜
+  getLeaderboard(limit = 10) {
+    return api.get(`/api/level/leaderboard?limit=${limit}`)
+  },
+
+  // 计算等级
+  calculateLevel(experience) {
+    return api.get(`/api/level/calculateLevel?experience=${experience}`)
   }
 }
 

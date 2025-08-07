@@ -88,8 +88,8 @@ export default {
   methods: {
     async loadChapters() {
       try {
-        const chapters = await chapterApi.getChapterOverview()
-        this.chapters = chapters || []
+        const response = await chapterApi.getChapterOverview()
+        this.chapters = response.data || []
         console.log('Home页面加载章节成功:', this.chapters)
       } catch (error) {
         console.error('加载章节失败:', error)

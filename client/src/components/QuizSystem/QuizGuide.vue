@@ -4,12 +4,16 @@
     <div class="guide-character" @click="toggleGuide">
       <div class="character-avatar">
         <div class="character-face">
-          <div class="bow"></div>
-          <div class="blush left"></div>
-          <div class="blush right"></div>
+          <div class="hair-back"></div>
+          <div class="hair-front"></div>
+          <div class="headband"></div>
           <div class="eyes">
-            <div class="eye left-eye" :class="{ 'blink': isBlinking }"></div>
-            <div class="eye right-eye" :class="{ 'blink': isBlinking }"></div>
+            <div class="eye left-eye" :class="{ 'blink': isBlinking }">
+              <div class="pupil"></div>
+            </div>
+            <div class="eye right-eye" :class="{ 'blink': isBlinking }">
+              <div class="pupil"></div>
+            </div>
           </div>
           <div class="mouth" :class="mouthExpression"></div>
         </div>
@@ -105,10 +109,10 @@ export default {
       dialogType: 'info',
       tipType: 'info',
       currentTip: '',
-      tipIcon: '💡',
-      dialogIcon: '👩‍🎓',
-      dialogTitle: '学习小助手',
-      dialogMessage: '我是你的学习伙伴，有什么问题都可以问我哦！',
+      tipIcon: '⚡',
+      dialogIcon: '⚡',
+      dialogTitle: '佐助导师',
+      dialogMessage: '我是你的忍术导师，让我来指导你的学习！',
       floatingTip: '',
       mouthExpression: 'normal',
       // 智能反应相关数据
@@ -161,7 +165,7 @@ export default {
           // 用户选择了答案，但不显示结果，只是轻微反应
           this.showFloatingTip = true
           this.tipType = 'answer'
-          this.tipIcon = '✏️'
+          this.tipIcon = '⚡'
           this.floatingTip = '答案已选择，点击提交查看结果'
           
           setTimeout(() => {
@@ -226,9 +230,9 @@ export default {
     
     showWelcomeMessage() {
       this.dialogType = 'welcome'
-      this.dialogIcon = '👋'
-      this.dialogTitle = '欢迎来到答题系统！'
-      this.dialogMessage = `我是你的学习小助手，我会陪伴你完成这${this.totalQuestions}道题目。准备好了吗？`
+      this.dialogIcon = '⚡'
+      this.dialogTitle = '欢迎来到忍术训练！'
+      this.dialogMessage = `我是佐助，你的忍术导师。我会指导你完成这${this.totalQuestions}道训练题目。准备好了吗？`
       this.showDialog = true
       this.isWaving = true
       
@@ -246,17 +250,17 @@ export default {
       this.tipType = 'progress'
       
       if (progress >= 80 && overallAccuracy >= 0.8) {
-        this.tipIcon = '🏆'
+        this.tipIcon = '⚡'
         this.floatingTip = `优秀！进度${progress}%，正确率${(overallAccuracy * 100).toFixed(0)}%`
       } else if (progress >= 60 && overallAccuracy >= 0.6) {
-        this.tipIcon = '🌟'
+        this.tipIcon = '⚡'
         this.floatingTip = `很好！进度${progress}%，正确率${(overallAccuracy * 100).toFixed(0)}%`
       } else if (progress >= 40) {
-        this.tipIcon = '📊'
+        this.tipIcon = '⚡'
         this.floatingTip = `进度：${progress}% (${index + 1}/${this.totalQuestions})`
       } else {
-        this.tipIcon = '🚀'
-        this.floatingTip = `开始答题！进度${progress}%`
+        this.tipIcon = '⚡'
+        this.floatingTip = `开始忍术训练！进度${progress}%`
       }
       
       setTimeout(() => {
@@ -337,9 +341,9 @@ export default {
       if (this.consecutiveCorrect >= 5) {
         // 连续答对5题以上
         this.dialogType = 'success'
-        this.dialogIcon = '🏆'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '太厉害了！'
-        this.dialogMessage = `连续答对${this.consecutiveCorrect}题！你简直就是学习天才！继续保持这个状态！`
+        this.dialogMessage = `连续答对${this.consecutiveCorrect}题！你简直就是忍术天才！继续保持这个状态！`
         this.mouthExpression = 'excited'
         this.userMood = 'excited'
         this.isWaving = true
@@ -347,9 +351,9 @@ export default {
       } else if (this.consecutiveCorrect >= 3) {
         // 连续答对3-4题
         this.dialogType = 'success'
-        this.dialogIcon = '🌟'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '太棒了！'
-        this.dialogMessage = `连续答对${this.consecutiveCorrect}题！你的学习状态很棒，继续保持！`
+        this.dialogMessage = `连续答对${this.consecutiveCorrect}题！你的忍术修炼状态很棒，继续保持！`
         this.mouthExpression = 'happy'
         this.userMood = 'happy'
         this.isWaving = true
@@ -357,7 +361,7 @@ export default {
       } else if (overallAccuracy >= 0.8) {
         // 整体正确率很高
         this.dialogType = 'success'
-        this.dialogIcon = '🎯'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '回答正确！'
         this.dialogMessage = '答对了！你的正确率很高，说明你掌握得很好！'
         this.mouthExpression = 'happy'
@@ -366,7 +370,7 @@ export default {
       } else {
         // 普通答对
         this.dialogType = 'success'
-        this.dialogIcon = '✅'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '答对了！'
         this.dialogMessage = this.getRandomCorrectMessage()
         this.mouthExpression = 'happy'
@@ -381,7 +385,7 @@ export default {
       if (this.consecutiveWrong >= 3) {
         // 连续答错3题以上
         this.dialogType = 'error'
-        this.dialogIcon = '🤗'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '别灰心！'
         this.dialogMessage = `连续答错${this.consecutiveWrong}题了，没关系！让我来帮你分析一下，我们一起找出问题所在。`
         this.mouthExpression = 'sad'
@@ -391,9 +395,9 @@ export default {
       } else if (overallAccuracy < 0.5) {
         // 整体正确率较低
         this.dialogType = 'error'
-        this.dialogIcon = '💪'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '加油！'
-        this.dialogMessage = '答错了，但不要紧！学习是一个过程，每个错误都是进步的机会。我们一起努力！'
+        this.dialogMessage = '答错了，但不要紧！忍术修炼是一个过程，每个错误都是变强的机会。我们一起努力！'
         this.mouthExpression = 'sad'
         this.userMood = 'worried'
         this.isPointing = true
@@ -401,7 +405,7 @@ export default {
       } else {
         // 普通答错
         this.dialogType = 'error'
-        this.dialogIcon = '💡'
+        this.dialogIcon = '⚡'
         this.dialogTitle = '没关系！'
         this.dialogMessage = this.getRandomWrongMessage()
         this.mouthExpression = 'sad'
@@ -438,28 +442,32 @@ export default {
     
     getRandomCorrectMessage() {
       const messages = [
-        '答对了！你真棒！',
-        '回答正确！继续保持！',
+        '答对了！你的忍术天赋不错！',
+        '回答正确！继续保持这种状态！',
         '答对了！你的理解很到位！',
-        '回答正确！学习进步中！',
+        '回答正确！忍术修炼有进步！',
         '答对了！你掌握得很好！',
-        '回答正确！为你点赞！',
+        '回答正确！不愧是我的学生！',
         '答对了！你的思路很清晰！',
-        '回答正确！继续保持这个状态！'
+        '回答正确！继续保持这个状态！',
+        '答对了！你的实力在增长！',
+        '回答正确！这就是忍者的觉悟！'
       ]
       return messages[Math.floor(Math.random() * messages.length)]
     },
     
     getRandomWrongMessage() {
       const messages = [
-        '答错了，但没关系！每个错误都是学习的机会。',
+        '答错了，但没关系！每个错误都是变强的机会。',
         '答错了，不要紧！我们一起找出正确答案。',
-        '答错了，但你已经很努力了！继续加油！',
-        '答错了，没关系！学习就是在错误中进步的。',
+        '答错了，但你已经很努力了！继续修炼！',
+        '答错了，没关系！忍术修炼就是在错误中进步的。',
         '答错了，但不要灰心！你一定能行的！',
-        '答错了，没关系！我们一起学习，一起进步！',
+        '答错了，没关系！我们一起修炼，一起变强！',
         '答错了，但你已经很棒了！继续努力！',
-        '答错了，不要紧！错误是成功路上的垫脚石。'
+        '答错了，不要紧！错误是成功路上的垫脚石。',
+        '答错了，但你的意志很坚强！继续加油！',
+        '答错了，没关系！这就是忍者的修行！'
       ]
       return messages[Math.floor(Math.random() * messages.length)]
     },
@@ -469,15 +477,15 @@ export default {
       const consecutiveWrong = this.consecutiveWrong
       
       this.dialogType = 'hint'
-      this.dialogIcon = '💡'
-      this.dialogTitle = '学习提示'
+      this.dialogIcon = '⚡'
+      this.dialogTitle = '忍术提示'
       
       if (consecutiveWrong >= 3) {
         this.dialogMessage = '看起来你遇到了一些困难。让我们一起来分析：1. 仔细阅读题目 2. 找出关键词 3. 排除明显错误的选项 4. 相信你的直觉！'
         this.userMood = 'worried'
         this.mouthExpression = 'sad'
       } else if (overallAccuracy < 0.6) {
-        this.dialogMessage = '你的正确率还有提升空间。建议：1. 放慢答题速度 2. 仔细思考每个选项 3. 回顾相关知识点 4. 不要着急，慢慢来！'
+        this.dialogMessage = '你的忍术修炼还有提升空间。建议：1. 放慢答题速度 2. 仔细思考每个选项 3. 回顾相关知识点 4. 不要着急，慢慢来！'
         this.userMood = 'worried'
         this.mouthExpression = 'sad'
       } else {
@@ -501,10 +509,12 @@ export default {
         '回想一下相关的知识点，答案就在你的脑海中！',
         '不要被表面现象迷惑，深入思考题目的本质！',
         '仔细分析每个选项，排除法是个好方法！',
-        '相信你的第一感觉，但也要仔细验证！',
+        '相信你的直觉，但也要仔细验证！',
         '题目中的每个词都很重要，不要忽略细节！',
         '把题目读两遍，确保理解完全正确！',
-        '冷静思考，答案就在眼前！'
+        '冷静思考，答案就在眼前！',
+        '专注你的查克拉，答案会自然显现！',
+        '用写轮眼仔细观察每个选项！'
       ]
       return hints[Math.floor(Math.random() * hints.length)]
     },
@@ -514,17 +524,17 @@ export default {
       const totalAnswered = this.questionHistory.length
       
       this.dialogType = 'info'
-      this.dialogIcon = '👩‍🎓'
-      this.dialogTitle = '学习小贴士'
+      this.dialogIcon = '⚡'
+      this.dialogTitle = '忍术指导'
       
       if (totalAnswered === 0) {
-        this.dialogMessage = '准备好开始答题了吗？记住要仔细阅读题目，相信自己一定能行！'
+        this.dialogMessage = '准备好开始忍术训练了吗？记住要专注，相信你的实力！'
       } else if (overallAccuracy >= 0.9) {
-        this.dialogMessage = '哇！你的表现太棒了！继续保持这个状态，你简直就是学习天才！'
+        this.dialogMessage = '太棒了！你的忍术天赋很高！继续保持这个状态，你简直就是天才忍者！'
       } else if (overallAccuracy >= 0.7) {
-        this.dialogMessage = '你的学习状态很好！继续保持，相信你还能做得更好！'
+        this.dialogMessage = '你的忍术修炼状态很好！继续保持，相信你还能变得更强！'
       } else if (overallAccuracy >= 0.5) {
-        this.dialogMessage = '你的表现不错！多练习一下，正确率会更高的！'
+        this.dialogMessage = '你的表现不错！多练习一下，忍术水平会更高的！'
       } else if (this.consecutiveWrong >= 2) {
         this.dialogMessage = '看起来你遇到了一些困难。不要着急，慢慢来，我们一起找出问题所在！'
       } else {
@@ -536,18 +546,18 @@ export default {
     
     getRandomEncouragement() {
       const encouragements = [
-        '记住要仔细阅读题目哦！',
-        '不确定的时候可以多想想',
-        '相信自己，你一定能行！',
-        '学习是一个渐进的过程',
-        '每个错误都是学习的机会',
-        '加油！你是最棒的！',
-        '慢慢来，不要着急哦～',
+        '记住要专注，不要分心！',
+        '不确定的时候可以多思考',
+        '相信自己，你有忍者的潜力！',
+        '忍术修炼是一个渐进的过程',
+        '每个错误都是变强的机会',
+        '加油！你一定能成为强大的忍者！',
+        '慢慢来，不要着急～',
         '你已经做得很好了！',
-        '学习需要耐心，你已经很棒了！',
-        '每一次尝试都是进步！',
-        '不要害怕犯错，错误是成功的一部分！',
-        '你的努力一定会得到回报的！'
+        '修炼需要耐心，你已经很棒了！',
+        '每一次训练都是进步！',
+        '不要害怕失败，失败是成功的一部分！',
+        '你的努力一定会让你变得更强！'
       ]
       return encouragements[Math.floor(Math.random() * encouragements.length)]
     },
@@ -572,11 +582,11 @@ export default {
       const accuracy = (overallAccuracy * 100).toFixed(1)
       
       this.dialogType = 'info'
-      this.dialogIcon = '📊'
-      this.dialogTitle = '答题总结'
+      this.dialogIcon = '⚡'
+      this.dialogTitle = '训练总结'
       
       if (accuracy >= 90) {
-        this.dialogMessage = `太棒了！你的正确率是${accuracy}%，表现非常优秀！你简直就是学习天才！`
+        this.dialogMessage = `太棒了！你的正确率是${accuracy}%，表现非常优秀！你简直就是忍术天才！`
         this.mouthExpression = 'excited'
       } else if (accuracy >= 80) {
         this.dialogMessage = `很好！你的正确率是${accuracy}%，表现很棒！继续保持这个状态！`
@@ -585,7 +595,7 @@ export default {
         this.dialogMessage = `不错！你的正确率是${accuracy}%，还有提升空间，继续加油！`
         this.mouthExpression = 'happy'
       } else {
-        this.dialogMessage = `你的正确率是${accuracy}%，不要灰心！学习是一个过程，多练习一定会进步的！`
+        this.dialogMessage = `你的正确率是${accuracy}%，不要灰心！忍术修炼是一个过程，多练习一定会进步的！`
         this.mouthExpression = 'sad'
       }
       
@@ -647,7 +657,7 @@ export default {
 .character-face {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #ffb3d9 0%, #ff8ac4 100%);
+  background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
   border-radius: 50%;
   position: relative;
   display: flex;
@@ -667,7 +677,7 @@ export default {
     transform: translateX(-50%);
     width: 75px;
     height: 40px;
-    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     border-radius: 40px 40px 0 0;
     z-index: -1;
   }
@@ -680,51 +690,83 @@ export default {
     transform: translateX(-50%);
     width: 85px;
     height: 45px;
-    background: linear-gradient(135deg, #ffb3d9 0%, #ff8ac4 100%);
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     border-radius: 45px 45px 0 0;
     z-index: -2;
   }
   
-  // 蝴蝶结装饰
-  .bow {
+  // 头发后层
+  .hair-back {
     position: absolute;
     top: -15px;
-    right: -5px;
-    width: 20px;
-    height: 12px;
-    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
-    border-radius: 6px;
-    transform: rotate(15deg);
-    animation: bowSway 3s ease-in-out infinite;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 50px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 35px 35px 0 0;
+    z-index: -3;
+  }
+  
+  // 头发前层
+  .hair-front {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 40px;
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    border-radius: 30px 30px 0 0;
+    z-index: -2;
     
     &::before {
       content: '';
       position: absolute;
-      top: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 8px;
-      background: #fff;
-      border-radius: 2px;
+      top: 5px;
+      left: 10px;
+      width: 15px;
+      height: 20px;
+      background: #2c3e50;
+      border-radius: 0 0 15px 15px;
+      transform: rotate(-15deg);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      width: 15px;
+      height: 20px;
+      background: #2c3e50;
+      border-radius: 0 0 15px 15px;
+      transform: rotate(15deg);
     }
   }
   
-  // 腮红
-  .blush {
+  // 护额
+  .headband {
     position: absolute;
-    top: 15px;
-    width: 8px;
-    height: 4px;
-    background: rgba(255, 105, 180, 0.4);
-    border-radius: 50%;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 8px;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    border-radius: 4px;
+    border: 1px solid #fff;
+    z-index: 1;
     
-    &.left {
-      left: 8px;
-    }
-    
-    &.right {
-      right: 8px;
+    &::before {
+      content: '⚡';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+      color: #fff;
+      animation: sharingan 3s linear infinite;
     }
   }
 }
@@ -741,6 +783,18 @@ export default {
   background: #333;
   border-radius: 50%;
   position: relative;
+  
+  .pupil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: #000;
+    border-radius: 50%;
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
   
   &::after {
     content: '';
@@ -760,7 +814,7 @@ export default {
     left: 1px;
     width: 3px;
     height: 3px;
-    background: #ff69b4;
+    background: #e74c3c;
     border-radius: 50%;
     opacity: 0.6;
   }
@@ -770,7 +824,8 @@ export default {
     border-radius: 2px;
     
     &::after,
-    &::before {
+    &::before,
+    .pupil {
       display: none;
     }
   }
@@ -793,7 +848,7 @@ export default {
     transform: translateX(-50%);
     width: 4px;
     height: 2px;
-    background: #ff69b4;
+    background: #e74c3c;
     border-radius: 2px;
   }
   
@@ -861,7 +916,7 @@ export default {
 .body-shape {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
   border-radius: 25px 25px 15px 15px;
   box-shadow: 
     0 4px 8px rgba(0, 0, 0, 0.2),
@@ -877,7 +932,7 @@ export default {
     transform: translateX(-50%);
     width: 20px;
     height: 15px;
-    background: linear-gradient(135deg, #ffb3d9 0%, #ff8ac4 100%);
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
@@ -896,7 +951,7 @@ export default {
 .arm {
   width: 8px;
   height: 30px;
-  background: linear-gradient(135deg, #ffb3d9 0%, #ff8ac4 100%);
+  background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
   border-radius: 4px;
   position: relative;
   transform-origin: top center;
@@ -910,7 +965,7 @@ export default {
     transform: translateX(-50%);
     width: 12px;
     height: 8px;
-    background: linear-gradient(135deg, #ffb3d9 0%, #ff8ac4 100%);
+    background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
@@ -1002,12 +1057,12 @@ export default {
   }
 }
 
-@keyframes bowSway {
-  0%, 100% {
-    transform: rotate(15deg);
+@keyframes sharingan {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: rotate(20deg);
+  100% {
+    transform: rotate(360deg);
   }
 }
 
