@@ -1,27 +1,114 @@
 <template>
   <div class="quiz-guide" :class="{ 'guide-active': isActive, 'guide-hidden': isHidden }">
-    <!-- 卡通人物容器 -->
+    <!-- 现代可爱卡通人物容器 -->
     <div class="guide-character" @click="toggleGuide">
-      <div class="character-avatar">
-        <div class="character-face">
-          <div class="hair-back"></div>
-          <div class="hair-front"></div>
-          <div class="headband"></div>
-          <div class="eyes">
-            <div class="eye left-eye" :class="{ 'blink': isBlinking }">
-              <div class="pupil"></div>
+      <div class="character-container">
+        <!-- 现代可爱动漫角色 -->
+        <div class="character-main">
+          <!-- 头部区域 -->
+          <div class="character-head">
+            <!-- 动态头发 -->
+            <div class="hair-layer">
+              <div class="hair-main"></div>
+              <div class="hair-highlight"></div>
+              <div class="hair-strand left"></div>
+              <div class="hair-strand right"></div>
+              <div class="hair-accessory"></div>
             </div>
-            <div class="eye right-eye" :class="{ 'blink': isBlinking }">
-              <div class="pupil"></div>
+            
+            <!-- 表情丰富的脸部 -->
+            <div class="face">
+              <!-- 大眼睛设计 -->
+              <div class="eyes-container">
+                <div class="eye left-eye" :class="{ 'blink': isBlinking, 'happy': mouthExpression === 'happy', 'excited': mouthExpression === 'excited', 'sad': mouthExpression === 'sad' }">
+                  <div class="eye-white"></div>
+                  <div class="eye-iris"></div>
+                  <div class="eye-pupil"></div>
+                  <div class="eye-shine primary"></div>
+                  <div class="eye-shine secondary"></div>
+                  <div class="eyelash"></div>
+                </div>
+                <div class="eye right-eye" :class="{ 'blink': isBlinking, 'happy': mouthExpression === 'happy', 'excited': mouthExpression === 'excited', 'sad': mouthExpression === 'sad' }">
+                  <div class="eye-white"></div>
+                  <div class="eye-iris"></div>
+                  <div class="eye-pupil"></div>
+                  <div class="eye-shine primary"></div>
+                  <div class="eye-shine secondary"></div>
+                  <div class="eyelash"></div>
+                </div>
+              </div>
+              
+              <!-- 眉毛 -->
+              <div class="eyebrows">
+                <div class="eyebrow left-eyebrow" :class="mouthExpression"></div>
+                <div class="eyebrow right-eyebrow" :class="mouthExpression"></div>
+              </div>
+              
+              <!-- 可爱的脸颊 -->
+              <div class="cheeks" :class="{ 'show': mouthExpression === 'happy' || mouthExpression === 'excited' }">
+                <div class="cheek left-cheek"></div>
+                <div class="cheek right-cheek"></div>
+              </div>
+              
+              <!-- 表情嘴巴 -->
+              <div class="mouth-container">
+                <div class="mouth" :class="mouthExpression"></div>
+                <div class="mouth-highlight" v-if="mouthExpression === 'happy' || mouthExpression === 'excited'"></div>
+              </div>
+              
+              <!-- 鼻子 -->
+              <div class="nose"></div>
             </div>
           </div>
-          <div class="mouth" :class="mouthExpression"></div>
+          
+          <!-- 身体部分 -->
+          <div class="character-body">
+            <div class="body-main"></div>
+            <div class="body-pattern"></div>
+            <div class="body-shadow"></div>
+            
+            <!-- 动态手臂 -->
+            <div class="arms-container">
+              <div class="arm left-arm" :class="{ 'wave': isWaving, 'point': isPointing, 'thinking': mouthExpression === 'worried' }">
+                <div class="arm-upper"></div>
+                <div class="arm-lower"></div>
+                <div class="hand">
+                  <div class="fingers"></div>
+                  <div class="thumb"></div>
+                </div>
+              </div>
+              <div class="arm right-arm" :class="{ 'wave': isWaving, 'point': isPointing, 'celebrate': mouthExpression === 'excited' }">
+                <div class="arm-upper"></div>
+                <div class="arm-lower"></div>
+                <div class="hand">
+                  <div class="fingers"></div>
+                  <div class="thumb"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 腿部 -->
+            <div class="legs-container">
+              <div class="leg left-leg">
+                <div class="leg-upper"></div>
+                <div class="leg-lower"></div>
+                <div class="foot"></div>
+              </div>
+              <div class="leg right-leg">
+                <div class="leg-upper"></div>
+                <div class="leg-lower"></div>
+                <div class="foot"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="character-body">
-          <div class="body-shape"></div>
-          <div class="arms">
-            <div class="arm left-arm" :class="{ 'wave': isWaving }"></div>
-            <div class="arm right-arm" :class="{ 'point': isPointing }"></div>
+        
+        <!-- 装饰元素 -->
+        <div class="character-effects">
+          <div class="sparkle" v-if="mouthExpression === 'excited'"></div>
+          <div class="hearts" v-if="mouthExpression === 'happy'">
+            <div class="heart"></div>
+            <div class="heart"></div>
           </div>
         </div>
       </div>
@@ -29,6 +116,7 @@
       <!-- 状态指示器 -->
       <div class="status-indicator" v-if="showStatus">
         <div class="status-dot" :class="statusType"></div>
+        <div class="status-ring"></div>
       </div>
     </div>
 
@@ -619,363 +707,783 @@ export default {
   left: 2rem;
   bottom: 2rem;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &.guide-hidden {
-    transform: translateX(-100%);
+    transform: translateX(-120%) scale(0.8);
     opacity: 0;
   }
   
   &.guide-active {
     .guide-character {
       transform: scale(1.1);
+      
+      .character-container {
+        animation: bounce 0.6s ease;
+      }
     }
   }
 }
 
 .guide-character {
-  width: 80px;
-  height: 120px;
-  cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.15));
   
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(-2px);
+    filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.2));
   }
 }
 
-.character-avatar {
+.character-container {
+  width: 90px;
+  height: 120px;
+  position: relative;
+}
+
+.character-main {
   width: 100%;
   height: 100%;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transform-origin: center bottom;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
 }
 
-.character-face {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
-  border-radius: 50%;
+// 现代头部设计
+.character-head {
+  width: 80px;
+  height: 80px;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  margin: 0 auto;
+  z-index: 10;
+}
+
+// 现代头发层次设计
+.hair-layer {
+  position: absolute;
+  top: -8px;
+  left: -10px;
+  width: 100px;
+  height: 70px;
+  z-index: 1;
+}
+
+.hair-main {
+  width: 100%;
+  height: 55px;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 30%, #74b9ff 70%, #0984e3 100%);
+  border-radius: 60px 60px 25px 25px;
+  position: relative;
   box-shadow: 
-    0 8px 16px rgba(0, 0, 0, 0.2),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  border: 3px solid #fff;
+    inset 0 -10px 20px rgba(0, 0, 0, 0.2),
+    0 6px 16px rgba(108, 92, 231, 0.3);
+  animation: hairFloat 3s ease-in-out infinite;
   
   &::before {
     content: '';
     position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 75px;
-    height: 40px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    border-radius: 40px 40px 0 0;
-    z-index: -1;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 85px;
+    top: 3px;
+    left: 10px;
+    width: 80px;
     height: 45px;
-    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-    border-radius: 45px 45px 0 0;
-    z-index: -2;
-  }
-  
-  // 头发后层
-  .hair-back {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 50px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    border-radius: 35px 35px 0 0;
-    z-index: -3;
-  }
-  
-  // 头发前层
-  .hair-front {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 40px;
-    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-    border-radius: 30px 30px 0 0;
-    z-index: -2;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 5px;
-      left: 10px;
-      width: 15px;
-      height: 20px;
-      background: #2c3e50;
-      border-radius: 0 0 15px 15px;
-      transform: rotate(-15deg);
-    }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      width: 15px;
-      height: 20px;
-      background: #2c3e50;
-      border-radius: 0 0 15px 15px;
-      transform: rotate(15deg);
-    }
-  }
-  
-  // 护额
-  .headband {
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 8px;
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    border-radius: 4px;
-    border: 1px solid #fff;
-    z-index: 1;
-    
-    &::before {
-      content: '⚡';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 8px;
-      color: #fff;
-      animation: sharingan 3s linear infinite;
-    }
+    background: linear-gradient(135deg, #a29bfe 0%, #74b9ff 50%, #0984e3 100%);
+    border-radius: 50px 50px 20px 20px;
+    opacity: 0.8;
   }
 }
 
-.eyes {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+.hair-highlight {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  width: 60px;
+  height: 30px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  border-radius: 40px 40px 15px 15px;
+  filter: blur(1px);
+  animation: shimmer 2s ease-in-out infinite;
 }
 
-.eye {
+.hair-strand {
+  position: absolute;
+  width: 15px;
+  height: 25px;
+  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 2px 6px rgba(108, 92, 231, 0.3);
+  
+  &.left {
+    top: 30px;
+    left: -5px;
+    transform: rotate(-20deg);
+    animation: strandSway 2.5s ease-in-out infinite;
+  }
+  
+  &.right {
+    top: 30px;
+    right: -5px;
+    transform: rotate(20deg);
+    animation: strandSway 2.5s ease-in-out infinite reverse;
+  }
+}
+
+.hair-accessory {
+  position: absolute;
+  top: 18px;
+  right: 15px;
   width: 14px;
   height: 14px;
-  background: #333;
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
   border-radius: 50%;
-  position: relative;
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.8),
+    0 2px 8px rgba(232, 67, 147, 0.4);
+  animation: accessoryTwinkle 1.5s ease-in-out infinite;
   
-  .pupil {
+  &::before {
+    content: '✨';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 6px;
-    height: 6px;
-    background: #000;
-    border-radius: 50%;
-    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    font-size: 8px;
+    opacity: 0.8;
   }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 5px;
-    height: 5px;
-    background: #fff;
-    border-radius: 50%;
-  }
+}
+
+// 现代脸部设计
+.face {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
+  border-radius: 50%;
+  position: relative;
+  top: 15px;
+  left: 5px;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 6px 24px rgba(255, 234, 167, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+  z-index: 5;
   
   &::before {
     content: '';
     position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 3px;
-    height: 3px;
-    background: #e74c3c;
+    top: 8px;
+    left: 12px;
+    width: 46px;
+    height: 36px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
     border-radius: 50%;
-    opacity: 0.6;
+    filter: blur(2px);
   }
+}
+
+// 现代眼睛容器
+.eyes-container {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 10;
+}
+
+.eye {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
   &.blink {
-    height: 3px;
-    border-radius: 2px;
+    .eye-white {
+      height: 4px;
+      border-radius: 10px;
+      transform: scaleY(0.2);
+    }
     
-    &::after,
-    &::before,
-    .pupil {
-      display: none;
+    .eye-iris,
+    .eye-pupil,
+    .eye-shine {
+      opacity: 0;
+    }
+    
+    .eyelash {
+      transform: translateX(-50%) scaleY(0.3);
+    }
+  }
+  
+  &.happy {
+    transform: scale(1.15) rotate(-3deg);
+    
+    .eye-white {
+      border-radius: 50% 50% 75% 75%;
+    }
+    
+    .eye-iris {
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    
+    .eye-shine.primary {
+      animation: happyShine 1s ease-in-out infinite;
+    }
+  }
+  
+  &.excited {
+    transform: scale(1.25);
+    
+    .eye-iris {
+      background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+      animation: excitedPulse 0.8s ease-in-out infinite;
+    }
+    
+    .eye-shine {
+      animation: excitedSparkle 0.6s ease-in-out infinite;
+    }
+  }
+  
+  &.sad {
+    transform: scale(0.9) rotate(8deg);
+    
+    .eye-iris {
+      background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+      transform: translate(-50%, -35%);
+    }
+    
+    .eye-white {
+      border-radius: 50% 50% 60% 60%;
     }
   }
 }
 
-.mouth {
-  width: 18px;
-  height: 6px;
-  border: 2px solid #333;
-  border-top: none;
-  border-radius: 0 0 18px 18px;
-  transition: all 0.3s ease;
+.eye-white {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.eye-iris {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #74b9ff 100%);
+  border-radius: 50%;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+}
+
+.eye-pupil {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  background: radial-gradient(circle, #2d3436 0%, #636e72 100%);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.eye-shine {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  
+  &.primary {
+    top: 3px;
+    left: 3px;
+    width: 4px;
+    height: 4px;
+    animation: eyeShine 2s ease-in-out infinite;
+  }
+  
+  &.secondary {
+    top: 7px;
+    right: 3px;
+    width: 2px;
+    height: 2px;
+    opacity: 0.6;
+    animation: eyeShine 2s ease-in-out infinite 0.5s;
+  }
+}
+
+.eyelash {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 5px;
+  transition: all 0.3s ease;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2px;
+    width: 3px;
+    height: 5px;
+    background: #2d3436;
+    border-radius: 50% 50% 0 0;
+    transform: rotate(-25deg);
+  }
   
   &::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 2px;
-    background: #e74c3c;
-    border-radius: 2px;
+    top: 0;
+    right: 2px;
+    width: 3px;
+    height: 5px;
+    background: #2d3436;
+    border-radius: 50% 50% 0 0;
+    transform: rotate(25deg);
   }
+}
+
+// 眉毛设计
+.eyebrows {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 55px;
+  height: 8px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 8;
+}
+
+.eyebrow {
+  width: 18px;
+  height: 4px;
+  background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+  border-radius: 50px;
+  transition: all 0.3s ease;
   
   &.happy {
-    border-radius: 20px 20px 0 0;
-    border-bottom: none;
-    border-top: 2px solid #333;
-    height: 14px;
-    width: 22px;
-    transform: scale(1.1);
-    
-    &::after {
-      display: none;
-    }
+    transform: rotate(-8deg) translateY(2px);
   }
   
-  &.encouraging {
+  &.excited {
+    transform: rotate(-12deg) translateY(3px) scale(1.1);
+    background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  }
+  
+  &.sad {
+    transform: rotate(12deg) translateY(-1px);
+  }
+  
+  &.worried {
+    transform: rotate(18deg) translateY(-2px);
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+  }
+  
+  &.right-eyebrow {
+    &.happy {
+      transform: rotate(8deg) translateY(2px);
+    }
+    
+    &.excited {
+      transform: rotate(12deg) translateY(3px) scale(1.1);
+    }
+    
+    &.sad {
+      transform: rotate(-12deg) translateY(-1px);
+    }
+    
+    &.worried {
+      transform: rotate(-18deg) translateY(-2px);
+    }
+  }
+}
+
+// 鼻子设计
+.nose {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 4px;
+  background: linear-gradient(135deg, rgba(225, 112, 85, 0.3) 0%, rgba(253, 203, 110, 0.2) 100%);
+  border-radius: 50% 50% 80% 80%;
+  z-index: 6;
+}
+
+// 脸颊红晕
+.cheeks {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 4;
+  
+  &.show {
+    opacity: 1;
+    animation: cheekGlow 2s ease-in-out infinite;
+  }
+}
+
+.cheek {
+  width: 10px;
+  height: 8px;
+  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 8px rgba(252, 165, 165, 0.4);
+  
+  &.left-cheek {
+    left: 6px;
+  }
+  
+  &.right-cheek {
+    right: 6px;
+  }
+}
+
+// 嘴巴容器
+.mouth-container {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.mouth {
+  width: 16px;
+  height: 6px;
+  border: 2px solid #374151;
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  
+  &.normal {
     width: 14px;
     height: 5px;
     border-radius: 0 0 14px 14px;
   }
   
-  &.excited {
-    border-radius: 22px 22px 0 0;
+  &.happy {
+    border-radius: 20px 20px 0 0;
     border-bottom: none;
-    border-top: 2px solid #333;
+    border-top: 2px solid #374151;
+    height: 12px;
+    width: 20px;
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      height: 6px;
+      background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+      border-radius: 16px 16px 0 0;
+    }
+  }
+  
+  &.excited {
+    border-radius: 24px 24px 0 0;
+    border-bottom: none;
+    border-top: 2px solid #374151;
     height: 16px;
     width: 24px;
     transform: scale(1.2);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      right: 3px;
+      height: 8px;
+      background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+      border-radius: 20px 20px 0 0;
+    }
     
     &::after {
-      display: none;
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 4px;
+      background: #dc2626;
+      border-radius: 4px;
     }
-  }
-  
-  &.worried {
-    width: 16px;
-    height: 4px;
-    border-radius: 0 0 16px 16px;
-    border-top: none;
-    border-bottom: 2px solid #333;
   }
   
   &.sad {
-    border-radius: 0 0 18px 18px;
+    border-radius: 0 0 16px 16px;
     border-top: none;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #374151;
     height: 8px;
-    width: 18px;
-    transform: scale(0.9);
-    
-    &::after {
-      display: none;
-    }
+    width: 16px;
+    transform: scale(0.9) rotate(180deg);
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
   }
 }
 
+// 现代身体设计
 .character-body {
-  width: 50px;
-  height: 60px;
+  width: 70px;
+  height: 85px;
   position: relative;
-  margin-top: -10px;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
 }
 
-.body-shape {
+.body-main {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  border-radius: 25px 25px 15px 15px;
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.2),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  border: 2px solid #fff;
+  height: 65px;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #74b9ff 100%);
+  border-radius: 35px 35px 25px 25px;
   position: relative;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 10px 30px rgba(108, 92, 231, 0.3),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+  overflow: hidden;
   
   &::before {
     content: '';
     position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 15px;
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    top: 5px;
+    left: 10px;
+    width: 50px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    border-radius: 30px 30px 20px 20px;
+    filter: blur(2px);
   }
 }
 
-.arms {
+.body-pattern {
   position: absolute;
-  top: 10px;
-  left: -5px;
-  right: -5px;
-  height: 40px;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 25px;
+  background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(253, 121, 168, 0.3);
+  
+  &::before {
+    content: '⭐';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    animation: patternTwinkle 2s ease-in-out infinite;
+  }
+}
+
+.body-shadow {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(3px);
+}
+
+// 现代手臂容器
+.arms-container {
+  position: absolute;
+  top: 18px;
+  left: -12px;
+  right: -12px;
+  height: 50px;
   display: flex;
   justify-content: space-between;
+  z-index: 2;
 }
 
 .arm {
-  width: 8px;
-  height: 30px;
-  background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
-  border-radius: 4px;
   position: relative;
   transform-origin: top center;
-  transition: all 0.3s ease;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 8px;
-    background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-  }
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   &.wave {
-    animation: wave 0.5s ease-in-out infinite;
+    animation: armWave 1.2s ease-in-out infinite;
   }
   
   &.point {
-    transform: rotate(-45deg);
+    transform: rotate(-35deg);
+    
+    &.right-arm {
+      transform: rotate(35deg);
+    }
+  }
+  
+  &.thinking {
+    transform: rotate(-20deg) translateY(-5px);
+    
+    .hand {
+      transform: rotate(45deg);
+    }
+  }
+  
+  &.celebrate {
+    animation: celebrate 0.8s ease-in-out infinite;
+    
+    &.right-arm {
+      animation: celebrate 0.8s ease-in-out infinite 0.2s;
+    }
+  }
+}
+
+.arm-upper {
+  width: 12px;
+  height: 22px;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  box-shadow: 0 2px 6px rgba(253, 203, 110, 0.3);
+}
+
+.arm-lower {
+  width: 10px;
+  height: 18px;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  top: -3px;
+  left: 1px;
+  box-shadow: 0 2px 6px rgba(253, 203, 110, 0.3);
+}
+
+.hand {
+  width: 14px;
+  height: 12px;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  top: -5px;
+  left: -1px;
+  box-shadow: 0 2px 6px rgba(253, 203, 110, 0.3);
+  transition: all 0.3s ease;
+}
+
+.fingers {
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  width: 8px;
+  height: 4px;
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+  border-radius: 4px 4px 0 0;
+  opacity: 0.7;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  right: -1px;
+  width: 3px;
+  height: 6px;
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+// 角色效果
+.character-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.sparkle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  
+  &::before {
+    content: '✨';
+    position: absolute;
+    font-size: 16px;
+    animation: sparkle 1s ease-in-out infinite;
+  }
+}
+
+.hearts {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  
+  .heart {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    
+    &::before {
+      content: '💖';
+      font-size: 12px;
+      animation: float 2s ease-in-out infinite;
+    }
+    
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    &:nth-child(2) {
+      top: 8px;
+      left: 8px;
+      animation-delay: 0.5s;
+    }
+  }
+}
+
+// 动画定义
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
   }
 }
 
@@ -983,47 +1491,340 @@ export default {
   0%, 100% {
     transform: rotate(0deg);
   }
-  50% {
-    transform: rotate(-20deg);
+  25% {
+    transform: rotate(-15deg);
+  }
+  75% {
+    transform: rotate(15deg);
   }
 }
 
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2) rotate(180deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes hairFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes strandSway {
+  0%, 100% {
+    transform: rotate(-20deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-25deg) translateY(-1px);
+  }
+}
+
+@keyframes accessoryTwinkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.1) rotate(90deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    opacity: 0.8;
+  }
+}
+
+@keyframes happyShine {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+@keyframes excitedPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+@keyframes excitedSparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.9;
+  }
+  25% {
+    transform: scale(1.5) rotate(90deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.8) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(1.5) rotate(270deg);
+    opacity: 1;
+  }
+}
+
+@keyframes cheekGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes armWave {
+  0%, 100% {
+    transform: rotate(-10deg);
+  }
+  25% {
+    transform: rotate(-30deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes celebrate {
+  0%, 100% {
+    transform: rotate(-20deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-40deg) translateY(-8px);
+  }
+}
+
+@keyframes patternTwinkle {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@keyframes statusRipple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+// 现代状态指示器
 .status-indicator {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    animation: statusRipple 2s ease-in-out infinite;
+  }
 }
 
 .status-dot {
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+  }
   
   &.success {
-    background: $success-color;
-    animation: pulse 1s ease-in-out infinite;
+    background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+    box-shadow: 
+      0 0 25px rgba(0, 184, 148, 0.6),
+      0 6px 15px rgba(0, 184, 148, 0.3);
+    animation: successPulse 1.5s ease-in-out infinite;
+    
+    &::before {
+      content: '✓';
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      width: auto;
+      height: auto;
+      background: none;
+    }
   }
   
   &.error {
-    background: $error-color;
-    animation: shake 0.5s ease-in-out;
+    background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+    box-shadow: 
+      0 0 25px rgba(225, 112, 85, 0.6),
+      0 6px 15px rgba(225, 112, 85, 0.3);
+    animation: errorShake 0.6s ease-in-out;
+    
+    &::before {
+      content: '✗';
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      width: auto;
+      height: auto;
+      background: none;
+    }
   }
   
   &.hint {
-    background: $warning-color;
-    animation: glow 2s ease-in-out infinite;
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+    box-shadow: 
+      0 0 25px rgba(253, 203, 110, 0.6),
+      0 6px 15px rgba(253, 203, 110, 0.3);
+    animation: hintGlow 2s ease-in-out infinite;
+    
+    &::before {
+      content: '?';
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      width: auto;
+      height: auto;
+      background: none;
+    }
   }
   
   &.info {
-    background: $info-color;
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    box-shadow: 
+      0 0 25px rgba(116, 185, 255, 0.6),
+      0 6px 15px rgba(116, 185, 255, 0.3);
+    animation: infoPulse 2s ease-in-out infinite;
+    
+    &::before {
+      content: 'i';
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      width: auto;
+      height: auto;
+      background: none;
+    }
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.8;
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-3px) scale(1.1);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(3px) scale(1.1);
+  }
+}
+
+@keyframes hintGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 
+      0 0 20px rgba(245, 158, 11, 0.6),
+      0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 
+      0 0 30px rgba(245, 158, 11, 0.8),
+      0 6px 20px rgba(245, 158, 11, 0.5);
+  }
+}
+
+@keyframes infoPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.9;
   }
 }
 
@@ -1066,83 +1867,122 @@ export default {
   }
 }
 
+// 现代对话框设计
 .guide-dialog {
   position: absolute;
-  bottom: 140px;
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
-  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  padding: 1.8rem;
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1);
-  border: 1px solid $card-border;
-  backdrop-filter: blur(20px);
-  min-width: 280px;
-  max-width: 320px;
-  animation: slideInUp 0.3s ease-out;
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(25px);
+  min-width: 300px;
+  max-width: 350px;
+  animation: dialogSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+    border-radius: 20px 20px 0 0;
+  }
   
   &.welcome {
-    border-left: 4px solid $info-color;
+    &::before {
+      background: linear-gradient(90deg, #74b9ff 0%, #0984e3 100%);
+    }
   }
   
   &.success {
-    border-left: 4px solid $success-color;
+    &::before {
+      background: linear-gradient(90deg, #00b894 0%, #00a085 100%);
+    }
   }
   
   &.error {
-    border-left: 4px solid $error-color;
+    &::before {
+      background: linear-gradient(90deg, #e17055 0%, #d63031 100%);
+    }
   }
   
   &.hint {
-    border-left: 4px solid $warning-color;
+    &::before {
+      background: linear-gradient(90deg, #fdcb6e 0%, #e17055 100%);
+    }
   }
   
   &.info {
-    border-left: 4px solid $accent-color;
+    &::before {
+      background: linear-gradient(90deg, #a29bfe 0%, #6c5ce7 100%);
+    }
   }
 }
 
+// 现代对话框内容
 .dialog-content {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .dialog-icon {
-  font-size: 2rem;
+  font-size: 2.2rem;
   flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(116, 185, 255, 0.1) 0%, rgba(108, 92, 231, 0.1) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(116, 185, 255, 0.2);
 }
 
 .dialog-text {
   flex: 1;
   
   h4 {
-    color: $text-color;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+    color: #2d3748;
+    margin: 0 0 0.6rem 0;
+    font-size: 1.15rem;
     font-weight: 700;
+    line-height: 1.3;
   }
   
   p {
-    color: $text-secondary-color;
+    color: #4a5568;
     margin: 0;
     font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    font-weight: 500;
   }
 }
 
 .dialog-arrow {
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid $card-bg;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .floating-tip {
@@ -1182,6 +2022,21 @@ export default {
   color: $text-color;
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+@keyframes dialogSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(30px) scale(0.9);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }
 
 @keyframes slideInUp {
@@ -1257,4 +2112,4 @@ export default {
     font-size: 0.9rem;
   }
 }
-</style> 
+</style>

@@ -12,7 +12,7 @@ public interface UserAchievementDao {
     /**
      * 添加用户成就
      */
-    @Insert("INSERT INTO user_achievement (user_id, achievement_type, achievement_name, achievement_description, achieved_at) " +
+    @Insert("INSERT INTO user_achievement (user_id, achievement_type, achievement_name, achievement_desc, earned_date) " +
             "VALUES (#{userId}, #{achievementType}, #{achievementName}, #{achievementDescription}, #{achievedAt})")
     void addAchievement(@Param("userId") Integer userId, 
                        @Param("achievementType") String achievementType,
@@ -23,7 +23,7 @@ public interface UserAchievementDao {
     /**
      * 获取用户成就列表
      */
-    @Select("SELECT * FROM user_achievement WHERE user_id = #{userId} ORDER BY achieved_at DESC")
+    @Select("SELECT * FROM user_achievement WHERE user_id = #{userId} ORDER BY earned_date DESC")
     List<UserAchievement> getUserAchievements(@Param("userId") Integer userId);
     
     /**
