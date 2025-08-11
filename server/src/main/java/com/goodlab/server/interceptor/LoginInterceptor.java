@@ -16,6 +16,10 @@ import java.util.Map;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 添加调试日志
+        String requestURI = request.getRequestURI();
+        System.out.println("LoginInterceptor: 拦截请求 " + requestURI);
+        
         // 令牌验证
         String token = request.getHeader("Authorization");
         // 验证token
@@ -26,6 +30,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         } catch (Exception e) {
             // http 401
+            System.out.println("LoginInterceptor: Token验证失败 - " + e.getMessage());
             response.setStatus(401);
             return false;
         }

@@ -1,0 +1,219 @@
+{
+  "report_time": "2025-08-10T20:13:33.194648",
+  "overall_statistics": {
+    "total_tests": 32,
+    "total_passed": 32,
+    "overall_success_rate": 100.0,
+    "total_reports": {
+      "platform_tests": 7,
+      "enhanced_tests": 2,
+      "stress_tests": 0,
+      "monitor_reports": 1
+    }
+  },
+  "trends": {
+    "platform_trend": [
+      {
+        "timestamp": "2025-08-10T19:53:19.376072",
+        "success_rate": 100.0,
+        "total_tests": 16
+      },
+      {
+        "timestamp": "2025-08-10T19:54:51.542109",
+        "success_rate": 100.0,
+        "total_tests": 16
+      }
+    ],
+    "performance_trend": [],
+    "availability_trend": []
+  },
+  "latest_results": {
+    "latest_enhanced_test": {
+      "summary": {
+        "total": 16,
+        "passed": 16,
+        "failed": 0,
+        "success_rate": 100.0,
+        "test_time": "2025-08-10T19:54:51.542109"
+      },
+      "test_results": [
+        {
+          "test": "服务器健康检查",
+          "success": true,
+          "message": "服务器响应正常 (端点: /actuator/health)",
+          "duration": 0.012311935424804688,
+          "timestamp": "2025-08-10T19:54:51.482805"
+        },
+        {
+          "test": "前端可用性",
+          "success": true,
+          "message": "前端页面可正常访问",
+          "duration": 0.011216163635253906,
+          "timestamp": "2025-08-10T19:54:51.494068"
+        },
+        {
+          "test": "用户注册",
+          "success": true,
+          "message": "用户 testuser_ef0a5k 注册成功",
+          "duration": 0.0034978389739990234,
+          "timestamp": "2025-08-10T19:54:51.497652"
+        },
+        {
+          "test": "重复注册处理",
+          "success": true,
+          "message": "正确拒绝了重复注册",
+          "duration": 0.002666950225830078,
+          "timestamp": "2025-08-10T19:54:51.500370"
+        },
+        {
+          "test": "用户登录",
+          "success": true,
+          "message": "用户 testuser_ef0a5k 登录成功",
+          "duration": 0.0023496150970458984,
+          "timestamp": "2025-08-10T19:54:51.502777"
+        },
+        {
+          "test": "错误密码登录",
+          "success": true,
+          "message": "正确拒绝了错误密码",
+          "duration": 0.0016477108001708984,
+          "timestamp": "2025-08-10T19:54:51.504457"
+        },
+        {
+          "test": "等级系统-用户统计",
+          "success": true,
+          "message": "等级: 1, 经验: 0",
+          "duration": 0.002399921417236328,
+          "timestamp": "2025-08-10T19:54:51.506915"
+        },
+        {
+          "test": "等级系统-添加经验1",
+          "success": true,
+          "message": "添加100经验成功",
+          "duration": 0.0028667449951171875,
+          "timestamp": "2025-08-10T19:54:51.509830"
+        },
+        {
+          "test": "等级系统-添加经验2",
+          "success": true,
+          "message": "添加50经验成功",
+          "duration": 0.003131866455078125,
+          "timestamp": "2025-08-10T19:54:51.513007"
+        },
+        {
+          "test": "等级系统-添加经验3",
+          "success": true,
+          "message": "添加200经验成功",
+          "duration": 0.0032110214233398438,
+          "timestamp": "2025-08-10T19:54:51.516265"
+        },
+        {
+          "test": "等级系统-用户成就",
+          "success": true,
+          "message": "获取到 0 个成就",
+          "duration": 0.0036177635192871094,
+          "timestamp": "2025-08-10T19:54:51.519988"
+        },
+        {
+          "test": "等级系统-学习记录",
+          "success": true,
+          "message": "获取到 3 条学习记录",
+          "duration": 0.0035200119018554688,
+          "timestamp": "2025-08-10T19:54:51.523585"
+        },
+        {
+          "test": "等级系统-排行榜",
+          "success": true,
+          "message": "获取到 5 条排行榜数据",
+          "duration": 0.005828142166137695,
+          "timestamp": "2025-08-10T19:54:51.529489"
+        },
+        {
+          "test": "等级系统综合测试",
+          "success": true,
+          "message": "通过 5/5 项测试",
+          "duration": 0,
+          "timestamp": "2025-08-10T19:54:51.529527"
+        },
+        {
+          "test": "并发请求处理",
+          "success": true,
+          "message": "10/10 请求成功 (100.0%)",
+          "duration": 0.012296915054321289,
+          "timestamp": "2025-08-10T19:54:51.541853"
+        },
+        {
+          "test": "性能基准测试",
+          "success": true,
+          "message": "平均: 0.004s, 最大: 0.012s, 最小: 0.002s - 优秀",
+          "duration": 0,
+          "timestamp": "2025-08-10T19:54:51.542017"
+        }
+      ],
+      "performance_data": [
+        {
+          "test": "服务器健康检查",
+          "duration": 0.012311935424804688,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.482838"
+        },
+        {
+          "test": "用户注册",
+          "duration": 0.0034978389739990234,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.497622"
+        },
+        {
+          "test": "用户登录",
+          "duration": 0.0023496150970458984,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.502759"
+        },
+        {
+          "test": "获取用户统计",
+          "duration": 0.002399921417236328,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.506893"
+        },
+        {
+          "test": "添加经验-1",
+          "duration": 0.0028667449951171875,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.509808"
+        },
+        {
+          "test": "添加经验-2",
+          "duration": 0.003131866455078125,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.512984"
+        },
+        {
+          "test": "添加经验-3",
+          "duration": 0.0032110214233398438,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.516238"
+        },
+        {
+          "test": "获取用户成就",
+          "duration": 0.0036177635192871094,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.519966"
+        },
+        {
+          "test": "获取学习记录",
+          "duration": 0.0035200119018554688,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.523540"
+        },
+        {
+          "test": "获取排行榜",
+          "duration": 0.005828142166137695,
+          "success": true,
+          "timestamp": "2025-08-10T19:54:51.529453"
+        }
+      ],
+      "file_path": "./enhanced_test_report_1754826891.json"
+    },
+    "latest_stress_test": null
+  }
+}

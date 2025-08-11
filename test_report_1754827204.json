@@ -1,0 +1,64 @@
+{
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "details": [
+    {
+      "test": "服务器连接",
+      "success": true,
+      "message": "服务器可访问 (状态码: 401)",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "用户注册",
+      "success": true,
+      "message": "用户 testuser_dct8b2 注册成功",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "用户登录",
+      "success": true,
+      "message": "用户 testuser_dct8b2 登录成功",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "获取用户信息",
+      "success": true,
+      "message": "获取到用户信息: testuser_dct8b2",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "等级系统-用户统计",
+      "success": true,
+      "message": "等级: 1, 经验: 0",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "等级系统-添加经验",
+      "success": true,
+      "message": "添加经验成功, 当前等级: N/A",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "等级系统-用户成就",
+      "success": true,
+      "message": "获取到 0 个成就",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "等级系统-学习记录",
+      "success": true,
+      "message": "获取到 1 条学习记录",
+      "timestamp": "2025-08-10 20:00:04"
+    },
+    {
+      "test": "等级系统-排行榜",
+      "success": true,
+      "message": "获取到 6 条排行榜数据",
+      "timestamp": "2025-08-10 20:00:04"
+    }
+  ]
+}

@@ -761,143 +761,219 @@ export default {
   z-index: 10;
 }
 
-// 现代头发层次设计
+// 全新可爱头发设计
 .hair-layer {
   position: absolute;
-  top: -8px;
-  left: -10px;
-  width: 100px;
-  height: 70px;
+  top: -12px;
+  left: -15px;
+  width: 110px;
+  height: 75px;
   z-index: 1;
 }
 
 .hair-main {
   width: 100%;
-  height: 55px;
-  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 30%, #74b9ff 70%, #0984e3 100%);
-  border-radius: 60px 60px 25px 25px;
+  height: 60px;
+  background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 25%, #ff6b9d 50%, #feca57 75%, #ff9ff3 100%);
+  border-radius: 70px 70px 30px 30px;
   position: relative;
   box-shadow: 
-    inset 0 -10px 20px rgba(0, 0, 0, 0.2),
-    0 6px 16px rgba(108, 92, 231, 0.3);
+    inset 0 -8px 16px rgba(255, 159, 243, 0.3),
+    0 8px 24px rgba(255, 107, 157, 0.4),
+    0 0 0 3px rgba(255, 255, 255, 0.6);
   animation: hairFloat 3s ease-in-out infinite;
   
   &::before {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 10px;
+    top: 5px;
+    left: 15px;
     width: 80px;
     height: 45px;
-    background: linear-gradient(135deg, #a29bfe 0%, #74b9ff 50%, #0984e3 100%);
-    border-radius: 50px 50px 20px 20px;
-    opacity: 0.8;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 159, 243, 0.6) 50%, transparent 100%);
+    border-radius: 60px 60px 25px 25px;
+    filter: blur(1px);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    width: 25px;
+    height: 25px;
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: hairSparkle 2s ease-in-out infinite;
   }
 }
 
 .hair-highlight {
   position: absolute;
-  top: 12px;
-  left: 20px;
-  width: 60px;
-  height: 30px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-  border-radius: 40px 40px 15px 15px;
-  filter: blur(1px);
-  animation: shimmer 2s ease-in-out infinite;
+  top: 15px;
+  left: 25px;
+  width: 50px;
+  height: 25px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  border-radius: 50px 50px 20px 20px;
+  filter: blur(0.5px);
+  animation: shimmer 2.5s ease-in-out infinite;
+  
+  &::before {
+    content: '✨';
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    font-size: 8px;
+    opacity: 0.8;
+    animation: twinkle 1.5s ease-in-out infinite;
+  }
 }
 
 .hair-strand {
   position: absolute;
-  width: 15px;
-  height: 25px;
-  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
-  border-radius: 0 0 15px 15px;
-  box-shadow: 0 2px 6px rgba(108, 92, 231, 0.3);
+  width: 18px;
+  height: 30px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #f368e0 50%, #ff9ff3 100%);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 
+    0 3px 8px rgba(255, 107, 157, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
   
   &.left {
-    top: 30px;
-    left: -5px;
-    transform: rotate(-20deg);
-    animation: strandSway 2.5s ease-in-out infinite;
+    top: 35px;
+    left: -8px;
+    transform: rotate(-25deg);
+    animation: strandSway 3s ease-in-out infinite;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 3px;
+      width: 8px;
+      height: 15px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+      border-radius: 0 0 10px 10px;
+    }
   }
   
   &.right {
-    top: 30px;
-    right: -5px;
-    transform: rotate(20deg);
-    animation: strandSway 2.5s ease-in-out infinite reverse;
+    top: 35px;
+    right: -8px;
+    transform: rotate(25deg);
+    animation: strandSway 3s ease-in-out infinite reverse;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      right: 3px;
+      width: 8px;
+      height: 15px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+      border-radius: 0 0 10px 10px;
+    }
   }
 }
 
 .hair-accessory {
   position: absolute;
-  top: 18px;
-  right: 15px;
-  width: 14px;
-  height: 14px;
-  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  top: 20px;
+  right: 18px;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #feca57 0%, #ff9ff3 50%, #f368e0 100%);
   border-radius: 50%;
   box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.8),
-    0 2px 8px rgba(232, 67, 147, 0.4);
-  animation: accessoryTwinkle 1.5s ease-in-out infinite;
+    0 0 0 3px rgba(255, 255, 255, 0.9),
+    0 3px 12px rgba(254, 202, 87, 0.5),
+    0 0 20px rgba(255, 159, 243, 0.3);
+  animation: accessoryTwinkle 2s ease-in-out infinite;
   
   &::before {
-    content: '✨';
+    content: '🌟';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 8px;
-    opacity: 0.8;
+    font-size: 10px;
+    animation: starRotate 3s linear infinite;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 159, 243, 0.6);
+    border-radius: 50%;
+    animation: ringPulse 2s ease-in-out infinite;
   }
 }
 
-// 现代脸部设计
+// 全新可爱脸部设计
 .face {
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
+  width: 75px;
+  height: 75px;
+  background: linear-gradient(135deg, #ffe4e1 0%, #ffb3ba 30%, #ffdfba 60%, #ffffba 100%);
   border-radius: 50%;
   position: relative;
-  top: 15px;
-  left: 5px;
-  border: 3px solid rgba(255, 255, 255, 0.9);
+  top: 18px;
+  left: 2px;
+  border: 4px solid rgba(255, 255, 255, 0.95);
   box-shadow: 
-    0 6px 24px rgba(255, 234, 167, 0.4),
-    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+    0 8px 32px rgba(255, 179, 186, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.4),
+    0 0 0 2px rgba(255, 182, 193, 0.2);
   z-index: 5;
   
   &::before {
     content: '';
     position: absolute;
-    top: 8px;
-    left: 12px;
-    width: 46px;
-    height: 36px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    top: 12px;
+    left: 15px;
+    width: 45px;
+    height: 35px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(1px);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 8px;
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.4) 0%, transparent 100%);
     border-radius: 50%;
     filter: blur(2px);
   }
 }
 
-// 现代眼睛容器
+// 全新可爱眼睛容器
 .eyes-container {
   position: absolute;
-  top: 22px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 16px;
+  gap: 18px;
   z-index: 10;
 }
 
 .eye {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   position: relative;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 2px 8px rgba(255, 182, 193, 0.3));
   
   &.blink {
     .eye-white {
@@ -918,45 +994,52 @@ export default {
   }
   
   &.happy {
-    transform: scale(1.15) rotate(-3deg);
+    transform: scale(1.2) rotate(-2deg);
     
     .eye-white {
-      border-radius: 50% 50% 75% 75%;
+      border-radius: 50% 50% 80% 80%;
+      background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
     }
     
     .eye-iris {
-      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-      transform: translate(-50%, -50%) scale(1.1);
+      background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 50%, #ff6b9d 100%);
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 0 12px rgba(255, 159, 243, 0.4);
     }
     
     .eye-shine.primary {
       animation: happyShine 1s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
     }
   }
   
   &.excited {
-    transform: scale(1.25);
+    transform: scale(1.3);
     
     .eye-iris {
-      background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+      background: linear-gradient(135deg, #feca57 0%, #ff9ff3 50%, #f368e0 100%);
       animation: excitedPulse 0.8s ease-in-out infinite;
+      box-shadow: 0 0 16px rgba(254, 202, 87, 0.5);
     }
     
     .eye-shine {
       animation: excitedSparkle 0.6s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(254, 202, 87, 0.3) 100%);
     }
   }
   
   &.sad {
-    transform: scale(0.9) rotate(8deg);
+    transform: scale(0.95) rotate(5deg);
     
     .eye-iris {
-      background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+      background: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 50%, #74b9ff 100%);
       transform: translate(-50%, -35%);
+      box-shadow: 0 0 8px rgba(168, 230, 207, 0.4);
     }
     
     .eye-white {
-      border-radius: 50% 50% 60% 60%;
+      border-radius: 50% 50% 65% 65%;
+      background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
     }
   }
 }
@@ -964,13 +1047,16 @@ export default {
 .eye-white {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fffafa 50%, #fff0f5 100%);
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 182, 193, 0.3);
   position: relative;
   transition: all 0.4s ease;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    inset 0 3px 6px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(255, 182, 193, 0.1),
+    0 2px 8px rgba(255, 182, 193, 0.2);
 }
 
 .eye-iris {
@@ -978,12 +1064,27 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
-  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #74b9ff 100%);
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 30%, #ff6b9d 70%, #feca57 100%);
   border-radius: 50%;
   transition: all 0.4s ease;
-  box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+  box-shadow: 
+    0 0 12px rgba(255, 159, 243, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(243, 104, 224, 0.3);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(0.5px);
+  }
 }
 
 .eye-pupil {
@@ -991,228 +1092,293 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 5px;
-  height: 5px;
-  background: radial-gradient(circle, #2d3436 0%, #636e72 100%);
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #2d3436 0%, #636e72 70%, #74b9ff 100%);
   border-radius: 50%;
   transition: all 0.3s ease;
+  box-shadow: 0 0 4px rgba(45, 52, 54, 0.5);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
 }
 
 .eye-shine {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
   transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
   
   &.primary {
-    top: 3px;
-    left: 3px;
-    width: 4px;
-    height: 4px;
+    top: 2px;
+    left: 2px;
+    width: 5px;
+    height: 5px;
     animation: eyeShine 2s ease-in-out infinite;
   }
   
   &.secondary {
-    top: 7px;
-    right: 3px;
-    width: 2px;
-    height: 2px;
-    opacity: 0.6;
+    top: 8px;
+    right: 2px;
+    width: 3px;
+    height: 3px;
+    opacity: 0.7;
     animation: eyeShine 2s ease-in-out infinite 0.5s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 182, 193, 0.3) 100%);
   }
 }
 
 .eyelash {
   position: absolute;
-  top: -3px;
+  top: -4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 5px;
+  width: 16px;
+  height: 6px;
   transition: all 0.3s ease;
   
   &::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 2px;
-    width: 3px;
-    height: 5px;
-    background: #2d3436;
+    left: 1px;
+    width: 4px;
+    height: 6px;
+    background: linear-gradient(135deg, #ff6b9d 0%, #f368e0 100%);
     border-radius: 50% 50% 0 0;
-    transform: rotate(-25deg);
+    transform: rotate(-30deg);
+    box-shadow: 0 1px 3px rgba(255, 107, 157, 0.3);
   }
   
   &::after {
     content: '';
     position: absolute;
     top: 0;
-    right: 2px;
-    width: 3px;
-    height: 5px;
-    background: #2d3436;
+    right: 1px;
+    width: 4px;
+    height: 6px;
+    background: linear-gradient(135deg, #ff6b9d 0%, #f368e0 100%);
     border-radius: 50% 50% 0 0;
-    transform: rotate(25deg);
+    transform: rotate(30deg);
+    box-shadow: 0 1px 3px rgba(255, 107, 157, 0.3);
   }
 }
 
-// 眉毛设计
+// 全新可爱眉毛设计
 .eyebrows {
   position: absolute;
-  top: 12px;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 55px;
-  height: 8px;
+  width: 60px;
+  height: 10px;
   display: flex;
   justify-content: space-between;
   z-index: 8;
 }
 
 .eyebrow {
-  width: 18px;
-  height: 4px;
-  background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+  width: 20px;
+  height: 5px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #f368e0 50%, #ff9ff3 100%);
   border-radius: 50px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 6px rgba(255, 107, 157, 0.3);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    width: 12px;
+    height: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    border-radius: 50px;
+    filter: blur(0.5px);
+  }
   
   &.happy {
-    transform: rotate(-8deg) translateY(2px);
+    transform: rotate(-10deg) translateY(3px) scale(1.05);
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 50%, #f368e0 100%);
   }
   
   &.excited {
-    transform: rotate(-12deg) translateY(3px) scale(1.1);
-    background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+    transform: rotate(-15deg) translateY(4px) scale(1.15);
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 30%, #f368e0 70%, #ff6b9d 100%);
+    animation: eyebrowBounce 0.8s ease-in-out infinite;
   }
   
   &.sad {
-    transform: rotate(12deg) translateY(-1px);
+    transform: rotate(15deg) translateY(-2px) scale(0.9);
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 50%, #74b9ff 100%);
   }
   
   &.worried {
-    transform: rotate(18deg) translateY(-2px);
-    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+    transform: rotate(20deg) translateY(-3px) scale(0.95);
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 50%, #d63031 100%);
+    animation: eyebrowWorry 1.5s ease-in-out infinite;
   }
   
   &.right-eyebrow {
     &.happy {
-      transform: rotate(8deg) translateY(2px);
+      transform: rotate(10deg) translateY(3px) scale(1.05);
     }
     
     &.excited {
-      transform: rotate(12deg) translateY(3px) scale(1.1);
+      transform: rotate(15deg) translateY(4px) scale(1.15);
     }
     
     &.sad {
-      transform: rotate(-12deg) translateY(-1px);
+      transform: rotate(-15deg) translateY(-2px) scale(0.9);
     }
     
     &.worried {
-      transform: rotate(-18deg) translateY(-2px);
+      transform: rotate(-20deg) translateY(-3px) scale(0.95);
     }
   }
 }
 
-// 鼻子设计
+// 全新可爱鼻子设计
 .nose {
   position: absolute;
-  top: 35px;
+  top: 38px;
   left: 50%;
   transform: translateX(-50%);
-  width: 3px;
-  height: 4px;
-  background: linear-gradient(135deg, rgba(225, 112, 85, 0.3) 0%, rgba(253, 203, 110, 0.2) 100%);
+  width: 4px;
+  height: 5px;
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.6) 0%, rgba(255, 107, 157, 0.4) 50%, rgba(243, 104, 224, 0.3) 100%);
   border-radius: 50% 50% 80% 80%;
   z-index: 6;
+  box-shadow: 
+    0 1px 3px rgba(255, 182, 193, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    filter: blur(0.5px);
+  }
 }
 
-// 脸颊红晕
+// 全新可爱脸颊红晕
 .cheeks {
   position: absolute;
-  top: 32px;
+  top: 35px;
   left: 0;
   right: 0;
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 4;
   
   &.show {
     opacity: 1;
-    animation: cheekGlow 2s ease-in-out infinite;
+    animation: cheekGlow 2.5s ease-in-out infinite;
   }
 }
 
 .cheek {
-  width: 10px;
-  height: 8px;
-  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  width: 12px;
+  height: 10px;
+  background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 30%, #ff6b9d 70%, #feca57 100%);
   border-radius: 50%;
   position: absolute;
-  box-shadow: 0 0 8px rgba(252, 165, 165, 0.4);
+  box-shadow: 
+    0 0 12px rgba(255, 159, 243, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  filter: blur(1px);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 4px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(0.5px);
+  }
   
   &.left-cheek {
-    left: 6px;
+    left: 4px;
+    animation: cheekPulse 2s ease-in-out infinite;
   }
   
   &.right-cheek {
-    right: 6px;
+    right: 4px;
+    animation: cheekPulse 2s ease-in-out infinite 0.3s;
   }
 }
 
-// 嘴巴容器
+// 全新可爱嘴巴容器
 .mouth-container {
   position: absolute;
-  bottom: 12px;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
 }
 
 .mouth {
-  width: 16px;
-  height: 6px;
-  border: 2px solid #374151;
+  width: 18px;
+  height: 7px;
+  border: 3px solid rgba(255, 107, 157, 0.8);
   border-top: none;
-  border-radius: 0 0 16px 16px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 0 18px 18px;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
-  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 50%, #ff6b9d 100%);
+  box-shadow: 
+    0 3px 8px rgba(255, 159, 243, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    right: 2px;
+    height: 3px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    border-radius: 0 0 14px 14px;
+    filter: blur(0.5px);
+  }
   
   &.normal {
-    width: 14px;
-    height: 5px;
-    border-radius: 0 0 14px 14px;
+    width: 16px;
+    height: 6px;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(135deg, #ffb3ba 0%, #ff9ff3 50%, #f368e0 100%);
   }
   
   &.happy {
-    border-radius: 20px 20px 0 0;
+    border-radius: 25px 25px 0 0;
     border-bottom: none;
-    border-top: 2px solid #374151;
-    height: 12px;
-    width: 20px;
-    transform: scale(1.1);
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      right: 2px;
-      height: 6px;
-      background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
-      border-radius: 16px 16px 0 0;
-    }
-  }
-  
-  &.excited {
-    border-radius: 24px 24px 0 0;
-    border-bottom: none;
-    border-top: 2px solid #374151;
-    height: 16px;
-    width: 24px;
-    transform: scale(1.2);
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-top: 3px solid rgba(254, 202, 87, 0.8);
+    height: 15px;
+    width: 25px;
+    transform: scale(1.15);
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 50%, #f368e0 100%);
+    box-shadow: 
+      0 4px 12px rgba(254, 202, 87, 0.5),
+      inset 0 3px 6px rgba(255, 255, 255, 0.4);
     
     &::before {
       content: '';
@@ -1221,31 +1387,102 @@ export default {
       left: 3px;
       right: 3px;
       height: 8px;
-      background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+      background: linear-gradient(135deg, #fff3cd 0%, #feca57 50%, #ff9ff3 100%);
       border-radius: 20px 20px 0 0;
+      filter: none;
     }
     
     &::after {
-      content: '';
+      content: '😊';
       position: absolute;
-      top: 6px;
+      top: -20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 8px;
-      height: 4px;
-      background: #dc2626;
-      border-radius: 4px;
+      font-size: 8px;
+      opacity: 0.8;
+      animation: floatUp 2s ease-in-out infinite;
+    }
+  }
+  
+  &.excited {
+    border-radius: 30px 30px 0 0;
+    border-bottom: none;
+    border-top: 3px solid rgba(254, 202, 87, 0.8);
+    height: 20px;
+    width: 30px;
+    transform: scale(1.25);
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 30%, #f368e0 70%, #ff6b9d 100%);
+    box-shadow: 
+      0 6px 16px rgba(254, 202, 87, 0.6),
+      inset 0 4px 8px rgba(255, 255, 255, 0.5);
+    animation: mouthExcited 0.8s ease-in-out infinite;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      right: 4px;
+      height: 12px;
+      background: linear-gradient(135deg, #fff3cd 0%, #feca57 30%, #ff9ff3 70%, #f368e0 100%);
+      border-radius: 25px 25px 0 0;
+      filter: none;
+    }
+    
+    &::after {
+      content: '🎉';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      animation: celebrateFloat 1s ease-in-out infinite;
     }
   }
   
   &.sad {
+    border-radius: 0 0 20px 20px;
+    border-top: none;
+    border-bottom: 3px solid rgba(168, 230, 207, 0.8);
+    height: 10px;
+    width: 18px;
+    transform: scale(0.95) rotate(180deg);
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 50%, #74b9ff 100%);
+    box-shadow: 
+      0 3px 8px rgba(168, 230, 207, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    
+    &::after {
+      content: '💧';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      font-size: 8px;
+      opacity: 0.7;
+      animation: tearDrop 2s ease-in-out infinite;
+    }
+  }
+  
+  &.worried {
     border-radius: 0 0 16px 16px;
     border-top: none;
-    border-bottom: 2px solid #374151;
-    height: 8px;
-    width: 16px;
-    transform: scale(0.9) rotate(180deg);
-    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+    height: 6px;
+    width: 14px;
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 50%, #d63031 100%);
+    border-color: rgba(253, 203, 110, 0.8);
+    transform: scale(0.9);
+    
+    &::after {
+      content: '😰';
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 6px;
+      opacity: 0.6;
+      animation: worry 1.5s ease-in-out infinite;
+    }
   }
 }
 

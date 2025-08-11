@@ -49,16 +49,34 @@
           <div v-else class="content-text" v-html="formatContent(chapter.content)"></div>
         </div>
 
+        <!-- 第二章案例学习 -->
+        <div v-if="isChapter2" class="case-study-section">
+          <Chapter2CaseStudy 
+            :chapter-id="id" 
+            @case-completed="onCaseCompleted"
+            @all-cases-completed="onAllCasesCompleted"
+          />
+        </div>
+
         <!-- 答题系统入口 -->
         <div class="quiz-section">
           <div class="quiz-header">
             <h3 class="quiz-title">📚 知识测验</h3>
-            <p class="quiz-description">完成本章节的学习后，可以参加知识测验来检验学习成果</p>
+            <p class="quiz-description">
+              {{ isChapter2 ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
+            </p>
           </div>
           <div class="quiz-actions">
-            <button @click="startQuiz" class="btn btn-quiz">
+            <button 
+              @click="startQuiz" 
+              class="btn btn-quiz"
+              :disabled="isChapter2 && !allCasesCompleted"
+              :class="{ disabled: isChapter2 && !allCasesCompleted }"
+            >
               <span class="btn-icon">🎯</span>
-              <span class="btn-text">开始测验</span>
+              <span class="btn-text">
+                {{ isChapter2 && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
+              </span>
             </button>
             <div class="quiz-info">
               <span class="info-item">
@@ -68,6 +86,10 @@
               <span class="info-item">
                 <span class="info-icon">🏆</span>
                 <span class="info-text">可获得奖励和成就</span>
+              </span>
+              <span v-if="isChapter2" class="info-item">
+                <span class="info-icon">✅</span>
+                <span class="info-text">案例完成进度: {{ completedCasesCount }}/2</span>
               </span>
             </div>
           </div>
@@ -114,11 +136,13 @@
 <script>
 import { chapterApi } from '../services/api'
 import Chapter6Interactive from '../components/chapter6/Chapter6Interactive.vue'
+import Chapter2CaseStudy from '../components/chapter2/Chapter2CaseStudy.vue'
 
 export default {
   name: 'ChapterDetail',
   components: {
-    Chapter6Interactive
+    Chapter6Interactive,
+    Chapter2CaseStudy
   },
   props: {
     id: {
@@ -131,7 +155,9 @@ export default {
       chapter: null,
       allChapters: [],
       loading: true,
-      error: null
+      error: null,
+      completedCasesCount: 0,
+      allCasesCompleted: false
     }
   },
   computed: {
@@ -140,6 +166,13 @@ export default {
         this.chapter.chapterNumber === '6' ||
         this.chapter.title.includes('第一个人工智能项目') ||
         this.id === '6'
+      )
+    },
+    isChapter2() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '2' ||
+        this.chapter.title.includes('机器学习基础') ||
+        this.id === '2'
       )
     },
     prevChapter() {
@@ -199,7 +232,33 @@ export default {
       this.$router.push(`/chapters/${id}`)
     },
     startQuiz() {
+      if (this.isChapter2 && !this.allCasesCompleted) {
+        this.$message({
+          message: '请先完成所有案例学习后再开始测验',
+          type: 'warning',
+          duration: 3000
+        })
+        return
+      }
       this.$router.push(`/quiz/${this.id}`)
+    },
+    
+    onCaseCompleted(caseId) {
+      this.completedCasesCount++
+      this.$message({
+        message: `案例 ${caseId} 完成！`,
+        type: 'success',
+        duration: 2000
+      })
+    },
+    
+    onAllCasesCompleted() {
+      this.allCasesCompleted = true
+      this.$message({
+        message: '🎉 恭喜！所有案例学习已完成，现在可以开始测验了！',
+        type: 'success',
+        duration: 3000
+      })
     },
     getChapterType(type) {
       const typeMap = {
@@ -220,7 +279,9 @@ export default {
         .split('\n\n')
         .map(paragraph => `<p>${paragraph.trim()}</p>`)
         .join('')
-    }
+    },
+    
+
   }
 }
 </script>
@@ -435,9 +496,16 @@ export default {
   align-items: center;
   gap: 0.5rem;
   
-  &:hover {
+  &:hover:not(.disabled) {
     transform: translateY(-2px);
     box-shadow: $btn-shadow;
+  }
+  
+  &.disabled {
+    background: #666;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 }
 

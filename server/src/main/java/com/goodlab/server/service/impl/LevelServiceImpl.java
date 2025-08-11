@@ -67,7 +67,10 @@ public class LevelServiceImpl implements LevelService {
     
     @Override
     public String getLevelTitle(int level) {
-        if (level <= 0 || level > LEVEL_TITLES.length) {
+        if (level <= 0) {
+            return LEVEL_TITLES[0];
+        }
+        if (level > LEVEL_TITLES.length) {
             return LEVEL_TITLES[LEVEL_TITLES.length - 1];
         }
         return LEVEL_TITLES[level - 1];

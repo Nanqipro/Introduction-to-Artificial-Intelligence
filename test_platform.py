@@ -13,7 +13,7 @@ import string
 from typing import Dict, Any, Optional
 
 class PlatformTester:
-    def __init__(self, base_url: str = "http://localhost:8080"):
+    def __init__(self, base_url: str = "http://localhost:8082"):
         self.base_url = base_url
         self.session = requests.Session()
         self.token = None
@@ -372,7 +372,7 @@ class PlatformTester:
 if __name__ == "__main__":
     # 可以通过命令行参数指定服务器地址
     import sys
-    base_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8080"
+    base_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8082"
     
     tester = PlatformTester(base_url)
     tester.run_all_tests()
