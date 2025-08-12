@@ -355,6 +355,17 @@ java -jar target/server-0.0.1-SNAPSHOT.jar
 
 ## 🔧 开发指南
 
+### Mysql数据库
+```
+mysql -u root -p --socket=/var/run/mysqld/mysqld.sock
+
+# 数据源配置
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/AI_platform?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root123456
+```
+
 ### 前端开发命令
 
 ```bash
