@@ -58,24 +58,42 @@
           />
         </div>
 
+        <!-- 第三章案例学习 -->
+        <div v-if="isChapter3" class="case-study-section">
+          <Chapter3CaseStudy 
+            :chapter-id="id" 
+            @case-completed="onCaseCompleted"
+            @all-cases-completed="onAllCasesCompleted"
+          />
+        </div>
+
+        <!-- 第四章案例学习 -->
+        <div v-if="isChapter4" class="case-study-section">
+          <Chapter4CaseStudy 
+            :chapter-id="id" 
+            @case-completed="onCaseCompleted"
+            @all-cases-completed="onAllCasesCompleted"
+          />
+        </div>
+
         <!-- 答题系统入口 -->
         <div class="quiz-section">
           <div class="quiz-header">
             <h3 class="quiz-title">📚 知识测验</h3>
             <p class="quiz-description">
-              {{ isChapter2 ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
+              {{ (isChapter2 || isChapter3 || isChapter4) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
             </p>
           </div>
           <div class="quiz-actions">
             <button 
               @click="startQuiz" 
               class="btn btn-quiz"
-              :disabled="isChapter2 && !allCasesCompleted"
-              :class="{ disabled: isChapter2 && !allCasesCompleted }"
+              :disabled="(isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted"
+              :class="{ disabled: (isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted }"
             >
               <span class="btn-icon">🎯</span>
               <span class="btn-text">
-                {{ isChapter2 && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
+                {{ (isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
               </span>
             </button>
             <div class="quiz-info">
@@ -90,6 +108,14 @@
               <span v-if="isChapter2" class="info-item">
                 <span class="info-icon">✅</span>
                 <span class="info-text">案例完成进度: {{ completedCasesCount }}/2</span>
+              </span>
+              <span v-if="isChapter3" class="info-item">
+                <span class="info-icon">✅</span>
+                <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
+              </span>
+              <span v-if="isChapter4" class="info-item">
+                <span class="info-icon">✅</span>
+                <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
               </span>
             </div>
           </div>
@@ -137,12 +163,16 @@
 import { chapterApi } from '../services/api'
 import Chapter6Interactive from '../components/chapter6/Chapter6Interactive.vue'
 import Chapter2CaseStudy from '../components/chapter2/Chapter2CaseStudy.vue'
+import Chapter3CaseStudy from '../components/chapter3/Chapter3CaseStudy.vue'
+import Chapter4CaseStudy from '../components/chapter4/Chapter4CaseStudy.vue'
 
 export default {
   name: 'ChapterDetail',
   components: {
     Chapter6Interactive,
-    Chapter2CaseStudy
+    Chapter2CaseStudy,
+    Chapter3CaseStudy,
+    Chapter4CaseStudy
   },
   props: {
     id: {
@@ -173,6 +203,24 @@ export default {
         this.chapter.chapterNumber === '2' ||
         this.chapter.title.includes('机器学习基础') ||
         this.id === '2'
+      )
+    },
+    isChapter3() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '3' ||
+        this.chapter.title.includes('图像识别') ||
+        this.chapter.title.includes('计算机视觉') ||
+        this.id === '3'
+      )
+    },
+    isChapter4() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '4' ||
+        this.chapter.title.includes('人工智能应用') ||
+        this.chapter.title.includes('智慧生活') ||
+        this.chapter.title.includes('智慧驾驶') ||
+        this.chapter.title.includes('智慧医疗') ||
+        this.id === '4'
       )
     },
     prevChapter() {
@@ -232,7 +280,7 @@ export default {
       this.$router.push(`/chapters/${id}`)
     },
     startQuiz() {
-      if (this.isChapter2 && !this.allCasesCompleted) {
+      if ((this.isChapter2 || this.isChapter3 || this.isChapter4) && !this.allCasesCompleted) {
         this.$message({
           message: '请先完成所有案例学习后再开始测验',
           type: 'warning',

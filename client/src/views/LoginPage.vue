@@ -98,11 +98,11 @@ const formData = reactive({
 const formRules = computed(() => ({
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, max: 16, message: '用户名长度为5-16位', trigger: 'blur' }
+    { min: 4, max: 16, message: '用户名长度为4-16位', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 5, max: 16, message: '密码长度为5-16位', trigger: 'blur' }
+    { min: 4, max: 16, message: '密码长度为4-16位', trigger: 'blur' }
   ],
   confirmPassword: isLogin.value ? [] : [
     { required: true, message: '请确认密码', trigger: 'blur' },

@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: '',
+  baseURL: 'http://localhost:8082',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -16,8 +16,13 @@ api.interceptors.request.use(
 
     // 添加JWT token到请求头
     const token = localStorage.getItem('token')
+    console.log('本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
+    
     if (token) {
       config.headers.Authorization = token
+      console.log('已添加Authorization头部:', token.substring(0, 20) + '...')
+    } else {
+      console.log('警告: 没有找到token，该请求可能会被拒绝')
     }
 
     return config
@@ -33,8 +38,16 @@ api.interceptors.response.use(
   response => {
     console.log('收到响应:', response.status, response.data)
     // 处理后端统一响应格式
-    if (response.data && response.data.code === 0) {
-      return response.data
+    if (response.data && typeof response.data === 'object') {
+      // 后端成功响应的code是200
+      if (response.data.code === 200) {
+        return response.data
+      }
+      // 后端错误响应（code不是200时）
+      if (response.data.code !== 200 && response.data.message) {
+        console.log('后端返回错误:', response.data.code, response.data.message)
+        throw new Error(response.data.message)
+      }
     }
     return response.data
   },

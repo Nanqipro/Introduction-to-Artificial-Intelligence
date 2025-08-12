@@ -37,6 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/user/register")
                 .excludePathPatterns("/api/chapters/**")
                 .excludePathPatterns("/api/quiz/**")
-                .excludePathPatterns("/api/admin/**");
+                .excludePathPatterns("/api/admin/**")
+                // 临时调试：放行level相关接口
+                .excludePathPatterns("/api/level/**");
+        
+        System.out.println("拦截器配置完成 - 放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /api/level/**");
     }
 }
