@@ -166,3 +166,93 @@ $primary-color: #6c6c6c;
 $primary-hover: #cccccc;
 $danger-color: #f56565;
 $danger-hover: #e53e3e;
+
+// 缺失的样式变量补充
+$primary-color: #4a90e2; // 主色调
+$primary-hover-color: #357abd; // 主色调悬停状态
+
+// 按钮样式补充
+$btn-radius: 12px; // 按钮圆角
+$btn-shadow: 0 4px 16px rgba(74, 144, 226, 0.3); // 按钮阴影
+
+// 导航样式补充
+$nav-bg: rgba(41, 44, 51, 0.92); // 导航背景色
+$nav-border: rgba(57, 59, 64, 0.18); // 导航边框色
+$nav-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); // 导航阴影
+$nav-back-hover: #b0b3b8; // 导航返回按钮悬停色
+
+// 章节样式补充
+$chapter-badge-bg: linear-gradient(135deg, #18191a, #232526); // 章节徽章背景
+$chapter-badge-shadow: 0 2px 8px rgba(143, 161, 179, 0.08); // 章节徽章阴影
+$chapter-type-bg: #23272e; // 章节类型背景色
+
+// 列表样式补充
+$list-item-hover-bg: #31343b; // 列表项悬停背景色
+$list-item-hover-shadow: 0 8px 32px rgba(143, 161, 179, 0.15); // 列表项悬停阴影
+$list-item-hover-border: #8fa1b3; // 列表项悬停边框色
+$list-item-gap: 1.5rem; // 列表项间距
+
+// 状态指示器补充
+$status-dot-size: 8px; // 状态点大小
+$status-dot-unpublished: #393b40; // 未发布状态点颜色
+$status-dot-published: #8fa1b3; // 已发布状态点颜色
+
+// 加载状态补充
+$loading-border: #393b40; // 加载边框色
+$loading-spinner: #8fa1b3; // 加载旋转器色
+
+// 空状态补充
+$empty-icon-size: 4rem; // 空状态图标大小
+
+// 页面布局补充
+$page-max-width: 1000px; // 页面最大宽度
+$page-padding: 1rem; // 页面内边距
+
+// 卡片样式补充
+$card-bg: #292c33; // 卡片背景色
+$card-border: rgba(57, 59, 64, 0.18); // 卡片边框色
+$card-shadow: 0 4px 24px rgba(0, 0, 0, 0.12); // 卡片阴影
+$card-radius: 16px; // 卡片圆角
+
+// 文本颜色补充
+$text-color: #f5f6fa; // 主文本色（白）
+$text-secondary-color: #b0b3b8; // 次文本色（银灰）
+
+// 背景色补充
+$secondary-color: #23272e; // 深灰背景
+$accent-color: #b0b3b8; // 银灰点缀
+
+// 响应式断点
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// 动画时长
+$transition-fast: 0.15s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+
+// 阴影深度
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+// 字体大小
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
+
+// 间距系统
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @Validated
 public class UsersController {
 
@@ -27,8 +27,8 @@ public class UsersController {
 
     // 注册
     @PostMapping("/register")
-    public ApiResponse<Void> register(@Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "用户名格式错误") String username,
-                           @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "密码格式错误") String password) {
+    public ApiResponse<Void> register(@RequestParam @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "用户名格式错误") String username,
+                           @RequestParam @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "密码格式错误") String password) {
         // 查询用户
         User user = userService.findByUserName(username);
         if (user != null) {
@@ -42,8 +42,8 @@ public class UsersController {
 
     // 登录
     @PostMapping("/login")
-    public ApiResponse<String> login(@Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "用户名格式错误") String username,
-                       @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "密码格式错误") String password) {
+    public ApiResponse<String> login(@RequestParam @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "用户名格式错误") String username,
+                       @RequestParam @Pattern(regexp = "^[a-zA-Z0-9_-]{4,16}$", message = "密码格式错误") String password) {
         // 获取用户
         User loginUser = userService.findByUserName(username);
         if (loginUser == null) {

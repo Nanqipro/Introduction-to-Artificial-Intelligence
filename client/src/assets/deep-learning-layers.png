@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="200" viewBox="0 0 500 200">
+  <rect width="500" height="200" fill="#f8f9fa"/>
+  <text x="250" y="30" text-anchor="middle" font-family="Arial" font-size="16" fill="#333">深度学习网络层结构</text>
+  
+  <!-- Input Layer -->
+  <rect x="20" y="60" width="60" height="80" fill="#28a745" rx="5"/>
+  <text x="50" y="105" text-anchor="middle" font-family="Arial" font-size="12" fill="white">输入层</text>
+  
+  <!-- Hidden Layer 1 -->
+  <rect x="120" y="50" width="60" height="100" fill="#007bff" rx="5"/>
+  <text x="150" y="105" text-anchor="middle" font-family="Arial" font-size="12" fill="white">隐藏层1</text>
+  
+  <!-- Hidden Layer 2 -->
+  <rect x="220" y="50" width="60" height="100" fill="#007bff" rx="5"/>
+  <text x="250" y="105" text-anchor="middle" font-family="Arial" font-size="12" fill="white">隐藏层2</text>
+  
+  <!-- Hidden Layer 3 -->
+  <rect x="320" y="50" width="60" height="100" fill="#007bff" rx="5"/>
+  <text x="350" y="105" text-anchor="middle" font-family="Arial" font-size="12" fill="white">隐藏层3</text>
+  
+  <!-- Output Layer -->
+  <rect x="420" y="60" width="60" height="80" fill="#dc3545" rx="5"/>
+  <text x="450" y="105" text-anchor="middle" font-family="Arial" font-size="12" fill="white">输出层</text>
+  
+  <!-- Arrows -->
+  <path d="M 85 100 L 115 100" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 185 100 L 215 100" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 285 100 L 315 100" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 385 100 L 415 100" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+</svg>

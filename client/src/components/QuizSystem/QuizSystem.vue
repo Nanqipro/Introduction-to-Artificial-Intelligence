@@ -44,17 +44,115 @@
       </div>
     </div>
 
-    <!-- 答题区域 -->
-    <div class="quiz-container" v-if="!quizCompleted">
-      <!-- 进度条 -->
-      <div class="quiz-progress">
-        <div class="progress-bar">
-          <div 
-            class="progress-fill" 
-            :style="{ width: `${(currentQuestionIndex / questions.length) * 100}%` }"
-          ></div>
+    <!-- 答题设置面板 -->
+    <div class="quiz-settings" v-if="currentQuestionIndex === 0 && !showAnswer">
+      <div class="settings-panel">
+        <h3 class="settings-title">答题设置</h3>
+        
+        <!-- 难度选择 -->
+        <div class="setting-group">
+          <label class="setting-label">选择难度</label>
+          <div class="difficulty-options">
+            <button 
+              v-for="diff in ['easy', 'normal', 'hard']" 
+              :key="diff"
+              @click="setDifficulty(diff)"
+              class="difficulty-btn"
+              :class="{ active: difficulty === diff }"
+            >
+              <span class="diff-icon">{{ getDifficultyIcon(diff) }}</span>
+              <span class="diff-text">{{ getDifficultyText(diff) }}</span>
+              <span class="diff-desc">{{ getDifficultyDesc(diff) }}</span>
+            </button>
+          </div>
         </div>
-        <span class="progress-text">{{ currentQuestionIndex + 1 }} / {{ questions.length }}</span>
+        
+        <!-- 模式选择 -->
+        <div class="setting-group">
+          <label class="setting-label">答题模式</label>
+          <div class="mode-options">
+            <button 
+              @click="setQuizMode('normal')"
+              class="mode-btn"
+              :class="{ active: quizMode === 'normal' }"
+            >
+              <span class="mode-icon">🎯</span>
+              <span class="mode-text">标准模式</span>
+              <span class="mode-desc">有时间限制，计分排名</span>
+            </button>
+            <button 
+              @click="setQuizMode('practice')"
+              class="mode-btn"
+              :class="{ active: quizMode === 'practice' }"
+            >
+              <span class="mode-icon">📚</span>
+              <span class="mode-text">练习模式</span>
+              <span class="mode-desc">无时间限制，可重复练习</span>
+            </button>
+            <button 
+              @click="setQuizMode('exam')"
+              class="mode-btn"
+              :class="{ active: quizMode === 'exam' }"
+            >
+              <span class="mode-icon">📝</span>
+              <span class="mode-text">考试模式</span>
+              <span class="mode-desc">严格计时，不可返回</span>
+            </button>
+          </div>
+        </div>
+        
+        <button @click="startQuiz" class="start-quiz-btn">
+          <span class="btn-icon">🚀</span>
+          开始答题
+        </button>
+      </div>
+    </div>
+
+    <!-- 答题区域 -->
+    <div class="quiz-container" v-if="!quizCompleted && (currentQuestionIndex > 0 || showAnswer)">
+      <!-- 进度条和计时器 -->
+      <div class="quiz-progress">
+        <div class="progress-section">
+          <div class="progress-bar">
+            <div 
+              class="progress-fill" 
+              :style="{ width: `${(currentQuestionIndex / questions.length) * 100}%` }"
+            ></div>
+          </div>
+          <span class="progress-text">{{ currentQuestionIndex + 1 }} / {{ questions.length }}</span>
+        </div>
+        
+        <!-- 计时器 -->
+        <div class="timer-section" v-if="!practiceMode">
+          <div class="timer-display" :class="{ warning: timeRemaining <= 10, critical: timeRemaining <= 5 }">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-text">
+              <span class="timer-value">{{ formatTime(timeRemaining) }}</span>
+              <span class="timer-label">剩余时间</span>
+            </div>
+          </div>
+          <div class="timer-progress">
+            <div 
+              class="timer-fill" 
+              :style="{ width: `${(timeRemaining / timeLimit) * 100}%` }"
+              :class="{ warning: timeRemaining <= 10, critical: timeRemaining <= 5 }"
+            ></div>
+          </div>
+        </div>
+        
+        <!-- 答题统计 -->
+        <div class="quiz-stats">
+          <div class="stat-item">
+            <span class="stat-icon">🔥</span>
+            <span class="stat-value">{{ streakCount }}</span>
+            <span class="stat-label">连击</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💡</span>
+            <span class="stat-value">{{ maxHints - hintsUsed }}</span>
+            <span class="stat-label">提示</span>
+          </div>
+        </div>
       </div>
 
       <!-- 当前题目 -->
@@ -275,6 +373,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       questions: [],
       currentQuestionIndex: 0,
       selectedAnswer: null,
@@ -288,8 +387,33 @@ export default {
       levelUp: false,
       oldLevel: '',
       newLevel: '',
-      loading: false,
-      showHint: false
+      showHint: false,
+      
+      // 新增功能数据
+      timeLimit: 60, // 每题时间限制（秒）
+      timeRemaining: 60,
+      timerInterval: null,
+      isTimerActive: false,
+      
+      // 答题历史和统计
+      quizHistory: [],
+      wrongQuestions: [], // 错题本
+      streakCount: 0, // 连续答对题数
+      maxStreak: 0, // 最大连续答对数
+      
+      // 难度设置
+      difficulty: 'normal', // easy, normal, hard
+      difficultyMultiplier: 1,
+      
+      // 提示系统
+      hintsUsed: 0,
+      maxHints: 3,
+      hintPenalty: 0.1, // 使用提示的分数惩罚
+      
+      // 答题模式
+      quizMode: 'normal', // normal, practice, exam
+      practiceMode: false,
+      examMode: false
     }
   },
   computed: {
@@ -344,6 +468,12 @@ export default {
   },
   async mounted() {
     await this.loadQuestions()
+    this.loadWrongQuestions()
+  },
+  
+  beforeDestroy() {
+    // 清理计时器
+    this.stopTimer()
   },
   methods: {
     async loadQuestions() {
@@ -408,20 +538,43 @@ export default {
     submitAnswer() {
       if (!this.canSubmit) return
       
+      this.stopTimer() // 停止计时器
       this.showAnswer = true
+      
+      const userAnswer = this.currentQuestion.type === 'fill' ? this.fillAnswer : this.selectedAnswer
+      const isCorrect = this.isAnswerCorrect
+      
+      // 计算得分（考虑难度和提示惩罚）
+      let points = this.earnedPoints * this.difficultyMultiplier
+      if (this.showHint) {
+        points = Math.floor(points * (1 - this.hintPenalty))
+      }
       
       // 记录答案
       this.userAnswers.push({
         questionId: this.currentQuestion.id,
-        answer: this.currentQuestion.type === 'fill' ? this.fillAnswer : this.selectedAnswer,
-        correct: this.isAnswerCorrect,
-        points: this.earnedPoints
+        answer: userAnswer,
+        correct: isCorrect,
+        points: points,
+        timeSpent: this.timeLimit - this.timeRemaining,
+        hintsUsed: this.showHint ? 1 : 0
       })
       
-      // 更新分数
-      this.totalScore += this.earnedPoints
-      if (this.isAnswerCorrect) {
+      // 更新分数和统计
+      this.totalScore += points
+      if (isCorrect) {
         this.correctCount++
+      } else {
+        // 添加到错题本
+        this.addToWrongQuestions(this.currentQuestion, userAnswer)
+      }
+      
+      // 更新连击数
+      this.updateStreak(isCorrect)
+      
+      // 如果使用了提示，增加计数
+      if (this.showHint) {
+        this.hintsUsed++
       }
     },
     nextQuestion() {
@@ -430,6 +583,10 @@ export default {
       } else {
         this.currentQuestionIndex++
         this.resetQuestion()
+        // 开始下一题的计时器
+        if (!this.practiceMode) {
+          this.startTimer()
+        }
       }
     },
     resetQuestion() {
@@ -573,6 +730,152 @@ export default {
       }
       
       return hints[question.type] || '仔细阅读题目，注意关键词和细节。'
+    },
+    
+    // 新增方法
+    formatTime(seconds) {
+      const mins = Math.floor(seconds / 60)
+      const secs = seconds % 60
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    },
+    
+    startTimer() {
+      if (this.practiceMode) return
+      
+      this.isTimerActive = true
+      this.timeRemaining = this.timeLimit
+      
+      this.timerInterval = setInterval(() => {
+        this.timeRemaining--
+        
+        if (this.timeRemaining <= 0) {
+          this.timeUp()
+        }
+      }, 1000)
+    },
+    
+    stopTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval)
+        this.timerInterval = null
+      }
+      this.isTimerActive = false
+    },
+    
+    timeUp() {
+      this.stopTimer()
+      // 自动提交当前答案（如果有的话）
+      if (this.canSubmit) {
+        this.submitAnswer()
+      } else {
+        // 没有答案则记录为错误
+        this.userAnswers.push({
+          questionId: this.currentQuestion.id,
+          answer: null,
+          correct: false,
+          points: 0,
+          timeUp: true
+        })
+        this.showAnswer = true
+        this.streakCount = 0 // 重置连击
+      }
+    },
+    
+    setDifficulty(diff) {
+      this.difficulty = diff
+      const multipliers = {
+        'easy': 0.8,
+        'normal': 1.0,
+        'hard': 1.3
+      }
+      this.difficultyMultiplier = multipliers[diff]
+      
+      const timeLimits = {
+        'easy': 90,
+        'normal': 60,
+        'hard': 45
+      }
+      this.timeLimit = timeLimits[diff]
+    },
+    
+    setQuizMode(mode) {
+      this.quizMode = mode
+      this.practiceMode = mode === 'practice'
+      this.examMode = mode === 'exam'
+      
+      if (mode === 'practice') {
+        this.maxHints = 5
+        this.hintPenalty = 0
+      } else if (mode === 'exam') {
+        this.maxHints = 1
+        this.hintPenalty = 0.2
+        this.timeLimit = Math.floor(this.timeLimit * 0.8) // 考试模式时间更紧
+      }
+    },
+    
+    startQuiz() {
+      this.currentQuestionIndex = 0
+      this.startTimer()
+    },
+    
+    getDifficultyIcon(diff) {
+      const icons = {
+        'easy': '🌱',
+        'normal': '⚡',
+        'hard': '🔥'
+      }
+      return icons[diff]
+    },
+    
+    getDifficultyText(diff) {
+      const texts = {
+        'easy': '简单',
+        'normal': '普通',
+        'hard': '困难'
+      }
+      return texts[diff]
+    },
+    
+    getDifficultyDesc(diff) {
+      const descs = {
+        'easy': '更多时间，基础题目',
+        'normal': '标准难度，适中时间',
+        'hard': '高难度，时间紧张'
+      }
+      return descs[diff]
+    },
+    
+    addToWrongQuestions(question, userAnswer) {
+      const wrongQuestion = {
+        ...question,
+        userAnswer,
+        timestamp: new Date().toISOString(),
+        reviewCount: 0
+      }
+      
+      // 避免重复添加
+      const exists = this.wrongQuestions.find(q => q.id === question.id)
+      if (!exists) {
+        this.wrongQuestions.push(wrongQuestion)
+        // 保存到本地存储
+        localStorage.setItem('wrongQuestions', JSON.stringify(this.wrongQuestions))
+      }
+    },
+    
+    loadWrongQuestions() {
+      const saved = localStorage.getItem('wrongQuestions')
+      if (saved) {
+        this.wrongQuestions = JSON.parse(saved)
+      }
+    },
+    
+    updateStreak(isCorrect) {
+      if (isCorrect) {
+        this.streakCount++
+        this.maxStreak = Math.max(this.maxStreak, this.streakCount)
+      } else {
+        this.streakCount = 0
+      }
     }
   }
 }
@@ -734,13 +1037,132 @@ export default {
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   box-shadow: 
     0 16px 32px rgba(0, 0, 0, 0.2),
     0 4px 8px rgba($accent-color, 0.1);
   border: 1px solid $card-border;
   backdrop-filter: blur(12px);
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.progress-section {
+  display: flex;
+  align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  flex: 1;
+  min-width: 200px;
+}
+
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+}
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba($info-color, 0.1) 0%, rgba($info-color-light, 0.1) 100%);
+  border-radius: $btn-radius;
+  border: 1px solid rgba($info-color, 0.2);
+  transition: all 0.3s ease;
+  
+  &.warning {
+    background: linear-gradient(135deg, rgba($warning-color, 0.1) 0%, rgba($warning-color-light, 0.1) 100%);
+    border-color: rgba($warning-color, 0.3);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  &.critical {
+    background: linear-gradient(135deg, rgba($error-color, 0.1) 0%, rgba($error-color-light, 0.1) 100%);
+    border-color: rgba($error-color, 0.3);
+    animation: shake 0.5s ease-in-out infinite;
+  }
+}
+
+.timer-icon {
+  font-size: 1.2rem;
+}
+
+.timer-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $text-color;
+}
+
+.timer-label {
+  font-size: 0.75rem;
+  color: $text-secondary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timer-progress {
+  width: 100px;
+  height: 4px;
+  background: rgba($text-secondary-color, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $info-color 0%, $info-color-light 100%);
+  transition: all 0.3s ease;
+  
+  &.warning {
+    background: linear-gradient(90deg, $warning-color 0%, $warning-color-light 100%);
+  }
+  
+  &.critical {
+    background: linear-gradient(90deg, $error-color 0%, $error-color-light 100%);
+  }
+}
+
+.quiz-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
+  border-radius: $btn-radius;
+  border: 1px solid rgba($accent-color, 0.1);
+  min-width: 60px;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $text-color;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: $text-secondary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .progress-bar {
@@ -1681,4 +2103,4 @@ export default {
     flex-direction: column;
   }
 }
-</style> 
+</style>

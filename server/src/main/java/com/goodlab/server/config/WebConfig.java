@@ -33,8 +33,8 @@ public class WebConfig implements WebMvcConfigurer {
         // 放行登录接口 和注册接口
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login")
-                .excludePathPatterns("/user/register")
+                .excludePathPatterns("/api/user/login")
+                .excludePathPatterns("/api/user/register")
                 .excludePathPatterns("/api/chapters/**")
                 .excludePathPatterns("/api/quiz/**")
                 .excludePathPatterns("/api/admin/**");

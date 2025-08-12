@@ -204,7 +204,7 @@ export const userApi = {
     formData.append('username', userData.username)
     formData.append('password', userData.password)
 
-    return api.post('/user/register', formData, {
+    return api.post('/api/user/register', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -217,7 +217,7 @@ export const userApi = {
     formData.append('username', userData.username)
     formData.append('password', userData.password)
 
-    return api.post('/user/login', formData, {
+    return api.post('/api/user/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -226,7 +226,7 @@ export const userApi = {
 
   // 获取用户信息
   getUserInfo() {
-    return api.get('/user/userInfo')
+    return api.get('/api/user/userInfo')
   },
 
   // 获取当前用户（兼容性方法）
@@ -236,7 +236,7 @@ export const userApi = {
 
   // 更新用户基本信息
   updateUserInfo(userInfo) {
-    return api.put('/user/update', userInfo)
+    return api.put('/api/user/update', userInfo)
   },
 
   // 更新用户头像
@@ -244,12 +244,12 @@ export const userApi = {
     const params = new URLSearchParams()
     params.append('avatarUrl', avatarUrl)
 
-    return api.patch(`/user/updateAvatar?${params.toString()}`)
+    return api.patch(`/api/user/updateAvatar?${params.toString()}`)
   },
 
   // 更新用户密码
   updatePassword(passwordData) {
-    return api.patch('/user/updatePwd', passwordData)
+    return api.patch('/api/user/updatePwd', passwordData)
   }
 }
 

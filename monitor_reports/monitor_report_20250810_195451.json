@@ -1,0 +1,62 @@
+{
+  "current_test": {
+    "timestamp": "2025-08-10T19:54:51.542977",
+    "total_tests": 16,
+    "passed_tests": 16,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "category_stats": {
+      "服务器": {
+        "passed": 1,
+        "total": 1,
+        "success_rate": 100.0
+      },
+      "前端": {
+        "passed": 1,
+        "total": 1,
+        "success_rate": 100.0
+      },
+      "用户系统": {
+        "passed": 5,
+        "total": 5,
+        "success_rate": 100.0
+      },
+      "等级系统": {
+        "passed": 6,
+        "total": 6,
+        "success_rate": 100.0
+      },
+      "性能": {
+        "passed": 2,
+        "total": 2,
+        "success_rate": 100.0
+      }
+    },
+    "failed_test_details": []
+  },
+  "trend_analysis": {
+    "message": "数据不足，无法分析趋势"
+  },
+  "config": {
+    "base_url": "http://localhost:8082",
+    "frontend_url": "http://localhost:5174",
+    "test_interval_minutes": 30,
+    "alert_threshold": 80,
+    "max_history": 100,
+    "email_alerts": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "sender_email": "",
+      "sender_password": "",
+      "recipient_emails": []
+    },
+    "log_level": "INFO",
+    "report_directory": "./monitor_reports"
+  },
+  "system_info": {
+    "python_version": "3.12.3 (v3.12.3:f6650f9ad7, Apr  9 2024, 08:18:47) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "platform": "darwin",
+    "monitor_version": "1.0.0"
+  }
+}

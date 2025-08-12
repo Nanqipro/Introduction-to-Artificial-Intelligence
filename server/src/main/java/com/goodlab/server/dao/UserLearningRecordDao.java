@@ -12,7 +12,7 @@ public interface UserLearningRecordDao {
     /**
      * 添加学习记录
      */
-    @Insert("INSERT INTO user_learning_record (user_id, chapter_id, activity_type, score, experience_gained, completed_at, created_at) " +
+    @Insert("INSERT INTO user_learning_record (user_id, chapter_id, activity_type, score, experience_gained, completion_time, create_time) " +
             "VALUES (#{userId}, #{chapterId}, #{activityType}, #{score}, #{experienceGained}, #{completedAt}, #{createdAt})")
     void addLearningRecord(@Param("userId") Integer userId,
                           @Param("chapterId") Integer chapterId,
@@ -25,13 +25,13 @@ public interface UserLearningRecordDao {
     /**
      * 获取用户学习记录
      */
-    @Select("SELECT * FROM user_learning_record WHERE user_id = #{userId} ORDER BY created_at DESC LIMIT #{limit}")
+    @Select("SELECT * FROM user_learning_record WHERE user_id = #{userId} ORDER BY create_time DESC LIMIT #{limit}")
     List<UserLearningRecord> getUserLearningRecords(@Param("userId") Integer userId, @Param("limit") int limit);
     
     /**
      * 获取用户在某个章节的学习记录
      */
-    @Select("SELECT * FROM user_learning_record WHERE user_id = #{userId} AND chapter_id = #{chapterId} ORDER BY created_at DESC")
+    @Select("SELECT * FROM user_learning_record WHERE user_id = #{userId} AND chapter_id = #{chapterId} ORDER BY create_time DESC")
     List<UserLearningRecord> getUserChapterRecords(@Param("userId") Integer userId, @Param("chapterId") Integer chapterId);
     
     /**

@@ -1,37 +1,81 @@
 <template>
   <div id="app">
-    <Navigation />
-    <main class="main-content">
-      <router-view />
-    </main>
-    <footer class="app-footer">
-      <div class="footer-content">
-        <p>&copy; 2024 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
-        <p class="footer-tech">由GOODLAB开发团队构建</p>
-      </div>
-    </footer>
+    <ErrorBoundary>
+      <Navigation />
+      <main class="main-content">
+        <router-view />
+      </main>
+      <footer class="app-footer">
+        <div class="footer-content">
+          <p>&copy; 2024 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
+          <p class="footer-tech">由GOODLAB开发团队构建</p>
+        </div>
+      </footer>
+      
+      <!-- 通知管理器 -->
+      <NotificationManager ref="notificationManager" />
+    </ErrorBoundary>
   </div>
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import Navigation from './components/Navigation.vue'
+import ErrorBoundary from './components/ErrorBoundary.vue'
+import NotificationManager from './components/NotificationManager.vue'
 import { useAuth } from '@/composables/useAuth'
 
 export default {
   name: 'App',
   components: {
-    Navigation
+    Navigation,
+    ErrorBoundary,
+    NotificationManager
   },
   setup() {
     const { checkAuthStatus } = useAuth()
+    const notificationManager = ref(null)
+
+    // 提供全局通知方法
+    const showNotification = (options) => {
+      if (notificationManager.value) {
+        notificationManager.value.showNotification(options)
+      }
+    }
+
+    const showSuccess = (message, options = {}) => {
+      showNotification({ type: 'success', message, ...options })
+    }
+
+    const showWarning = (message, options = {}) => {
+      showNotification({ type: 'warning', message, ...options })
+    }
+
+    const showError = (message, options = {}) => {
+      showNotification({ type: 'error', message, ...options })
+    }
+
+    const showInfo = (message, options = {}) => {
+      showNotification({ type: 'info', message, ...options })
+    }
+
+    // 提供全局通知方法
+    provide('notifications', {
+      showNotification,
+      showSuccess,
+      showWarning,
+      showError,
+      showInfo
+    })
 
     // 应用启动时检查认证状态
     onMounted(() => {
       checkAuthStatus()
     })
 
-    return {}
+    return {
+      notificationManager
+    }
   }
 }
 </script>
