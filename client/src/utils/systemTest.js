@@ -53,8 +53,8 @@ class SystemTester {
     }
 
     try {
-      // 测试用户API
-      const userResponse = await fetch('/user/userInfo')
+      // 测试用户API（修正路径前缀）
+      const userResponse = await fetch('/api/user/userInfo')
       if (userResponse.ok || userResponse.status === 401) {
         this.addTestResult('API连接', '用户API', '✅ 正常')
       } else {

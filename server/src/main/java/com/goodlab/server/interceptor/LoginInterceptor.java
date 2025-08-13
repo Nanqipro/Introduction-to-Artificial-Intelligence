@@ -22,11 +22,16 @@ public class LoginInterceptor implements HandlerInterceptor {
         
         // 令牌验证
         String token = request.getHeader("Authorization");
+        System.out.println("LoginInterceptor: 收到的token = " + (token != null ? token.substring(0, Math.min(token.length(), 20)) + "..." : "null"));
+        
         // 验证token
-
         try {
+            if (token == null || token.trim().isEmpty()) {
+                throw new Exception("Token为空");
+            }
             Map<String, Object> claims = JwtUtil.parseToken(token);
             ThreadLocalUtil.set(claims);
+            System.out.println("LoginInterceptor: Token验证成功，用户ID = " + claims.get("id"));
             return true;
         } catch (Exception e) {
             // http 401
@@ -34,8 +39,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setStatus(401);
             return false;
         }
-
-
     }
 
     // 请求处理完毕后

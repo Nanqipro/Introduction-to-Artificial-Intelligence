@@ -371,7 +371,8 @@
                   </div>
                   <el-time-picker
                     v-model="notificationSettings.reminderTime"
-                    format="HH:mm"
+                     format="HH:mm"
+                     value-format="HH:mm"
                     placeholder="选择时间"
                     style="width: 120px;"
                   />

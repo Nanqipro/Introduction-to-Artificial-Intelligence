@@ -15,10 +15,18 @@ export function useAuth() {
   const login = async (loginData) => {
     try {
       const response = await userApi.login(loginData)
+      console.log('登录响应:', response)
       
-      if (response.code === 200) {
-        token.value = response.data
-        localStorage.setItem('token', response.data)
+      if (response && response.code === 200) {
+        const newToken = response.data
+        console.log('登录成功，收到token:', newToken.substring(0, 30) + '...')
+        
+        // 更新全局状态和本地存储
+        token.value = newToken
+        localStorage.setItem('token', newToken)
+        
+        console.log('Token已存储到localStorage和全局状态')
+        console.log('当前token状态:', token.value ? 'exists' : 'null')
         
         // 登录成功后获取用户信息
         await fetchUserInfo()
@@ -26,13 +34,15 @@ export function useAuth() {
         ElMessage.success('登录成功')
         return { success: true }
       } else {
-        ElMessage.error(response.message || '登录失败')
-        return { success: false, message: response.message }
+        const errorMsg = response?.message || '登录失败'
+        ElMessage.error(errorMsg)
+        return { success: false, message: errorMsg }
       }
     } catch (error) {
       console.error('登录错误:', error)
-      ElMessage.error(error.message || '登录失败')
-      return { success: false, message: error.message }
+      const errorMsg = error.message || '登录失败'
+      ElMessage.error(errorMsg)
+      return { success: false, message: errorMsg }
     }
   }
 
@@ -40,18 +50,21 @@ export function useAuth() {
   const register = async (registerData) => {
     try {
       const response = await userApi.register(registerData)
+      console.log('注册响应:', response)
       
-      if (response.code === 200) {
+      if (response && response.code === 200) {
         ElMessage.success('注册成功，请登录')
         return { success: true }
       } else {
-        ElMessage.error(response.message || '注册失败')
-        return { success: false, message: response.message }
+        const errorMsg = response?.message || '注册失败'
+        ElMessage.error(errorMsg)
+        return { success: false, message: errorMsg }
       }
     } catch (error) {
       console.error('注册错误:', error)
-      ElMessage.error(error.message || '注册失败')
-      return { success: false, message: error.message }
+      const errorMsg = error.message || '注册失败'
+      ElMessage.error(errorMsg)
+      return { success: false, message: errorMsg }
     }
   }
 
@@ -59,17 +72,20 @@ export function useAuth() {
   const fetchUserInfo = async () => {
     try {
       const response = await userApi.getUserInfo()
+      console.log('获取用户信息响应:', response)
       
-      if (response.code === 200) {
+      if (response && response.code === 200) {
         userInfo.value = response.data
         localStorage.setItem('userInfo', JSON.stringify(response.data))
         return { success: true, data: response.data }
       } else {
-        return { success: false, message: response.message }
+        const errorMsg = response?.message || '获取用户信息失败'
+        return { success: false, message: errorMsg }
       }
     } catch (error) {
       console.error('获取用户信息错误:', error)
-      return { success: false, message: error.message }
+      const errorMsg = error.message || '获取用户信息失败'
+      return { success: false, message: errorMsg }
     }
   }
 
@@ -145,8 +161,16 @@ export function useAuth() {
 
   // 初始化时检查登录状态
   const checkAuthStatus = async () => {
+    console.log('检查认证状态 - 当前token:', token.value ? token.value.substring(0, 20) + '...' : 'null')
+    console.log('检查认证状态 - 当前userInfo:', userInfo.value ? 'exists' : 'null')
+    
     if (token.value && !userInfo.value) {
+      console.log('有token但无用户信息，重新获取用户信息')
       await fetchUserInfo()
+    } else if (!token.value) {
+      console.log('没有token，用户未登录')
+    } else {
+      console.log('token和用户信息都存在，认证状态正常')
     }
   }
 
