@@ -548,9 +548,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { userApi, levelApi } from '@/services/api'
+import { useAuth } from '@/composables/useAuth'
 import { 
   User, 
   Edit, 
@@ -572,8 +573,11 @@ import {
   Medal
 } from '@element-plus/icons-vue'
 
-// 用户信息
-const userInfo = ref({
+// 使用共享的认证状态
+const { userInfo: authUserInfo, token, isLoggedIn, fetchUserInfo } = useAuth()
+
+// 用户信息（从认证状态获取或使用默认值）
+const userInfo = computed(() => authUserInfo.value || {
   username: '张三',
   nickname: '小张',
   email: 'zhangsan@example.com',
@@ -691,15 +695,16 @@ const passwordRules = {
 
 // 重置表单
 const resetForm = () => {
-  if (userInfo.value) {
-    formData.username = userInfo.value.username || ''
-    formData.nickname = userInfo.value.nickname || ''
-    formData.email = userInfo.value.email || ''
-    formData.phone = userInfo.value.phone || ''
-    formData.gender = userInfo.value.gender || ''
-    formData.birthday = userInfo.value.birthday || ''
-    formData.location = userInfo.value.location || ''
-    formData.bio = userInfo.value.bio || ''
+  const user = userInfo.value
+  if (user) {
+    formData.username = user.username || ''
+    formData.nickname = user.nickname || ''
+    formData.email = user.email || ''
+    formData.phone = user.phone || ''
+    formData.gender = user.gender || ''
+    formData.birthday = user.birthday || ''
+    formData.location = user.location || ''
+    formData.bio = user.bio || ''
   }
 }
 
@@ -874,7 +879,14 @@ const getExpToNextLevel = () => {
 
 // 获取用户等级数据
 const fetchUserLevelData = async () => {
+  // 确保用户已登录且有token
+  if (!isLoggedIn.value || !token.value) {
+    console.log('用户未登录，跳过获取等级数据')
+    return
+  }
+  
   try {
+    console.log('开始获取用户等级数据...')
     const [statsResponse, achievementsResponse] = await Promise.all([
       levelApi.getUserStats(),
       levelApi.getUserAchievements()
@@ -882,20 +894,55 @@ const fetchUserLevelData = async () => {
     
     if (statsResponse.data.success) {
       Object.assign(userStats, statsResponse.data.data)
+      console.log('用户统计数据获取成功:', userStats)
     }
     
     if (achievementsResponse.data.success) {
       userAchievements.value = achievementsResponse.data.data
+      console.log('用户成就数据获取成功:', userAchievements.value)
     }
   } catch (error) {
     console.error('获取用户等级数据失败:', error)
   }
 }
 
-// 初始化
-onMounted(() => {
+// 初始化用户数据
+const initializeUserData = async () => {
+  console.log('UserProfile: 开始初始化用户数据...')
+  console.log('UserProfile: 当前登录状态:', isLoggedIn.value)
+  console.log('UserProfile: 当前token状态:', token.value ? 'exists' : 'null')
+  
+  if (!isLoggedIn.value) {
+    console.log('UserProfile: 用户未登录，跳转到登录页')
+    // 可以选择跳转到登录页或显示提示
+    return
+  }
+  
+  // 如果有token但没有用户信息，先获取用户信息
+  if (token.value && !authUserInfo.value) {
+    console.log('UserProfile: 有token但无用户信息，先获取用户信息')
+    await fetchUserInfo()
+  }
+  
+  // 重置表单
   resetForm()
-  fetchUserLevelData()
+  
+  // 获取等级数据
+  await fetchUserLevelData()
+}
+
+// 监听认证状态变化
+watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
+  console.log('UserProfile: 认证状态变化', { isLoggedIn: newIsLoggedIn, hasUserInfo: !!newUserInfo })
+  if (newIsLoggedIn && newUserInfo) {
+    resetForm()
+    await fetchUserLevelData()
+  }
+}, { immediate: true })
+
+// 初始化
+onMounted(async () => {
+  await initializeUserData()
 })
 </script>
 

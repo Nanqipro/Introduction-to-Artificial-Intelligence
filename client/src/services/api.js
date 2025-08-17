@@ -12,23 +12,33 @@ const api = axios.create({
 // 请求拦截器
 api.interceptors.request.use(
   config => {
-    console.log('发送请求:', config.method?.toUpperCase(), config.url)
+    console.log('🚀 发送请求:', config.method?.toUpperCase(), config.url)
 
     // 添加JWT token到请求头
     const token = localStorage.getItem('token')
-    console.log('本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
+    console.log('📝 本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
     
     if (token) {
-      config.headers.Authorization = token
-      console.log('已添加Authorization头部:', token.substring(0, 20) + '...')
+      // 确保token格式正确（不重复添加Bearer前缀）
+      const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
+      config.headers.Authorization = formattedToken
+      console.log('✅ 已添加Authorization头部:', formattedToken.substring(0, 20) + '...')
     } else {
-      console.log('警告: 没有找到token，该请求可能会被拒绝')
+      console.warn('⚠️ 警告: 没有找到token，该请求可能会被拒绝')
+      console.log('🔍 当前请求URL:', config.url)
+      console.log('🔍 请求类型:', config.method)
     }
+
+    // 添加详细的请求日志
+    console.log('📋 完整请求头部:', {
+      'Content-Type': config.headers['Content-Type'],
+      'Authorization': config.headers.Authorization ? config.headers.Authorization.substring(0, 30) + '...' : 'none'
+    })
 
     return config
   },
   error => {
-    console.error('请求错误:', error)
+    console.error('❌ 请求拦截器错误:', error)
     return Promise.reject(error)
   }
 )

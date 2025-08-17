@@ -22,13 +22,20 @@ public class LoginInterceptor implements HandlerInterceptor {
         
         // 令牌验证
         String token = request.getHeader("Authorization");
-        System.out.println("LoginInterceptor: 收到的token = " + (token != null ? token.substring(0, Math.min(token.length(), 20)) + "..." : "null"));
+        System.out.println("LoginInterceptor: 收到的原始token = " + (token != null ? token.substring(0, Math.min(token.length(), 30)) + "..." : "null"));
         
         // 验证token
         try {
             if (token == null || token.trim().isEmpty()) {
                 throw new Exception("Token为空");
             }
+            
+            // 处理Bearer前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+                System.out.println("LoginInterceptor: 移除Bearer前缀后的token = " + token.substring(0, Math.min(token.length(), 20)) + "...");
+            }
+            
             Map<String, Object> claims = JwtUtil.parseToken(token);
             ThreadLocalUtil.set(claims);
             System.out.println("LoginInterceptor: Token验证成功，用户ID = " + claims.get("id"));

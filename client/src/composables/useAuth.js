@@ -84,6 +84,13 @@ export function useAuth() {
       }
     } catch (error) {
       console.error('获取用户信息错误:', error)
+      
+      // 如果是401错误（token无效），清理认证状态
+      if (error.message && error.message.includes('登录已过期')) {
+        console.log('Token已过期，清理认证状态')
+        logout()
+      }
+      
       const errorMsg = error.message || '获取用户信息失败'
       return { success: false, message: errorMsg }
     }
@@ -166,9 +173,17 @@ export function useAuth() {
     
     if (token.value && !userInfo.value) {
       console.log('有token但无用户信息，重新获取用户信息')
-      await fetchUserInfo()
+      const result = await fetchUserInfo()
+      if (!result.success) {
+        console.log('获取用户信息失败，可能token已失效')
+        // 如果获取用户信息失败，说明token可能已失效，清理状态
+        logout()
+      }
     } else if (!token.value) {
       console.log('没有token，用户未登录')
+      // 确保清理任何残留的用户信息
+      userInfo.value = null
+      localStorage.removeItem('userInfo')
     } else {
       console.log('token和用户信息都存在，认证状态正常')
     }
