@@ -45,12 +45,6 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		<!-- H2 数据库依赖 -->
-		<!-- <dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency> -->
 
 		<!-- MySQL 驱动依赖（Spring Boot 3 使用 mysql-connector-j） -->
 		<dependency>

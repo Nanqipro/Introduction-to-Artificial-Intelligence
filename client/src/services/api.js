@@ -17,7 +17,7 @@ api.interceptors.request.use(
     // 添加JWT token到请求头
     const token = localStorage.getItem('token')
     console.log('📝 本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
-    
+
     if (token) {
       // 确保token格式正确（不重复添加Bearer前缀）
       const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
@@ -66,11 +66,21 @@ api.interceptors.response.use(
 
     // 处理401未授权错误
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('userInfo')
-      // 可以在这里触发登录页面跳转
-      window.location.href = '/login'
-      return Promise.reject(new Error('登录已过期，请重新登录'))
+      console.log('🔒 收到401未授权响应，检查是否需要清除token')
+
+      // 只有在确实有token的情况下才清除，避免误清除
+      const currentToken = localStorage.getItem('token')
+      if (currentToken) {
+        console.log('🔒 清除已失效的token')
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+        // 不要强制跳转，让Vue Router处理
+        console.log('🔒 token已清除，让Vue Router处理跳转')
+        return Promise.reject(new Error('登录已过期，请重新登录'))
+      } else {
+        console.log('🔒 没有token，可能是首次请求，不进行跳转')
+        return Promise.reject(new Error('需要登录'))
+      }
     }
 
     // 处理后端错误响应

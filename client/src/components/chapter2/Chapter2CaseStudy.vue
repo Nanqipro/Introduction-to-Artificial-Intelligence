@@ -23,8 +23,8 @@
         <div class="progress-item" :class="{ completed: deepLearningCaseCompleted }">
           <div class="progress-icon">🧠</div>
           <div class="progress-info">
-            <h4>深度学习层案例</h4>
-            <p>卷积: {{ interactionCounts.convolutionDemo }}/2, 池化: {{ interactionCounts.poolingDemo }}/2, 全连接: {{ interactionCounts.fcDemo }}/2</p>
+            <h4>深度学习核心层</h4>
+            <p>观看动画演示，理解核心概念</p>
             <div class="progress-status">
               <span v-if="deepLearningCaseCompleted" class="status-completed">✅ 已完成</span>
               <span v-else class="status-pending">⏳ 进行中</span>
@@ -221,7 +221,49 @@
       </div>
     </div>
 
+    <!-- 深度学习核心层展示 -->
+    <div class="case-section">
+      <div class="section-header">
+        <h3 class="section-title">
+          <span class="title-icon">🧠</span>
+          <span class="title-text">深度学习核心层</span>
+          <span class="title-decoration"></span>
+        </h3>
+        <p class="section-subtitle">通过动画演示理解深度学习网络的核心组件</p>
+      </div>
 
+      <!-- 深度学习展示平台 -->
+      <div class="deep-learning-showcase">
+        <div class="showcase-content">
+          <div class="image-section">
+            <div class="image-container">
+              <img src="/images/chapter2/pic2.gif" alt="深度学习核心层动画演示" class="demo-gif" />
+              <div class="image-overlay">
+                <div class="overlay-content">
+                  <span class="overlay-icon">🎬</span>
+                  <span class="overlay-title">深度学习核心层</span>
+                  <span class="overlay-subtitle">动画演示</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="description-section">
+            <h4>🎯 学习要点</h4>
+            <p>通过这个动画演示，你可以直观地理解深度学习网络的三大核心组件：</p>
+            <ul class="learning-points">
+              <li><strong>卷积层：</strong>特征提取，参数共享，局部连接</li>
+              <li><strong>池化层：</strong>降维压缩，特征选择，平移不变性</li>
+              <li><strong>全连接层：</strong>特征组合，非线性变换，分类决策</li>
+            </ul>
+            <div class="learning-note">
+              <span class="note-icon">💡</span>
+              <span class="note-text">仔细观察动画中每一层的变换过程，理解它们如何协同工作</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 案例总结 -->
     <div class="case-summary">
@@ -241,47 +283,17 @@
     </div>
 
     <!-- 下一步提示 -->
-    <div class="next-step" :class="{ 'all-completed': allCasesCompleted }">
+    <div class="next-step">
       <div class="next-step-content">
-        <div v-if="allCasesCompleted" class="completion-celebration">
-          <h3>🎉 恭喜！所有案例学习已完成</h3>
-          <p>你已经深入理解了第二章的核心概念，包括线性回归、逻辑回归和深度学习三大核心层。现在可以参加知识测验来检验学习成果！</p>
-          <button @click="startQuiz" class="btn btn-quiz btn-enabled">
-            🚀 开始答题
-          </button>
-        </div>
-        
-        <div v-else class="completion-guide">
-          <h3>📚 继续学习案例</h3>
-          <p>请完成上述所有案例的交互学习，深入理解机器学习和深度学习的核心概念后，即可开始知识测验。</p>
-          
-          <div class="remaining-tasks">
-            <div v-if="!regressionCaseCompleted" class="task-item">
-              <span class="task-icon">📊</span>
-              <span class="task-text">还需要在回归分析案例中生成 {{ 3 - interactionCounts.regressionGenerate }} 次数据</span>
-            </div>
-            
-            <div v-if="!deepLearningCaseCompleted" class="task-item">
-              <span class="task-icon">🧠</span>
-              <span class="task-text">深度学习层案例还需要更多交互操作</span>
-              <div class="sub-tasks">
-                <span v-if="interactionCounts.convolutionDemo < 2" class="sub-task">
-                  卷积层: {{ 2 - interactionCounts.convolutionDemo }} 次
-                </span>
-                <span v-if="interactionCounts.poolingDemo < 2" class="sub-task">
-                  池化层: {{ 2 - interactionCounts.poolingDemo }} 次
-                </span>
-                <span v-if="interactionCounts.fcDemo < 2" class="sub-task">
-                  全连接层: {{ 2 - interactionCounts.fcDemo }} 次
-                </span>
-              </div>
-            </div>
+                  <div class="completion-celebration">
+            <h3>🎯 准备开始答题</h3>
+            <p>你已经了解了第二章的核心概念，包括线性回归、逻辑回归和深度学习核心层。现在可以参加知识测验来检验学习成果！</p>
+            <button @click="startQuiz" class="btn btn-quiz">
+              🚀 开始答题
+            </button>
           </div>
-          
-          <button @click="scrollToTop" class="btn btn-guide">
-            📖 返回案例学习
-          </button>
-        </div>
+        
+
       </div>
     </div>
   </div>
@@ -371,12 +383,12 @@ export default {
       return this.interactionCounts.regressionGenerate >= 3
     },
     deepLearningCaseCompleted() {
-      return this.interactionCounts.convolutionDemo >= 2 && 
-             this.interactionCounts.poolingDemo >= 2 && 
-             this.interactionCounts.fcDemo >= 2
+      // 简化后，只要用户访问过这个页面就认为完成了
+      return true
     },
     allCasesCompleted() {
-      return this.regressionCaseCompleted && this.deepLearningCaseCompleted
+      // 简化后，只要用户访问过这个页面就认为可以答题
+      return true
     },
     
     // 卷积层计算属性
@@ -775,9 +787,10 @@ export default {
     
     toggleWeights() {
       this.showWeights = !this.showWeights
-      if (this.showWeights) {
-        this.renderWeightHeatmaps()
-      }
+      
+      // 增加全连接层演示交互次数
+      this.interactionCounts.fcDemo++
+      this.checkDeepLearningCaseCompletion()
     },
     
     computeLayerOutput(inputs, weights) {
@@ -864,36 +877,88 @@ export default {
     },
     
     startQuiz() {
-      if (!this.allCasesCompleted) {
-        this.$message({
-          message: '请先完成所有案例学习后再开始测验',
-          type: 'warning',
-          duration: 3000
-        })
-        return
-      }
-      this.$router.push(`/quiz/${this.chapterId}`)
+      this.$router.push('/quiz')
     },
     
     scrollToTop() {
-      this.$el.scrollIntoView({ behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     
     // 跳转到平台学习方法
     redirectToRegressionPlatform() {
-      // 直接跳转到回归演示平台，不使用弹窗
-      window.open('/regression-demo', '_blank')
+      this.$router.push('/regression-demo')
+    },
+    
+    updateFullyConnected() {
+      this.updateWeights()
+      this.updateNeuronValues()
       
-      // 标记为已完成（模拟）
-      this.caseStatus.regression = true
-      this.interactionCounts.regressionGenerate = 3
+      // 增加全连接层演示交互次数
+      this.interactionCounts.fcDemo++
+      this.checkDeepLearningCaseCompletion()
+    },
+    
+    startTraining() {
+      if (this.trainingSteps > 0) return
       
-      // 显示跳转提示
-      console.log('已在新窗口打开回归演示平台，包含线性回归和逻辑回归完整内容')
+      this.trainingSteps = 0
+      this.currentLoss = 0.5
       
-      // 检查案例完成状态
-      this.$emit('case-completed', 'regression')
-      this.checkAllCasesCompleted()
+      const train = () => {
+        if (this.trainingSteps < 100) {
+          this.trainingSteps++
+          this.currentLoss = Math.max(0.01, this.currentLoss * 0.95)
+          setTimeout(train, 100)
+        }
+      }
+      
+      train()
+      
+      // 增加全连接层演示交互次数
+      this.interactionCounts.fcDemo++
+      this.checkDeepLearningCaseCompletion()
+    },
+    
+    updateWeights() {
+      // 生成输入到隐藏层的权重
+      this.weights.inputHidden = []
+      for (let i = 0; i < this.inputNeurons; i++) {
+        const row = []
+        for (let j = 0; j < this.hiddenNeurons; j++) {
+          row.push((Math.random() - 0.5) * 2)
+        }
+        this.weights.inputHidden.push(row)
+      }
+      
+      // 生成隐藏层到输出层的权重
+      this.weights.hiddenOutput = []
+      for (let i = 0; i < this.hiddenNeurons; i++) {
+        const row = []
+        for (let j = 0; j < this.outputNeurons; j++) {
+          row.push((Math.random() - 0.5) * 2)
+        }
+        this.weights.hiddenOutput.push(row)
+      }
+    },
+    
+    updateNeuronValues() {
+      // 生成输入层神经元值
+      this.neuronValues.input = []
+      for (let i = 0; i < this.inputNeurons; i++) {
+        this.neuronValues.input.push(Math.random())
+      }
+      
+      // 生成隐藏层神经元值
+      this.neuronValues.hidden = []
+      for (let i = 0; i < this.hiddenNeurons; i++) {
+        this.neuronValues.hidden.push(Math.random())
+      }
+      
+      // 生成输出层神经元值
+      this.neuronValues.output = []
+      for (let i = 0; i < this.outputNeurons; i++) {
+        this.neuronValues.output.push(Math.random())
+      }
     }
   },
   
@@ -1491,17 +1556,9 @@ export default {
   padding: 2rem;
   text-align: center;
   color: white;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
   transition: all 0.3s ease;
-  
-  &:not(.all-completed) {
-    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
-    box-shadow: 0 8px 32px rgba(255, 152, 0, 0.3);
-  }
-  
-  &.all-completed {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
-  }
 }
 
 .completion-celebration {
@@ -1518,80 +1575,7 @@ export default {
   }
 }
 
-.completion-guide {
-  h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-}
 
-.remaining-tasks {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  text-align: left;
-}
-
-.task-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.task-icon {
-  font-size: 1.5rem;
-  min-width: 2rem;
-}
-
-.task-text {
-  flex: 1;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.sub-tasks {
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-  
-  .sub-task {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-}
-
-.btn-guide {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-  }
-}
 
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
@@ -2860,6 +2844,181 @@ export default {
       text-align: center;
       line-height: 1.4;
     }
+  }
+}
+
+/* 深度学习展示样式 */
+.deep-learning-showcase {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.showcase-content {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.image-section {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.demo-gif {
+  width: 250px;
+  height: 180px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+  padding: 1rem;
+}
+
+.overlay-icon {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.overlay-title {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.overlay-subtitle {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.description-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.description-section h4 {
+  color: white;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.description-section p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.learning-points {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.learning-points li {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.8rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.learning-points li::before {
+  content: '🎯';
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.learning-note {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.note-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.note-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .showcase-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .demo-gif {
+    width: 200px;
+    height: 150px;
+  }
+  
+  .description-section {
+    min-width: auto;
+  }
+  
+  .overlay-content {
+    padding: 0.75rem;
+  }
+  
+  .overlay-icon {
+    font-size: 1.5rem;
+  }
+  
+  .overlay-title {
+    font-size: 1rem;
+  }
+  
+  .overlay-subtitle {
+    font-size: 0.8rem;
   }
 }
 </style>

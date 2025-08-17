@@ -66,6 +66,11 @@
           <el-button type="text" @click="toggleMode">
             {{ isLogin ? '没有账号？立即注册' : '已有账号？立即登录' }}
           </el-button>
+          
+          <!-- 临时测试按钮 -->
+          <el-button type="text" @click="testProfileNavigation" style="color: red; margin-top: 10px;">
+            🔧 测试跳转个人中心
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -73,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { ElMessage } from 'element-plus'
@@ -126,7 +131,26 @@ const toggleMode = () => {
   formData.username = ''
   formData.password = ''
   formData.confirmPassword = ''
-  formRef.value?.clearValidate()
+  // 清除验证状态
+  nextTick(() => {
+    formRef.value?.clearValidate()
+    console.log('切换模式:', isLogin.value ? '登录' : '注册')
+    console.log('当前验证规则:', formRules.value)
+  })
+}
+
+// 测试跳转功能
+const testProfileNavigation = async () => {
+  console.log('🔧 测试跳转功能开始')
+  console.log('🔧 当前localStorage token:', localStorage.getItem('token') ? 'exists' : 'null')
+  
+  try {
+    console.log('🔧 尝试跳转到 /profile')
+    await router.push('/profile')
+    console.log('🔧 跳转成功')
+  } catch (error) {
+    console.error('🔧 跳转失败:', error)
+  }
 }
 
 // 提交表单
@@ -134,21 +158,36 @@ const handleSubmit = async () => {
   if (!formRef.value) return
 
   try {
+    console.log('开始表单验证，当前模式:', isLogin.value ? '登录' : '注册')
+    console.log('表单数据:', formData)
+    console.log('验证规则:', formRules.value)
+    
     await formRef.value.validate()
     loading.value = true
 
     if (isLogin.value) {
       // 登录
+      console.log('执行登录逻辑')
       const result = await login({
         username: formData.username,
         password: formData.password
       })
 
       if (result.success) {
-        router.push('/')
+        console.log('✅ 登录成功，准备跳转到个人中心页面')
+        // 登录成功后跳转到个人中心页面
+        try {
+          await router.push('/profile')
+          console.log('✅ 成功跳转到个人中心页面')
+        } catch (error) {
+          console.error('❌ 跳转到个人中心页面失败:', error)
+          // 如果跳转失败，尝试跳转到首页
+          router.push('/')
+        }
       }
     } else {
       // 注册
+      console.log('执行注册逻辑')
       const result = await register({
         username: formData.username,
         password: formData.password
@@ -159,10 +198,15 @@ const handleSubmit = async () => {
         isLogin.value = true
         formData.password = ''
         formData.confirmPassword = ''
+        // 清除验证状态
+        nextTick(() => {
+          formRef.value?.clearValidate()
+        })
       }
     }
   } catch (error) {
     console.error('表单验证失败:', error)
+    console.error('验证错误详情:', error.errors || error.message)
   } finally {
     loading.value = false
   }
