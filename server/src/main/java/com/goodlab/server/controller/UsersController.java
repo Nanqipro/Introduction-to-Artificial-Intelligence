@@ -74,7 +74,7 @@ public class UsersController {
     }
 
     // 更新用户信息
-    @PutMapping("/updateUserInfo")
+    @PutMapping("/update")
     public ApiResponse<Void> update(@RequestBody @Validated User user) {  // @Validated用于验证参数
         userService.update(user);
         return ApiResponse.success(null);
@@ -82,10 +82,9 @@ public class UsersController {
 
 
     // 更新用户头像
-    @PatchMapping("/updateUserPic")
-    public ApiResponse<Void> updateUserPic(@RequestBody @URL String userPic) {
-
-        userService.updateUserPic(userPic);
+    @PatchMapping("/updateAvatar")
+    public ApiResponse<Void> updateAvatar(@RequestParam String avatarUrl) {
+        userService.updateUserPic(avatarUrl);
         return ApiResponse.success(null);
     }
 
@@ -97,7 +96,7 @@ public class UsersController {
         String oldPwd = params.get("oldPwd");
         String newPwd = params.get("newPwd");
         String confirmPwd = params.get("confirmPwd");
-        if(!StringUtils.isEmpty(oldPwd) || !StringUtils.isEmpty(newPwd) || !StringUtils.isEmpty(confirmPwd)){
+        if(StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(confirmPwd)){
             return ApiResponse.error("参数不能为空");
         }
         // 验证密码是否正确
