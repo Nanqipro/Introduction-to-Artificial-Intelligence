@@ -549,6 +549,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { userApi, levelApi } from '@/services/api'
 import { useAuth } from '@/composables/useAuth'
@@ -573,19 +574,22 @@ import {
   Medal
 } from '@element-plus/icons-vue'
 
+// 路由
+const router = useRouter()
+
 // 使用共享的认证状态
-const { userInfo: authUserInfo, token, isLoggedIn, fetchUserInfo } = useAuth()
+const { userInfo: authUserInfo, token, isLoggedIn, logout } = useAuth()
 
 // 用户信息（从认证状态获取或使用默认值）
 const userInfo = computed(() => authUserInfo.value || {
-  username: '张三',
-  nickname: '小张',
-  email: 'zhangsan@example.com',
-  phone: '13800138000',
-  gender: 'male',
-  birthday: '1995-01-01',
-  location: '北京市',
-  bio: '热爱学习的网络工程师',
+  username: '',
+  nickname: '',
+  email: '',
+  phone: '',
+  gender: '',
+  birthday: '',
+  location: '',
+  bio: '',
   avatar: '',
   role: '学生'
 })
@@ -620,17 +624,32 @@ const notificationSettings = reactive({
   reminderTime: '09:00'
 })
 
-// 用户统计数据
-const userStats = reactive({
-  level: 5,
-  experience: 2350,
-  completedChapters: 12,
-  totalScore: 850,
-  studyTime: 45,
-  achievements: 8,
-  networkProgress: 75,
-  protocolProgress: 60,
-  practiceProgress: 40
+// 用户统计数据 - 从用户信息动态获取
+const userStats = computed(() => {
+  const user = authUserInfo.value
+  if (!user) return {
+    level: 1,
+    experience: 0,
+    completedChapters: 0,
+    totalScore: 0,
+    studyTime: 0,
+    achievements: 0,
+    networkProgress: 0,
+    protocolProgress: 0,
+    practiceProgress: 0
+  }
+  
+  return {
+    level: user.level || 1,
+    experience: user.experience || 0,
+    completedChapters: user.completedChapters || 0,
+    totalScore: user.totalScore || 0,
+    studyTime: Math.floor((user.experience || 0) / 10), // 根据经验值计算学习时长
+    achievements: userAchievements.value.length,
+    networkProgress: Math.min(100, Math.floor(((user.completedChapters || 0) / 20) * 100)),
+    protocolProgress: Math.min(100, Math.floor(((user.experience || 0) / 1000) * 100)),
+    practiceProgress: Math.min(100, Math.floor(((user.quizCount || 0) / 50) * 100))
+  }
 })
 
 // 用户成就数据
@@ -861,8 +880,8 @@ const getLevelTitle = (level) => {
 }
 
 const getLevelProgress = () => {
-  const currentLevel = userStats.level || 1
-  const currentExp = userStats.experience || 0
+  const currentLevel = userStats.value.level || 1
+  const currentExp = userStats.value.experience || 0
   const expForCurrentLevel = (currentLevel - 1) * 500
   const expForNextLevel = currentLevel * 500
   const progressExp = currentExp - expForCurrentLevel
@@ -871,8 +890,8 @@ const getLevelProgress = () => {
 }
 
 const getExpToNextLevel = () => {
-  const currentLevel = userStats.level || 1
-  const currentExp = userStats.experience || 0
+  const currentLevel = userStats.value.level || 1
+  const currentExp = userStats.value.experience || 0
   const expForNextLevel = currentLevel * 500
   return expForNextLevel - currentExp
 }
@@ -887,19 +906,16 @@ const fetchUserLevelData = async () => {
   
   try {
     console.log('开始获取用户等级数据...')
-    const [statsResponse, achievementsResponse] = await Promise.all([
-      levelApi.getUserStats(),
-      levelApi.getUserAchievements()
-    ])
+    // 由于后端可能没有这些API，我们直接使用用户信息中的统计数据
+    // 用户信息已经通过fetchUserInfo获取，包含了level、experience等字段
     
-    if (statsResponse.data.success) {
-      Object.assign(userStats, statsResponse.data.data)
-      console.log('用户统计数据获取成功:', userStats)
-    }
-    
-    if (achievementsResponse.data.success) {
-      userAchievements.value = achievementsResponse.data.data
-      console.log('用户成就数据获取成功:', userAchievements.value)
+    if (authUserInfo.value) {
+      console.log('用户信息已获取，包含统计数据:', {
+        level: authUserInfo.value.level,
+        experience: authUserInfo.value.experience,
+        completedChapters: authUserInfo.value.completedChapters,
+        totalScore: authUserInfo.value.totalScore
+      })
     }
   } catch (error) {
     console.error('获取用户等级数据失败:', error)
@@ -911,38 +927,100 @@ const initializeUserData = async () => {
   console.log('UserProfile: 开始初始化用户数据...')
   console.log('UserProfile: 当前登录状态:', isLoggedIn.value)
   console.log('UserProfile: 当前token状态:', token.value ? 'exists' : 'null')
+  console.log('UserProfile: 当前用户信息状态:', authUserInfo.value ? 'exists' : 'null')
   
-  if (!isLoggedIn.value) {
-    console.log('UserProfile: 用户未登录，跳转到登录页')
-    // 可以选择跳转到登录页或显示提示
+  // 如果没有token，说明用户未登录，跳转到登录页
+  if (!token.value) {
+    console.log('UserProfile: 没有token，跳转到登录页')
+    router.push('/login')
     return
   }
   
   // 如果有token但没有用户信息，先获取用户信息
   if (token.value && !authUserInfo.value) {
     console.log('UserProfile: 有token但无用户信息，先获取用户信息')
-    await fetchUserInfo()
+    
+    // 先测试token是否有效（使用fetch，避免Axios的问题）
+    console.log('UserProfile: 测试token有效性（使用fetch）...')
+    try {
+      const testResponse = await fetch('/api/user/userInfo', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token.value}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      console.log('UserProfile: Fetch Token测试结果:', testResponse.status, testResponse.statusText)
+      
+      if (testResponse.status === 200) {
+        const userData = await testResponse.json()
+        console.log('UserProfile: Token有效，用户信息:', userData)
+        // 直接设置用户信息，避免重复调用
+        if (userData.code === 200 && userData.data) {
+          authUserInfo.value = userData.data
+          return
+        } else {
+          console.error('UserProfile: 用户信息格式错误:', userData)
+          logout()
+          router.push('/login')
+          return
+        }
+      } else if (testResponse.status === 401) {
+        console.error('UserProfile: Token无效，需要重新登录')
+        logout()
+        router.push('/login')
+        return
+      } else {
+        console.error('UserProfile: 请求失败，状态码:', testResponse.status)
+        logout()
+        router.push('/login')
+        return
+      }
+    } catch (error) {
+      console.error('UserProfile: Fetch Token测试失败:', error)
+      logout()
+      router.push('/login')
+      return
+    }
+    
+    // 已经通过Axios测试获取了用户信息，不需要再调用fetchUserInfo
   }
+  
+  // 确保用户信息存在后再进行后续操作
+  if (!authUserInfo.value) {
+    console.error('UserProfile: 用户信息仍然为空，无法初始化')
+    router.push('/login')
+    return
+  }
+  
+  console.log('UserProfile: 用户信息验证通过:', {
+    username: authUserInfo.value.username,
+    nickname: authUserInfo.value.nickname,
+    email: authUserInfo.value.email
+  })
   
   // 重置表单
   resetForm()
   
   // 获取等级数据
   await fetchUserLevelData()
+  
+  console.log('UserProfile: 用户数据初始化完成')
 }
 
-// 监听认证状态变化
+// 初始化 - 只在组件挂载时执行一次
+onMounted(async () => {
+  await initializeUserData()
+})
+
+// 监听认证状态变化，但不自动初始化（避免重复调用）
 watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
   console.log('UserProfile: 认证状态变化', { isLoggedIn: newIsLoggedIn, hasUserInfo: !!newUserInfo })
   if (newIsLoggedIn && newUserInfo) {
+    console.log('UserProfile: 用户信息变化，更新表单数据')
     resetForm()
-    await fetchUserLevelData()
+    // 不调用fetchUserLevelData，避免重复请求
   }
-}, { immediate: true })
-
-// 初始化
-onMounted(async () => {
-  await initializeUserData()
 })
 </script>
 

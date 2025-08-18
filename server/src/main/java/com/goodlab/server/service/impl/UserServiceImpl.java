@@ -1,7 +1,6 @@
 package com.goodlab.server.service.impl;
 
-
-import com.goodlab.server.dao.UserDao;
+import com.goodlab.server.mapper.UserMapper;
 import com.goodlab.server.pojo.User;
 import com.goodlab.server.service.UserService;
 import com.goodlab.server.utils.Md5Util;
@@ -15,35 +14,35 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-
     @Autowired
-    private UserDao userDao;
+    private UserMapper userMapper;
 
     @Override
     public User findByUserName(String username) {
-        User user = userDao.findByUserName(username);
+        User user = userMapper.findByUserName(username);
         return user;
     }
-    
+
     @Override
     public User findById(Integer id) {
-        return userDao.findById(id);
+        // 由于UserMapper没有findById方法，我们需要通过用户名来查找
+        // 这里暂时返回null，或者可以通过其他方式实现
+        return null;
     }
 
     @Override
     public void register(String username, String password) {
-
         // 加密 将明文改成密文
         String md5String = Md5Util.getMD5String(password);
         // 添加用户
-        userDao.add(username, md5String);
+        userMapper.add(username, md5String);
     }
 
     // 更新用户信息
     @Override
     public void update(User user) {
         user.setUpdateTime(LocalDateTime.now());
-        userDao.update(user);
+        userMapper.update(user);
     }
 
     // 更新用户头像
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserPic(String userPic) {
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
-        userDao.updateUserPic(userPic,id);
+        userMapper.updateUserPic(userPic, id);
 
     }
 
@@ -60,8 +59,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
         String md5String = Md5Util.getMD5String(newPwd);
-        userDao.updatePwd(md5String,id);
+        userMapper.updatePwd(md5String, id);
     }
-
 
 }

@@ -61,7 +61,7 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="goToPage('/profile')">
+              <el-dropdown-item @click="handleProfileClick">
                 <el-icon style="margin-right: 12px;"><User /></el-icon>
                 个人中心
               </el-dropdown-item>
@@ -115,8 +115,41 @@ const { isLoggedIn, currentUser, logout, checkAuthStatus } = useAuth()
 
 const activePath = computed(() => route.path)
 
-const goToPage = (path) => {
-  router.push(path)
+const goToPage = async (path) => {
+  console.log('🧭 Navigation: 准备跳转到', path)
+  console.log('🧭 Navigation: 当前登录状态', isLoggedIn.value)
+  console.log('🧭 Navigation: 当前用户信息', currentUser.value)
+  console.log('🧭 Navigation: localStorage token:', localStorage.getItem('token') ? 'exists' : 'null')
+  
+  try {
+    await router.push(path)
+    console.log('🧭 Navigation: 跳转成功到', path)
+  } catch (error) {
+    console.error('🧭 Navigation: 跳转失败', error)
+  }
+}
+
+const handleProfileClick = async () => {
+  console.log('🎯 个人中心点击事件触发')
+  
+  // 直接从localStorage获取token，不依赖useAuth的响应式状态
+  const localToken = localStorage.getItem('token')
+  
+  console.log('🎯 Token状态检查:', {
+    hasLocalToken: !!localToken,
+    tokenPreview: localToken ? localToken.substring(0, 30) + '...' : 'null'
+  })
+  
+  if (!localToken) {
+    console.error('❌ 没有找到token，需要重新登录')
+    logout()
+    router.push('/login')
+    return
+  }
+  
+  // 直接跳转，让路由守卫和页面自己处理认证
+  console.log('🚀 准备跳转到个人中心页面')
+  goToPage('/profile')
 }
 
 const handleLogout = () => {

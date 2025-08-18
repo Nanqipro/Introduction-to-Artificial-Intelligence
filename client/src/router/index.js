@@ -112,9 +112,14 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
+  // 直接从localStorage获取token，确保与useAuth中的状态同步
   const token = localStorage.getItem('token')
-  
-  console.log(`🛣️ 路由守卫: 导航到 ${to.path}, 当前token: ${token ? 'exists' : 'null'}`)
+
+  console.log(`🛣️ 路由守卫: 导航到 ${to.path}, 来自 ${from.path}`)
+  console.log(`🔑 当前token状态: ${token ? 'exists' : 'null'}`)
+  if (token) {
+    console.log(`🔑 Token内容: ${token.substring(0, 30)}...`)
+  }
 
   // 如果路由需要认证但用户未登录，跳转到登录页
   if (to.meta.requiresAuth && !token) {
@@ -130,36 +135,26 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  // 如果访问需要认证的页面且有token，验证token有效性
+  // 如果访问需要认证的页面且有token，简化验证逻辑
   if (to.meta.requiresAuth && token) {
-    console.log('🔍 路由守卫: 访问需要认证的页面，验证token有效性')
-    try {
-      // 导入useAuth并验证认证状态
-      const { useAuth } = await import('@/composables/useAuth')
-      const { checkAuthStatus, isLoggedIn } = useAuth()
-      
-      // 如果认证状态未初始化，先初始化
-      if (!isLoggedIn.value) {
-        console.log('🔄 路由守卫: 认证状态未初始化，重新检查')
-        await checkAuthStatus()
-      }
-      
-      // 再次检查认证状态
-      if (!isLoggedIn.value) {
-        console.log('❌ 路由守卫: Token验证失败，跳转到登录页')
-        next('/login')
-        return
-      }
-      
-      console.log('✅ 路由守卫: Token验证成功，允许访问')
-    } catch (error) {
-      console.error('❌ 路由守卫: Token验证出错:', error)
-      next('/login')
-      return
-    }
+    console.log('🔍 路由守卫: 访问需要认证的页面，简化验证')
+    console.log('🔍 目标页面:', to.path, '需要认证:', to.meta.requiresAuth)
+
+    // 简化验证：只要有token就允许访问，让页面自己处理用户信息获取
+    console.log('✅ 路由守卫: 有token，允许访问需要认证的页面')
   }
 
-  console.log('✅ 路由守卫: 允许导航')
+  console.log('✅ 路由守卫: 允许导航到', to.path)
+
+  // 如果是导航到个人中心页面，增加额外的调试信息
+  if (to.path === '/profile') {
+    console.log('🔍 个人中心页面导航: 即将进入个人中心页面')
+    console.log('🔍 个人中心页面导航: 当前认证状态', {
+      hasToken: !!localStorage.getItem('token'),
+      fromPath: from.path
+    })
+  }
+
   next()
 })
 

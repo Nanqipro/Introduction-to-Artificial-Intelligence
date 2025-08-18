@@ -1,0 +1,25 @@
+name: ai-platform
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ai_platform_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: AI_platform
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - ai_platform_network
+
+volumes:
+  mysql_data:
+
+networks:
+  ai_platform_network:
+    driver: bridge
