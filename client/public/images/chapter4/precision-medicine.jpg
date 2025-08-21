@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="medGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="pillGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF9800;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="targetGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#2196F3;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8f9fa"/>
+  
+  <!-- Target symbol representing precision -->
+  <g transform="translate(80, 80)">
+    <circle cx="0" cy="0" r="60" fill="url(#targetGradient)" stroke="#2196F3" stroke-width="3"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#2196F3" stroke-width="2" opacity="0.7"/>
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#2196F3" stroke-width="2" opacity="0.7"/>
+    <circle cx="0" cy="0" r="5" fill="#4CAF50"/>
+    
+    <!-- Crosshairs -->
+    <line x1="-70" y1="0" x2="70" y2="0" stroke="#2196F3" stroke-width="2" opacity="0.5"/>
+    <line x1="0" y1="-70" x2="0" y2="70" stroke="#2196F3" stroke-width="2" opacity="0.5"/>
+  </g>
+  
+  <!-- Pills/Medication -->
+  <g transform="translate(250, 60)">
+    <!-- Pill 1 -->
+    <ellipse cx="0" cy="0" rx="25" ry="12" fill="url(#pillGradient)" transform="rotate(15)"/>
+    <ellipse cx="0" cy="0" rx="25" ry="12" fill="none" stroke="#D32F2F" stroke-width="2" transform="rotate(15)"/>
+    
+    <!-- Pill 2 -->
+    <ellipse cx="30" cy="20" rx="20" ry="10" fill="#2196F3" transform="rotate(-20)"/>
+    <ellipse cx="30" cy="20" rx="20" ry="10" fill="none" stroke="#1976D2" stroke-width="2" transform="rotate(-20)"/>
+    
+    <!-- Pill 3 -->
+    <ellipse cx="-20" cy="30" rx="22" ry="11" fill="#4CAF50" transform="rotate(45)"/>
+    <ellipse cx="-20" cy="30" rx="22" ry="11" fill="none" stroke="#388E3C" stroke-width="2" transform="rotate(45)"/>
+  </g>
+  
+  <!-- Patient profile -->
+  <g transform="translate(50, 200)">
+    <rect x="0" y="0" width="120" height="80" fill="white" stroke="#ddd" stroke-width="2" rx="8"/>
+    
+    <!-- Patient icon -->
+    <circle cx="30" cy="25" r="12" fill="#607D8B"/>
+    <path d="M 15 45 Q 30 35 45 45 L 45 65 L 15 65 Z" fill="#607D8B"/>
+    
+    <!-- Patient data -->
+    <text x="55" y="20" font-family="Arial" font-size="10" font-weight="bold" fill="#333">患者档案</text>
+    <text x="55" y="35" font-family="Arial" font-size="8" fill="#666">基因型: BRCA1+</text>
+    <text x="55" y="48" font-family="Arial" font-size="8" fill="#666">年龄: 45岁</text>
+    <text x="55" y="61" font-family="Arial" font-size="8" fill="#666">病史: 乳腺癌家族史</text>
+  </g>
+  
+  <!-- Treatment recommendation -->
+  <g transform="translate(200, 200)">
+    <rect x="0" y="0" width="150" height="80" fill="white" stroke="#ddd" stroke-width="2" rx="8"/>
+    <text x="10" y="20" font-family="Arial" font-size="12" font-weight="bold" fill="#333">精准治疗方案</text>
+    <text x="10" y="35" font-family="Arial" font-size="10" fill="#4CAF50">✓ 靶向药物: 曲妥珠单抗</text>
+    <text x="10" y="50" font-family="Arial" font-size="10" fill="#4CAF50">✓ 剂量: 个性化调整</text>
+    <text x="10" y="65" font-family="Arial" font-size="10" fill="#4CAF50">✓ 疗效预测: 85%</text>
+  </g>
+  
+  <!-- DNA strand decoration -->
+  <g transform="translate(320, 120)" opacity="0.3">
+    <path d="M 0 0 Q 15 10 0 20 Q -15 30 0 40 Q 15 50 0 60" 
+          stroke="url(#medGradient)" stroke-width="4" fill="none"/>
+    <path d="M 20 0 Q 5 10 20 20 Q 35 30 20 40 Q 5 50 20 60" 
+          stroke="url(#medGradient)" stroke-width="4" fill="none"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#333">精准医疗</text>
+</svg>

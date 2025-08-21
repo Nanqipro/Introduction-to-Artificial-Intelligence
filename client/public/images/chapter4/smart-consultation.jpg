@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="avatarGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f5f5f5"/>
+  
+  <!-- Mobile device -->
+  <g transform="translate(50, 40)">
+    <!-- Phone frame -->
+    <rect x="0" y="0" width="120" height="200" fill="#333" rx="15"/>
+    <rect x="5" y="15" width="110" height="170" fill="white" rx="8"/>
+    
+    <!-- Screen content -->
+    <rect x="10" y="20" width="100" height="30" fill="url(#screenGradient)" rx="4"/>
+    <text x="60" y="38" text-anchor="middle" font-family="Arial" font-size="10" font-weight="bold" fill="white">智能问诊</text>
+    
+    <!-- Chat bubbles -->
+    <!-- User message -->
+    <rect x="40" y="60" width="65" height="20" fill="#E3F2FD" rx="10"/>
+    <text x="72" y="72" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">我头痛了两天</text>
+    
+    <!-- AI response -->
+    <rect x="15" y="90" width="80" height="30" fill="url(#chatGradient)" rx="10"/>
+    <text x="55" y="102" text-anchor="middle" font-family="Arial" font-size="7" fill="white">请描述疼痛位置</text>
+    <text x="55" y="112" text-anchor="middle" font-family="Arial" font-size="7" fill="white">和严重程度</text>
+    
+    <!-- User message -->
+    <rect x="30" y="130" width="75" height="20" fill="#E3F2FD" rx="10"/>
+    <text x="67" y="142" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">太阳穴疼痛，中等</text>
+    
+    <!-- AI diagnosis -->
+    <rect x="10" y="160" width="95" height="20" fill="url(#chatGradient)" rx="10"/>
+    <text x="57" y="172" text-anchor="middle" font-family="Arial" font-size="7" fill="white">可能是紧张性头痛，建议...</text>
+  </g>
+  
+  <!-- Doctor avatar/AI assistant -->
+  <g transform="translate(220, 60)">
+    <!-- AI assistant circle -->
+    <circle cx="0" cy="0" r="40" fill="url(#avatarGradient)"/>
+    
+    <!-- Stethoscope -->
+    <path d="M -15 -10 Q -20 -15 -15 -20 Q -10 -15 -15 -10" fill="#333"/>
+    <path d="M -15 -10 L -15 10" stroke="#333" stroke-width="3"/>
+    <circle cx="-15" cy="15" r="8" fill="none" stroke="#333" stroke-width="3"/>
+    
+    <!-- Medical cross -->
+    <rect x="10" y="-8" width="16" height="4" fill="white"/>
+    <rect x="16" y="-14" width="4" height="16" fill="white"/>
+    
+    <!-- Brain icon (AI) -->
+    <g transform="translate(0, -25)">
+      <path d="M -8 -5 Q -12 -8 -8 -12 Q -4 -8 0 -12 Q 4 -8 8 -12 Q 12 -8 8 -5 Q 4 -2 0 -5 Q -4 -2 -8 -5" 
+            fill="#2196F3" opacity="0.7"/>
+      <circle cx="-4" cy="-8" r="1" fill="white"/>
+      <circle cx="4" cy="-8" r="1" fill="white"/>
+    </g>
+  </g>
+  
+  <!-- Diagnostic results panel -->
+  <g transform="translate(220, 140)">
+    <rect x="0" y="0" width="150" height="120" fill="white" stroke="#ddd" stroke-width="2" rx="8"/>
+    
+    <!-- Header -->
+    <rect x="5" y="5" width="140" height="25" fill="#2196F3" rx="4"/>
+    <text x="75" y="20" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="white">诊断建议</text>
+    
+    <!-- Symptoms analysis -->
+    <text x="10" y="45" font-family="Arial" font-size="10" font-weight="bold" fill="#333">症状分析:</text>
+    <text x="10" y="58" font-family="Arial" font-size="9" fill="#666">• 头痛持续时间: 2天</text>
+    <text x="10" y="70" font-family="Arial" font-size="9" fill="#666">• 疼痛位置: 双侧太阳穴</text>
+    <text x="10" y="82" font-family="Arial" font-size="9" fill="#666">• 疼痛程度: 中等强度</text>
+    
+    <!-- Recommendation -->
+    <text x="10" y="100" font-family="Arial" font-size="10" font-weight="bold" fill="#4CAF50">建议:</text>
+    <text x="10" y="112" font-family="Arial" font-size="9" fill="#666">休息、适量饮水、必要时就医</text>
+  </g>
+  
+  <!-- Connection lines -->
+  <g stroke="#2196F3" stroke-width="2" opacity="0.5" fill="none">
+    <path d="M 170 140 Q 190 140 210 140" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Data flow indicators -->
+  <g transform="translate(300, 50)">
+    <circle cx="0" cy="0" r="3" fill="#4CAF50">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="15" r="3" fill="#2196F3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="30" r="3" fill="#FF9800">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#333">智能问诊系统</text>
+</svg>

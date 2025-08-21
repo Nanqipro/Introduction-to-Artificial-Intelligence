@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="dnaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2196F3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- DNA Helix Structure -->
+  <g transform="translate(50, 50)">
+    <!-- Left strand -->
+    <path d="M 0 0 Q 50 25 0 50 Q -50 75 0 100 Q 50 125 0 150 Q -50 175 0 200" 
+          stroke="url(#dnaGradient)" stroke-width="8" fill="none" opacity="0.8"/>
+    
+    <!-- Right strand -->
+    <path d="M 100 0 Q 50 25 100 50 Q 150 75 100 100 Q 50 125 100 150 Q 150 175 100 200" 
+          stroke="url(#dnaGradient)" stroke-width="8" fill="none" opacity="0.8"/>
+    
+    <!-- Base pairs -->
+    <g stroke="#FF5722" stroke-width="3" opacity="0.7">
+      <line x1="15" y1="12" x2="85" y2="12"/>
+      <line x1="25" y1="37" x2="75" y2="37"/>
+      <line x1="15" y1="62" x2="85" y2="62"/>
+      <line x1="25" y1="87" x2="75" y2="87"/>
+      <line x1="15" y1="112" x2="85" y2="112"/>
+      <line x1="25" y1="137" x2="75" y2="137"/>
+      <line x1="15" y1="162" x2="85" y2="162"/>
+      <line x1="25" y1="187" x2="75" y2="187"/>
+    </g>
+  </g>
+  
+  <!-- Data visualization elements -->
+  <g transform="translate(220, 50)">
+    <!-- Chart background -->
+    <rect x="0" y="0" width="150" height="120" fill="white" stroke="#ddd" stroke-width="2" rx="8"/>
+    
+    <!-- Bar chart representing genetic data -->
+    <rect x="20" y="80" width="15" height="30" fill="#4CAF50"/>
+    <rect x="40" y="60" width="15" height="50" fill="#2196F3"/>
+    <rect x="60" y="70" width="15" height="40" fill="#FF9800"/>
+    <rect x="80" y="50" width="15" height="60" fill="#9C27B0"/>
+    <rect x="100" y="65" width="15" height="45" fill="#F44336"/>
+    <rect x="120" y="75" width="15" height="35" fill="#00BCD4"/>
+    
+    <!-- Chart labels -->
+    <text x="75" y="135" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">基因表达水平</text>
+  </g>
+  
+  <!-- Analysis results -->
+  <g transform="translate(220, 190)">
+    <rect x="0" y="0" width="150" height="80" fill="white" stroke="#ddd" stroke-width="2" rx="8"/>
+    <text x="10" y="20" font-family="Arial" font-size="12" font-weight="bold" fill="#333">分析结果</text>
+    <text x="10" y="35" font-family="Arial" font-size="10" fill="#666">• 疾病风险评估</text>
+    <text x="10" y="50" font-family="Arial" font-size="10" fill="#666">• 药物反应预测</text>
+    <text x="10" y="65" font-family="Arial" font-size="10" fill="#666">• 个性化治疗方案</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#333">基因分析与检测</text>
+</svg>
