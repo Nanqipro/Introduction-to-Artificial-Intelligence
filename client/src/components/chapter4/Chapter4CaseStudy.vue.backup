@@ -1110,9 +1110,50 @@ const getDeviceIcon = (deviceId) => {
   return iconMap[deviceId] || '📱'
 }
 
-const handleDeviceClick = (device) => {
-  selectedDevice.value = device
+const handleEntertainmentClick = (entertainment) => {
+  selectedEntertainment.value = entertainment
   incrementInteraction()
+}
+
+const getEntertainmentIcon = (entertainmentId) => {
+  const iconMap = {
+    'douyin': 'fab fa-tiktok',
+    'netflix': 'fab fa-netflix',
+    'spotify': 'fab fa-spotify'
+  }
+  return iconMap[entertainmentId] || 'fas fa-play'
+}
+
+const getMetricName = (key) => {
+  const nameMap = {
+    'dailyActiveUsers': '日活用户',
+    'globalSubscribers': '全球订阅用户',
+    'monthlyActiveUsers': '月活用户',
+    'clickThroughRate': '点击率',
+    'recommendationAccuracy': '推荐准确率',
+    'discoveryRate': '内容发现率'
+  }
+  return nameMap[key] || key
+}
+
+const handlePrecisionMedicineClick = () => {
+  incrementInteraction()
+  console.log('点击了精准医疗')
+}
+
+const handleSmartConsultationClick = () => {
+  incrementInteraction()
+  console.log('点击了智能问诊')
+}
+
+const handleHealthMonitoringClick = () => {
+  incrementInteraction()
+  console.log('点击了健康监测')
+}
+
+const handleGeneAnalysisClick = () => {
+  incrementInteraction()
+  console.log('点击了基因分析')
 }
 
 const onImageClick = (imageType) => {
