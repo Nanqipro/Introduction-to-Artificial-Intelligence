@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://localhost:8082',
+  baseURL: '', // 使用相对路径，通过Vite代理
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

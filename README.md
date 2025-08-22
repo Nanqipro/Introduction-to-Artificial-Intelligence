@@ -133,6 +133,166 @@ Introduction-to-Artificial-Intelligence/
 - **Java**: >= 17 (OpenJDK 17 或 Oracle JDK 17)
 - **Maven**: >= 3.6.0 (或使用项目自带的 Maven Wrapper)
 
+### MySQL 数据库
+- **数据库版本**: MySQL 8.0 或以上
+```
+-- =================================================================
+-- AI Platform 数据库初始化脚本
+-- 执行方式: mysql -u root -p --socket=/var/run/mysqld/mysqld.sock
+-- =================================================================
+
+-- 删除已存在的数据库（可选，用于全新创建）
+DROP DATABASE IF EXISTS AI_platform;
+
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS AI_platform CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE AI_platform;
+
+-- 打印当前操作信息
+SELECT '数据库 AI_platform 创建成功，并切换到该数据库' AS '操作状态';
+
+-- =================================================================
+-- 创建数据表
+-- =================================================================
+
+-- 用户表
+CREATE TABLE user (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    username VARCHAR(20) NOT NULL UNIQUE COMMENT '用户名',
+    password VARCHAR(32) COMMENT '密码',
+    nickname VARCHAR(10) DEFAULT '' COMMENT '昵称',
+    email VARCHAR(128) DEFAULT '' COMMENT '邮箱',
+    user_pic VARCHAR(128) DEFAULT '' COMMENT '头像',
+    level INT DEFAULT 1 COMMENT '用户等级',
+    experience INT DEFAULT 0 COMMENT '经验值',
+    total_score INT DEFAULT 0 COMMENT '总分数',
+    completed_chapters INT DEFAULT 0 COMMENT '已完成章节数',
+    quiz_count INT DEFAULT 0 COMMENT '答题次数',
+    correct_answers INT DEFAULT 0 COMMENT '正确答案数',
+    create_time DATETIME NOT NULL COMMENT '创建时间',
+    update_time DATETIME NOT NULL COMMENT '修改时间'
+) COMMENT '用户表';
+SELECT '表 `user` 创建成功' AS '操作状态';
+
+-- 用户成就表
+CREATE TABLE user_achievement (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    user_id INT UNSIGNED NOT NULL COMMENT '用户ID',
+    achievement_type VARCHAR(50) NOT NULL COMMENT '成就类型',
+    achievement_name VARCHAR(100) NOT NULL COMMENT '成就名称',
+    achievement_desc VARCHAR(255) COMMENT '成就描述',
+    earned_date DATETIME NOT NULL COMMENT '获得时间',
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) COMMENT '用户成就表';
+SELECT '表 `user_achievement` 创建成功' AS '操作状态';
+
+-- 用户学习记录表
+CREATE TABLE user_learning_record (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    user_id INT UNSIGNED NOT NULL COMMENT '用户ID',
+    chapter_id INT COMMENT '章节ID',
+    activity_type VARCHAR(50) NOT NULL COMMENT '活动类型(quiz,chapter,experiment)',
+    score INT DEFAULT 0 COMMENT '得分',
+    experience_gained INT DEFAULT 0 COMMENT '获得经验值',
+    completion_time DATETIME COMMENT '完成时间',
+    create_time DATETIME NOT NULL COMMENT '创建时间',
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) COMMENT '用户学习记录表';
+SELECT '表 `user_learning_record` 创建成功' AS '操作状态';
+
+-- 章节表
+CREATE TABLE chapters (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT,
+    order_num INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT '章节表';
+SELECT '表 `chapters` 创建成功' AS '操作状态';
+
+-- 问题表
+CREATE TABLE questions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    chapter_id BIGINT,
+    question_text TEXT NOT NULL,
+    question_type VARCHAR(20) DEFAULT 'MULTIPLE_CHOICE',
+    options JSON,
+    correct_answer VARCHAR(255),
+    explanation TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (chapter_id) REFERENCES chapters(id)
+) COMMENT '问题表';
+SELECT '表 `questions` 创建成功' AS '操作状态';
+
+
+-- =================================================================
+-- 插入初始数据
+-- =================================================================
+
+-- 插入管理员用户
+INSERT INTO user (username, password, nickname, email, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time)
+VALUES ('admin', MD5('admin'), 'Administrator', 'admin@example.com', 1, 0, 0, 0, 0, 0, NOW(), NOW());
+
+-- 插入测试用户
+INSERT INTO user (username, password, nickname, email, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time)
+VALUES ('test', MD5('test'), 'Test User', 'test@example.com', 1, 0, 0, 0, 0, 0, NOW(), NOW());
+SELECT '初始用户数据插入成功' AS '操作状态';
+
+-- 插入章节示例数据
+INSERT INTO chapters (title, content, order_num) VALUES
+('人工智能概述', '人工智能（Artificial Intelligence，AI）是计算机科学的一个分支...', 1),
+('机器学习基础', '机器学习是人工智能的一个重要分支...', 2),
+('深度学习入门', '深度学习是机器学习的一个子领域...', 3),
+('计算机视觉', '计算机视觉是人工智能的一个重要应用领域...', 4),
+('自然语言处理', '自然语言处理是人工智能的另一个重要应用领域...', 5),
+('AI应用案例', '人工智能在各个领域的实际应用案例...', 6),
+('实践项目', '动手实践项目，巩固所学知识...', 7);
+SELECT '章节示例数据插入成功' AS '操作状态';
+
+-- 插入示例问题
+INSERT INTO questions (chapter_id, question_text, question_type, options, correct_answer, explanation) VALUES
+(1, '人工智能的定义是什么？', 'MULTIPLE_CHOICE', '["让机器像人一样思考", "让机器具备智能行为", "让机器完全替代人类", "让机器拥有情感"]', '让机器具备智能行为', '人工智能是让机器具备智能行为的技术'),
+(2, '机器学习的主要类型包括哪些？', 'MULTIPLE_CHOICE', '["监督学习", "无监督学习", "强化学习", "以上都是"]', '以上都是', '机器学习包括监督学习、无监督学习和强化学习三种主要类型');
+SELECT '问题示例数据插入成功' AS '操作状态';
+
+
+-- =================================================================
+-- 检查数据表和结构
+-- =================================================================
+-- 检查所有数据库
+SHOW DATABASES;
+-- 切换到 AI_platform 数据库
+USE AI_platform;
+-- 检查所有数据表
+SELECT '--- 检查数据库中的所有表 ---' AS '检查项目';
+SHOW TABLES;
+
+-- 检查每个表的结构
+SELECT '--- 检查 `user` 表结构 ---' AS '检查项目';
+DESCRIBE user;
+
+SELECT '--- 检查 `user_achievement` 表结构 ---' AS '检查项目';
+DESCRIBE user_achievement;
+
+SELECT '--- 检查 `user_learning_record` 表结构 ---' AS '检查项目';
+DESCRIBE user_learning_record;
+
+SELECT '--- 检查 `chapters` 表结构 ---' AS '检查项目';
+DESCRIBE chapters;
+
+SELECT '--- 检查 `questions` 表结构 ---' AS '检查项目';
+DESCRIBE questions;
+
+-- 验证插入结果
+SELECT '--- 验证 `user` 表的初始数据 ---' AS '检查项目';
+SELECT * FROM user;
+
+SELECT '脚本执行完毕' AS '最终状态';
+
+```
+
 ### 安装与运行
 
 #### 1. 克隆项目

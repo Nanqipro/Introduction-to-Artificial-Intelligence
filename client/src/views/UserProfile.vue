@@ -828,13 +828,20 @@ const handleUpdatePassword = async () => {
     await passwordFormRef.value.validate()
     passwordLoading.value = true
 
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // 调用真正的后端API
+    const passwordData = {
+      oldPwd: passwordForm.currentPassword,
+      newPwd: passwordForm.newPassword,
+      confirmPwd: passwordForm.confirmPassword
+    }
+    
+    await userApi.updatePassword(passwordData)
     
     ElMessage.success('密码更新成功')
     resetPasswordForm()
   } catch (error) {
-    console.error('表单验证失败:', error)
+    console.error('密码更新失败:', error)
+    ElMessage.error(error.message || '密码更新失败，请重试')
   } finally {
     passwordLoading.value = false
   }

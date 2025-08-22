@@ -76,24 +76,33 @@
           />
         </div>
 
+        <!-- 第七章案例学习 -->
+        <div v-if="isChapter7" class="case-study-section">
+          <Chapter7CaseStudy 
+            :chapter-id="id" 
+            @case-completed="onCaseCompleted"
+            @all-cases-completed="onAllCasesCompleted"
+          />
+        </div>
+
         <!-- 答题系统入口 -->
         <div class="quiz-section">
           <div class="quiz-header">
             <h3 class="quiz-title">📚 知识测验</h3>
             <p class="quiz-description">
-              {{ (isChapter2 || isChapter3 || isChapter4) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
+              {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
             </p>
           </div>
           <div class="quiz-actions">
             <button 
               @click="startQuiz" 
               class="btn btn-quiz"
-              :disabled="(isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted"
-              :class="{ disabled: (isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted }"
+              :disabled="(isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted"
+              :class="{ disabled: (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted }"
             >
               <span class="btn-icon">🎯</span>
               <span class="btn-text">
-                {{ (isChapter2 || isChapter3 || isChapter4) && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
+                {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
               </span>
             </button>
             <div class="quiz-info">
@@ -165,6 +174,7 @@ import Chapter6Interactive from '../components/chapter6/Chapter6Interactive.vue'
 import Chapter2CaseStudy from '../components/chapter2/Chapter2CaseStudy.vue'
 import Chapter3CaseStudy from '../components/chapter3/Chapter3CaseStudy.vue'
 import Chapter4CaseStudy from '../components/chapter4/Chapter4CaseStudy.vue'
+import Chapter7CaseStudy from '../components/chapter7/Chapter7CaseStudy.vue'
 
 export default {
   name: 'ChapterDetail',
@@ -172,7 +182,8 @@ export default {
     Chapter6Interactive,
     Chapter2CaseStudy,
     Chapter3CaseStudy,
-    Chapter4CaseStudy
+    Chapter4CaseStudy,
+    Chapter7CaseStudy
   },
   props: {
     id: {
@@ -221,6 +232,15 @@ export default {
         this.chapter.title.includes('智慧驾驶') ||
         this.chapter.title.includes('智慧医疗') ||
         this.id === '4'
+      )
+    },
+    isChapter7() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '7' ||
+        this.chapter.title.includes('人工智能的思考') ||
+        this.chapter.title.includes('伦理') ||
+        this.chapter.title.includes('算法歧视') ||
+        this.id === '7'
       )
     },
     prevChapter() {

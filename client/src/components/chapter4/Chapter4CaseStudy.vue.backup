@@ -464,41 +464,9 @@
             <p class="section-subtitle">AI驱动的个性化娱乐体验</p>
           </div>
 
-          <!-- 控制栏 -->
-          <div class="entertainment-controls">
-            <div class="search-box">
-              <input 
-                v-model="entertainmentSearchQuery"
-                type="text" 
-                placeholder="搜索娱乐平台或技术..."
-                class="search-input"
-              >
-              <i class="search-icon">🔍</i>
-            </div>
-            
-            <div class="filter-buttons">
-              <button 
-                v-for="category in entertainmentCategories"
-                :key="category"
-                :class="['filter-btn', { active: selectedCategory === category }]"
-                @click="selectedCategory = category"
-              >
-                {{ category }}
-              </button>
-            </div>
-            
-            <div class="sort-dropdown">
-              <select v-model="sortBy" class="sort-select">
-                <option value="name">按名称排序</option>
-                <option value="metrics">按指标排序</option>
-                <option value="tech">按技术数量排序</option>
-              </select>
-            </div>
-          </div>
-
           <div class="content-grid">
             <div 
-              v-for="entertainment in filteredEntertainmentCases" 
+              v-for="entertainment in entertainmentCases" 
               :key="entertainment.id"
               class="content-card entertainment-card interactive-element float-animation"
               @click="handleEntertainmentClick(entertainment)"
@@ -626,167 +594,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 智能设备详情弹窗 -->
-    <div v-if="showDeviceDetail" class="device-detail-modal" @click="showDeviceDetail = false">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <div class="device-title">
-            <span class="device-icon">{{ getDeviceIcon(selectedDeviceDetail?.id) }}</span>
-            <h3>{{ selectedDeviceDetail?.name }}</h3>
-          </div>
-          <button class="close-btn" @click="showDeviceDetail = false">×</button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="device-info">
-            <span class="brand-badge">{{ selectedDeviceDetail?.brand }}</span>
-            <p class="device-description">{{ selectedDeviceDetail?.description }}</p>
-          </div>
-          
-          <div class="features-section">
-            <h4>🔧 核心功能</h4>
-            <div class="features-grid">
-              <span v-for="feature in selectedDeviceDetail?.features" :key="feature" class="feature-tag">
-                {{ feature }}
-              </span>
-            </div>
-          </div>
-          
-          <div class="technologies-section">
-            <h4>💡 技术特性</h4>
-            <ul class="tech-list">
-              <li v-for="tech in selectedDeviceDetail?.technologies" :key="tech">
-                {{ tech }}
-              </li>
-            </ul>
-          </div>
-          
-          <div class="scenarios-section">
-            <h4>🏠 使用场景</h4>
-            <ul class="scenarios-list">
-              <li v-for="scenario in selectedDeviceDetail?.scenarios" :key="scenario">
-                {{ scenario }}
-              </li>
-            </ul>
-          </div>
-          
-          <div class="specifications-section">
-            <h4>📊 技术规格</h4>
-            <div class="specs-grid">
-              <div v-for="(value, key) in selectedDeviceDetail?.specifications" :key="key" class="spec-item">
-                <span class="spec-label">{{ key }}</span>
-                <span class="spec-value">{{ value }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 智慧驾驶详情弹窗 -->
-    <div v-if="showDrivingDetail" class="driving-detail-modal" @click="closeDrivingDetail">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <div class="driving-title">
-            <span class="driving-icon">🚗</span>
-            <div class="title-info">
-              <h3>{{ selectedDrivingScenario?.name }}</h3>
-              <span class="company-badge">{{ selectedDrivingScenario?.company }}</span>
-            </div>
-          </div>
-          <button class="close-btn" @click="closeDrivingDetail">×</button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="driving-info">
-            <p class="driving-description">{{ selectedDrivingScenario?.description }}</p>
-          </div>
-          
-          <div class="technologies-section">
-            <h4>🔬 核心技术</h4>
-            <div class="tech-tags">
-              <span v-for="tech in selectedDrivingScenario?.technologies" :key="tech" class="tech-tag">
-                {{ tech }}
-              </span>
-            </div>
-          </div>
-          
-          <div class="features-section">
-            <h4>⚡ 技术特性</h4>
-            <ul class="features-list">
-              <li v-for="feature in selectedDrivingScenario?.features" :key="feature">
-                {{ feature }}
-              </li>
-            </ul>
-          </div>
-          
-          <div class="achievements-section">
-            <h4>🏆 关键成就</h4>
-            <div class="achievements-grid">
-              <div v-for="(value, key) in selectedDrivingScenario?.achievements" :key="key" class="achievement-card">
-                <span class="achievement-label">{{ getDrivingMetricName(key) }}</span>
-                <span class="achievement-value">{{ value }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 个性化医疗详情弹窗 -->
-    <div v-if="showMedicalDetail" class="medical-detail-modal" @click="closeMedicalDetail">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <div class="medical-title">
-            <span class="medical-icon">🧬</span>
-            <div class="title-info">
-              <h3>{{ selectedMedicalCase?.title }}</h3>
-              <span class="technology-badge">{{ selectedMedicalCase?.technology }}</span>
-            </div>
-          </div>
-          <button class="close-btn" @click="closeMedicalDetail">×</button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="medical-info">
-            <p class="medical-description">{{ selectedMedicalCase?.description }}</p>
-            <div class="impact-info">
-              <span class="impact-label">应用影响：</span>
-              <span class="impact-text">{{ selectedMedicalCase?.impact }}</span>
-            </div>
-          </div>
-          
-          <div class="technologies-section">
-            <h4>🔬 核心技术</h4>
-            <div class="tech-tags">
-              <span v-for="tech in selectedMedicalCase?.technologies" :key="tech" class="tech-tag">
-                {{ tech }}
-              </span>
-            </div>
-          </div>
-          
-          <div class="features-section">
-            <h4>⚡ 技术特性</h4>
-            <ul class="features-list">
-              <li v-for="feature in selectedMedicalCase?.features" :key="feature">
-                {{ feature }}
-              </li>
-            </ul>
-          </div>
-          
-          <div class="achievements-section">
-            <h4>🏆 关键成就</h4>
-            <div class="achievements-grid">
-              <div v-for="(value, key) in selectedMedicalCase?.achievements" :key="key" class="achievement-card">
-                <span class="achievement-label">{{ getMedicalMetricName(key) }}</span>
-                <span class="achievement-value">{{ value }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -825,68 +632,14 @@ const caseCompleted = ref(false)
 // 智能家居相关 - 基于小米全屋智能系统
 const smartHomeHovered = ref(false)
 const selectedDevice = ref(null)
-const showDeviceDetail = ref(false)
-const selectedDeviceDetail = ref(null)
-const showDrivingDetail = ref(false)
-const selectedDrivingScenario = ref(null)
-const showMedicalDetail = ref(false)
-const selectedMedicalCase = ref(null)
 const selectedScenario = ref(null)
 const selectedMarker = ref(null)
-
-// 智能娱乐案例数据
 const selectedEntertainment = ref(null)
-const entertainmentSearchQuery = ref('')
-const selectedCategory = ref('全部')
-const sortBy = ref('name')
-const entertainmentCategories = ref(['全部', '视频平台', '音乐平台', '游戏平台', '社交平台'])
-
-// 筛选后的娱乐案例
-const filteredEntertainmentCases = computed(() => {
-  let filtered = entertainmentCases.value
-  
-  // 按分类筛选
-  if (selectedCategory.value !== '全部') {
-    filtered = filtered.filter(item => item.category === selectedCategory.value)
-  }
-  
-  // 按搜索关键词筛选
-  if (entertainmentSearchQuery.value.trim()) {
-    const query = entertainmentSearchQuery.value.toLowerCase()
-    filtered = filtered.filter(item => 
-      item.name.toLowerCase().includes(query) ||
-      item.platform.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query) ||
-      item.technologies.some(tech => tech.toLowerCase().includes(query))
-    )
-  }
-  
-  // 排序
-  filtered.sort((a, b) => {
-    switch (sortBy.value) {
-      case 'name':
-        return a.name.localeCompare(b.name)
-      case 'metrics':
-        // 按月活用户数排序（提取数字进行比较）
-        const aUsers = parseFloat(a.metrics.monthlyActiveUsers || a.metrics.dailyActiveUsers || '0')
-        const bUsers = parseFloat(b.metrics.monthlyActiveUsers || b.metrics.dailyActiveUsers || '0')
-        return bUsers - aUsers
-      case 'tech':
-        return b.technologies.length - a.technologies.length
-      default:
-        return 0
-    }
-  })
-  
-  return filtered
-})
-
 const entertainmentCases = ref([
   {
     id: 'douyin',
     name: '抖音个性化视频流',
     platform: '字节跳动',
-    category: '视频平台',
     description: '基于用户行为数据和视频内容特征的智能推荐系统',
     technologies: ['深度学习', '协同过滤', '内容理解', '实时计算'],
     features: [
@@ -906,7 +659,6 @@ const entertainmentCases = ref([
     id: 'netflix',
     name: 'Netflix影视推荐',
     platform: 'Netflix',
-    category: '视频平台',
     description: '全球领先的个性化影视内容推荐引擎',
     technologies: ['机器学习', '协同过滤', '内容分析', 'A/B测试'],
     features: [
@@ -926,7 +678,6 @@ const entertainmentCases = ref([
     id: 'spotify',
     name: 'Spotify音乐发现',
     platform: 'Spotify',
-    category: '音乐平台',
     description: '基于音频特征和用户偏好的智能音乐推荐',
     technologies: ['音频分析', '自然语言处理', '深度学习', '图神经网络'],
     features: [
@@ -941,165 +692,15 @@ const entertainmentCases = ref([
       playlistCompletion: '67%',
       userRetention: '提升23%'
     }
-  },
-  {
-    id: 'youtube',
-    name: 'YouTube智能推荐',
-    platform: 'Google',
-    category: '视频平台',
-    description: '全球最大视频平台的深度学习推荐引擎',
-    technologies: ['深度神经网络', '候选生成', '排序算法', '多目标优化'],
-    features: [
-      '候选生成网络：从数百万视频中筛选出数百个候选视频',
-      '排序网络：基于用户特征和视频特征进行精准排序',
-      '多目标优化：平衡点击率、观看时长、用户满意度等多个指标',
-      '实时学习：根据用户实时行为动态调整推荐策略'
-    ],
-    metrics: {
-      monthlyActiveUsers: '26亿+',
-      dailyWatchTime: '10亿小时',
-      recommendationAccuracy: '70%',
-      sessionDuration: '平均40分钟'
-    }
-  },
-  {
-    id: 'xiaohongshu',
-    name: '小红书内容发现',
-    platform: '小红书',
-    category: '社交平台',
-    description: '基于社区兴趣和生活方式的智能内容推荐',
-    technologies: ['图神经网络', '多模态学习', '社交推荐', '内容理解'],
-    features: [
-      '多模态内容理解：图片、文字、标签的综合语义分析',
-      '社交关系挖掘：基于关注、点赞、收藏构建用户兴趣图谱',
-      '生活方式建模：美妆、穿搭、旅行等垂直领域的专业推荐',
-      '实时趋势捕捉：热门话题和流行趋势的快速识别与推送'
-    ],
-    metrics: {
-      monthlyActiveUsers: '3亿+',
-      contentEngagement: '85%',
-      discoveryRate: '45%',
-      userRetention: '提升30%'
-    }
-  },
-  {
-    id: 'gameai',
-    name: '游戏AI智能匹配',
-    platform: '腾讯游戏',
-    category: '游戏平台',
-    description: '基于技能水平和游戏行为的智能匹配系统',
-    technologies: ['强化学习', '技能评估', '行为分析', '动态平衡'],
-    features: [
-      '技能评估算法：多维度评估玩家游戏技能和水平',
-      '行为模式分析：识别玩家游戏偏好和行为特征',
-      '动态匹配调整：实时调整匹配策略，确保游戏平衡性',
-      '反作弊检测：AI驱动的作弊行为识别和防护系统'
-    ],
-    metrics: {
-      dailyActiveUsers: '1.2亿+',
-      matchAccuracy: '92%',
-      gameBalance: '88%',
-      playerSatisfaction: '91%'
-    }
   }
 ])
 const smartDevices = ref([
-  { 
-    id: 'light', 
-    name: 'Yeelight智能灯', 
-    brand: '小米生态链', 
-    features: ['色温调节', '亮度调节', '场景模式'], 
-    style: { top: '20%', left: '15%' },
-    description: 'Yeelight智能灯采用先进的LED技术，支持1600万种颜色调节，可根据时间自动调整色温，营造舒适的光照环境。',
-    technologies: ['WiFi连接', 'LED调光技术', '色温控制', '场景联动'],
-    scenarios: ['阅读模式：暖白光护眼', '观影模式：柔和昏暗', '起床模式：渐亮唤醒', '睡眠模式：自动关闭'],
-    specifications: {
-      power: '9W',
-      brightness: '800流明',
-      colorTemp: '1700K-6500K',
-      lifespan: '25000小时'
-    }
-  },
-  { 
-    id: 'ac', 
-    name: '米家空调', 
-    brand: '小米', 
-    features: ['远程控制', '定时开关', '节能模式'], 
-    style: { top: '15%', right: '20%' },
-    description: '米家空调搭载变频技术和AI学习算法，能够智能学习用户习惯，自动调节温度，实现舒适节能的室内环境。',
-    technologies: ['变频技术', 'AI温控算法', '远程控制', '节能优化'],
-    scenarios: ['回家模式：提前制冷', '睡眠模式：静音运行', '外出模式：自动关闭', '节能模式：智能调温'],
-    specifications: {
-      cooling: '1.5匹',
-      energyLevel: '一级能效',
-      noise: '≤18dB',
-      coverage: '16-25㎡'
-    }
-  },
-  { 
-    id: 'camera', 
-    name: '小白摄像头', 
-    brand: '小米', 
-    features: ['1080P高清', '夜视功能', '移动侦测'], 
-    style: { top: '10%', right: '10%' },
-    description: '小白摄像头配备高清镜头和红外夜视功能，支持AI人形检测和异常行为识别，为家庭安全提供24小时守护。',
-    technologies: ['1080P高清录制', '红外夜视', 'AI人形检测', '云端存储'],
-    scenarios: ['安防监控：异常报警', '宠物看护：远程查看', '老人关怀：跌倒检测', '儿童监护：实时查看'],
-    specifications: {
-      resolution: '1920×1080',
-      nightVision: '10米红外',
-      storage: '本地+云端',
-      viewing: '110°广角'
-    }
-  },
-  { 
-    id: 'speaker', 
-    name: '小爱音箱Pro', 
-    brand: '小米', 
-    features: ['语音控制', '智能联动', '音乐播放'], 
-    style: { bottom: '25%', left: '20%' },
-    description: '小爱音箱Pro是智能家居的控制中枢，搭载小爱同学语音助手，支持自然语言交互，可控制全屋智能设备。',
-    technologies: ['语音识别', '自然语言处理', '智能联动', '高保真音质'],
-    scenarios: ['语音控制："小爱同学，打开客厅灯"', '音乐播放：海量曲库', '信息查询：天气、新闻', '智能提醒：日程、闹钟'],
-    specifications: {
-      microphone: '6麦克风阵列',
-      speaker: '2.25英寸全频',
-      connectivity: 'WiFi + 蓝牙',
-      response: '<500ms'
-    }
-  },
-  { 
-    id: 'robot', 
-    name: '米家扫地机器人', 
-    brand: '小米', 
-    features: ['激光导航', '智能规划', '自动回充'], 
-    style: { bottom: '30%', right: '25%' },
-    description: '米家扫地机器人采用激光雷达导航技术，能够精确建图和路径规划，实现高效清扫，支持定时清扫和禁区设置。',
-    technologies: ['激光雷达导航', 'SLAM算法', '路径规划', '自动回充'],
-    scenarios: ['定时清扫：每日自动', '重点清扫：污渍区域', '禁区设置：避开地毯', '远程控制：外出清扫'],
-    specifications: {
-      suction: '2100Pa大吸力',
-      battery: '5200mAh',
-      runtime: '150分钟',
-      dustbin: '420ml'
-    }
-  },
-  { 
-    id: 'purifier', 
-    name: '小米净化器', 
-    brand: '小米', 
-    features: ['PM2.5检测', '智能净化', '静音模式'], 
-    style: { top: '60%', left: '25%' },
-    description: '小米空气净化器配备高效HEPA滤网和激光颗粒物传感器，能够实时监测空气质量，自动调节净化强度。',
-    technologies: ['HEPA过滤', '激光传感器', '智能调节', '静音设计'],
-    scenarios: ['自动模式：根据空气质量调节', '睡眠模式：超静音运行', '最爱模式：自定义风速', '手动模式：三档调节'],
-    specifications: {
-      cadr: '330m³/h',
-      coverage: '23-40㎡',
-      noise: '≤34dB',
-      filter: 'H13级HEPA'
-    }
-  }
+  { id: 'light', name: 'Yeelight智能灯', brand: '小米生态链', features: ['色温调节', '亮度调节', '场景模式'], style: { top: '20%', left: '15%' } },
+  { id: 'ac', name: '米家空调', brand: '小米', features: ['远程控制', '定时开关', '节能模式'], style: { top: '15%', right: '20%' } },
+  { id: 'camera', name: '小白摄像头', brand: '小米', features: ['1080P高清', '夜视功能', '移动侦测'], style: { top: '10%', right: '10%' } },
+  { id: 'speaker', name: '小爱音箱Pro', brand: '小米', features: ['语音控制', '智能联动', '音乐播放'], style: { bottom: '25%', left: '20%' } },
+  { id: 'robot', name: '米家扫地机器人', brand: '小米', features: ['激光导航', '智能规划', '自动回充'], style: { bottom: '30%', right: '25%' } },
+  { id: 'purifier', name: '小米净化器', brand: '小米', features: ['PM2.5检测', '智能净化', '静音模式'], style: { top: '60%', left: '25%' } }
 ])
 
 // 语音助手对话
@@ -1422,16 +1023,12 @@ const showLesionDetailFunc = (lesion) => {
 }
 
 const handleMedicalCaseClick = (medicalCase) => {
-  selectedMedicalCase.value = medicalCase
-  showMedicalDetail.value = true
   console.log(`点击了医疗案例: ${medicalCase.title}`)
   incrementInteraction()
 }
 
 const handleDrivingScenarioClick = (scenario) => {
   scenario.active = !scenario.active
-  selectedDrivingScenario.value = scenario
-  showDrivingDetail.value = true
   console.log(`点击了自动驾驶场景: ${scenario.name} - ${scenario.company}`)
   incrementInteraction()
 }
@@ -1446,10 +1043,7 @@ const getEntertainmentIcon = (id) => {
   const icons = {
     douyin: 'fas fa-video',
     netflix: 'fas fa-film', 
-    spotify: 'fas fa-music',
-    youtube: 'fab fa-youtube',
-    xiaohongshu: 'fas fa-camera',
-    gameai: 'fas fa-gamepad'
+    spotify: 'fas fa-music'
   }
   return icons[id] || 'fas fa-play'
 }
@@ -1467,23 +1061,13 @@ const getMetricName = (key) => {
     monthlyActiveUsers: '月活用户',
     discoveryRate: '发现率',
     playlistCompletion: '播放列表完成率',
-    userRetention: '用户留存提升',
-    dailyWatchTime: '日均观看时长',
-    sessionDuration: '会话时长',
-    matchAccuracy: '匹配准确率',
-    gameBalance: '游戏平衡性',
-    playerSatisfaction: '玩家满意度'
+    userRetention: '用户留存提升'
   }
   return names[key] || key
 }
 
 // 个性化医疗相关处理函数
 const handleGeneAnalysisClick = () => {
-  const geneAnalysisCase = medicalCases.value.find(c => c.id === 'gene_analysis')
-  if (geneAnalysisCase) {
-    selectedMedicalCase.value = geneAnalysisCase
-    showMedicalDetail.value = true
-  }
   incrementInteraction()
   console.log('基因分析图片点击')
 }
@@ -1494,56 +1078,24 @@ const handleGeneTestClick = (test) => {
 }
 
 const handlePrecisionMedicineClick = () => {
-  const precisionCase = medicalCases.value.find(c => c.id === 'precision_medicine')
-  if (precisionCase) {
-    selectedMedicalCase.value = precisionCase
-    showMedicalDetail.value = true
-  }
   incrementInteraction()
   console.log('精准医疗图片点击')
 }
 
 // 远程医疗相关处理函数
 const handleSmartConsultationClick = () => {
-  const consultationCase = medicalCases.value.find(c => c.id === 'babylon-health')
-  if (consultationCase) {
-    selectedMedicalCase.value = consultationCase
-    showMedicalDetail.value = true
-  }
   incrementInteraction()
   console.log('智能问诊图片点击')
 }
 
 const handleHealthMonitoringClick = () => {
-  const monitoringCase = medicalCases.value.find(c => c.id === 'apple-watch')
-  if (monitoringCase) {
-    selectedMedicalCase.value = monitoringCase
-    showMedicalDetail.value = true
-  }
   incrementInteraction()
   console.log('健康监测图片点击')
 }
 
 const handleSmartDeviceClick = (device) => {
   console.log(`点击了智能设备: ${device.name} - ${device.brand}`)
-  selectedDeviceDetail.value = device
-  showDeviceDetail.value = true
   incrementInteraction()
-}
-
-const closeDeviceDetail = () => {
-  showDeviceDetail.value = false
-  selectedDeviceDetail.value = null
-}
-
-const closeDrivingDetail = () => {
-  showDrivingDetail.value = false
-  selectedDrivingScenario.value = null
-}
-
-const closeMedicalDetail = () => {
-  showMedicalDetail.value = false
-  selectedMedicalCase.value = null
 }
 
 const getDeviceIcon = (deviceId) => {
@@ -1558,54 +1110,50 @@ const getDeviceIcon = (deviceId) => {
   return iconMap[deviceId] || '📱'
 }
 
-const getDrivingMetricName = (key) => {
-  const metricNames = {
-    deployedVehicles: '部署车辆',
-    milesAutopilot: '自动驾驶里程',
-    safetyImprovement: '安全性提升',
-    marketShare: '市场地位',
-    operatingCities: '运营城市',
-    totalOrders: '总订单数',
-    fleetSize: '车队规模',
-    testMiles: '测试里程',
-    efficiencyImprovement: '效率提升',
-    waitTimeReduction: '等待时间',
-    violationReduction: '违规减少',
-    maintenanceImprovement: '维修响应',
-    coverageArea: '覆盖区域',
-    connectedVehicles: '联网车辆',
-    latencyReduction: '时延降低',
-    accidentPrevention: '事故预防'
-  }
-  return metricNames[key] || key
-}
-
-const getMedicalMetricName = (key) => {
-  const metricNames = {
-    accuracy: '诊断准确率',
-    deployment: '部署情况',
-    diseasesCovered: '疾病覆盖',
-    clinicalTrials: '临床试验',
-    matchingAccuracy: '药物匹配准确率',
-    survivalImprovement: '生存期延长',
-    treatmentResponse: '治疗响应率提升',
-    costReduction: '治疗成本降低',
-    userBase: '用户规模',
-    geneticVariants: '遗传变异检测',
-    healthReports: '健康报告',
-    research: '科学研究项目',
-    consultations: '月度咨询量',
-    satisfaction: '用户满意度',
-    liveSaved: '挽救生命',
-    fdaApproval: 'FDA认证',
-    detectionAccuracy: '检测准确率'
-  }
-  return metricNames[key] || key
-}
-
-const handleDeviceClick = (device) => {
-  selectedDevice.value = device
+const handleEntertainmentClick = (entertainment) => {
+  selectedEntertainment.value = entertainment
   incrementInteraction()
+}
+
+const getEntertainmentIcon = (entertainmentId) => {
+  const iconMap = {
+    'douyin': 'fab fa-tiktok',
+    'netflix': 'fab fa-netflix',
+    'spotify': 'fab fa-spotify'
+  }
+  return iconMap[entertainmentId] || 'fas fa-play'
+}
+
+const getMetricName = (key) => {
+  const nameMap = {
+    'dailyActiveUsers': '日活用户',
+    'globalSubscribers': '全球订阅用户',
+    'monthlyActiveUsers': '月活用户',
+    'clickThroughRate': '点击率',
+    'recommendationAccuracy': '推荐准确率',
+    'discoveryRate': '内容发现率'
+  }
+  return nameMap[key] || key
+}
+
+const handlePrecisionMedicineClick = () => {
+  incrementInteraction()
+  console.log('点击了精准医疗')
+}
+
+const handleSmartConsultationClick = () => {
+  incrementInteraction()
+  console.log('点击了智能问诊')
+}
+
+const handleHealthMonitoringClick = () => {
+  incrementInteraction()
+  console.log('点击了健康监测')
+}
+
+const handleGeneAnalysisClick = () => {
+  incrementInteraction()
+  console.log('点击了基因分析')
 }
 
 const onImageClick = (imageType) => {
@@ -2443,126 +1991,6 @@ onMounted(async () => {
 }
 
 /* 智能娱乐板块样式 */
-/* 娱乐控制栏样式 */
-.entertainment-controls {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin: 30px 0;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  flex-wrap: wrap;
-}
-
-.search-box {
-  position: relative;
-  flex: 1;
-  min-width: 250px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 45px 12px 15px;
-  border: none;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.search-input::placeholder {
-  color: #666;
-}
-
-.search-icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  font-size: 16px;
-  pointer-events: none;
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.filter-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.filter-btn.active {
-  background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
-  font-weight: 600;
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-}
-
-.sort-dropdown {
-  min-width: 150px;
-}
-
-.sort-select {
-  width: 100%;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  font-size: 13px;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.sort-select:focus {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-
-@media (max-width: 768px) {
-  .entertainment-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .search-box {
-    min-width: auto;
-  }
-  
-  .filter-buttons {
-    justify-content: center;
-  }
-}
-
 .entertainment-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -2572,14 +2000,13 @@ onMounted(async () => {
 
 .entertainment-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 24px;
   color: white;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
 }
 
 .entertainment-card::before {
@@ -2589,34 +2016,18 @@ onMounted(async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.entertainment-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-  transform: rotate(45deg) translateX(-100%);
-  transition: transform 0.6s ease;
-}
-
 .entertainment-card:hover {
-  transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(102, 126, 234, 0.25);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
 
 .entertainment-card:hover::before {
   opacity: 1;
-}
-
-.entertainment-card:hover::after {
-  transform: rotate(45deg) translateX(100%);
 }
 
 .card-header {
@@ -2626,54 +2037,19 @@ onMounted(async () => {
 }
 
 .platform-icon {
-  width: 56px;
-  height: 56px;
-  background: rgba(255,255,255,0.25);
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 20px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.3);
-  position: relative;
-  z-index: 2;
-}
-
-.platform-icon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-  border-radius: 16px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.entertainment-card:hover .platform-icon {
-  transform: scale(1.1) rotate(5deg);
-  background: rgba(255,255,255,0.35);
-}
-
-.entertainment-card:hover .platform-icon::before {
-  opacity: 1;
+  margin-right: 16px;
 }
 
 .platform-icon i {
-  font-size: 28px;
+  font-size: 24px;
   color: white;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 3;
-}
-
-.entertainment-card:hover .platform-icon i {
-  transform: scale(1.1);
-  text-shadow: 0 0 20px rgba(255,255,255,0.5);
 }
 
 .card-title h3 {
@@ -2704,37 +2080,11 @@ onMounted(async () => {
 }
 
 .tech-tag {
-  background: rgba(255,255,255,0.25);
-  padding: 6px 16px;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.3);
-  backdrop-filter: blur(5px);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.tech-tag::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.entertainment-card:hover .tech-tag {
-  background: rgba(255,255,255,0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
-}
-
-.entertainment-card:hover .tech-tag::before {
-  left: 100%;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .metrics-preview {
@@ -2768,84 +2118,22 @@ onMounted(async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.4s ease;
+  animation: fadeIn 0.3s ease;
 }
 
-.entertainment-modal .modal-content {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  border-radius: 24px;
-  max-width: 700px;
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
   width: 90%;
-  max-height: 85vh;
+  max-height: 80vh;
   overflow-y: auto;
-  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-  position: relative;
-}
-
-.entertainment-modal .modal-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-  border-radius: 24px;
-  pointer-events: none;
-}
-
-.entertainment-modal .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 32px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  position: relative;
-  z-index: 2;
-}
-
-.entertainment-modal .modal-header h3 {
-  margin: 0;
-  color: white;
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.entertainment-modal .close-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  font-size: 24px;
-  cursor: pointer;
-  color: white;
-  padding: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.entertainment-modal .close-btn:hover {
-  background: rgba(255,255,255,0.2);
-  transform: scale(1.1) rotate(90deg);
-  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+  animation: slideUp 0.3s ease;
 }
 
 .modal-header {
@@ -2883,39 +2171,6 @@ onMounted(async () => {
   color: #333;
 }
 
-.entertainment-modal .modal-body {
-  padding: 32px;
-  position: relative;
-  z-index: 2;
-}
-
-.entertainment-modal .platform-info {
-  margin-bottom: 32px;
-}
-
-.entertainment-modal .platform-badge {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(10px);
-  animation: pulse 2s infinite;
-}
-
-.entertainment-modal .description {
-  color: rgba(255,255,255,0.9);
-  line-height: 1.8;
-  margin: 0;
-  font-size: 16px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
 .modal-body {
   padding: 24px;
 }
@@ -2939,105 +2194,6 @@ onMounted(async () => {
   color: #666;
   line-height: 1.6;
   margin: 0;
-}
-
-.entertainment-modal .features-section, .entertainment-modal .metrics-section {
-  margin-bottom: 32px;
-}
-
-.entertainment-modal .features-section h4, .entertainment-modal .metrics-section h4 {
-  color: white;
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  position: relative;
-  padding-left: 20px;
-}
-
-.entertainment-modal .features-section h4::before, .entertainment-modal .metrics-section h4::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 20px;
-  background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
-  border-radius: 2px;
-}
-
-.entertainment-modal .features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.entertainment-modal .features-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.9);
-  line-height: 1.6;
-  font-size: 15px;
-  position: relative;
-  padding-left: 24px;
-  transition: all 0.3s ease;
-}
-
-.entertainment-modal .features-list li::before {
-  content: '✨';
-  position: absolute;
-  left: 0;
-  top: 12px;
-  font-size: 14px;
-}
-
-.entertainment-modal .features-list li:hover {
-  color: white;
-  transform: translateX(8px);
-}
-
-.entertainment-modal .features-list li:last-child {
-  border-bottom: none;
-}
-
-.entertainment-modal .metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 20px;
-}
-
-.entertainment-modal .metric-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.entertainment-modal .metric-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.entertainment-modal .metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
-  border-color: rgba(255,255,255,0.4);
-}
-
-.entertainment-modal .metric-card:hover::before {
-  left: 100%;
 }
 
 .features-section, .metrics-section {
@@ -3081,29 +2237,6 @@ onMounted(async () => {
   text-align: center;
 }
 
-.entertainment-modal .metric-name {
-  display: block;
-  font-size: 13px;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.entertainment-modal .metric-number {
-  display: block;
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: glow 3s ease-in-out infinite;
-}
-
 .metric-name {
   display: block;
   font-size: 12px;
@@ -3131,35 +2264,6 @@ onMounted(async () => {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(79, 70, 229, 0.3);
-  }
-  50% {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(79, 70, 229, 0.6), 0 0 30px rgba(236, 72, 153, 0.4);
   }
 }
 
@@ -3439,624 +2543,5 @@ onMounted(async () => {
 .interactive-element:active::before {
   width: 300px;
   height: 300px;
-}
-
-/* 智能设备详情弹窗样式 */
-.device-detail-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.device-detail-modal .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-.device-detail-modal .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 30px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.device-title {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.device-icon {
-  font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-}
-
-.device-title h3 {
-  color: white;
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.device-detail-modal .modal-body {
-  padding: 25px 30px 30px;
-  color: white;
-}
-
-.device-info {
-  margin-bottom: 25px;
-}
-
-.brand-badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 15px;
-  backdrop-filter: blur(10px);
-}
-
-.device-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  opacity: 0.9;
-  margin: 0;
-}
-
-.features-section,
-.technologies-section,
-.scenarios-section,
-.specifications-section {
-  margin-bottom: 25px;
-}
-
-.features-section h4,
-.technologies-section h4,
-.scenarios-section h4,
-.specifications-section h4 {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.features-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.features-grid .feature-tag {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.features-grid .feature-tag:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-.tech-list,
-.scenarios-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.tech-list li,
-.scenarios-list li {
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 8px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border-left: 4px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.tech-list li:hover,
-.scenarios-list li:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(5px);
-}
-
-.specs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.spec-item {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.spec-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-3px);
-}
-
-.spec-label {
-  display: block;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  margin-bottom: 5px;
-  text-transform: capitalize;
-}
-
-.spec-value {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #81c784;
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 智慧驾驶详情弹窗样式 */
-.driving-detail-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.driving-detail-modal .modal-content {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  border-radius: 20px;
-  max-width: 700px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-.driving-detail-modal .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 30px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.driving-title {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.driving-icon {
-  font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-}
-
-.title-info h3 {
-  color: white;
-  margin: 0 0 5px 0;
-  font-size: 1.8rem;
-  font-weight: 600;
-}
-
-.company-badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-}
-
-.driving-detail-modal .modal-body {
-  padding: 25px 30px 30px;
-  color: white;
-}
-
-.driving-info {
-  margin-bottom: 25px;
-}
-
-.driving-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  opacity: 0.9;
-  margin: 0;
-}
-
-.driving-detail-modal .technologies-section,
-.driving-detail-modal .features-section,
-.driving-detail-modal .achievements-section {
-  margin-bottom: 25px;
-}
-
-.driving-detail-modal h4 {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.tech-tag {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.features-list li {
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  backdrop-filter: blur(10px);
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
-}
-
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.achievement-card {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s ease;
-}
-
-.achievement-card:hover {
-  transform: translateY(-2px);
-}
-
-.achievement-label {
-  display: block;
-  font-size: 0.85rem;
-  opacity: 0.8;
-  margin-bottom: 5px;
-}
-
-.achievement-value {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: white;
-}
-
-/* 响应式设计 - 设备弹窗 */
-@media (max-width: 768px) {
-  .device-detail-modal .modal-content {
-    width: 95%;
-    max-height: 90vh;
-  }
-  
-  .device-detail-modal .modal-header {
-    padding: 20px 20px 15px;
-  }
-  
-  .device-title h3 {
-    font-size: 1.5rem;
-  }
-  
-  .device-icon {
-    font-size: 2rem;
-    padding: 8px;
-  }
-  
-  .device-detail-modal .modal-body {
-    padding: 20px;
-  }
-  
-  .specs-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  /* 智慧驾驶弹窗响应式 */
-  .driving-detail-modal .modal-content {
-    width: 95%;
-    max-height: 90vh;
-  }
-}
-
-/* 个性化医疗详情弹窗样式 */
-.medical-detail-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.medical-detail-modal .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  max-width: 700px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-.medical-detail-modal .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 30px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.medical-title {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.medical-icon {
-  font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-}
-
-.technology-badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-}
-
-.medical-detail-modal .modal-body {
-  padding: 25px 30px 30px;
-  color: white;
-}
-
-.medical-info {
-  margin-bottom: 25px;
-}
-
-.medical-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  opacity: 0.9;
-  margin: 0 0 15px 0;
-}
-
-.impact-info {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px 16px;
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-}
-
-.impact-label {
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.impact-text {
-  color: white;
-  font-weight: 500;
-}
-
-.medical-detail-modal .technologies-section,
-.medical-detail-modal .features-section,
-.medical-detail-modal .achievements-section {
-  margin-bottom: 25px;
-}
-
-.medical-detail-modal h4 {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.medical-detail-modal .tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.medical-detail-modal .tech-tag {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.medical-detail-modal .features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.medical-detail-modal .features-list li {
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  backdrop-filter: blur(10px);
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
-}
-
-.medical-detail-modal .achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.medical-detail-modal .achievement-card {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.2s ease;
-}
-
-.medical-detail-modal .achievement-card:hover {
-  transform: translateY(-2px);
-}
-
-.medical-detail-modal .achievement-label {
-  display: block;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 5px;
-  text-transform: capitalize;
-}
-
-.medical-detail-modal .achievement-value {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #81c784;
-}
-
-@media (max-width: 768px) {
-  .medical-detail-modal .modal-content {
-    width: 95%;
-    max-height: 90vh;
-  }
-  
-  .medical-detail-modal .modal-header {
-    padding: 20px 20px 15px;
-  }
-  
-  .medical-detail-modal .modal-body {
-    padding: 20px;
-  }
-  
-  .medical-detail-modal .achievements-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .medical-detail-modal .achievements-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
