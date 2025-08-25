@@ -3,18 +3,30 @@
     <div class="case-header">
       <h2 class="case-title">🎯 第三章案例学习</h2>
       <p class="case-description">
-        直观展示"人眼看到的图像"和"计算机眼中的数据"这一核心概念
+        通过两个交互式案例深入理解计算机视觉的基础概念
       </p>
       
       <!-- 学习进度指示器 -->
       <div class="progress-indicator">
-        <div class="progress-item" :class="{ completed: caseCompleted }">
-          <div class="progress-icon">👁️</div>
+        <div class="progress-item" :class="{ completed: pixelCaseCompleted }">
+          <div class="progress-icon">🖼️</div>
           <div class="progress-info">
-            <h4>图像数据理解案例</h4>
-            <p>体验次数: {{ interactionCount }}/5 次</p>
+            <h4>像素数据理解案例</h4>
+            <p>体验次数: {{ pixelInteractionCount }}/5 次</p>
             <div class="progress-status">
-              <span v-if="caseCompleted" class="status-completed">✅ 已完成</span>
+              <span v-if="pixelCaseCompleted" class="status-completed">✅ 已完成</span>
+              <span v-else class="status-pending">⏳ 进行中</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="progress-item" :class="{ completed: edgeCaseCompleted }">
+          <div class="progress-icon">🔍</div>
+          <div class="progress-info">
+            <h4>边缘特征提取案例</h4>
+            <p>体验次数: {{ edgeInteractionCount }}/5 次</p>
+            <div class="progress-status">
+              <span v-if="edgeCaseCompleted" class="status-completed">✅ 已完成</span>
               <span v-else class="status-pending">⏳ 进行中</span>
             </div>
           </div>
@@ -22,8 +34,28 @@
       </div>
     </div>
 
-    <!-- 主要案例内容 -->
-    <div class="case-section">
+    <!-- 案例导航 -->
+    <div class="case-navigation">
+      <div class="nav-buttons">
+        <button 
+          @click="activeCase = 'pixel'" 
+          :class="{ active: activeCase === 'pixel' }"
+          class="nav-btn">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">像素数据案例</span>
+        </button>
+        <button 
+          @click="activeCase = 'edge'" 
+          :class="{ active: activeCase === 'edge' }"
+          class="nav-btn">
+          <span class="nav-icon">🔍</span>
+          <span class="nav-text">边缘特征案例</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 像素数据案例 -->
+    <div v-if="activeCase === 'pixel'" class="case-section pixel-case">
       <div class="section-header">
         <h3 class="section-title">
           <span class="title-icon">🖼️</span>
@@ -33,7 +65,7 @@
         <p class="section-subtitle">通过鼠标悬停体验人类视觉与机器视觉的根本差异</p>
       </div>
       
-      <!-- 图像交互展示区 -->
+      <!-- 像素数据图像交互展示区 -->
       <div class="image-interaction-card">
         <!-- 卡片头部 -->
         <div class="card-header">
@@ -48,9 +80,9 @@
               </div>
             </div>
             <div class="interaction-status">
-              <div class="status-indicator" :class="{ active: isHovering }">
+              <div class="status-indicator" :class="{ active: isPixelHovering }">
                 <span class="status-dot"></span>
-                <span class="status-text">{{ isHovering ? '数据视图' : '人眼视图' }}</span>
+                <span class="status-text">{{ isPixelHovering ? '数据视图' : '人眼视图' }}</span>
               </div>
             </div>
           </div>
@@ -65,33 +97,33 @@
               <p>将鼠标悬停在下方图片上，体验视觉转换</p>
             </div>
             
-            <!-- 图片容器 -->
+            <!-- 像素数据图片容器 -->
             <div class="image-container" 
-                 @mouseenter="handleMouseEnter" 
-                 @mouseleave="handleMouseLeave">
+                 @mouseenter="handlePixelMouseEnter" 
+                 @mouseleave="handlePixelMouseLeave">
               <!-- 人眼视图（默认显示） -->
-              <img v-show="!isHovering" 
+              <img v-show="!isPixelHovering" 
                    :src="humanViewImage" 
                    alt="Human Vision View" 
                    class="view-image human-view" />
               
               <!-- 计算机视图（悬停时显示） -->
-              <img v-show="isHovering" 
+              <img v-show="isPixelHovering" 
                    :src="computerViewImage" 
                    alt="Computer Vision View" 
                    class="view-image computer-view" />
               
               <!-- 悬停指示器 -->
-              <div class="hover-indicator" :class="{ active: isHovering }">
-                <span class="indicator-icon">{{ isHovering ? '🤖' : '👁️' }}</span>
-                <span class="indicator-text">{{ isHovering ? 'Computer View' : 'Human View' }}</span>
+              <div class="hover-indicator" :class="{ active: isPixelHovering }">
+                <span class="indicator-icon">{{ isPixelHovering ? '🤖' : '👁️' }}</span>
+                <span class="indicator-text">{{ isPixelHovering ? 'Computer View' : 'Human View' }}</span>
               </div>
             </div>
             
             <!-- 视图说明 -->
             <div class="view-explanations">
               <div class="explanation-grid">
-                <div class="explanation-item human" :class="{ active: !isHovering }">
+                <div class="explanation-item human" :class="{ active: !isPixelHovering }">
                   <div class="explanation-icon">👁️</div>
                   <div class="explanation-content">
                     <h6>人眼视图</h6>
@@ -99,7 +131,7 @@
                   </div>
                 </div>
                 
-                <div class="explanation-item computer" :class="{ active: isHovering }">
+                <div class="explanation-item computer" :class="{ active: isPixelHovering }">
                   <div class="explanation-icon">🤖</div>
                   <div class="explanation-content">
                     <h6>计算机视图</h6>
@@ -110,7 +142,7 @@
             </div>
             
             <!-- 数据技术说明 -->
-            <div class="technical-info" v-if="isHovering">
+            <div class="technical-info" v-if="isPixelHovering">
               <div class="info-header">
                 <span class="info-icon">📊</span>
                 <h6>RGB数据说明</h6>
@@ -133,19 +165,150 @@
           </div>
         </div>
 
-        <!-- 统计信息 -->
+        <!-- 像素案例统计信息 -->
         <div class="interaction-stats">
           <div class="stats-grid">
             <div class="stat-item">
-              <span class="stat-value">{{ interactionCount }}</span>
+              <span class="stat-value">{{ pixelInteractionCount }}</span>
               <span class="stat-label">交互次数</span>
             </div>
             <div class="stat-item">
-              <span class="stat-value">{{ totalHoverTime.toFixed(1) }}s</span>
+              <span class="stat-value">{{ pixelTotalHoverTime.toFixed(1) }}s</span>
               <span class="stat-label">总体验时长</span>
             </div>
             <div class="stat-item">
-              <span class="stat-value">{{ isHovering ? '数据模式' : '视觉模式' }}</span>
+              <span class="stat-value">{{ isPixelHovering ? '数据模式' : '视觉模式' }}</span>
+              <span class="stat-label">当前视图</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 边缘特征提取案例 -->
+    <div v-if="activeCase === 'edge'" class="case-section edge-case">
+      <div class="section-header">
+        <h3 class="section-title">
+          <span class="title-icon">🔍</span>
+          <span class="title-text">计算机视觉基础：从图像到特征</span>
+          <span class="title-decoration"></span>
+        </h3>
+        <p class="section-subtitle">体验计算机如何将复杂图像简化为基础边缘特征</p>
+      </div>
+      
+      <!-- 边缘检测图像交互展示区 -->
+      <div class="image-interaction-card">
+        <!-- 卡片头部 -->
+        <div class="card-header">
+          <div class="header-content">
+            <div class="vision-logo">
+              <div class="logo-circle">
+                <span class="logo-icon">⚽</span>
+              </div>
+              <div class="logo-text">
+                <h4>边缘检测实验室</h4>
+                <span class="logo-subtitle">Edge Detection Lab</span>
+              </div>
+            </div>
+            <div class="interaction-status">
+              <div class="status-indicator" :class="{ active: isEdgeHovering }">
+                <span class="status-dot"></span>
+                <span class="status-text">{{ isEdgeHovering ? '边缘特征' : '原始图像' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 图像展示区域 -->
+        <div class="image-display-area">
+          <div class="display-container">
+            <!-- 指引文字 -->
+            <div class="interaction-guide">
+              <h5>🔍 特征提取体验</h5>
+              <p>将鼠标悬停在下方图片上，观察边缘检测效果</p>
+            </div>
+            
+            <!-- 边缘检测图片容器 -->
+            <div class="image-container" 
+                 @mouseenter="handleEdgeMouseEnter" 
+                 @mouseleave="handleEdgeMouseLeave">
+              <!-- 原始图像（默认显示） -->
+              <img v-show="!isEdgeHovering" 
+                   :src="neymarOriginalImage" 
+                   alt="Original Image" 
+                   class="view-image original-view" />
+              
+              <!-- 边缘检测图像（悬停时显示） -->
+              <img v-show="isEdgeHovering" 
+                   :src="neymarEdgesImage" 
+                   alt="Edge Detection View" 
+                   class="view-image edges-view" />
+              
+              <!-- 悬停指示器 -->
+              <div class="hover-indicator" :class="{ active: isEdgeHovering }">
+                <span class="indicator-icon">{{ isEdgeHovering ? '🔍' : '⚽' }}</span>
+                <span class="indicator-text">{{ isEdgeHovering ? 'Edge Features' : 'Original Image' }}</span>
+              </div>
+            </div>
+            
+            <!-- 视图说明 -->
+            <div class="view-explanations">
+              <div class="explanation-grid">
+                <div class="explanation-item human" :class="{ active: !isEdgeHovering }">
+                  <div class="explanation-icon">⚽</div>
+                  <div class="explanation-content">
+                    <h6>人眼所见</h6>
+                    <p>完整、丰富的彩色图像，包含所有细节、颜色和纹理信息</p>
+                  </div>
+                </div>
+                
+                <div class="explanation-item computer" :class="{ active: isEdgeHovering }">
+                  <div class="explanation-icon">🔍</div>
+                  <div class="explanation-content">
+                    <h6>计算机初步处理</h6>
+                    <p>通过边缘检测算法提取的黑白轮廓图，突出物体的结构特征</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 技术说明 -->
+            <div class="technical-info" v-if="isEdgeHovering">
+              <div class="info-header">
+                <span class="info-icon">🔬</span>
+                <h6>边缘检测技术说明</h6>
+              </div>
+              <div class="edge-explanation">
+                <div class="edge-item">
+                  <span class="edge-label">Sobel算子</span>
+                  <span class="edge-desc">检测图像中的边缘和轮廓</span>
+                </div>
+                <div class="edge-item">
+                  <span class="edge-label">梯度计算</span>
+                  <span class="edge-desc">计算像素强度变化</span>
+                </div>
+                <div class="edge-item">
+                  <span class="edge-label">特征提取</span>
+                  <span class="edge-desc">为后续识别提供结构信息</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 边缘案例统计信息 -->
+        <div class="interaction-stats">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-value">{{ edgeInteractionCount }}</span>
+              <span class="stat-label">交互次数</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ edgeTotalHoverTime.toFixed(1) }}s</span>
+              <span class="stat-label">总体验时长</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ isEdgeHovering ? '特征模式' : '原图模式' }}</span>
               <span class="stat-label">当前视图</span>
             </div>
           </div>
@@ -158,34 +321,39 @@
       <h3 class="summary-title">💡 案例总结</h3>
       <div class="summary-content">
         <div class="summary-item">
-          <h4>人类视觉 vs 计算机视觉</h4>
+          <h4>计算机视觉的两个基础概念</h4>
           <ul>
-            <li><strong>人类视觉:</strong> 直观理解图像内容，能识别物体、场景和情感</li>
-            <li><strong>计算机视觉:</strong> 处理数字化的像素数据，每个像素都是RGB数值的组合</li>
-            <li><strong>AI的挑战:</strong> 如何让计算机从数字数据中"理解"图像的真实含义</li>
+            <li><strong>像素数据理解:</strong> 计算机将图像看作RGB数值矩阵，每个像素都有精确的数字表示</li>
+            <li><strong>特征提取:</strong> 通过边缘检测等算法，从复杂图像中提取关键的结构特征</li>
+            <li><strong>处理流程:</strong> 从原始图像 → 数据化 → 特征提取 → 模式识别</li>
+            <li><strong>AI的挑战:</strong> 如何让计算机从数字数据和特征中"理解"图像的真实含义</li>
           </ul>
         </div>
       </div>
     </div>
 
     <!-- 下一步提示 -->
-    <div class="next-step" :class="{ 'completed': caseCompleted }">
+    <div class="next-step" :class="{ 'completed': allCasesCompleted }">
       <div class="next-step-content">
-        <div v-if="caseCompleted" class="completion-celebration">
-          <h3>🎉 恭喜！案例学习已完成</h3>
-          <p>你已经深入理解了人眼视觉与计算机视觉的根本差异。现在可以参加知识测验来检验学习成果！</p>
+        <div v-if="allCasesCompleted" class="completion-celebration">
+          <h3>🎉 恭喜！所有案例学习已完成</h3>
+          <p>你已经深入理解了计算机视觉的基础概念：像素数据处理和特征提取。现在可以参加知识测验来检验学习成果！</p>
           <button @click="startQuiz" class="btn btn-quiz btn-enabled">
             🚀 开始答题
           </button>
         </div>
         
         <div v-else class="completion-guide">
-          <h3>🔄 继续体验交互</h3>
-          <p>请多次使用鼠标悬停功能，深入体验人眼视觉与计算机数据视觉的差异。</p>
+          <h3>🔄 继续完成案例学习</h3>
+          <p>请完成两个案例的交互体验，深入理解计算机视觉的基础概念。</p>
           <div class="remaining-tasks">
-            <div class="task-item">
-              <span class="task-icon">🖱️</span>
-              <span class="task-text">还需要进行 {{ Math.max(0, 5 - interactionCount) }} 次鼠标悬停体验</span>
+            <div v-if="!pixelCaseCompleted" class="task-item">
+              <span class="task-icon">🖼️</span>
+              <span class="task-text">像素数据案例：还需要 {{ Math.max(0, 5 - pixelInteractionCount) }} 次交互</span>
+            </div>
+            <div v-if="!edgeCaseCompleted" class="task-item">
+              <span class="task-icon">🔍</span>
+              <span class="task-text">边缘特征案例：还需要 {{ Math.max(0, 5 - edgeInteractionCount) }} 次交互</span>
             </div>
           </div>
           <button @click="scrollToTop" class="btn btn-guide">
@@ -209,54 +377,123 @@ export default {
   emits: ['case-completed', 'all-cases-completed'],
   data() {
     return {
-      isHovering: false,
-      interactionCount: 0,
-      totalHoverTime: 0,
-      hoverStartTime: null,
-      caseCompleted: false,
+      // 当前激活的案例
+      activeCase: 'pixel',
+      
+      // 像素案例相关数据
+      isPixelHovering: false,
+      pixelInteractionCount: 0,
+      pixelTotalHoverTime: 0,
+      pixelHoverStartTime: null,
+      pixelCaseCompleted: false,
+      
+      // 边缘检测案例相关数据
+      isEdgeHovering: false,
+      edgeInteractionCount: 0,
+      edgeTotalHoverTime: 0,
+      edgeHoverStartTime: null,
+      edgeCaseCompleted: false,
       
       // 图片路径
       humanViewImage: '/images/chapter3/human-view.png',
-      computerViewImage: '/images/chapter3/computer-view.png'
+      computerViewImage: '/images/chapter3/computer-view.png',
+      neymarOriginalImage: '/images/chapter3/neymar-original.jpg',
+      neymarEdgesImage: '/images/chapter3/neymar-edges.jpg'
     }
   },
   computed: {
-    caseStatus() {
-      return this.interactionCount >= 5
+    allCasesCompleted() {
+      return this.pixelCaseCompleted && this.edgeCaseCompleted
     }
   },
   methods: {
-    handleMouseEnter() {
-      this.isHovering = true
-      this.hoverStartTime = Date.now()
+    // 像素案例交互方法
+    handlePixelMouseEnter() {
+      this.isPixelHovering = true
+      this.pixelHoverStartTime = Date.now()
       
       // 增加交互次数
-      this.interactionCount++
+      this.pixelInteractionCount++
       
       // 检查是否完成案例
-      this.checkCaseCompletion()
+      this.checkPixelCaseCompletion()
     },
     
-    handleMouseLeave() {
-      this.isHovering = false
+    handlePixelMouseLeave() {
+      this.isPixelHovering = false
       
       // 计算悬停时间
-      if (this.hoverStartTime) {
-        const hoverDuration = (Date.now() - this.hoverStartTime) / 1000
-        this.totalHoverTime += hoverDuration
-        this.hoverStartTime = null
+      if (this.pixelHoverStartTime) {
+        const hoverDuration = (Date.now() - this.pixelHoverStartTime) / 1000
+        this.pixelTotalHoverTime += hoverDuration
+        this.pixelHoverStartTime = null
       }
     },
     
-    checkCaseCompletion() {
-      if (this.interactionCount >= 5 && !this.caseCompleted) {
-        this.caseCompleted = true
-        this.$emit('case-completed', 'vision-comparison')
+    // 边缘检测案例交互方法
+    handleEdgeMouseEnter() {
+      this.isEdgeHovering = true
+      this.edgeHoverStartTime = Date.now()
+      
+      // 增加交互次数
+      this.edgeInteractionCount++
+      
+      // 检查是否完成案例
+      this.checkEdgeCaseCompletion()
+    },
+    
+    handleEdgeMouseLeave() {
+      this.isEdgeHovering = false
+      
+      // 计算悬停时间
+      if (this.edgeHoverStartTime) {
+        const hoverDuration = (Date.now() - this.edgeHoverStartTime) / 1000
+        this.edgeTotalHoverTime += hoverDuration
+        this.edgeHoverStartTime = null
+      }
+    },
+    
+    checkPixelCaseCompletion() {
+      if (this.pixelInteractionCount >= 5 && !this.pixelCaseCompleted) {
+        this.pixelCaseCompleted = true
+        this.$emit('case-completed', 'pixel-data')
+        
+        // 显示完成提示
+        this.$message({
+          message: '🎉 恭喜！你已经完成了像素数据理解案例！',
+          type: 'success',
+          duration: 3000
+        })
+        
+        // 检查是否所有案例都完成
+        this.checkAllCasesCompletion()
+      }
+    },
+    
+    checkEdgeCaseCompletion() {
+      if (this.edgeInteractionCount >= 5 && !this.edgeCaseCompleted) {
+        this.edgeCaseCompleted = true
+        this.$emit('case-completed', 'edge-detection')
+        
+        // 显示完成提示
+        this.$message({
+          message: '🎉 恭喜！你已经完成了边缘特征提取案例！',
+          type: 'success',
+          duration: 3000
+        })
+        
+        // 检查是否所有案例都完成
+        this.checkAllCasesCompletion()
+      }
+    },
+    
+    checkAllCasesCompletion() {
+      if (this.allCasesCompleted) {
         this.$emit('all-cases-completed')
         
         // 显示完成提示
         this.$message({
-          message: '🎉 恭喜！你已经完成了第三章的案例学习！',
+          message: '🎉 恭喜！你已经完成了第三章的所有案例学习！',
           type: 'success',
           duration: 3000
         })
@@ -264,9 +501,9 @@ export default {
     },
     
     startQuiz() {
-      if (!this.caseCompleted) {
+      if (!this.allCasesCompleted) {
         this.$message({
-          message: '请先完成案例学习后再开始测验',
+          message: '请先完成所有案例学习后再开始测验',
           type: 'warning',
           duration: 3000
         })
@@ -275,8 +512,17 @@ export default {
       this.$router.push(`/quiz/${this.chapterId}`)
     },
     
+    // 案例切换方法
+    switchToCase(caseType) {
+      this.activeCase = caseType
+      this.scrollToTop()
+    },
+    
     scrollToTop() {
-      this.$el.scrollIntoView({ behavior: 'smooth' })
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     }
   }
 }
@@ -1016,6 +1262,71 @@ export default {
   }
 }
 
+// 案例导航样式
+.case-navigation {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: 200px;
+  justify-content: center;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #cbd5e1;
+  }
+  
+  &.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.35);
+    }
+  }
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.nav-text {
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
 @media (max-width: 768px) {
   .chapter3-case-study {
     padding: 1rem;
@@ -1039,6 +1350,17 @@ export default {
   
   .interaction-stats {
     padding: 16px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-btn {
+    min-width: 100%;
+    padding: 1.25rem 1.5rem;
+    font-size: 1rem;
   }
 }
 </style>
