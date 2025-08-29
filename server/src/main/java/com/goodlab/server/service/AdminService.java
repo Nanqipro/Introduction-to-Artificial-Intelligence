@@ -2,7 +2,7 @@ package com.goodlab.server.service;
 
 import com.goodlab.server.dao.QuestionDao;
 import com.goodlab.server.dto.QuestionImportDto;
-import com.goodlab.server.model.Question;
+import com.goodlab.server.pojo.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

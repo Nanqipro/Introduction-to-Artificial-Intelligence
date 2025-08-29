@@ -323,7 +323,7 @@ onMounted(() => {
 
 .chapter6-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: $secondary-color; // 纯深色背景，去除蓝色渐变
   padding: 0;
 
   // 全局选中样式
@@ -575,8 +575,8 @@ onMounted(() => {
 
           .main-icon {
             font-size: 4rem;
-            color: #667eea;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: $accent-color;
+            background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -589,7 +589,7 @@ onMounted(() => {
             font-weight: 600;
             color: #2c3e50;
             margin: 0 0 0.5rem 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -612,20 +612,20 @@ onMounted(() => {
         .feature-item {
           text-align: center;
           padding: 1.5rem;
-          background: rgba(102, 126, 234, 0.05);
+          background: $card-bg;
           border-radius: 12px;
-          border: 1px solid rgba(102, 126, 234, 0.1);
+          border: 1px solid $card-border;
           transition: all 0.3s ease;
 
           &:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border-color: $primary-color;
           }
 
           .el-icon {
             font-size: 2.5rem;
-            color: #667eea;
+            color: $accent-color;
             margin-bottom: 1rem;
           }
 
@@ -651,7 +651,7 @@ onMounted(() => {
         margin-bottom: 2rem;
 
         .launch-button {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, $success-color 0%, $success-color-light 100%);
           border: none;
           padding: 12px 32px;
           font-size: 1.1rem;
@@ -661,7 +661,7 @@ onMounted(() => {
 
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
           }
         }
 
@@ -689,7 +689,7 @@ onMounted(() => {
             display: block;
             font-size: 2rem;
             font-weight: 700;
-            color: #667eea;
+            color: $accent-color;
             margin-bottom: 0.5rem;
           }
 

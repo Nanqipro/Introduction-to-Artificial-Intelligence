@@ -76,6 +76,11 @@ $type-choice-bg: linear-gradient(135deg, #667eea, #764ba2); // 选择题背景
 $type-tf-bg: linear-gradient(135deg, #f093fb, #f5576c); // 判断题背景
 $type-fill-bg: linear-gradient(135deg, #4facfe, #00f2fe); // 填空题背景
 
+// 难度等级颜色变量
+$difficulty-easy-bg: linear-gradient(135deg, #4caf50, #66bb6a); // 简单难度背景
+$difficulty-medium-bg: linear-gradient(135deg, #ff9800, #ffb74d); // 中等难度背景
+$difficulty-hard-bg: linear-gradient(135deg, #f44336, #ef5350); // 困难难度背景
+
 // 导航组件通用变量
 $nav-bg: rgba(41, 44, 51, 0.92); // 导航背景色
 $nav-border: rgba(57, 59, 64, 0.18); // 导航边框色

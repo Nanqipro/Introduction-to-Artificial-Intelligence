@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goodlab.server.mapper.QuestionMapper">
+    
+    <!-- 结果映射 -->
+    <resultMap id="QuestionResultMap" type="com.goodlab.server.dto.QuestionDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="type" property="type"/>
+        <result column="difficulty" property="difficulty"/>
+        <result column="chapter_id" property="chapterId"/>
+        <result column="option_a" property="optionA"/>
+        <result column="option_b" property="optionB"/>
+        <result column="option_c" property="optionC"/>
+        <result column="option_d" property="optionD"/>
+        <result column="correct_answer" property="correctAnswer"/>
+        <result column="explanation" property="explanation"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="audio_url" property="audioUrl"/>
+        <result column="video_url" property="videoUrl"/>
+        <result column="score" property="score"/>
+        <result column="is_active" property="isActive"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="chapter_title" property="chapterTitle"/>
+        <result column="type_name" property="typeName"/>
+        <result column="difficulty_name" property="difficultyName"/>
+    </resultMap>
+    
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, title, description, type, difficulty, chapter_id, option_a, option_b, option_c, option_d,
+        correct_answer, explanation, image_url, audio_url, video_url, score, is_active,
+        create_time, update_time, created_by, updated_by
+    </sql>
+    
+    <!-- 插入题目 -->
+    <insert id="insert" parameterType="com.goodlab.server.pojo.Question" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO questions (
+            title, description, type, difficulty, chapter_id, option_a, option_b, option_c, option_d,
+            correct_answer, explanation, image_url, audio_url, video_url, score, is_active,
+            create_time, update_time, created_by, updated_by
+        ) VALUES (
+            #{title}, #{description}, #{type}, #{difficulty}, #{chapterId}, #{optionA}, #{optionB}, #{optionC}, #{optionD},
+            #{correctAnswer}, #{explanation}, #{imageUrl}, #{audioUrl}, #{videoUrl}, #{score}, #{isActive},
+            NOW(), NOW(), #{createdBy}, #{updatedBy}
+        )
+    </insert>
+    
+    <!-- 更新题目 -->
+    <update id="updateById" parameterType="com.goodlab.server.pojo.Question">
+        UPDATE questions SET
+            title = #{title},
+            description = #{description},
+            type = #{type},
+            difficulty = #{difficulty},
+            chapter_id = #{chapterId},
+            option_a = #{optionA},
+            option_b = #{optionB},
+            option_c = #{optionC},
+            option_d = #{optionD},
+            correct_answer = #{correctAnswer},
+            explanation = #{explanation},
+            image_url = #{imageUrl},
+            audio_url = #{audioUrl},
+            video_url = #{videoUrl},
+            score = #{score},
+            is_active = #{isActive},
+            update_time = NOW(),
+            updated_by = #{updatedBy}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 删除题目 -->
+    <delete id="deleteById">
+        DELETE FROM questions WHERE id = #{id}
+    </delete>
+    
+    <!-- 根据ID查询题目 -->
+    <select id="selectById" resultMap="QuestionResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM questions 
+        WHERE id = #{id}
+    </select>
+    
+    <!-- 查询所有题目（分页） -->
+    <select id="selectAll" resultMap="QuestionResultMap">
+        SELECT 
+            q.<include refid="Base_Column_List"/>,
+            c.title as chapter_title,
+            CASE q.type 
+                WHEN 'choice' THEN '选择题'
+                WHEN 'tf' THEN '判断题'
+                WHEN 'fill' THEN '填空题'
+                ELSE '未知类型'
+            END as type_name,
+            CASE q.difficulty
+                WHEN 'easy' THEN '简单'
+                WHEN 'medium' THEN '中等'
+                WHEN 'hard' THEN '困难'
+                ELSE '未知难度'
+            END as difficulty_name
+        FROM questions q
+        LEFT JOIN chapters c ON q.chapter_id = c.id
+        WHERE q.is_active = 1
+        ORDER BY q.create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 根据章节ID查询题目 -->
+    <select id="selectByChapterId" resultMap="QuestionResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM questions 
+        WHERE chapter_id = #{chapterId} AND is_active = 1
+        ORDER BY create_time ASC
+    </select>
+    
+    <!-- 根据类型查询题目 -->
+    <select id="selectByType" resultMap="QuestionResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM questions 
+        WHERE type = #{type} AND is_active = 1
+        ORDER BY create_time DESC
+    </select>
+    
+    <!-- 根据难度查询题目 -->
+    <select id="selectByDifficulty" resultMap="QuestionResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM questions 
+        WHERE difficulty = #{difficulty} AND is_active = 1
+        ORDER BY create_time DESC
+    </select>
+    
+    <!-- 搜索题目 -->
+    <select id="searchQuestions" resultMap="QuestionResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM questions 
+        WHERE is_active = 1 
+        AND (title LIKE CONCAT('%', #{keyword}, '%') 
+             OR description LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY create_time DESC
+    </select>
+    
+    <!-- 统计题目总数 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM questions WHERE is_active = 1
+    </select>
+    
+    <!-- 根据章节统计题目数量 -->
+    <select id="countByChapterId" resultType="int">
+        SELECT COUNT(*) FROM questions 
+        WHERE chapter_id = #{chapterId} AND is_active = 1
+    </select>
+    
+</mapper>

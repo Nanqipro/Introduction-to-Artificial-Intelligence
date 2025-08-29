@@ -8,27 +8,10 @@
           《人工智能概论与应用》完整章节列表，点击章节卡片查看详细内容
         </p>
         
-        <!-- 系统测试工具 -->
-        <div class="system-test-panel">
-          <div class="test-buttons">
-            <button @click="runSystemTest" class="btn btn-test" :disabled="testing">
-              {{ testing ? '测试中...' : '🔧 系统自测' }}
-            </button>
-            <button @click="fixIssues" class="btn btn-fix" :disabled="!hasTestResults">
-              🛠️ 修复问题
-            </button>
-            <button @click="showTestReport" class="btn btn-report" :disabled="!hasTestResults">
-              📋 查看报告
-            </button>
-            <button @click="goToTestPage" class="btn btn-advanced">
-              🔬 高级测试
-            </button>
-          </div>
-          <div v-if="testStatus" class="test-status" :class="testStatus.type">
-            {{ testStatus.message }}
-          </div>
-        </div>
+        <!-- 系统测试工具已移除 -->
       </div>
+
+      
 
       <!-- 章节列表 -->
       <div class="chapters-container" v-if="!loading">
@@ -98,7 +81,56 @@ export default {
       testing: false,
       testStatus: null,
       hasTestResults: false,
-      lastTestReport: null
+      lastTestReport: null,
+      demo: {
+        answered: false,
+        correct: false,
+        message: ''
+      },
+      // 第一章更多练习（仅添加图片类题目，对应样例说明中的题目1、3、6、7、9）
+      quiz: [
+        {
+          id: 'q1',
+          title: '题目 1：雪纺裙的图片',
+          // A 真实 / B AI
+          aSrc: '/images/chapter1/A_真实照片.png',
+          bSrc: '/images/chapter1/A_ai生成.png',
+          answer: { A: 'human', B: 'ai' },
+          state: { answered: false, correct: false, message: '' }
+        },
+        {
+          id: 'q3',
+          title: '题目 3：城市街景（阿姆斯特丹）',
+          aSrc: '/images/chapter1/B_真实图片.png',
+          bSrc: '/images/chapter1/B_ai生成.png',
+          answer: { A: 'human', B: 'ai' },
+          state: { answered: false, correct: false, message: '' }
+        },
+        {
+          id: 'q6',
+          title: '题目 6：麻辣烫店铺',
+          aSrc: '/images/chapter1/C_真实图片.png',
+          bSrc: '/images/chapter1/C_ai生成.png',
+          answer: { A: 'human', B: 'ai' },
+          state: { answered: false, correct: false, message: '' }
+        },
+        {
+          id: 'q7',
+          title: '题目 7：沸腾的火锅',
+          aSrc: '/images/chapter1/D_真实图片.png',
+          bSrc: '/images/chapter1/D_ai生成.png',
+          answer: { A: 'human', B: 'ai' },
+          state: { answered: false, correct: false, message: '' }
+        },
+        {
+          id: 'q9',
+          title: '题目 9：古典画作 vs AI 画作',
+          aSrc: '/images/chapter1/E_真实图片.png',
+          bSrc: '/images/chapter1/E_ai生成.png',
+          answer: { A: 'human', B: 'ai' },
+          state: { answered: false, correct: false, message: '' }
+        }
+      ]
     }
   },
   async mounted() {
@@ -119,6 +151,37 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    // 第一章样例交互逻辑
+    answer(option, guess) {
+      // 正确答案：A=human, B=ai
+      const isCorrect = (option === 'A' && guess === 'human') || (option === 'B' && guess === 'ai')
+      this.demo.answered = true
+      this.demo.correct = isCorrect
+      this.demo.message = isCorrect ? '恭喜你，答对了，很厉害哦！' : '不好意思，答错了。A 为真实图片，B 为 AI 生成。'
+    },
+    // 第一章更多题目的答题逻辑
+    answerQ(id, option, guess) {
+      const q = this.quiz.find(x => x.id === id)
+      if (!q || q.state.answered) return
+      const correct = q.answer[option] === guess
+      q.state.answered = true
+      q.state.correct = correct
+      q.state.message = correct
+        ? '恭喜你，答对了，很厉害哦！'
+        : `不好意思，答错了。标准答案：A 为 ${q.answer.A === 'human' ? '真实' : 'AI'}，B 为 ${q.answer.B === 'human' ? '真实' : 'AI'}。`
+    },
+    resetQ(id) {
+      const q = this.quiz.find(x => x.id === id)
+      if (!q) return
+      q.state.answered = false
+      q.state.correct = false
+      q.state.message = ''
+    },
+    resetDemo() {
+      this.demo.answered = false
+      this.demo.correct = false
+      this.demo.message = ''
     },
     goToChapter(id) {
       this.$router.push(`/chapters/${id}`)
@@ -246,6 +309,152 @@ export default {
   min-height: 100vh;
   background: $secondary-color;
   padding: 2rem 0;
+}
+
+/* 第一章样例样式，使用 variables.scss 主题变量 */
+.chapter1-demo {
+  margin: 2rem 0 3rem;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  box-shadow: $card-shadow;
+  padding: 1.5rem;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.demo-badge {
+  display: inline-block;
+  background: $chapter-badge-bg;
+  color: $accent-color;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: $chapter-badge-shadow;
+}
+
+.demo-title {
+  margin: 0.75rem 0 0.25rem;
+  color: $text-color;
+  font-weight: 800;
+}
+
+.demo-desc {
+  margin: 0;
+  color: $text-secondary-color;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.demo-card {
+  background: $secondary-color;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-label {
+  padding: 0.5rem 0.75rem;
+  background: $chapter-type-bg;
+  color: $accent-color;
+  font-weight: 700;
+}
+
+.demo-image {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.demo-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.btn-secondary {
+  background: $btn-secondary-bg;
+  color: $text-color;
+  box-shadow: $btn-shadow;
+  border-radius: $btn-radius;
+}
+
+.btn-secondary:hover {
+  background: $btn-secondary-hover;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: $accent-color;
+  border: 1px solid $btn-outline-border;
+  border-radius: $btn-radius;
+  padding: 0.5rem 1rem;
+}
+
+.btn-outline:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.demo-feedback {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: $card-radius;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid $card-border;
+}
+
+.demo-feedback.success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #388E3C;
+}
+
+.demo-feedback.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: #D32F2F;
+}
+
+.feedback-icon { font-size: 1.3rem; }
+.feedback-text { flex: 1; }
+
+.chapter1-quiz-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.quiz-row {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1rem;
+}
+
+.quiz-title {
+  color: $text-color;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+  .demo-image { height: 200px; }
 }
 
 .container {
