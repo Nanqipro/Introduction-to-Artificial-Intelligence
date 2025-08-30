@@ -5,6 +5,20 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { useAuth } from '@/composables/useAuth'
 
+// 全局关闭浏览器控制台输出（覆盖所有 console 方法）
+(() => {
+  const noop = () => { }
+  const methods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'group', 'groupCollapsed', 'groupEnd']
+  for (const m of methods) {
+    try {
+      // eslint-disable-next-line no-console
+      console[m] = noop
+    } catch (_) {
+      /* ignore */
+    }
+  }
+})()
+
 // 创建应用实例
 const app = createApp(App)
 app.use(router)
