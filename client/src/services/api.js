@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: '', // 使用相对路径，通过Vite代理
+  baseURL: 'http://localhost:8082', // 指向后端服务地址
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -149,6 +149,12 @@ export const quizApi = {
     return this.getQuestionsByChapter(chapterId)
   },
 
+  // 从数据库获取章节题目
+  getQuestionsFromDB(chapterId) {
+    // 调整为通用可用的后端接口，避免 404
+    return api.get(`/api/quiz/questions/${chapterId}`)
+  },
+
   // 保存答题结果
   saveQuizResult(result) {
     return api.post('/api/quiz/results', result)
@@ -172,6 +178,11 @@ export const quizApi = {
   // 获取排行榜
   getLeaderboard() {
     return api.get('/api/quiz/leaderboard')
+  },
+
+  // 获取题目统计信息
+  getQuestionStats() {
+    return api.get('/api/quiz/question-stats')
   }
 }
 
@@ -316,6 +327,69 @@ export const levelApi = {
   // 计算等级
   calculateLevel(experience) {
     return api.get(`/api/level/calculateLevel?experience=${experience}`)
+  }
+}
+
+// 题目管理相关API
+export const questionApi = {
+  // 创建题目
+  createQuestion(question) {
+    return api.post('/api/questions', question)
+  },
+
+  // 更新题目
+  updateQuestion(id, question) {
+    return api.put(`/api/questions/${id}`, question)
+  },
+
+  // 删除题目
+  deleteQuestion(id) {
+    return api.delete(`/api/questions/${id}`)
+  },
+
+  // 根据ID获取题目
+  getQuestionById(id) {
+    return api.get(`/api/questions/${id}`)
+  },
+
+  // 获取所有题目（分页）
+  getAllQuestions(page = 1, size = 10) {
+    return api.get(`/api/questions?page=${page}&size=${size}`)
+  },
+
+  // 根据章节ID获取题目
+  getQuestionsByChapterId(chapterId) {
+    return api.get(`/api/questions/chapter/${chapterId}`)
+  },
+
+  // 根据类型获取题目
+  getQuestionsByType(type) {
+    return api.get(`/api/questions/type/${type}`)
+  },
+
+  // 根据难度获取题目
+  getQuestionsByDifficulty(difficulty) {
+    return api.get(`/api/questions/difficulty/${difficulty}`)
+  },
+
+  // 搜索题目
+  searchQuestions(keyword) {
+    return api.get(`/api/questions/search?keyword=${encodeURIComponent(keyword)}`)
+  },
+
+  // 批量导入题目
+  importQuestions(questions) {
+    return api.post('/api/questions/import', questions)
+  },
+
+  // 导出题目
+  exportQuestions() {
+    return api.get('/api/questions/export')
+  },
+
+  // 获取题目统计信息
+  getStats() {
+    return api.get('/api/questions/stats')
   }
 }
 

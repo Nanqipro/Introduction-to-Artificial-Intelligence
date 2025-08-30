@@ -1,9 +1,11 @@
 package com.goodlab.server.controller;
 
 import com.goodlab.server.model.ApiResponse;
-import com.goodlab.server.model.Question;
+import com.goodlab.server.pojo.Question;
+import com.goodlab.server.dto.QuestionDTO;
 import com.goodlab.server.model.QuizResult;
 import com.goodlab.server.service.QuizService;
+import com.goodlab.server.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +20,13 @@ public class QuizController {
     @Autowired
     private QuizService quizService;
 
+    @Autowired
+    private QuestionService questionService;
+
     @GetMapping("/questions/{chapterId}")
-    public ApiResponse<List<Question>> getQuestionsByChapter(@PathVariable String chapterId) {
+    public ApiResponse<List<QuestionDTO>> getQuestionsByChapter(@PathVariable String chapterId) {
         try {
-            List<Question> questions = quizService.getQuestionsByChapter(chapterId);
+            List<QuestionDTO> questions = questionService.getQuestionsByChapterId(chapterId);
             return ApiResponse.success(questions);
         } catch (Exception e) {
             return ApiResponse.error("获取题目失败: " + e.getMessage());
@@ -81,5 +86,43 @@ public class QuizController {
     @GetMapping("/health")
     public ApiResponse<String> healthCheck() {
         return ApiResponse.success("答题系统运行正常");
+    }
+
+    /**
+     * 从数据库获取章节题目
+     */
+    @GetMapping("/db-questions/{chapterId}")
+    public ApiResponse<List<QuestionDTO>> getQuestionsFromDB(@PathVariable String chapterId) {
+        try {
+            List<QuestionDTO> questions = questionService.getQuestionsByChapterId(chapterId);
+            return ApiResponse.success(questions);
+        } catch (Exception e) {
+            return ApiResponse.error("从数据库获取题目失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取题目统计信息
+     */
+    @GetMapping("/question-stats")
+    public ApiResponse<Map<String, Object>> getQuestionStats() {
+        try {
+            int totalQuestions = questionService.getQuestionCount();
+            int chapter1Questions = questionService.getQuestionCountByChapter("1");
+            int chapter2Questions = questionService.getQuestionCountByChapter("2");
+            int chapter3Questions = questionService.getQuestionCountByChapter("3");
+            int chapter4Questions = questionService.getQuestionCountByChapter("4");
+
+            Map<String, Object> stats = Map.of(
+                    "totalQuestions", totalQuestions,
+                    "chapter1Questions", chapter1Questions,
+                    "chapter2Questions", chapter2Questions,
+                    "chapter3Questions", chapter3Questions,
+                    "chapter4Questions", chapter4Questions);
+
+            return ApiResponse.success(stats);
+        } catch (Exception e) {
+            return ApiResponse.error("获取题目统计失败: " + e.getMessage());
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.goodlab.server.controller;
 
 import com.goodlab.server.model.ApiResponse;
-import com.goodlab.server.model.Question;
+import com.goodlab.server.pojo.Question;
 import com.goodlab.server.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

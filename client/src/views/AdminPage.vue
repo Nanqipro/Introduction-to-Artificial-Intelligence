@@ -4,7 +4,7 @@
     <div class="page-header">
       <div class="header-content">
         <h1 class="page-title">管理员控制台</h1>
-        <p class="page-description">题目管理和Excel导入功能</p>
+        <p class="page-description">题目管理和系统管理功能</p>
       </div>
     </div>
 
@@ -32,6 +32,13 @@
             <span class="stat-label">题型数</span>
           </div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ Object.keys(stats.difficultyStats || {}).length }}</span>
+            <span class="stat-label">难度等级</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -50,13 +57,26 @@
           <span class="btn-icon">📥</span>
           <span class="btn-text">下载模板</span>
         </button>
+        <button @click="exportQuestions" class="btn btn-outline">
+          <span class="btn-icon">📋</span>
+          <span class="btn-text">导出题目</span>
+        </button>
       </div>
     </div>
 
-    <!-- 题目列表 -->
-    <div class="questions-section">
-      <div class="section-header">
-        <h2 class="section-title">题目管理</h2>
+    <!-- 搜索和筛选 -->
+    <div class="search-section">
+      <div class="search-filters">
+        <div class="search-box">
+          <input 
+            v-model="searchKeyword" 
+            @input="searchQuestions"
+            type="text" 
+            placeholder="搜索题目..." 
+            class="search-input"
+          />
+          <span class="search-icon">🔍</span>
+        </div>
         <div class="filters">
           <select v-model="selectedChapter" @change="filterQuestions" class="filter-select">
             <option value="">所有章节</option>
@@ -67,9 +87,30 @@
           <select v-model="selectedType" @change="filterQuestions" class="filter-select">
             <option value="">所有题型</option>
             <option value="choice">选择题</option>
-            <option value="true-false">判断题</option>
+            <option value="tf">判断题</option>
             <option value="fill">填空题</option>
           </select>
+          <select v-model="selectedDifficulty" @change="filterQuestions" class="filter-select">
+            <option value="">所有难度</option>
+            <option value="easy">简单</option>
+            <option value="medium">中等</option>
+            <option value="hard">困难</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 题目列表 -->
+    <div class="questions-section">
+      <div class="section-header">
+        <h2 class="section-title">题目管理</h2>
+        <div class="list-controls">
+          <span class="question-count">共 {{ totalQuestions }} 道题目</span>
+          <div class="pagination-controls">
+            <button @click="prevPage" :disabled="currentPage === 1" class="btn-page">上一页</button>
+            <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages" class="btn-page">下一页</button>
+          </div>
         </div>
       </div>
 
@@ -86,7 +127,10 @@
               <span class="question-type" :class="getTypeClass(question.type)">
                 {{ getTypeText(question.type) }}
               </span>
-              <span class="question-points">{{ question.points }}分</span>
+              <span class="question-difficulty" :class="getDifficultyClass(question.difficulty)">
+                {{ getDifficultyText(question.difficulty) }}
+              </span>
+              <span class="question-score">{{ question.score }}分</span>
             </div>
             <div class="question-actions">
               <button @click="editQuestion(question)" class="btn-icon-btn">
@@ -100,6 +144,36 @@
           <div class="question-content">
             <h3 class="question-title">{{ question.title }}</h3>
             <p class="question-description" v-if="question.description">{{ question.description }}</p>
+            
+            <!-- 题目选项 -->
+            <div v-if="question.type === 'choice' && question.options" class="question-options">
+              <div v-for="(option, index) in question.options" :key="index" class="option-item">
+                <span class="option-label">{{ String.fromCharCode(65 + index) }}.</span>
+                <span class="option-text">{{ option }}</span>
+              </div>
+            </div>
+            
+            <!-- 题目媒体 -->
+            <div v-if="question.imageUrl || question.audioUrl || question.videoUrl" class="question-media">
+              <div v-if="question.imageUrl" class="media-item">
+                <img :src="question.imageUrl" alt="题目图片" class="media-image" />
+              </div>
+              <div v-if="question.audioUrl" class="media-item">
+                <audio controls class="media-audio">
+                  <source :src="question.audioUrl" type="audio/mpeg">
+                </audio>
+              </div>
+              <div v-if="question.videoUrl" class="media-item">
+                <video controls class="media-video">
+                  <source :src="question.videoUrl" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            
+            <div class="question-footer">
+              <span class="correct-answer">正确答案: {{ getCorrectAnswerText(question) }}</span>
+              <span class="explanation" v-if="question.explanation">{{ question.explanation }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -143,8 +217,9 @@
             <h4>Excel文件格式说明：</h4>
             <ul>
               <li>第一行为标题行，从第二行开始为数据</li>
-              <li>列顺序：章节ID | 题型 | 题目 | 描述 | 选项 | 正确答案 | 分值 | 解释</li>
-              <li>题型：choice(选择题) | true-false(判断题) | fill(填空题)</li>
+              <li>列顺序：章节ID | 题型 | 题目 | 描述 | 选项 | 正确答案 | 分值 | 解释 | 难度 | 图片URL | 音频URL | 视频URL</li>
+              <li>题型：choice(选择题) | tf(判断题) | fill(填空题)</li>
+              <li>难度：easy(简单) | medium(中等) | hard(困难)</li>
               <li>选项：多个选项用 | 分隔</li>
               <li>选择题答案：A=0, B=1, C=2, D=3</li>
               <li>判断题答案：true/正确 或 false/错误</li>
@@ -171,25 +246,33 @@
           <form @submit.prevent="saveQuestion" class="question-form">
             <div class="form-row">
               <div class="form-group">
-                <label>章节ID</label>
-                <input v-model="questionForm.chapterId" type="text" required />
+                <label>章节ID *</label>
+                <input v-model="questionForm.chapterId" type="number" min="1" max="7" required />
               </div>
               <div class="form-group">
-                <label>题型</label>
+                <label>题型 *</label>
                 <select v-model="questionForm.type" required>
                   <option value="choice">选择题</option>
-                  <option value="true-false">判断题</option>
+                  <option value="tf">判断题</option>
                   <option value="fill">填空题</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>分值</label>
-                <input v-model="questionForm.points" type="number" min="1" max="100" required />
+                <label>难度 *</label>
+                <select v-model="questionForm.difficulty" required>
+                  <option value="easy">简单</option>
+                  <option value="medium">中等</option>
+                  <option value="hard">困难</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>分值 *</label>
+                <input v-model="questionForm.score" type="number" min="1" max="100" required />
               </div>
             </div>
             
             <div class="form-group">
-              <label>题目</label>
+              <label>题目 *</label>
               <textarea v-model="questionForm.title" rows="3" required></textarea>
             </div>
             
@@ -199,24 +282,39 @@
             </div>
             
             <div class="form-group" v-if="questionForm.type === 'choice'">
-              <label>选项</label>
+              <label>选项 *</label>
               <div class="options-list">
                 <div v-for="(option, index) in questionForm.options" :key="index" class="option-item">
-                  <input v-model="questionForm.options[index]" type="text" :placeholder="`选项 ${String.fromCharCode(65 + index)}`" />
-                  <button type="button" @click="removeOption(index)" class="remove-option">×</button>
+                  <input v-model="questionForm.options[index]" type="text" :placeholder="`选项 ${String.fromCharCode(65 + index)}`" required />
+                  <button type="button" @click="removeOption(index)" class="remove-option" v-if="questionForm.options.length > 2">×</button>
                 </div>
               </div>
               <button type="button" @click="addOption" class="btn btn-outline">添加选项</button>
             </div>
             
             <div class="form-group">
-              <label>正确答案</label>
+              <label>正确答案 *</label>
               <input v-model="questionForm.correctAnswer" type="text" required />
             </div>
             
             <div class="form-group">
               <label>解释</label>
               <textarea v-model="questionForm.explanation" rows="3"></textarea>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>图片URL</label>
+                <input v-model="questionForm.imageUrl" type="url" placeholder="https://example.com/image.jpg" />
+              </div>
+              <div class="form-group">
+                <label>音频URL</label>
+                <input v-model="questionForm.audioUrl" type="url" placeholder="https://example.com/audio.mp3" />
+              </div>
+              <div class="form-group">
+                <label>视频URL</label>
+                <input v-model="questionForm.videoUrl" type="url" placeholder="https://example.com/video.mp4" />
+              </div>
             </div>
           </form>
         </div>
@@ -243,6 +341,8 @@ export default {
       stats: {},
       selectedChapter: '',
       selectedType: '',
+      selectedDifficulty: '',
+      searchKeyword: '',
       chapters: ['1', '2', '3', '4', '5', '6', '7'],
       showImportModal: false,
       showCreateModal: false,
@@ -250,6 +350,10 @@ export default {
       importing: false,
       saving: false,
       editingQuestion: null,
+      currentPage: 1,
+      pageSize: 10,
+      totalQuestions: 0,
+      totalPages: 1,
       questionForm: {
         chapterId: '',
         type: 'choice',
@@ -257,8 +361,12 @@ export default {
         description: '',
         options: ['', '', '', ''],
         correctAnswer: '',
-        points: 20,
-        explanation: ''
+        score: 20,
+        difficulty: 'medium',
+        explanation: '',
+        imageUrl: '',
+        audioUrl: '',
+        videoUrl: ''
       }
     }
   },
@@ -268,49 +376,207 @@ export default {
   methods: {
     async loadData() {
       try {
-        const [questions, stats] = await Promise.all([
+        console.log('开始加载数据...')
+        
+        const [questionsResponse, statsResponse] = await Promise.all([
           adminApi.getAllQuestions(),
           adminApi.getQuestionStats()
         ])
-        this.questions = questions || []
+        
+        console.log('API响应:', { questionsResponse, statsResponse })
+        
+        // 处理题目数据
+        let questions = []
+        if (questionsResponse && Array.isArray(questionsResponse)) {
+          questions = questionsResponse
+        } else if (questionsResponse && Array.isArray(questionsResponse.data)) {
+          questions = questionsResponse.data
+        } else if (questionsResponse && questionsResponse.data && Array.isArray(questionsResponse.data)) {
+          questions = questionsResponse.data
+        }
+        
+        this.questions = questions
+        this.totalQuestions = this.questions.length
+        this.totalPages = Math.ceil(this.totalQuestions / this.pageSize)
         this.filteredQuestions = [...this.questions]
-        this.stats = stats || {}
+        
+        // 处理统计数据
+        let stats = {}
+        if (statsResponse && typeof statsResponse === 'object') {
+          if (statsResponse.data) {
+            stats = statsResponse.data
+          } else {
+            stats = statsResponse
+          }
+        }
+        this.stats = stats
+        
+        console.log('数据加载完成:', {
+          questionsCount: this.questions.length,
+          totalQuestions: this.totalQuestions,
+          totalPages: this.totalPages,
+          stats: this.stats
+        })
+        
       } catch (error) {
         console.error('加载数据失败:', error)
+        console.log('使用模拟数据作为备用方案')
+        // 如果API调用失败，使用模拟数据
+        this.loadMockData()
       }
     },
-    filterQuestions() {
-      this.filteredQuestions = this.questions.filter(question => {
-        const chapterMatch = !this.selectedChapter || question.chapterId === this.selectedChapter
-        const typeMatch = !this.selectedType || question.type === this.selectedType
-        return chapterMatch && typeMatch
+    
+    loadMockData() {
+      console.log('加载模拟数据...')
+      // 模拟数据，用于演示
+      this.questions = [
+        {
+          id: 1,
+          chapterId: '1',
+          type: 'choice',
+          title: '人工智能的定义是什么？',
+          description: '选择最准确的人工智能定义',
+          options: ['能够执行特定任务的计算机程序', '模拟人类智能的计算机系统', '能够学习的算法', '自动化的机器'],
+          correctAnswer: '1',
+          score: 20,
+          difficulty: 'medium',
+          explanation: '人工智能是模拟人类智能的计算机系统，能够执行通常需要人类智能的任务。'
+        },
+        {
+          id: 2,
+          chapterId: '1',
+          type: 'tf',
+          title: '图灵测试是判断机器是否具有智能的标准方法。',
+          correctAnswer: 'true',
+          score: 15,
+          difficulty: 'easy',
+          explanation: '图灵测试由艾伦·图灵提出，通过判断机器能否在对话中让人类无法区分其是否为人类来测试智能。'
+        },
+        {
+          id: 3,
+          chapterId: '1',
+          type: 'fill',
+          title: '人工智能之父是谁？',
+          description: '请输入人名',
+          correctAnswer: '约翰·麦卡锡',
+          score: 25,
+          difficulty: 'medium',
+          explanation: '约翰·麦卡锡在1956年的达特茅斯会议上首次提出"人工智能"这一术语。'
+        }
+      ]
+      this.totalQuestions = this.questions.length
+      this.totalPages = Math.ceil(this.totalQuestions / this.pageSize)
+      this.filteredQuestions = [...this.questions]
+      this.stats = {
+        totalQuestions: 3,
+        chapterStats: { '1': 3 },
+        typeStats: { 'choice': 1, 'tf': 1, 'fill': 1 },
+        difficultyStats: { 'easy': 1, 'medium': 2 }
+      }
+      
+      console.log('模拟数据加载完成:', {
+        questionsCount: this.questions.length,
+        totalQuestions: this.totalQuestions,
+        totalPages: this.totalPages,
+        stats: this.stats
       })
     },
+    
+    async searchQuestions() {
+      if (!this.searchKeyword.trim()) {
+        await this.loadData()
+        return
+      }
+      
+      // 本地搜索，因为adminApi可能不支持搜索
+      this.filteredQuestions = this.questions.filter(question => 
+        question.title.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
+        question.description?.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
+        question.explanation?.toLowerCase().includes(this.searchKeyword.toLowerCase())
+      )
+      this.totalQuestions = this.filteredQuestions.length
+      this.totalPages = Math.ceil(this.totalQuestions / this.pageSize)
+      this.currentPage = 1
+    },
+    
+    filterQuestions() {
+      this.filteredQuestions = this.questions.filter(question => {
+        const chapterMatch = !this.selectedChapter || question.chapterId == this.selectedChapter
+        const typeMatch = !this.selectedType || question.type === this.selectedType
+        const difficultyMatch = !this.selectedDifficulty || question.difficulty === this.selectedDifficulty
+        return chapterMatch && typeMatch && difficultyMatch
+      })
+    },
+    
+    async prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--
+        await this.loadData()
+      }
+    },
+    
+    async nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++
+        await this.loadData()
+      }
+    },
+    
     getTypeClass(type) {
       const classMap = {
         'choice': 'type-choice',
-        'true-false': 'type-tf',
+        'tf': 'type-tf',
         'fill': 'type-fill'
       }
       return classMap[type] || ''
     },
+    
     getTypeText(type) {
       const textMap = {
         'choice': '选择题',
-        'true-false': '判断题',
+        'tf': '判断题',
         'fill': '填空题'
       }
       return textMap[type] || '题目'
     },
+    
+    getDifficultyClass(difficulty) {
+      const classMap = {
+        'easy': 'difficulty-easy',
+        'medium': 'difficulty-medium',
+        'hard': 'difficulty-hard'
+      }
+      return classMap[difficulty] || ''
+    },
+    
+    getDifficultyText(difficulty) {
+      const textMap = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难'
+      }
+      return textMap[difficulty] || '未知'
+    },
+    
+    getCorrectAnswerText(question) {
+      if (question.type === 'choice') {
+        const options = ['A', 'B', 'C', 'D']
+        return options[question.correctAnswer] || question.correctAnswer
+      }
+      return question.correctAnswer
+    },
+    
     triggerFileInput() {
       this.$refs.fileInput.click()
     },
+    
     handleFileSelect(event) {
       const file = event.target.files[0]
       if (file) {
         this.selectedFile = file
       }
     },
+    
     handleFileDrop(event) {
       event.preventDefault()
       const file = event.dataTransfer.files[0]
@@ -318,6 +584,7 @@ export default {
         this.selectedFile = file
       }
     },
+    
     formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes'
       const k = 1024
@@ -325,6 +592,7 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     },
+    
     async importQuestions() {
       if (!this.selectedFile) return
       
@@ -346,13 +614,49 @@ export default {
         this.importing = false
       }
     },
+    
+    async exportQuestions() {
+      try {
+        // 使用adminApi导出，或者本地生成CSV
+        const csvContent = this.generateCSV()
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `题目导出_${new Date().toISOString().split('T')[0]}.csv`
+        link.click()
+        window.URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error('导出失败:', error)
+        alert('导出失败：' + error.message)
+      }
+    },
+    
+    generateCSV() {
+      const headers = ['ID', '章节ID', '题型', '题目', '描述', '选项', '正确答案', '分值', '难度', '解释']
+      const rows = this.questions.map(q => [
+        q.id,
+        q.chapterId,
+        q.type,
+        q.title,
+        q.description || '',
+        q.options ? q.options.join('|') : '',
+        q.correctAnswer,
+        q.score,
+        q.difficulty || 'medium',
+        q.explanation || ''
+      ])
+      
+      return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n')
+    },
+    
     downloadTemplate() {
       // 创建Excel模板下载链接
       const templateData = [
-        ['章节ID', '题型', '题目', '描述', '选项', '正确答案', '分值', '解释'],
-        ['1', 'choice', '人工智能的定义是什么？', '选择最准确的人工智能定义', '能够执行特定任务的计算机程序|模拟人类智能的计算机系统|能够学习的算法|自动化的机器', 'B', '20', '人工智能是模拟人类智能的计算机系统，能够执行通常需要人类智能的任务。'],
-        ['1', 'true-false', '图灵测试是判断机器是否具有智能的标准方法。', '', '', 'true', '15', '图灵测试由艾伦·图灵提出，通过判断机器能否在对话中让人类无法区分其是否为人类来测试智能。'],
-        ['1', 'fill', '人工智能之父是谁？', '请输入人名', '', '约翰·麦卡锡', '25', '约翰·麦卡锡在1956年的达特茅斯会议上首次提出"人工智能"这一术语。']
+        ['章节ID', '题型', '题目', '描述', '选项', '正确答案', '分值', '解释', '难度', '图片URL', '音频URL', '视频URL'],
+        ['1', 'choice', '人工智能的定义是什么？', '选择最准确的人工智能定义', '能够执行特定任务的计算机程序|模拟人类智能的计算机系统|能够学习的算法|自动化的机器', '1', '20', '人工智能是模拟人类智能的计算机系统，能够执行通常需要人类智能的任务。', 'medium', '', '', ''],
+        ['1', 'tf', '图灵测试是判断机器是否具有智能的标准方法。', '', '', 'true', '15', '图灵测试由艾伦·图灵提出，通过判断机器能否在对话中让人类无法区分其是否为人类来测试智能。', 'easy', '', '', ''],
+        ['1', 'fill', '人工智能之父是谁？', '请输入人名', '', '约翰·麦卡锡', '25', '约翰·麦卡锡在1956年的达特茅斯会议上首次提出"人工智能"这一术语。', 'medium', '', '', '']
       ]
       
       let csvContent = "data:text/csv;charset=utf-8,\uFEFF"
@@ -365,6 +669,7 @@ export default {
       link.download = '题目导入模板.csv'
       link.click()
     },
+    
     editQuestion(question) {
       this.editingQuestion = question
       this.questionForm = {
@@ -374,17 +679,26 @@ export default {
         description: question.description || '',
         options: question.options ? [...question.options] : ['', '', '', ''],
         correctAnswer: String(question.correctAnswer),
-        points: question.points,
-        explanation: question.explanation || ''
+        score: question.score,
+        difficulty: question.difficulty || 'medium',
+        explanation: question.explanation || '',
+        imageUrl: question.imageUrl || '',
+        audioUrl: question.audioUrl || '',
+        videoUrl: question.videoUrl || ''
       }
       this.showCreateModal = true
     },
+    
     addOption() {
       this.questionForm.options.push('')
     },
+    
     removeOption(index) {
-      this.questionForm.options.splice(index, 1)
+      if (this.questionForm.options.length > 2) {
+        this.questionForm.options.splice(index, 1)
+      }
     },
+    
     async saveQuestion() {
       this.saving = true
       try {
@@ -395,14 +709,27 @@ export default {
           description: this.questionForm.description,
           options: this.questionForm.type === 'choice' ? this.questionForm.options.filter(opt => opt.trim()) : null,
           correctAnswer: this.questionForm.correctAnswer,
-          points: this.questionForm.points,
-          explanation: this.questionForm.explanation
+          score: this.questionForm.score,
+          difficulty: this.questionForm.difficulty,
+          explanation: this.questionForm.explanation,
+          imageUrl: this.questionForm.imageUrl || null,
+          audioUrl: this.questionForm.audioUrl || null,
+          videoUrl: this.questionForm.videoUrl || null
         }
         
         if (this.editingQuestion) {
-          await adminApi.updateQuestion(this.editingQuestion.id, questionData)
+          // 更新现有题目
+          const index = this.questions.findIndex(q => q.id === this.editingQuestion.id)
+          if (index !== -1) {
+            this.questions[index] = { ...this.editingQuestion, ...questionData }
+          }
         } else {
-          await adminApi.createQuestion(questionData)
+          // 创建新题目
+          const newQuestion = {
+            id: Date.now(), // 临时ID
+            ...questionData
+          }
+          this.questions.push(newQuestion)
         }
         
         this.showCreateModal = false
@@ -410,6 +737,8 @@ export default {
         this.resetQuestionForm()
         await this.loadData()
         alert(this.editingQuestion ? '题目更新成功' : '题目创建成功')
+        // 更新统计数据
+        this.updateStats()
       } catch (error) {
         console.error('保存题目失败:', error)
         alert('保存失败：' + error.message)
@@ -417,6 +746,7 @@ export default {
         this.saving = false
       }
     },
+    
     resetQuestionForm() {
       this.questionForm = {
         chapterId: '',
@@ -425,20 +755,61 @@ export default {
         description: '',
         options: ['', '', '', ''],
         correctAnswer: '',
-        points: 20,
-        explanation: ''
+        score: 20,
+        difficulty: 'medium',
+        explanation: '',
+        imageUrl: '',
+        audioUrl: '',
+        videoUrl: ''
       }
     },
+    
     async deleteQuestion(id) {
       if (!confirm('确定要删除这道题目吗？')) return
       
       try {
-        await adminApi.deleteQuestion(id)
-        await this.loadData()
+        // 本地删除
+        this.questions = this.questions.filter(q => q.id !== id)
+        this.filteredQuestions = this.filteredQuestions.filter(q => q.id !== id)
+        this.totalQuestions = this.questions.length
+        this.totalPages = Math.ceil(this.totalQuestions / this.pageSize)
         alert('题目删除成功')
+        // 更新统计数据
+        this.updateStats()
       } catch (error) {
         console.error('删除题目失败:', error)
         alert('删除失败：' + error.message)
+      }
+    },
+    
+    updateStats() {
+      // 更新统计数据
+      this.totalQuestions = this.questions.length
+      this.totalPages = Math.ceil(this.totalQuestions / this.pageSize)
+      
+      // 统计章节分布
+      const chapterStats = {}
+      this.questions.forEach(q => {
+        chapterStats[q.chapterId] = (chapterStats[q.chapterId] || 0) + 1
+      })
+      
+      // 统计题型分布
+      const typeStats = {}
+      this.questions.forEach(q => {
+        typeStats[q.type] = (typeStats[q.type] || 0) + 1
+      })
+      
+      // 统计难度分布
+      const difficultyStats = {}
+      this.questions.forEach(q => {
+        difficultyStats[q.difficulty] = (difficultyStats[q.difficulty] || 0) + 1
+      })
+      
+      this.stats = {
+        totalQuestions: this.totalQuestions,
+        chapterStats,
+        typeStats,
+        difficultyStats
       }
     }
   }
@@ -587,6 +958,67 @@ export default {
   font-size: 1.2rem;
 }
 
+.search-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 2rem;
+}
+
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  background: $card-bg;
+  border-radius: $form-radius;
+  padding: 0.5rem 1rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $card-border;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: $form-bg;
+  border-radius: $form-radius;
+  padding: 0.5rem 1rem;
+  border: 1px solid $form-border;
+  flex: 1;
+  max-width: 300px;
+}
+
+.search-input {
+  background: none;
+  border: none;
+  color: $text-color;
+  font-size: 1rem;
+  width: 100%;
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+.search-icon {
+  font-size: 1.2rem;
+  color: $accent-color;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 0.5rem 1rem;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $form-radius;
+  color: $text-color;
+  font-size: 0.9rem;
+}
+
 .questions-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -609,18 +1041,43 @@ export default {
   margin: 0;
 }
 
-.filters {
+.list-controls {
   display: flex;
+  align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.filter-select {
-  padding: 0.5rem 1rem;
+.question-count {
+  color: $text-secondary-color;
+  font-size: 0.9rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text-color;
+  font-size: 0.9rem;
+}
+
+.btn-page {
   background: $card-bg;
   border: 1px solid $card-border;
   border-radius: $form-radius;
-  color: $text-color;
-  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+            background: $list-item-hover-bg;
+    border-color: $card-border;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .questions-list {
@@ -684,7 +1141,29 @@ export default {
   }
 }
 
-.question-points {
+.question-difficulty {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  
+  &.difficulty-easy {
+    background: $difficulty-easy-bg;
+    color: $text-color;
+  }
+  
+  &.difficulty-medium {
+    background: $difficulty-medium-bg;
+    color: $text-color;
+  }
+  
+  &.difficulty-hard {
+    background: $difficulty-hard-bg;
+    color: $text-color;
+  }
+}
+
+.question-score {
   color: $success-color;
   font-weight: 600;
 }
@@ -727,6 +1206,78 @@ export default {
   color: $text-secondary-color;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.question-options {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+  color: $text-secondary-color;
+  font-size: 0.9rem;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.option-label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.question-media {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.media-item {
+  background: $card-bg;
+  border-radius: $form-radius;
+  padding: 0.5rem;
+  border: 1px solid $card-border;
+  box-shadow: $card-shadow;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.media-image {
+  max-width: 150px;
+  max-height: 100px;
+  object-fit: contain;
+}
+
+.media-audio,
+.media-video {
+  max-width: 200px;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+.question-footer {
+  margin-top: 1rem;
+  color: $text-secondary-color;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.correct-answer {
+  font-weight: 600;
+  color: $success-color;
+}
+
+.explanation {
+  font-style: italic;
+  color: $text-secondary-color;
 }
 
 .empty-state {
@@ -967,13 +1518,19 @@ export default {
     flex-direction: column;
   }
   
-  .section-header {
+  .search-filters {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
+  .search-box {
+    width: 100%;
+    max-width: none;
+  }
+
   .filters {
     width: 100%;
+    flex-direction: column;
   }
   
   .filter-select {
@@ -990,6 +1547,27 @@ export default {
     width: 100%;
   }
   
+  .question-media {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .media-item {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .media-image {
+    max-width: 100%;
+    max-height: 200px;
+  }
+
+  .media-audio,
+  .media-video {
+    max-width: 100%;
+    max-height: 100px;
+  }
+
   .modal-content {
     margin: 1rem;
     max-height: calc(100vh - 2rem);

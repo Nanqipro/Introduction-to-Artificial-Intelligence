@@ -5,28 +5,38 @@
       <p class="case-description">
         通过交互式案例深入理解机器学习基础和深度学习核心概念
       </p>
-      
+
       <!-- 学习进度指示器 -->
       <div class="progress-indicator">
-        <div class="progress-item" :class="{ completed: regressionCaseCompleted }">
+        <div
+          class="progress-item"
+          :class="{ completed: regressionCaseCompleted }"
+        >
           <div class="progress-icon">📊</div>
           <div class="progress-info">
             <h4>回归分析案例</h4>
             <p>需要生成数据 {{ interactionCounts.regressionGenerate }}/3 次</p>
             <div class="progress-status">
-              <span v-if="regressionCaseCompleted" class="status-completed">✅ 已完成</span>
+              <span v-if="regressionCaseCompleted" class="status-completed"
+                >✅ 已完成</span
+              >
               <span v-else class="status-pending">⏳ 进行中</span>
             </div>
           </div>
         </div>
-        
-        <div class="progress-item" :class="{ completed: deepLearningCaseCompleted }">
+
+        <div
+          class="progress-item"
+          :class="{ completed: deepLearningCaseCompleted }"
+        >
           <div class="progress-icon">🧠</div>
           <div class="progress-info">
             <h4>深度学习核心层</h4>
             <p>观看动画演示，理解核心概念</p>
             <div class="progress-status">
-              <span v-if="deepLearningCaseCompleted" class="status-completed">✅ 已完成</span>
+              <span v-if="deepLearningCaseCompleted" class="status-completed"
+                >✅ 已完成</span
+              >
               <span v-else class="status-pending">⏳ 进行中</span>
             </div>
           </div>
@@ -44,7 +54,7 @@
         </h3>
         <p class="section-subtitle">探索机器学习中最基础且重要的回归算法</p>
       </div>
-      
+
       <!-- 现代化回归演示平台 -->
       <div class="modern-platform-card">
         <!-- 平台头部 -->
@@ -74,7 +84,7 @@
             <h5>🧮 核心算法模块</h5>
             <p>两大经典回归算法，从理论到实践的完整学习体验</p>
           </div>
-          
+
           <div class="algorithm-grid">
             <!-- 线性回归卡片 -->
             <div class="algorithm-card linear-regression">
@@ -237,7 +247,11 @@
         <div class="showcase-content">
           <div class="image-section">
             <div class="image-container">
-              <img src="/images/chapter2/pic2.gif" alt="深度学习核心层动画演示" class="demo-gif" />
+              <img
+                src="/images/chapter2/pic2.gif"
+                alt="深度学习核心层动画演示"
+                class="demo-gif"
+              />
               <div class="image-overlay">
                 <div class="overlay-content">
                   <span class="overlay-icon">🎬</span>
@@ -247,10 +261,12 @@
               </div>
             </div>
           </div>
-          
+
           <div class="description-section">
             <h4>🎯 学习要点</h4>
-            <p>通过这个动画演示，你可以直观地理解深度学习网络的三大核心组件：</p>
+            <p>
+              通过这个动画演示，你可以直观地理解深度学习网络的三大核心组件：
+            </p>
             <ul class="learning-points">
               <li><strong>卷积层：</strong>特征提取，参数共享，局部连接</li>
               <li><strong>池化层：</strong>降维压缩，特征选择，平移不变性</li>
@@ -258,7 +274,9 @@
             </ul>
             <div class="learning-note">
               <span class="note-icon">💡</span>
-              <span class="note-text">仔细观察动画中每一层的变换过程，理解它们如何协同工作</span>
+              <span class="note-text"
+                >仔细观察动画中每一层的变换过程，理解它们如何协同工作</span
+              >
             </div>
           </div>
         </div>
@@ -273,27 +291,25 @@
           <h4>线性回归 vs 逻辑回归</h4>
           <ul>
             <li><strong>线性回归:</strong> 用于连续值预测，输出无界实数</li>
-            <li><strong>逻辑回归:</strong> 用于分类问题，输出0-1之间的概率值</li>
+            <li>
+              <strong>逻辑回归:</strong> 用于分类问题，输出0-1之间的概率值
+            </li>
             <li><strong>共同点:</strong> 都使用线性函数作为基础模型</li>
           </ul>
         </div>
-        
-
       </div>
     </div>
 
     <!-- 下一步提示 -->
     <div class="next-step">
       <div class="next-step-content">
-                  <div class="completion-celebration">
-            <h3>🎯 准备开始答题</h3>
-            <p>你已经了解了第二章的核心概念，包括线性回归、逻辑回归和深度学习核心层。现在可以参加知识测验来检验学习成果！</p>
-            <button @click="startQuiz" class="btn btn-quiz">
-              🚀 开始答题
-            </button>
-          </div>
-        
-
+        <div class="completion-celebration">
+          <h3>🎯 准备开始答题</h3>
+          <p>
+            你已经了解了第二章的核心概念，包括线性回归、逻辑回归和深度学习核心层。现在可以参加知识测验来检验学习成果！
+          </p>
+          <button @click="startQuiz" class="btn btn-quiz">🚀 开始答题</button>
+        </div>
       </div>
     </div>
   </div>
@@ -301,14 +317,14 @@
 
 <script>
 export default {
-  name: 'Chapter2CaseStudy',
+  name: "Chapter2CaseStudy",
   props: {
     chapterId: {
       type: String,
-      default: '2'
-    }
-   },
-  emits: ['case-completed', 'all-cases-completed'],
+      default: "2",
+    },
+  },
+  emits: ["case-completed", "all-cases-completed"],
   data() {
     return {
       dataPoints: 50,
@@ -317,7 +333,7 @@ export default {
       linearMSE: 0.12,
       logisticAccuracy: 0.92,
       logisticAUC: 0.89,
-      
+
       // 卷积层参数
       kernelSize: 3,
       stride: 1,
@@ -327,9 +343,9 @@ export default {
       showComputationDetails: false,
       kernelMatrix: [],
       inputMatrix: [],
-      
+
       // 池化层参数
-      poolingType: 'max',
+      poolingType: "max",
       poolingSize: 2,
       poolingStride: 2,
       poolingInputSize: 6,
@@ -337,31 +353,31 @@ export default {
       showPoolingOperation: false,
       showPoolingComparison: false,
       poolingComparison: {},
-      
+
       // 全连接层参数
       inputNeurons: 5,
       hiddenNeurons: 4,
       outputNeurons: 3,
-      activationFunction: 'relu',
+      activationFunction: "relu",
       learningRate: 0.01,
-      weightInit: 'random',
+      weightInit: "random",
       showWeights: false,
       currentLoss: 0.5,
       trainingSteps: 0,
       weights: {
         inputHidden: [],
-        hiddenOutput: []
+        hiddenOutput: [],
       },
       neuronValues: {
         input: [],
         hidden: [],
-        output: []
+        output: [],
       },
-      
+
       // 案例完成状态
       caseStatus: {
         regression: false,
-        deepLearning: false
+        deepLearning: false,
       },
       // 交互次数跟踪
       interactionCounts: {
@@ -369,616 +385,655 @@ export default {
         layerVisualize: 0,
         convolutionDemo: 0,
         poolingDemo: 0,
-        fcDemo: 0
-      }
-    }
+        fcDemo: 0,
+      },
+    };
   },
   mounted() {
-    this.initConvolutionDemo()
-    this.initPoolingDemo()
-    this.initFullyConnectedDemo()
+    this.initConvolutionDemo();
+    this.initPoolingDemo();
+    this.initFullyConnectedDemo();
   },
   computed: {
     regressionCaseCompleted() {
-      return this.interactionCounts.regressionGenerate >= 3
+      return this.interactionCounts.regressionGenerate >= 3;
     },
     deepLearningCaseCompleted() {
       // 简化后，只要用户访问过这个页面就认为完成了
-      return true
+      return true;
     },
     allCasesCompleted() {
       // 简化后，只要用户访问过这个页面就认为可以答题
-      return true
+      return true;
     },
-    
+
     // 卷积层计算属性
     outputMatrixSize() {
-      return Math.floor((this.inputMatrixSize + 2 * this.padding - this.kernelSize) / this.stride) + 1
+      return (
+        Math.floor(
+          (this.inputMatrixSize + 2 * this.padding - this.kernelSize) /
+            this.stride
+        ) + 1
+      );
     },
-    
+
     // 池化层计算属性
     poolingOutputSize() {
-      return Math.floor((this.poolingInputSize - this.poolingSize) / this.poolingStride) + 1
+      return (
+        Math.floor(
+          (this.poolingInputSize - this.poolingSize) / this.poolingStride
+        ) + 1
+      );
     },
     poolingReductionRatio() {
-      const inputSize = this.poolingInputSize * this.poolingInputSize
-      const outputSize = this.poolingOutputSize * this.poolingOutputSize
-      return Math.round((1 - outputSize / inputSize) * 100)
+      const inputSize = this.poolingInputSize * this.poolingInputSize;
+      const outputSize = this.poolingOutputSize * this.poolingOutputSize;
+      return Math.round((1 - outputSize / inputSize) * 100);
     },
-    
+
     // 全连接层计算属性
     totalParameters() {
-      return (this.inputNeurons * this.hiddenNeurons + this.hiddenNeurons) + 
-             (this.hiddenNeurons * this.outputNeurons + this.outputNeurons)
-    }
+      return (
+        this.inputNeurons * this.hiddenNeurons +
+        this.hiddenNeurons +
+        (this.hiddenNeurons * this.outputNeurons + this.outputNeurons)
+      );
+    },
   },
   methods: {
     generateData() {
-      this.linearR2 = 0.8 + Math.random() * 0.15
-      this.linearMSE = 0.1 + Math.random() * 0.2
-      this.logisticAccuracy = 0.85 + Math.random() * 0.1
-      this.logisticAUC = 0.8 + Math.random() * 0.15
-      
+      this.linearR2 = 0.8 + Math.random() * 0.15;
+      this.linearMSE = 0.1 + Math.random() * 0.2;
+      this.logisticAccuracy = 0.85 + Math.random() * 0.1;
+      this.logisticAUC = 0.8 + Math.random() * 0.15;
+
       // 增加交互次数
-      this.interactionCounts.regressionGenerate++
-      
+      this.interactionCounts.regressionGenerate++;
+
       // 检查回归案例是否完成
       if (this.regressionCaseCompleted && !this.caseStatus.regression) {
-        this.caseStatus.regression = true
-        this.$emit('case-completed', 'regression')
-        this.checkAllCasesCompleted()
+        this.caseStatus.regression = true;
+        this.$emit("case-completed", "regression");
+        this.checkAllCasesCompleted();
       }
     },
-    
+
     initConvolutionDemo() {
-      this.updateKernel()
-      this.renderMatrices()
+      this.updateKernel();
+      this.renderMatrices();
     },
-    
+
     updateKernel() {
-      const size = parseInt(this.kernelSize)
-      this.kernelMatrix = []
+      const size = parseInt(this.kernelSize);
+      this.kernelMatrix = [];
       for (let i = 0; i < size; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < size; j++) {
-          row.push(Math.round((Math.random() - 0.5) * 2))
+          row.push(Math.round((Math.random() - 0.5) * 2));
         }
-        this.kernelMatrix.push(row)
+        this.kernelMatrix.push(row);
       }
-      this.renderMatrices()
-      
+      this.renderMatrices();
+
       // 增加卷积演示交互次数
-      this.interactionCounts.convolutionDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.convolutionDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     randomizeKernel() {
-      this.updateKernel()
+      this.updateKernel();
     },
-    
+
     // 新增卷积层交互方法
     animateConvolution() {
-      this.isAnimating = true
-      this.showComputationDetails = true
+      this.isAnimating = true;
+      this.showComputationDetails = true;
       // 模拟卷积动画
-      let step = 0
-      const totalSteps = this.outputMatrixSize * this.outputMatrixSize
-      
+      let step = 0;
+      const totalSteps = this.outputMatrixSize * this.outputMatrixSize;
+
       const animate = () => {
         if (step < totalSteps) {
           // 更新动画状态
-          step++
-          setTimeout(animate, 500)
+          step++;
+          setTimeout(animate, 500);
         } else {
-          this.isAnimating = false
+          this.isAnimating = false;
         }
-      }
-      animate()
-      
-      this.interactionCounts.convolutionDemo++
-      this.checkDeepLearningCaseCompletion()
+      };
+      animate();
+
+      this.interactionCounts.convolutionDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     resetConvolution() {
-      this.kernelSize = 3
-      this.stride = 1
-      this.padding = 0
-      this.isAnimating = false
-      this.showComputationDetails = false
-      this.updateKernel()
+      this.kernelSize = 3;
+      this.stride = 1;
+      this.padding = 0;
+      this.isAnimating = false;
+      this.showComputationDetails = false;
+      this.updateKernel();
     },
-    
+
     renderMatrices() {
-      this.renderMatrix(this.$refs.inputMatrix, this.generateInputMatrix())
-      this.renderMatrix(this.$refs.kernelMatrix, this.kernelMatrix)
-      this.renderMatrix(this.$refs.outputMatrix, this.computeConvolution())
+      this.renderMatrix(this.$refs.inputMatrix, this.generateInputMatrix());
+      this.renderMatrix(this.$refs.kernelMatrix, this.kernelMatrix);
+      this.renderMatrix(this.$refs.outputMatrix, this.computeConvolution());
     },
-    
+
     generateInputMatrix() {
-      const size = parseInt(this.kernelSize) + 2
-      const matrix = []
+      const size = parseInt(this.kernelSize) + 2;
+      const matrix = [];
       for (let i = 0; i < size; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < size; j++) {
-          row.push(Math.round(Math.random() * 9))
+          row.push(Math.round(Math.random() * 9));
         }
-        matrix.push(row)
+        matrix.push(row);
       }
-      return matrix
+      return matrix;
     },
-    
+
     computeConvolution() {
-      const input = this.generateInputMatrix()
-      const kernel = this.kernelMatrix
-      const outputSize = input.length - kernel.length + 1
-      const output = []
-      
+      const input = this.generateInputMatrix();
+      const kernel = this.kernelMatrix;
+      const outputSize = input.length - kernel.length + 1;
+      const output = [];
+
       for (let i = 0; i < outputSize; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < outputSize; j++) {
-          let sum = 0
+          let sum = 0;
           for (let ki = 0; ki < kernel.length; ki++) {
             for (let kj = 0; kj < kernel.length; kj++) {
-              sum += input[i + ki][j + kj] * kernel[ki][kj]
+              sum += input[i + ki][j + kj] * kernel[ki][kj];
             }
           }
-          row.push(sum)
+          row.push(sum);
         }
-        output.push(row)
+        output.push(row);
       }
-      return output
+      return output;
     },
-    
+
     renderMatrix(container, matrix) {
-      if (!container) return
-      
-      container.innerHTML = ''
-      matrix.forEach(row => {
-        const rowDiv = document.createElement('div')
-        rowDiv.className = 'matrix-row'
-        row.forEach(cell => {
-          const cellDiv = document.createElement('div')
-          cellDiv.className = 'matrix-cell'
-          cellDiv.textContent = cell
-          rowDiv.appendChild(cellDiv)
-        })
-        container.appendChild(rowDiv)
-      })
+      if (!container) return;
+
+      container.innerHTML = "";
+      matrix.forEach((row) => {
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "matrix-row";
+        row.forEach((cell) => {
+          const cellDiv = document.createElement("div");
+          cellDiv.className = "matrix-cell";
+          cellDiv.textContent = cell;
+          rowDiv.appendChild(cellDiv);
+        });
+        container.appendChild(rowDiv);
+      });
     },
-    
+
     initPoolingDemo() {
-      this.updatePooling()
+      this.updatePooling();
     },
-    
+
     updatePooling() {
-      this.renderPoolingMatrices()
-      
+      this.renderPoolingMatrices();
+
       // 增加池化演示交互次数
-      this.interactionCounts.poolingDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.poolingDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     // 新增池化层交互方法
     generateNewPoolingData() {
-      this.poolingInputSize = 4 + Math.floor(Math.random() * 4) // 4-7的随机大小
-      this.updatePooling()
+      this.poolingInputSize = 4 + Math.floor(Math.random() * 4); // 4-7的随机大小
+      this.updatePooling();
     },
-    
+
     animatePooling() {
-      this.isPoolingAnimating = true
-      this.showPoolingOperation = true
-      
+      this.isPoolingAnimating = true;
+      this.showPoolingOperation = true;
+
       // 模拟池化动画
       setTimeout(() => {
-        this.isPoolingAnimating = false
-        this.showPoolingOperation = false
-      }, 3000)
-      
-      this.interactionCounts.poolingDemo++
-      this.checkDeepLearningCaseCompletion()
+        this.isPoolingAnimating = false;
+        this.showPoolingOperation = false;
+      }, 3000);
+
+      this.interactionCounts.poolingDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     comparePoolingTypes() {
-      this.showPoolingComparison = !this.showPoolingComparison
-      
+      this.showPoolingComparison = !this.showPoolingComparison;
+
       if (this.showPoolingComparison) {
-        const inputMatrix = this.generatePoolingInput()
+        const inputMatrix = this.generatePoolingInput();
         this.poolingComparison = {
-          max: this.computePoolingByType(inputMatrix, 'max'),
-          avg: this.computePoolingByType(inputMatrix, 'avg'),
-          min: this.computePoolingByType(inputMatrix, 'min')
-        }
-        
+          max: this.computePoolingByType(inputMatrix, "max"),
+          avg: this.computePoolingByType(inputMatrix, "avg"),
+          min: this.computePoolingByType(inputMatrix, "min"),
+        };
+
         // 渲染对比结果
         this.$nextTick(() => {
-          Object.keys(this.poolingComparison).forEach(type => {
-            const ref = this.$refs[`comparison-${type}`]
+          Object.keys(this.poolingComparison).forEach((type) => {
+            const ref = this.$refs[`comparison-${type}`];
             if (ref && ref[0]) {
-              this.renderMatrix(ref[0], this.poolingComparison[type])
+              this.renderMatrix(ref[0], this.poolingComparison[type]);
             }
-          })
-        })
+          });
+        });
       }
-      
-      this.interactionCounts.poolingDemo++
-      this.checkDeepLearningCaseCompletion()
+
+      this.interactionCounts.poolingDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     computePoolingByType(matrix, type) {
-      const originalType = this.poolingType
-      this.poolingType = type
-      const result = this.computePooling(matrix)
-      this.poolingType = originalType
-      return result
+      const originalType = this.poolingType;
+      this.poolingType = type;
+      const result = this.computePooling(matrix);
+      this.poolingType = originalType;
+      return result;
     },
-    
+
     getPoolingDescription(type) {
       const descriptions = {
-        max: '保留最大值，突出显著特征',
-        avg: '计算平均值，平滑特征表示',
-        min: '保留最小值，关注细节信息'
-      }
-      return descriptions[type] || ''
+        max: "保留最大值，突出显著特征",
+        avg: "计算平均值，平滑特征表示",
+        min: "保留最小值，关注细节信息",
+      };
+      return descriptions[type] || "";
     },
-    
+
     renderPoolingMatrices() {
-      const beforeMatrix = this.generatePoolingInput()
-      this.renderMatrix(this.$refs.beforePooling, beforeMatrix)
-      
-      const afterMatrix = this.computePooling(beforeMatrix)
-      this.renderMatrix(this.$refs.afterPooling, afterMatrix)
+      const beforeMatrix = this.generatePoolingInput();
+      this.renderMatrix(this.$refs.beforePooling, beforeMatrix);
+
+      const afterMatrix = this.computePooling(beforeMatrix);
+      this.renderMatrix(this.$refs.afterPooling, afterMatrix);
     },
-    
+
     generatePoolingInput() {
-      const size = parseInt(this.poolingSize) * 2
-      const matrix = []
+      const size = parseInt(this.poolingSize) * 2;
+      const matrix = [];
       for (let i = 0; i < size; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < size; j++) {
-          row.push(Math.round(Math.random() * 9))
+          row.push(Math.round(Math.random() * 9));
         }
-        matrix.push(row)
+        matrix.push(row);
       }
-      return matrix
+      return matrix;
     },
-    
+
     computePooling(matrix) {
-      const size = parseInt(this.poolingSize)
-      const output = []
-      
+      const size = parseInt(this.poolingSize);
+      const output = [];
+
       for (let i = 0; i < matrix.length; i += size) {
-        const row = []
+        const row = [];
         for (let j = 0; j < matrix[i].length; j += size) {
-          let values = []
+          let values = [];
           for (let ki = 0; ki < size; ki++) {
             for (let kj = 0; kj < size; kj++) {
               if (i + ki < matrix.length && j + kj < matrix[i].length) {
-                values.push(matrix[i + ki][j + kj])
+                values.push(matrix[i + ki][j + kj]);
               }
             }
           }
-          
-          if (this.poolingType === 'max') {
-            row.push(Math.max(...values))
+
+          if (this.poolingType === "max") {
+            row.push(Math.max(...values));
           } else {
-            row.push(Math.round(values.reduce((a, b) => a + b, 0) / values.length))
+            row.push(
+              Math.round(values.reduce((a, b) => a + b, 0) / values.length)
+            );
           }
         }
-        output.push(row)
+        output.push(row);
       }
-      return output
+      return output;
     },
-    
+
     initFullyConnectedDemo() {
-      this.renderNeurons()
+      this.renderNeurons();
     },
-    
+
     renderNeurons() {
-      this.renderNeuronLayer(this.$refs.inputNeurons, this.inputNeurons, 'input')
-      this.renderNeuronLayer(this.$refs.hiddenNeurons, this.hiddenNeurons, 'hidden')
-      this.renderNeuronLayer(this.$refs.outputNeurons, this.outputNeurons, 'output')
-      this.drawConnections()
-      
+      this.renderNeuronLayer(
+        this.$refs.inputNeurons,
+        this.inputNeurons,
+        "input"
+      );
+      this.renderNeuronLayer(
+        this.$refs.hiddenNeurons,
+        this.hiddenNeurons,
+        "hidden"
+      );
+      this.renderNeuronLayer(
+        this.$refs.outputNeurons,
+        this.outputNeurons,
+        "output"
+      );
+      this.drawConnections();
+
       // 增加全连接层演示交互次数
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     // 新增全连接层交互方法
     updateActivation() {
-      this.renderActivationPreview()
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.renderActivationPreview();
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     initializeWeights() {
       // 初始化权重矩阵
-      this.weights.inputHidden = this.createWeightMatrix(this.inputNeurons, this.hiddenNeurons)
-      this.weights.hiddenOutput = this.createWeightMatrix(this.hiddenNeurons, this.outputNeurons)
-      
+      this.weights.inputHidden = this.createWeightMatrix(
+        this.inputNeurons,
+        this.hiddenNeurons
+      );
+      this.weights.hiddenOutput = this.createWeightMatrix(
+        this.hiddenNeurons,
+        this.outputNeurons
+      );
+
       if (this.showWeights) {
-        this.renderWeightHeatmaps()
+        this.renderWeightHeatmaps();
       }
-      
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     createWeightMatrix(rows, cols) {
-      const matrix = []
+      const matrix = [];
       for (let i = 0; i < rows; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < cols; j++) {
-          let weight = 0
+          let weight = 0;
           switch (this.weightInit) {
-            case 'random':
-              weight = (Math.random() - 0.5) * 2
-              break
-            case 'xavier':
-              weight = (Math.random() - 0.5) * 2 * Math.sqrt(6 / (rows + cols))
-              break
-            case 'he':
-              weight = (Math.random() - 0.5) * 2 * Math.sqrt(2 / rows)
-              break
+            case "random":
+              weight = (Math.random() - 0.5) * 2;
+              break;
+            case "xavier":
+              weight = (Math.random() - 0.5) * 2 * Math.sqrt(6 / (rows + cols));
+              break;
+            case "he":
+              weight = (Math.random() - 0.5) * 2 * Math.sqrt(2 / rows);
+              break;
           }
-          row.push(weight)
+          row.push(weight);
         }
-        matrix.push(row)
+        matrix.push(row);
       }
-      return matrix
+      return matrix;
     },
-    
+
     forwardPass() {
       // 生成随机输入
-      this.neuronValues.input = Array.from({length: this.inputNeurons}, () => Math.random())
-      
+      this.neuronValues.input = Array.from({ length: this.inputNeurons }, () =>
+        Math.random()
+      );
+
       // 计算隐藏层
       this.neuronValues.hidden = this.computeLayerOutput(
-        this.neuronValues.input, 
+        this.neuronValues.input,
         this.weights.inputHidden
-      )
-      
+      );
+
       // 计算输出层
       this.neuronValues.output = this.computeLayerOutput(
-        this.neuronValues.hidden, 
+        this.neuronValues.hidden,
         this.weights.hiddenOutput
-      )
-      
-      this.updateNeuronDisplay()
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      );
+
+      this.updateNeuronDisplay();
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     backwardPass() {
       // 模拟反向传播
-      this.currentLoss = Math.max(0.01, this.currentLoss - 0.05 + Math.random() * 0.1)
-      this.trainingSteps++
-      
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.currentLoss = Math.max(
+        0.01,
+        this.currentLoss - 0.05 + Math.random() * 0.1
+      );
+      this.trainingSteps++;
+
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     trainStep() {
-      this.forwardPass()
+      this.forwardPass();
       setTimeout(() => {
-        this.backwardPass()
-      }, 1000)
+        this.backwardPass();
+      }, 1000);
     },
-    
+
     resetNetwork() {
-      this.currentLoss = 0.5
-      this.trainingSteps = 0
-      this.initializeWeights()
+      this.currentLoss = 0.5;
+      this.trainingSteps = 0;
+      this.initializeWeights();
       this.neuronValues = {
         input: [],
         hidden: [],
-        output: []
-      }
-      this.updateNeuronDisplay()
+        output: [],
+      };
+      this.updateNeuronDisplay();
     },
-    
+
     randomizeInputs() {
-      this.neuronValues.input = Array.from({length: this.inputNeurons}, () => Math.random())
-      this.updateNeuronDisplay()
-      
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.neuronValues.input = Array.from({ length: this.inputNeurons }, () =>
+        Math.random()
+      );
+      this.updateNeuronDisplay();
+
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     toggleWeights() {
-      this.showWeights = !this.showWeights
-      
+      this.showWeights = !this.showWeights;
+
       // 增加全连接层演示交互次数
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     computeLayerOutput(inputs, weights) {
-      const outputs = []
+      const outputs = [];
       for (let j = 0; j < weights[0].length; j++) {
-        let sum = 0
+        let sum = 0;
         for (let i = 0; i < inputs.length; i++) {
-          sum += inputs[i] * weights[i][j]
+          sum += inputs[i] * weights[i][j];
         }
-        outputs.push(this.applyActivation(sum))
+        outputs.push(this.applyActivation(sum));
       }
-      return outputs
+      return outputs;
     },
-    
+
     applyActivation(x) {
       switch (this.activationFunction) {
-        case 'relu':
-          return Math.max(0, x)
-        case 'sigmoid':
-          return 1 / (1 + Math.exp(-x))
-        case 'tanh':
-          return Math.tanh(x)
-        case 'leaky_relu':
-          return x > 0 ? x : 0.01 * x
+        case "relu":
+          return Math.max(0, x);
+        case "sigmoid":
+          return 1 / (1 + Math.exp(-x));
+        case "tanh":
+          return Math.tanh(x);
+        case "leaky_relu":
+          return x > 0 ? x : 0.01 * x;
         default:
-          return x
+          return x;
       }
     },
-    
+
     getActivationDescription(func) {
       const descriptions = {
-        relu: 'ReLU: f(x) = max(0, x)，解决梯度消失问题',
-        sigmoid: 'Sigmoid: f(x) = 1/(1+e^(-x))，输出0-1之间',
-        tanh: 'Tanh: f(x) = tanh(x)，输出-1到1之间',
-        leaky_relu: 'Leaky ReLU: f(x) = max(0.01x, x)，避免神经元死亡'
-      }
-      return descriptions[func] || ''
+        relu: "ReLU: f(x) = max(0, x)，解决梯度消失问题",
+        sigmoid: "Sigmoid: f(x) = 1/(1+e^(-x))，输出0-1之间",
+        tanh: "Tanh: f(x) = tanh(x)，输出-1到1之间",
+        leaky_relu: "Leaky ReLU: f(x) = max(0.01x, x)，避免神经元死亡",
+      };
+      return descriptions[func] || "";
     },
-    
+
     drawConnections() {
       // 绘制神经元之间的连接线
       // 这里可以添加SVG连接线的绘制逻辑
     },
-    
+
     renderActivationPreview() {
       // 渲染激活函数预览图
       // 这里可以添加激活函数图形的绘制逻辑
     },
-    
+
     renderWeightHeatmaps() {
       // 渲染权重热力图
       // 这里可以添加权重可视化的逻辑
     },
-    
+
     updateNeuronDisplay() {
       // 更新神经元显示状态
       // 这里可以添加神经元颜色和数值显示的逻辑
     },
-    
+
     renderNeuronLayer(container, count, type) {
-      if (!container) return
-      
-      container.innerHTML = ''
+      if (!container) return;
+
+      container.innerHTML = "";
       for (let i = 0; i < count; i++) {
-        const neuron = document.createElement('div')
-        neuron.className = `neuron neuron-${type}`
-        neuron.textContent = i + 1
-        container.appendChild(neuron)
+        const neuron = document.createElement("div");
+        neuron.className = `neuron neuron-${type}`;
+        neuron.textContent = i + 1;
+        container.appendChild(neuron);
       }
     },
-    
+
     checkDeepLearningCaseCompletion() {
       if (this.deepLearningCaseCompleted && !this.caseStatus.deepLearning) {
-        this.caseStatus.deepLearning = true
-        this.$emit('case-completed', 'deepLearning')
-        this.checkAllCasesCompleted()
+        this.caseStatus.deepLearning = true;
+        this.$emit("case-completed", "deepLearning");
+        this.checkAllCasesCompleted();
       }
     },
-    
+
     checkAllCasesCompleted() {
       if (this.allCasesCompleted) {
-        this.$emit('all-cases-completed')
+        this.$emit("all-cases-completed");
       }
     },
-    
+
     startQuiz() {
-      this.$router.push('/quiz')
+      this.$router.push("/quiz");
     },
-    
+
     scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    
+
     // 跳转到平台学习方法
     redirectToRegressionPlatform() {
-      this.$router.push('/regression-demo')
+      this.$router.push("/regression-demo");
     },
-    
+
     updateFullyConnected() {
-      this.updateWeights()
-      this.updateNeuronValues()
-      
+      this.updateWeights();
+      this.updateNeuronValues();
+
       // 增加全连接层演示交互次数
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     startTraining() {
-      if (this.trainingSteps > 0) return
-      
-      this.trainingSteps = 0
-      this.currentLoss = 0.5
-      
+      if (this.trainingSteps > 0) return;
+
+      this.trainingSteps = 0;
+      this.currentLoss = 0.5;
+
       const train = () => {
         if (this.trainingSteps < 100) {
-          this.trainingSteps++
-          this.currentLoss = Math.max(0.01, this.currentLoss * 0.95)
-          setTimeout(train, 100)
+          this.trainingSteps++;
+          this.currentLoss = Math.max(0.01, this.currentLoss * 0.95);
+          setTimeout(train, 100);
         }
-      }
-      
-      train()
-      
+      };
+
+      train();
+
       // 增加全连接层演示交互次数
-      this.interactionCounts.fcDemo++
-      this.checkDeepLearningCaseCompletion()
+      this.interactionCounts.fcDemo++;
+      this.checkDeepLearningCaseCompletion();
     },
-    
+
     updateWeights() {
       // 生成输入到隐藏层的权重
-      this.weights.inputHidden = []
+      this.weights.inputHidden = [];
       for (let i = 0; i < this.inputNeurons; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < this.hiddenNeurons; j++) {
-          row.push((Math.random() - 0.5) * 2)
+          row.push((Math.random() - 0.5) * 2);
         }
-        this.weights.inputHidden.push(row)
+        this.weights.inputHidden.push(row);
       }
-      
+
       // 生成隐藏层到输出层的权重
-      this.weights.hiddenOutput = []
+      this.weights.hiddenOutput = [];
       for (let i = 0; i < this.hiddenNeurons; i++) {
-        const row = []
+        const row = [];
         for (let j = 0; j < this.outputNeurons; j++) {
-          row.push((Math.random() - 0.5) * 2)
+          row.push((Math.random() - 0.5) * 2);
         }
-        this.weights.hiddenOutput.push(row)
+        this.weights.hiddenOutput.push(row);
       }
     },
-    
+
     updateNeuronValues() {
       // 生成输入层神经元值
-      this.neuronValues.input = []
+      this.neuronValues.input = [];
       for (let i = 0; i < this.inputNeurons; i++) {
-        this.neuronValues.input.push(Math.random())
+        this.neuronValues.input.push(Math.random());
       }
-      
+
       // 生成隐藏层神经元值
-      this.neuronValues.hidden = []
+      this.neuronValues.hidden = [];
       for (let i = 0; i < this.hiddenNeurons; i++) {
-        this.neuronValues.hidden.push(Math.random())
+        this.neuronValues.hidden.push(Math.random());
       }
-      
+
       // 生成输出层神经元值
-      this.neuronValues.output = []
+      this.neuronValues.output = [];
       for (let i = 0; i < this.outputNeurons; i++) {
-        this.neuronValues.output.push(Math.random())
+        this.neuronValues.output.push(Math.random());
       }
-    }
+    },
   },
-  
+
   watch: {
     inputNeurons() {
-      this.renderNeurons()
+      this.renderNeurons();
     },
     hiddenNeurons() {
-      this.renderNeurons()
+      this.renderNeurons();
     },
     outputNeurons() {
-      this.renderNeurons()
-    }
-  }
-}
+      this.renderNeurons();
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:color';
-@use '../../styles/variables.scss' as *;
+@use "sass:color";
+@use "../../styles/variables.scss" as *;
 
 .chapter2-case-study {
   max-width: 1200px;
@@ -990,7 +1045,7 @@ export default {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: $chapter-badge-bg; // 使用主题深色渐变，避免紫色
   border-radius: 16px;
   color: white;
 }
@@ -1024,7 +1079,7 @@ export default {
   align-items: center;
   gap: 1rem;
   transition: all 0.3s ease;
-  
+
   &.completed {
     background: rgba(76, 175, 80, 0.2);
     border-color: rgba(76, 175, 80, 0.5);
@@ -1040,14 +1095,14 @@ export default {
 
 .progress-info {
   flex: 1;
-  
+
   h4 {
     color: white;
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 600;
   }
-  
+
   p {
     color: rgba(255, 255, 255, 0.8);
     margin: 0 0 0.5rem 0;
@@ -1057,12 +1112,12 @@ export default {
 
 .progress-status {
   .status-completed {
-    color: #4CAF50;
+    color: #4caf50;
     font-weight: 600;
   }
-  
+
   .status-pending {
-    color: #FFC107;
+    color: #ffc107;
     font-weight: 600;
   }
 }
@@ -1098,7 +1153,7 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   padding: 1rem;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(74, 144, 226, 0.1); // 使用主题信息色系（蓝）
   border-radius: 12px;
 }
 
@@ -1117,7 +1172,8 @@ export default {
   background: #ddd;
   outline: none;
   -webkit-appearance: none;
-  
+  appearance: none;
+
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -1138,1088 +1194,1195 @@ export default {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
-    background: color.adjust($accent-color, $lightness: -10%);
+    background: $accent-color; // 避免 inline 调整
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
   }
-}
+  // removed extra closing brace that caused unmatched '}' error
 
-// 新增按钮样式
-.btn-small {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 0.25rem;
-  
-  &.btn-animate {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-  }
-  
-  &.btn-reset {
-    background: #f44336;
-    color: white;
-    
-    &:hover {
-      background: #d32f2f;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-compare {
-    background: #ff9800;
-    color: white;
-    
-    &:hover {
-      background: #f57c00;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-forward {
-    background: #4caf50;
-    color: white;
-    
-    &:hover {
-      background: #388e3c;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-backward {
-    background: #2196f3;
-    color: white;
-    
-    &:hover {
-      background: #1976d2;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-train {
-    background: #9c27b0;
-    color: white;
-    
-    &:hover {
-      background: #7b1fa2;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-tiny {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-  }
-}
-
-.control-row {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.control-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  
-  label {
-    font-weight: 600;
-    color: $text-color;
+  // 新增按钮样式
+  .btn-small {
+    padding: 0.5rem 1rem;
     font-size: 0.9rem;
-  }
-  
-  select {
-    padding: 0.5rem;
-    border: 2px solid #e0e0e0;
     border-radius: 6px;
-    background: white;
-    font-size: 0.9rem;
-    
-    &:focus {
-      outline: none;
-      border-color: $accent-color;
-    }
-  }
-}
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0.25rem;
 
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
-}
+    &.btn-animate {
+      background: linear-gradient(135deg, $info-color 0%, $info-color-light 100%);
+      color: white;
 
-.chart-container {
-  height: 300px;
-  position: relative;
-}
-
-.chart-placeholder {
-  height: 100%;
-  background: #f8f9fa;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed #dee2e6;
-  text-align: center;
-  
-  h4 {
-    color: $accent-color;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    color: $text-secondary-color;
-    margin-bottom: 1rem;
-  }
-}
-
-.chart-metrics {
-  display: flex;
-  gap: 1rem;
-  
-  .metric {
-    background: $accent-color;
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-}
-
-.demo-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.info-card {
-  background: rgba(102, 126, 234, 0.05);
-  border: 1px solid rgba(102, 126, 234, 0.2);
-  border-radius: 12px;
-  padding: 1.5rem;
-  
-  h4 {
-    color: $accent-color;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-  }
-  
-  p {
-    color: $text-secondary-color;
-    margin-bottom: 1rem;
-    line-height: 1.6;
-  }
-}
-
-.metrics {
-  display: flex;
-  gap: 1rem;
-  
-  .metric {
-    background: $accent-color;
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-}
-
-.layer-demo {
-  margin-bottom: 3rem;
-  padding: 1.5rem;
-  background: rgba(255, 152, 0, 0.05);
-  border: 1px solid rgba(255, 152, 0, 0.2);
-  border-radius: 12px;
-}
-
-.layer-title {
-  color: #FF9800;
-  margin-bottom: 1rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.convolution-demo {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 2rem;
-  align-items: start;
-  margin-bottom: 1rem;
-}
-
-.kernel-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  
-  select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: white;
-  }
-}
-
-// 移除重复的 .btn-small 样式，已在上面定义
-
-.matrix {
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  background: white;
-  
-  .matrix-row {
-    display: flex;
-    
-    .matrix-cell {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      font-weight: 600;
-      font-size: 0.9rem;
-      
-      &:last-child {
-        border-right: none;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
       }
     }
-    
-    &:last-child .matrix-cell {
-      border-bottom: none;
-    }
-  }
-}
 
-.pooling-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+    &.btn-reset {
+      background: #f44336;
+      color: white;
 
-.pooling-controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-  
-  select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: white;
-  }
-}
-
-.pooling-visualization {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 2rem;
-  align-items: center;
-}
-
-.pooling-arrow {
-  font-size: 2rem;
-  color: #FF9800;
-  font-weight: bold;
-}
-
-.fc-demo {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-.network-visualization {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem;
-  background: rgba(156, 39, 176, 0.1);
-  border-radius: 12px;
-  border: 1px solid rgba(156, 39, 176, 0.2);
-}
-
-.neurons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-  
-  .neuron {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: $accent-color;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-    
-    &.neuron-hidden {
-      background: #9C27B0;
-      box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
-    }
-    
-    &.neuron-output {
-      background: #4CAF50;
-      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-    }
-  }
-}
-
-.fc-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.case-summary {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  color: white;
-  margin-bottom: 2rem;
-}
-
-.summary-title {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.summary-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.summary-item {
-  h4 {
-    margin-bottom: 1rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    
-    li {
-      margin-bottom: 0.5rem;
-      padding-left: 1.5rem;
-      position: relative;
-      
-      &:before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: #FFD700;
-        font-weight: bold;
+      &:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
       }
     }
-  }
-}
 
-.next-step {
-  border-radius: 16px;
-  padding: 2rem;
-  text-align: center;
-  color: white;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
-  transition: all 0.3s ease;
-}
+    &.btn-compare {
+      background: #ff9800;
+      color: white;
 
-.completion-celebration {
-  h3 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    animation: bounce 1s ease-in-out;
-  }
-  
-  p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-}
+      &:hover {
+        background: #f57c00;
+        transform: translateY(-2px);
+      }
+    }
 
+    &.btn-forward {
+      background: #4caf50;
+      color: white;
 
+      &:hover {
+        background: #388e3c;
+        transform: translateY(-2px);
+      }
+    }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-}
+    &.btn-backward {
+      background: #2196f3;
+      color: white;
 
-// 新增可视化区域样式
-.visualization-area {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  border: 2px solid #e9ecef;
-  
-  .viz-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: $primary-color;
-    margin-bottom: 1rem;
-    text-align: center;
+      &:hover {
+        background: #1976d2;
+        transform: translateY(-2px);
+      }
+    }
+
+    &.btn-train {
+      background: $info-color;
+      color: white;
+
+      &:hover {
+        background: $info-color-light;
+        transform: translateY(-2px);
+      }
+    }
+
+    &.btn-tiny {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
   }
-  
-  .viz-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+  .control-row {
+    display: flex;
     gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
     margin-bottom: 1rem;
   }
-  
-  .viz-item {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    
-    .viz-label {
+
+  .control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
       font-weight: 600;
       color: $text-color;
-      margin-bottom: 0.5rem;
       font-size: 0.9rem;
     }
-    
-    .viz-content {
-      min-height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8f9fa;
+
+    select {
+      padding: 0.5rem;
+      border: 2px solid #e0e0e0;
       border-radius: 6px;
-      border: 1px dashed #dee2e6;
+      background: white;
+      font-size: 0.9rem;
+
+      &:focus {
+        outline: none;
+        border-color: $accent-color;
+      }
     }
   }
-}
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-  
-  .stat-item {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-    
-    .stat-label {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-  }
-}
-
-.network-canvas {
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  background: white;
-  margin: 1rem 0;
-}
-
-.weight-heatmap {
-  .heatmap-row {
+  .action-buttons {
     display: flex;
-    
-    .heatmap-cell {
-      width: 20px;
-      height: 20px;
-      margin: 1px;
-      border-radius: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      color: white;
-      text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-    }
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
   }
-}
 
-.activation-preview {
-  width: 100%;
-  height: 150px;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  background: white;
-}
+  .chart-container {
+    height: 300px;
+    position: relative;
+  }
 
-.comparison-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-  
-  .comparison-item {
-    background: white;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1rem;
+  .chart-placeholder {
+    height: 100%;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #dee2e6;
     text-align: center;
-    
-    .comparison-title {
-      font-weight: 600;
-      color: $primary-color;
+
+    h4 {
+      color: $accent-color;
       margin-bottom: 0.5rem;
     }
-    
-    .comparison-result {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: $accent-color;
-      margin: 0.5rem 0;
-    }
-    
-    .comparison-desc {
-      font-size: 0.8rem;
-      color: #666;
+
+    p {
+      color: $text-secondary-color;
+      margin-bottom: 1rem;
     }
   }
-}
 
-.training-status {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-  padding: 1rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-  
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  .chart-metrics {
+    display: flex;
     gap: 1rem;
-    
-    .status-item {
+
+    .metric {
+      background: $accent-color;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+  }
+
+  .demo-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .info-card {
+    background: rgba(74, 144, 226, 0.05);
+    border: 1px solid rgba(74, 144, 226, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+
+    h4 {
+      color: $info-color;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    p {
+      color: $text-secondary-color;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+  }
+
+  .layer-demo {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: rgba(255, 152, 0, 0.05);
+    border: 1px solid rgba(255, 152, 0, 0.2);
+    border-radius: 12px;
+  }
+
+  .layer-title {
+    color: #ff9800;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .convolution-demo {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 1rem;
+  }
+
+  .kernel-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    select {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+    }
+  }
+
+  // 移除重复的 .btn-small 样式，已在上面定义
+
+  .matrix {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+
+    .matrix-row {
+      display: flex;
+
+      .matrix-cell {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-weight: 600;
+        font-size: 0.9rem;
+
+        &:last-child {
+          border-right: none;
+        }
+      }
+
+      &:last-child .matrix-cell {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .pooling-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pooling-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    select {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+    }
+  }
+
+  .pooling-visualization {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .pooling-arrow {
+    font-size: 2rem;
+    color: #ff9800;
+    font-weight: bold;
+  }
+
+  .fc-demo {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .network-visualization {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(74, 144, 226, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+  }
+
+  .neurons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+
+    .neuron {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: $accent-color;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+
+      &.neuron-hidden {
+        background: #9c27b0;
+        box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+      }
+
+      &.neuron-output {
+        background: #4caf50;
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+      }
+    }
+  }
+
+  .fc-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .case-summary {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+  }
+
+  .summary-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .summary-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .summary-item {
+    h4 {
+      margin-bottom: 1rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+
+        &:before {
+          content: "✓";
+          position: absolute;
+          left: 0;
+          color: #ffd700;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .next-step {
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 3rem;
+  }
+
+  .next-step-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .completion-celebration {
+    h3 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      animation: bounce 1s ease-in-out;
+      color: white;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+      color: white;
+      opacity: 0.95;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+
+  // 新增可视化区域样式
+  .visualization-area {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 2px solid #e9ecef;
+
+    .viz-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $primary-color;
+      margin-bottom: 1rem;
       text-align: center;
-      
-      .status-value {
-        font-size: 1.2rem;
+    }
+
+    .viz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .viz-item {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      .viz-label {
+        font-weight: 600;
+        color: $text-color;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .viz-content {
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px dashed #dee2e6;
+      }
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+
+    .stat-item {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+
+      .stat-value {
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.25rem;
       }
-      
-      .status-label {
+
+      .stat-label {
         font-size: 0.8rem;
         opacity: 0.9;
       }
     }
   }
-}
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.animating {
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-// 平台跳转卡片样式
-.platform-redirect-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 2px solid #dee2e6;
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-    border-color: $accent-color;
+  .network-canvas {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: white;
+    margin: 1rem 0;
   }
-}
 
-.redirect-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  
-  h4 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: $primary-color;
-    margin: 0;
-  }
-}
+  .weight-heatmap {
+    .heatmap-row {
+      display: flex;
 
-.redirect-badge {
-  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.redirect-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-.redirect-info {
-  .redirect-desc {
-    font-size: 1.1rem;
-    color: $text-color;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-}
-
-.learning-objectives {
-  margin-bottom: 1.5rem;
-  
-  h5 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $primary-color;
-    margin-bottom: 0.75rem;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    
-    li {
-      position: relative;
-      padding-left: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: $text-color;
-      line-height: 1.5;
-      
-      &:before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: #4CAF50;
-        font-weight: bold;
+      .heatmap-cell {
+        width: 20px;
+        height: 20px;
+        margin: 1px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        color: white;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
       }
     }
   }
-}
 
-.platform-features {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  
-  .feature-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: $card-bg;
-    padding: 0.75rem 1.25rem;
-    border-radius: $form-radius;
-    border: 1px solid $card-border;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
-      border-color: $primary-color;
-    }
-    
-    .feature-icon {
-      font-size: 1.3rem;
-      background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .feature-text {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: $text-color;
+  .activation-preview {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+
+    .comparison-item {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+
+      .comparison-title {
+        font-weight: 600;
+        color: $primary-color;
+        margin-bottom: 0.5rem;
+      }
+
+      .comparison-result {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: $accent-color;
+        margin: 0.5rem 0;
+      }
+
+      .comparison-desc {
+        font-size: 0.8rem;
+        color: #666;
+      }
     }
   }
-}
 
-.algorithm-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  
-  .algorithm-card {
-    background: $card-bg;
-    border: 2px solid $card-border;
-    border-radius: $card-radius;
-    padding: 1.25rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, $primary-color 0%, $accent-color 50%, $info-color 100%);
+  .training-status {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+
+      .status-item {
+        text-align: center;
+
+        .status-value {
+          font-size: 1.2rem;
+          font-weight: 700;
+          margin-bottom: 0.25rem;
+        }
+
+        .status-label {
+          font-size: 0.8rem;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .animating {
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transform: translateY(10px);
     }
-    
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // 平台跳转卡片样式
+  .platform-redirect-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+
     &:hover {
-      border-color: $primary-color;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
-      
-      &:before {
-        opacity: 1;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border-color: $accent-color;
+    }
+  }
+
+  .redirect-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h4 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $primary-color;
+      margin: 0;
+    }
+  }
+
+  .redirect-badge {
+    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .redirect-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .redirect-info {
+    .redirect-desc {
+      font-size: 1.1rem;
+      color: $text-color;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .learning-objectives {
+    margin-bottom: 1.5rem;
+
+    h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $primary-color;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: $text-color;
+        line-height: 1.5;
+
+        &:before {
+          content: "✓";
+          position: absolute;
+          left: 0;
+          color: #4caf50;
+          font-weight: bold;
+        }
       }
     }
-    
-    .algorithm-header {
+  }
+
+  .platform-features {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .feature-item {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      
-      .algorithm-icon {
-        font-size: 1.8rem;
-        background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+      background: $card-bg;
+      padding: 0.75rem 1.25rem;
+      border-radius: $form-radius;
+      border: 1px solid $card-border;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
+        border-color: $primary-color;
+      }
+
+      .feature-icon {
+        font-size: 1.3rem;
+        background: linear-gradient(
+          135deg,
+          $primary-color 0%,
+          $accent-color 100%
+        );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      
-      .algorithm-name {
-        font-size: 1.1rem;
-        font-weight: 600;
+
+      .feature-text {
+        font-size: 0.9rem;
+        font-weight: 500;
         color: $text-color;
-        background: linear-gradient(135deg, $text-color 0%, $text-secondary-color 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
       }
     }
-    
-    .algorithm-desc {
+  }
+
+  .algorithm-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+
+    .algorithm-card {
+      background: $card-bg;
+      border: 2px solid $card-border;
+      border-radius: $card-radius;
+      padding: 1.25rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          $primary-color 0%,
+          $accent-color 50%,
+          $info-color 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover {
+        border-color: $primary-color;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
+
+        &:before {
+          opacity: 1;
+        }
+      }
+
+      .algorithm-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+
+        .algorithm-icon {
+          font-size: 1.8rem;
+          background: linear-gradient(
+            135deg,
+            $primary-color 0%,
+            $accent-color 100%
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .algorithm-name {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: $text-color;
+          background: linear-gradient(
+            135deg,
+            $text-color 0%,
+            $text-secondary-color 100%
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+      }
+
+      .algorithm-desc {
+        font-size: 0.9rem;
+        color: $text-secondary-color;
+        line-height: 1.5;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .redirect-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .redirect-note {
       font-size: 0.9rem;
-      color: $text-secondary-color;
-      line-height: 1.5;
-      font-weight: 400;
+      color: #666;
+      margin-top: 1rem;
+      line-height: 1.4;
     }
   }
-}
 
-.redirect-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  
-  .redirect-note {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 1rem;
-    line-height: 1.4;
-  }
-}
-
-.btn-platform {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  color: white;
-  position: relative;
-  overflow: hidden;
-  
-  &.linear {
-    background: linear-gradient(135deg, $success-color 0%, $success-color-light 100%);
-    box-shadow: 0 4px 20px rgba(82, 196, 26, 0.25);
-    
-    &:hover {
-      background: linear-gradient(135deg, $success-color-light 0%, color.adjust($success-color-light, $lightness: -10%) 100%);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(82, 196, 26, 0.4);
-    }
-  }
-  
-  &.logistic {
-    background: linear-gradient(135deg, $primary-color 0%, $info-color 100%);
-    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
-    
-    &:hover {
-      background: linear-gradient(135deg, $info-color 0%, color.adjust($info-color, $lightness: -10%) 100%);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
-    }
-  }
-  
-  &.unified {
-    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
-    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
-    
-    &:hover {
-      background: linear-gradient(135deg, $info-color 0%, color.adjust($accent-color, $lightness: -10%) 100%);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
-    }
-  }
-  
-  .btn-icon {
-    font-size: 1.2rem;
-  }
-  
-  .btn-text {
-    flex: 1;
-  }
-  
-  .btn-arrow {
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover .btn-arrow {
-    transform: translateX(4px);
-  }
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-  }
-  
-  &:hover:before {
-    left: 100%;
-  }
-}
-
-.next-step-content {
-  h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-  }
-  
-  p {
+  .btn-platform {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
     font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.9;
-    line-height: 1.6;
-  }
-}
-
-.btn-quiz {
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  
-  &.btn-enabled {
-    background: linear-gradient(135deg, $warning-color 0%, $error-color 100%);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
     color: white;
-    box-shadow: 0 4px 20px rgba(255, 149, 0, 0.25);
-    
-    &:hover {
-      background: linear-gradient(135deg, $error-color 0%, color.adjust($error-color, $lightness: -10%) 100%);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(255, 149, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+
+    &.linear {
+      background: linear-gradient(
+        135deg,
+        $success-color 0%,
+        $success-color-light 100%
+      );
+      box-shadow: 0 4px 20px rgba(82, 196, 26, 0.25);
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          $success-color-light 0%,
+          color.adjust($success-color-light, $lightness: -10%) 100%
+        );
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(82, 196, 26, 0.4);
+      }
     }
-    
+
+    &.logistic {
+      background: linear-gradient(135deg, $primary-color 0%, $info-color 100%);
+      box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          $info-color 0%,
+          color.adjust($info-color, $lightness: -10%) 100%
+        );
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
+      }
+    }
+
+    &.unified {
+      background: linear-gradient(
+        135deg,
+        $primary-color 0%,
+        $accent-color 100%
+      );
+      box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          $info-color 0%,
+          color.adjust($accent-color, $lightness: -10%) 100%
+        );
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
+      }
+    }
+
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+
+    .btn-text {
+      flex: 1;
+    }
+
+    .btn-arrow {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover .btn-arrow {
+      transform: translateX(4px);
+    }
+
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
       transition: left 0.5s;
     }
-    
+
     &:hover:before {
       left: 100%;
     }
   }
-  
-  &:not(.btn-enabled) {
-    background: linear-gradient(135deg, $border-color 0%, color.adjust($border-color, $lightness: -20%) 100%);
-    color: $text-disabled;
-    cursor: not-allowed;
-    opacity: 0.7;
-    box-shadow: none;
-  }
-}
 
-@media (max-width: 768px) {
-  .chapter2-case-study {
-    padding: 1rem;
+  .next-step-content {
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
   }
-  
-  .case-title {
-    font-size: 2rem;
+
+  .btn {
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
   }
-  
-  .demo-controls {
-    flex-direction: column;
-    align-items: stretch;
+
+  .btn-quiz {
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+    box-shadow: 0 6px 25px rgba(255, 149, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(255, 149, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 149, 0, 0.4);
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: left 0.6s ease;
+    }
+
+    &:hover:before {
+      left: 100%;
+    }
+
+    /* 确保按钮文字清晰可见 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-  
-  .convolution-demo {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+
+  @media (max-width: 768px) {
+    .chapter2-case-study {
+      padding: 1rem;
+    }
+
+    .case-title {
+      font-size: 2rem;
+    }
+
+    .demo-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .convolution-demo {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .pooling-visualization {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .fc-demo {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .summary-content {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .network-visualization {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .platform-redirect-card {
+      padding: 1.5rem;
+    }
+
+    .redirect-content {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .platform-features {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    /* 答题模块移动端样式 */
+    .next-step {
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .completion-celebration h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .completion-celebration p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-quiz {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      min-width: 180px;
+    }
   }
-  
-  .pooling-visualization {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .fc-demo {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .summary-content {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .network-visualization {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .platform-redirect-card {
-    padding: 1.5rem;
-  }
-  
-  .redirect-content {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .platform-features {
-    justify-content: center;
-  }
-  
+
   .btn-platform {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
-    
+
     .btn-text {
       font-size: 0.9rem;
     }
   }
-  
+
   .learning-objectives ul li {
     font-size: 0.9rem;
   }
-  
+
   .algorithm-cards {
     grid-template-columns: 1fr;
     gap: 1rem;
     margin: 1rem 0;
-    
+
     .algorithm-card {
       padding: 1rem;
       border-radius: 12px;
-      
+
       .algorithm-header {
         gap: 0.5rem;
         margin-bottom: 0.5rem;
-        
+
         .algorithm-icon {
           font-size: 1.5rem;
         }
-        
+
         .algorithm-name {
           font-size: 1rem;
         }
       }
-      
+
       .algorithm-desc {
         font-size: 0.85rem;
         line-height: 1.4;
@@ -2234,37 +2397,46 @@ export default {
   border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   margin: 24px 0;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 
-      0 32px 64px -12px rgba(0, 0, 0, 0.15),
+    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.15),
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color, $accent-color, $info-color);
+    background: linear-gradient(
+      90deg,
+      $primary-color,
+      $accent-color,
+      $info-color
+    );
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
   }
 
-  @keyframes shimmer {
-    0%, 100% { background-position: 200% 0; }
-    50% { background-position: -200% 0; }
+  @at-root {
+    @keyframes shimmer {
+      0%,
+      100% {
+        background-position: 200% 0;
+      }
+      50% {
+        background-position: -200% 0;
+      }
+    }
   }
 }
 
@@ -2352,13 +2524,18 @@ export default {
       overflow: hidden;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: -50%;
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
         animation: rotate 3s linear infinite;
       }
 
@@ -2407,7 +2584,7 @@ export default {
         height: 8px;
         background: #22c55e;
         border-radius: 50%;
-        animation: pulse 2s infinite;
+        animation: pulseOpacity 2s infinite;
       }
 
       .status-text {
@@ -2418,14 +2595,25 @@ export default {
     }
   }
 
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
+  @at-root {
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    @keyframes pulseOpacity {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
   }
 }
 
@@ -2479,18 +2667,26 @@ export default {
 
     &.linear-regression {
       .card-background {
-        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0.1) 0%,
+          rgba(34, 197, 94, 0.05) 100%
+        );
       }
-      
+
       .algorithm-icon .icon-glow {
-        background: radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, transparent 70%);
+        background: radial-gradient(
+          circle,
+          rgba(34, 197, 94, 0.3) 0%,
+          transparent 70%
+        );
       }
-      
+
       .tag {
         background: rgba(34, 197, 94, 0.1);
         color: #16a34a;
       }
-      
+
       .feature-dot {
         background: #22c55e;
       }
@@ -2498,18 +2694,26 @@ export default {
 
     &.logistic-regression {
       .card-background {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.1) 0%,
+          rgba(59, 130, 246, 0.05) 100%
+        );
       }
-      
+
       .algorithm-icon .icon-glow {
-        background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+        background: radial-gradient(
+          circle,
+          rgba(59, 130, 246, 0.3) 0%,
+          transparent 70%
+        );
       }
-      
+
       .tag {
         background: rgba(59, 130, 246, 0.1);
         color: #2563eb;
       }
-      
+
       .feature-dot {
         background: #3b82f6;
       }
@@ -2527,8 +2731,16 @@ export default {
       .bg-pattern {
         width: 100%;
         height: 100%;
-        background-image: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%);
+        background-image: radial-gradient(
+            circle at 20% 80%,
+            rgba(120, 119, 198, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 119, 198, 0.1) 0%,
+            transparent 50%
+          );
       }
     }
 
@@ -2770,7 +2982,12 @@ export default {
         .bg-gradient {
           width: 100%;
           height: 100%;
-          background: linear-gradient(135deg, $primary-color 0%, $accent-color 50%, $info-color 100%);
+          background: linear-gradient(
+            135deg,
+            $primary-color 0%,
+            $accent-color 50%,
+            $info-color 100%
+          );
           background-size: 200% 200%;
           animation: gradientShift 4s ease-in-out infinite;
         }
@@ -2781,7 +2998,12 @@ export default {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
           transition: left 0.6s ease;
         }
       }
@@ -2816,8 +3038,13 @@ export default {
       }
 
       @keyframes gradientShift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
       }
     }
   }
@@ -2849,11 +3076,11 @@ export default {
 
 /* 深度学习展示样式 */
 .deep-learning-showcase {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-color-light 100%);
   border-radius: 16px;
   padding: 2rem;
   margin-top: 2rem;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 32px rgba(74, 144, 226, 0.18);
 }
 
 .showcase-content {
@@ -2960,7 +3187,7 @@ export default {
 }
 
 .learning-points li::before {
-  content: '🎯';
+  content: "🎯";
   position: absolute;
   left: 0;
   top: 0;
@@ -2995,28 +3222,28 @@ export default {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .demo-gif {
     width: 200px;
     height: 150px;
   }
-  
+
   .description-section {
     min-width: auto;
   }
-  
+
   .overlay-content {
     padding: 0.75rem;
   }
-  
+
   .overlay-icon {
     font-size: 1.5rem;
   }
-  
+
   .overlay-title {
     font-size: 1rem;
   }
-  
+
   .overlay-subtitle {
     font-size: 0.8rem;
   }

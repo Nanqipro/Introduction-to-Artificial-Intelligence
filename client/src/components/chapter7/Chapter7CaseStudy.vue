@@ -1038,13 +1038,14 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "../../styles/variables.scss" as *;
 /* 基础样式 */
 .chapter7-case-study {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
+  background: $secondary-color; // 使用主题深色背景，移除紫色
+  color: $text-color;
   overflow-x: hidden;
 }
 
@@ -1131,11 +1132,11 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: $card-bg;
   border-radius: 20px;
   padding: 20px 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid $card-border;
+  box-shadow: $card-shadow;
   transition: all 0.3s ease;
 }
 
@@ -1181,11 +1182,11 @@ onMounted(async () => {
 .nav-buttons {
   display: flex;
   gap: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: $card-bg;
   border-radius: 50px;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid $card-border;
+  box-shadow: $card-shadow;
 }
 
 .nav-button {
@@ -1196,20 +1197,20 @@ onMounted(async () => {
   border: none;
   border-radius: 25px;
   background: transparent;
-  color: #fff;
+  color: $text-color;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
 .nav-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: $chapter-type-bg;
   transform: translateY(-2px);
 }
 
 .nav-button.active {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: $chapter-badge-bg;
+  box-shadow: $card-shadow;
 }
 
 .nav-icon {
@@ -1254,12 +1255,12 @@ onMounted(async () => {
 
 /* 案例卡片 */
 .case-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: $card-bg;
   border-radius: 20px;
   padding: 30px;
   margin-bottom: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid $card-border;
+  box-shadow: $card-shadow;
 }
 
 .card-header {
@@ -1932,11 +1933,12 @@ onMounted(async () => {
 
 /* 监管框架 */
 .governance-framework {
-  background: rgba(156, 39, 176, 0.1);
-  border: 1px solid rgba(156, 39, 176, 0.3);
+  background: $card-bg;
+  border: 1px solid $card-border;
   border-radius: 20px;
   padding: 30px;
   margin-top: 30px;
+  box-shadow: $card-shadow;
 }
 
 .framework-tabs {
@@ -1962,8 +1964,8 @@ onMounted(async () => {
 }
 
 .framework-tab.active {
-  background: rgba(156, 39, 176, 0.3);
-  border: 1px solid rgba(156, 39, 176, 0.5);
+  background: $chapter-type-bg;
+  border: 1px solid $card-border;
 }
 
 .framework-overview {
@@ -2027,8 +2029,8 @@ onMounted(async () => {
 }
 
 .timeline-marker {
-  background: rgba(156, 39, 176, 0.3);
-  color: #fff;
+  background: $accent-color;
+  color: $text-color;
   width: 30px;
   height: 30px;
   border-radius: 50%;

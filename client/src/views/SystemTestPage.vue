@@ -408,306 +408,376 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@use '../styles/variables.scss' as *;
+
 .system-test-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 0;
-}
+  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
+  padding: 2rem 0;
+  color: $text-color;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
+  .test-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    
+    .test-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      color: $text-color;
+    }
+    
+    .test-description {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      color: $text-secondary-color;
+    }
+  }
 
-.test-header {
-  text-align: center;
-  margin-bottom: 40px;
-  color: white;
-}
+  .quick-test-panel, .comprehensive-test-panel {
+    background: $card-bg;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+    border: 1px solid $card-border;
+    
+    h2 {
+      color: $text-color;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+  }
 
-.test-title {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.test-description {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.quick-test-panel, .comprehensive-test-panel {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-}
-
-.test-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.test-card {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 12px;
-  padding: 25px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.test-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  border-color: #667eea;
-}
-
-.test-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
-}
-
-.test-card h3 {
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.test-card p {
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.test-status {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.test-status.pending {
-  background: #f0f0f0;
-  color: #666;
-}
-
-.test-status.testing {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.test-status.success {
-  background: #e8f5e8;
-  color: #4caf50;
-}
-
-.test-status.error {
-  background: #ffebee;
-  color: #f44336;
-}
-
-.test-status.warning {
-  background: #fff3e0;
-  color: #ff9800;
-}
-
-.test-controls {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: #667eea;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #5a6fd8;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: #5a6268;
-}
-
-.btn-info {
-  background: #17a2b8;
-  color: white;
-}
-
-.btn-info:hover:not(:disabled) {
-  background: #138496;
-}
-
-.btn-small {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  background: #6c757d;
-  color: white;
-}
-
-.test-progress {
-  margin: 20px 0;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  text-align: center;
-  margin-top: 10px;
-  color: #666;
-}
-
-.results-grid {
-  display: grid;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.result-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 4px solid;
-}
-
-.result-item.success {
-  background: #f8fff8;
-  border-left-color: #4caf50;
-}
-
-.result-item.error {
-  background: #fff8f8;
-  border-left-color: #f44336;
-}
-
-.result-item.warning {
-  background: #fffbf0;
-  border-left-color: #ff9800;
-}
-
-.result-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.result-content h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.result-content p {
-  margin: 0 0 5px 0;
-  color: #666;
-}
-
-.result-details {
-  color: #999;
-  font-size: 0.9rem;
-}
-
-.test-logs {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-}
-
-.log-container {
-  max-height: 300px;
-  overflow-y: auto;
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 15px 0;
-  font-family: 'Courier New', monospace;
-}
-
-.log-item {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-
-.log-time {
-  color: #999;
-  flex-shrink: 0;
-}
-
-.log-message {
-  flex: 1;
-}
-
-.log-item.info .log-message {
-  color: #333;
-}
-
-.log-item.success .log-message {
-  color: #4caf50;
-}
-
-.log-item.error .log-message {
-  color: #f44336;
-}
-
-.log-item.warning .log-message {
-  color: #ff9800;
-}
-
-@media (max-width: 768px) {
   .test-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
   }
-  
+
+  .test-card {
+    background: linear-gradient(135deg, $secondary-color, $secondary-color-light);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border-color: $accent-color;
+    }
+    
+    .test-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    h3 {
+      margin-bottom: 0.5rem;
+      color: $text-color;
+    }
+    
+    p {
+      color: $text-secondary-color;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .test-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    
+    &.pending {
+      background: rgba($accent-color, 0.1);
+      color: $accent-color;
+      border: 1px solid rgba($accent-color, 0.3);
+    }
+    
+    &.testing {
+      background: rgba($info-color, 0.1);
+      color: $info-color;
+      border: 1px solid rgba($info-color, 0.3);
+    }
+    
+    &.success {
+      background: rgba($success-color, 0.1);
+      color: $success-color;
+      border: 1px solid rgba($success-color, 0.3);
+    }
+    
+    &.error {
+      background: rgba($error-color, 0.1);
+      color: $error-color;
+      border: 1px solid rgba($error-color, 0.3);
+    }
+    
+    &.warning {
+      background: rgba($warning-color, 0.1);
+      color: $warning-color;
+      border: 1px solid rgba($warning-color, 0.3);
+    }
+  }
+
   .test-controls {
-    flex-direction: column;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
   }
-  
+
   .btn {
-    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    &.btn-primary {
+      background: linear-gradient(135deg, #4a90e2, #357abd);
+      color: white;
+      box-shadow: 0 4px 16px rgba(74, 144, 226, 0.3);
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+      }
+    }
+    
+    &.btn-secondary {
+      background: #393b40;
+      color: $text-color;
+      border: 1px solid $border-color;
+      
+      &:hover:not(:disabled) {
+        background: #4a4c51;
+        border-color: $accent-color;
+      }
+    }
+    
+    &.btn-info {
+      background: linear-gradient(135deg, #4a90e2, #64b5f6);
+      color: white;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+      }
+    }
+    
+    &.btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      background: #393b40;
+      color: $text-color;
+      border: 1px solid $border-color;
+      
+      &:hover {
+        background: #4a4c51;
+        border-color: $accent-color;
+      }
+    }
+  }
+
+  .test-progress {
+    margin: 1.5rem 0;
+    
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba($accent-color, 0.2);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba($accent-color, 0.3);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, $accent-color, $accent-color-light);
+      transition: width 0.3s ease;
+      border-radius: 6px;
+    }
+    
+    .progress-text {
+      text-align: center;
+      margin-top: 0.5rem;
+      color: $text-secondary-color;
+      font-size: 0.9rem;
+    }
+  }
+
+  .results-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border-left: 4px solid;
+    background: $card-bg;
+    border: 1px solid $card-border;
+    
+    &.success {
+      background: rgba($success-color, 0.05);
+      border-left-color: $success-color;
+      border-color: rgba($success-color, 0.3);
+    }
+    
+    &.error {
+      background: rgba($error-color, 0.05);
+      border-left-color: $error-color;
+      border-color: rgba($error-color, 0.3);
+    }
+    
+    &.warning {
+      background: rgba($warning-color, 0.05);
+      border-left-color: $warning-color;
+      border-color: rgba($warning-color, 0.3);
+    }
+    
+    .result-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .result-content {
+      h4 {
+        margin: 0 0 0.25rem 0;
+        color: $text-color;
+        font-size: 1.125rem;
+      }
+      
+      p {
+        margin: 0 0 0.25rem 0;
+        color: $text-secondary-color;
+      }
+      
+      .result-details {
+        color: $text-secondary-color;
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .test-logs {
+    background: $card-bg;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+    border: 1px solid $card-border;
+    
+    h3 {
+      color: $text-color;
+      margin-bottom: 1.5rem;
+    }
+    
+    .log-container {
+      max-height: 300px;
+      overflow-y: auto;
+      background: $secondary-color;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      border: 1px solid $card-border;
+    }
+    
+    .log-item {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      
+      .log-time {
+        color: $text-secondary-color;
+        flex-shrink: 0;
+        font-size: 0.75rem;
+      }
+      
+      .log-message {
+        flex: 1;
+        color: $text-color;
+      }
+      
+      &.info .log-message {
+        color: $info-color;
+      }
+      
+      &.success .log-message {
+        color: $success-color;
+      }
+      
+      &.error .log-message {
+        color: $error-color;
+      }
+      
+      &.warning .log-message {
+        color: $warning-color;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      margin-bottom: 2rem;
+      
+      .test-title {
+        font-size: 2rem;
+      }
+    }
+    
+    .quick-test-panel, .comprehensive-test-panel {
+      padding: 1.5rem;
+    }
+    
+    .test-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .test-controls {
+      flex-direction: column;
+      
+      .btn {
+        justify-content: center;
+      }
+    }
+    
+    .test-card {
+      padding: 1.5rem;
+    }
   }
 }
 </style>

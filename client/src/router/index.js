@@ -10,6 +10,7 @@ import LoginPage from '../views/LoginPage.vue'
 import UserProfile from '../views/UserProfile.vue'
 import SystemTestPage from '../views/SystemTestPage.vue'
 
+
 const routes = [
   {
     path: '/',
@@ -102,7 +103,8 @@ const routes = [
       title: '系统测试',
       description: '系统功能测试和诊断工具'
     }
-  }
+  },
+
 ]
 
 const router = createRouter({

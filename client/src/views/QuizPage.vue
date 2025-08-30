@@ -11,6 +11,13 @@
         </div>
       </div>
     </nav>
+    
+    <!-- 导航提示 -->
+    <div style="background: #ff6b6b; color: white; padding: 15px; margin: 20px; border-radius: 8px; text-align: center; font-size: 16px;">
+      🎯 <strong>提示：</strong>要查看第一章的案例演示，请点击左上角的"← 返回章节"按钮
+      <br>
+      📍 或者直接访问：<code style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">/chapters/1</code>
+    </div>
 
     <!-- 答题系统组件 -->
     <QuizSystem 

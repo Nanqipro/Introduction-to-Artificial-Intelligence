@@ -172,6 +172,32 @@
           <div class="question-description" v-if="currentQuestion.description">
             {{ currentQuestion.description }}
           </div>
+          
+          <!-- 多媒体内容显示 -->
+          <div class="question-media" v-if="currentQuestion.imageUrl || currentQuestion.audioUrl || currentQuestion.videoUrl">
+            <!-- 图片显示 -->
+            <div v-if="currentQuestion.imageUrl" class="media-item">
+              <img :src="currentQuestion.imageUrl" :alt="currentQuestion.title" class="question-image" />
+            </div>
+            
+            <!-- 音频显示 -->
+            <div v-if="currentQuestion.audioUrl" class="media-item">
+              <audio controls class="question-audio">
+                <source :src="currentQuestion.audioUrl" type="audio/mpeg">
+                <source :src="currentQuestion.audioUrl" type="audio/ogg">
+                您的浏览器不支持音频播放
+              </audio>
+            </div>
+            
+            <!-- 视频显示 -->
+            <div v-if="currentQuestion.videoUrl" class="media-item">
+              <video controls class="question-video">
+                <source :src="currentQuestion.videoUrl" type="video/mp4">
+                <source :src="currentQuestion.videoUrl" type="video/webm">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+          </div>
         </div>
 
         <!-- 选择题选项 -->
@@ -479,17 +505,108 @@ export default {
     async loadQuestions() {
       this.loading = true
       try {
-        const questions = await quizApi.getQuestionsByChapter(this.chapterId)
-        this.questions = questions || []
-        console.log('加载题目成功:', this.questions)
+        // 首先尝试从数据库加载题目
+        console.log('🔄 尝试从数据库加载题目...')
+        const dbResponse = await quizApi.getQuestionsFromDB(this.chapterId)
+        
+        if (dbResponse && dbResponse.data && dbResponse.data.length > 0) {
+          // 转换数据库题目格式为答题系统格式
+          this.questions = this.convertDBQuestionsToQuizFormat(dbResponse.data)
+          console.log('✅ 从数据库加载题目成功:', this.questions.length, '道题目')
+        } else {
+          // 如果数据库没有题目，尝试从原有API加载
+          console.log('🔄 数据库无题目，尝试从原有API加载...')
+          const questions = await quizApi.getQuestionsByChapter(this.chapterId)
+          this.questions = questions || []
+          console.log('✅ 从原有API加载题目成功:', this.questions.length, '道题目')
+        }
+        
+        // 如果都没有题目，使用默认题目
+        if (!this.questions || this.questions.length === 0) {
+          console.log('⚠️ 没有找到题目，使用默认题目')
+          this.questions = this.getDefaultQuestions()
+        }
+        
+        console.log('📚 最终题目数量:', this.questions.length)
       } catch (error) {
-        console.error('加载题目失败:', error)
+        console.error('❌ 加载题目失败:', error)
         // 如果API失败，使用默认题目
         this.questions = this.getDefaultQuestions()
       } finally {
         this.loading = false
       }
     },
+    /**
+     * 转换数据库题目格式为答题系统格式
+     */
+    convertDBQuestionsToQuizFormat(dbQuestions) {
+      return dbQuestions.map(dbQuestion => {
+        const quizQuestion = {
+          id: dbQuestion.id,
+          type: this.mapDBTypeToQuizType(dbQuestion.type),
+          title: dbQuestion.title,
+          description: dbQuestion.description || '',
+          points: dbQuestion.score || 10,
+          explanation: dbQuestion.explanation || '',
+          imageUrl: dbQuestion.imageUrl,
+          audioUrl: dbQuestion.audioUrl,
+          videoUrl: dbQuestion.videoUrl,
+          difficulty: dbQuestion.difficulty || 'medium'
+        }
+        
+        // 根据题目类型设置选项和答案
+        if (dbQuestion.type === 'choice') {
+          quizQuestion.options = []
+          if (dbQuestion.optionA) quizQuestion.options.push(dbQuestion.optionA)
+          if (dbQuestion.optionB) quizQuestion.options.push(dbQuestion.optionB)
+          if (dbQuestion.optionC) quizQuestion.options.push(dbQuestion.optionC)
+          if (dbQuestion.optionD) quizQuestion.options.push(dbQuestion.optionD)
+          
+          // 转换正确答案格式
+          quizQuestion.correctAnswer = this.convertCorrectAnswer(dbQuestion.correctAnswer, quizQuestion.options.length)
+        } else if (dbQuestion.type === 'tf') {
+          quizQuestion.correctAnswer = dbQuestion.correctAnswer.toLowerCase() === 'true' || 
+                                     dbQuestion.correctAnswer.toLowerCase() === 't' ||
+                                     dbQuestion.correctAnswer === '1'
+        } else if (dbQuestion.type === 'fill') {
+          quizQuestion.correctAnswer = dbQuestion.correctAnswer
+        }
+        
+        return quizQuestion
+      })
+    },
+    
+    /**
+     * 映射数据库题目类型到答题系统类型
+     */
+    mapDBTypeToQuizType(dbType) {
+      const typeMap = {
+        'choice': 'choice',
+        'tf': 'true-false',
+        'fill': 'fill'
+      }
+      return typeMap[dbType] || 'choice'
+    },
+    
+    /**
+     * 转换正确答案格式
+     */
+    convertCorrectAnswer(correctAnswer, optionsCount) {
+      if (typeof correctAnswer === 'string') {
+        const upperAnswer = correctAnswer.toUpperCase()
+        if (upperAnswer === 'A' || upperAnswer === '1') return 0
+        if (upperAnswer === 'B' || upperAnswer === '2') return 1
+        if (upperAnswer === 'C' || upperAnswer === '3') return 2
+        if (upperAnswer === 'D' || upperAnswer === '4') return 3
+      }
+      // 如果是数字，确保在有效范围内
+      const numAnswer = parseInt(correctAnswer)
+      if (!isNaN(numAnswer) && numAnswer >= 0 && numAnswer < optionsCount) {
+        return numAnswer
+      }
+      return 0 // 默认返回第一个选项
+    },
+    
     getDefaultQuestions() {
       // 根据章节ID返回默认题目
       const defaultQuestions = {
@@ -526,6 +643,111 @@ export default {
             correctAnswer: '约翰·麦卡锡',
             points: 25,
             explanation: '约翰·麦卡锡在1956年的达特茅斯会议上首次提出"人工智能"这一术语。'
+          }
+        ],
+        '2': [
+          {
+            id: 4,
+            type: 'choice',
+            title: '机器学习的核心是什么？',
+            description: '选择机器学习最核心的概念',
+            options: [
+              '数据收集',
+              '模式识别',
+              '算法优化',
+              '硬件升级'
+            ],
+            correctAnswer: 1,
+            points: 20,
+            explanation: '机器学习的核心是通过数据识别模式，让计算机能够从经验中学习。'
+          },
+          {
+            id: 5,
+            type: 'true-false',
+            title: '无监督学习不需要标记数据。',
+            description: '',
+            correctAnswer: true,
+            points: 15,
+            explanation: '无监督学习确实不需要标记数据，它通过发现数据中的隐藏模式来学习。'
+          },
+          {
+            id: 6,
+            type: 'fill',
+            title: '线性回归用于预测什么类型的值？',
+            description: '请输入答案',
+            correctAnswer: '连续值',
+            points: 25,
+            explanation: '线性回归用于预测连续值，如房价、温度等。'
+          }
+        ],
+        '3': [
+          {
+            id: 7,
+            type: 'choice',
+            title: '深度学习的核心是什么？',
+            description: '选择深度学习的核心概念',
+            options: [
+              '多层神经网络',
+              '大数据处理',
+              'GPU加速',
+              '算法优化'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: '深度学习的核心是多层神经网络，通过多层结构学习复杂的特征表示。'
+          },
+          {
+            id: 8,
+            type: 'true-false',
+            title: '卷积神经网络主要用于图像处理。',
+            description: '',
+            correctAnswer: true,
+            points: 15,
+            explanation: 'CNN确实主要用于图像处理，能够有效提取图像的空间特征。'
+          },
+          {
+            id: 9,
+            type: 'fill',
+            title: '反向传播算法用于什么？',
+            description: '请输入答案',
+            correctAnswer: '更新权重',
+            points: 25,
+            explanation: '反向传播算法用于计算梯度并更新神经网络权重。'
+          }
+        ],
+        '4': [
+          {
+            id: 10,
+            type: 'choice',
+            title: 'AI在医疗领域的主要应用不包括？',
+            description: '选择不属于AI医疗应用的选项',
+            options: [
+              '医学影像诊断',
+              '药物发现',
+              '患者护理',
+              '硬件制造'
+            ],
+            correctAnswer: 3,
+            points: 20,
+            explanation: '硬件制造不属于AI医疗应用，其他都是AI在医疗领域的重要应用。'
+          },
+          {
+            id: 11,
+            type: 'true-false',
+            title: '自动驾驶汽车使用多种AI技术。',
+            description: '',
+            correctAnswer: true,
+            points: 15,
+            explanation: '自动驾驶汽车确实使用计算机视觉、机器学习等多种AI技术。'
+          },
+          {
+            id: 12,
+            type: 'fill',
+            title: '智能语音助手主要使用什么技术？',
+            description: '请输入答案',
+            correctAnswer: '自然语言处理',
+            points: 25,
+            explanation: '智能语音助手主要使用自然语言处理技术来理解和生成人类语言。'
           }
         ]
       }
@@ -602,13 +824,14 @@ export default {
       this.saveQuizResult()
       
       // 显示答题总结
-      this.$nextTick(() => {
-        if (this.$refs.quizGuide) {
-          setTimeout(() => {
-            this.$refs.quizGuide.showQuizSummary()
-          }, 1000)
-        }
-      })
+      // 注意：QuizGuide组件没有showQuizSummary方法，暂时注释掉
+      // this.$nextTick(() => {
+      //   if (this.$refs.quizGuide) {
+      //     setTimeout(() => {
+      //       this.$refs.quizGuide.showQuizSummary()
+      //     }, 1000)
+      //   }
+      // })
     },
     calculateRewards() {
       this.earnedRewards = []
@@ -680,11 +903,12 @@ export default {
       this.showHint = false
       
       // 重置卡通人物的统计数据
-      this.$nextTick(() => {
-        if (this.$refs.quizGuide) {
-          this.$refs.quizGuide.resetStats()
-        }
-      })
+      // 注意：QuizGuide组件没有resetStats方法，暂时注释掉
+      // this.$nextTick(() => {
+      //   if (this.$refs.quizGuide) {
+      //     this.$refs.quizGuide.resetStats()
+      //   }
+      // })
     },
     goToChapter() {
       this.$router.push(`/chapters/${this.chapterId}`)
@@ -814,8 +1038,34 @@ export default {
     },
     
     startQuiz() {
-      this.currentQuestionIndex = 0
+      // 检查是否选择了难度和模式
+      if (!this.difficulty) {
+        this.$message.warning('请先选择难度')
+        return
+      }
+      if (!this.quizMode) {
+        this.$message.warning('请先选择答题模式')
+        return
+      }
+      
+      // 开始答题，设置第一个题目
+      this.currentQuestionIndex = 1
+      this.showAnswer = false
+      this.selectedAnswer = null
+      this.fillAnswer = ''
+      this.timeRemaining = this.timeLimit
       this.startTimer()
+      
+      // 根据难度调整时间限制
+      if (this.difficulty === 'easy') {
+        this.timeLimit = 120 // 简单模式：2分钟
+      } else if (this.difficulty === 'normal') {
+        this.timeLimit = 90  // 普通模式：1.5分钟
+      } else {
+        this.timeLimit = 60  // 困难模式：1分钟
+      }
+      
+      this.timeRemaining = this.timeLimit
     },
     
     getDifficultyIcon(diff) {
@@ -1028,6 +1278,158 @@ export default {
   padding: 0 1rem;
   position: relative;
   z-index: 1;
+}
+
+// 答题设置样式
+.quiz-settings {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.settings-panel {
+  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
+  border-radius: $card-radius;
+  padding: 2.5rem;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba($accent-color, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid $card-border;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+  }
+}
+
+.settings-title {
+  color: $text-color;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, $text-color 0%, $accent-color-light 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.setting-group {
+  margin-bottom: 2rem;
+}
+
+.setting-label {
+  display: block;
+  color: $text-color;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.difficulty-options, .mode-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.difficulty-btn, .mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
+  border: 2px solid rgba($accent-color, 0.1);
+  border-radius: $btn-radius;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba($accent-color, 0.2);
+    border-color: rgba($accent-color, 0.3);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &.active {
+    background: linear-gradient(135deg, rgba($accent-color, 0.15) 0%, rgba($accent-color-light, 0.15) 100%);
+    border-color: $accent-color;
+    box-shadow: 0 8px 24px rgba($accent-color, 0.3);
+  }
+}
+
+.diff-icon, .mode-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.diff-text, .mode-text {
+  color: $text-color;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.diff-desc, .mode-desc {
+  color: $text-secondary-color;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.start-quiz-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto 0;
+  padding: 1.2rem 2rem;
+  background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+  border: none;
+  border-radius: $btn-radius;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba($accent-color, 0.3);
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba($accent-color, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(-1px);
+  }
 }
 
 .quiz-progress {
@@ -1296,6 +1698,44 @@ export default {
   padding: 1rem;
   border-radius: 8px;
   border-left: 4px solid $accent-color;
+  margin-bottom: 1rem;
+}
+
+.question-media {
+  margin-bottom: 1.5rem;
+  
+  .media-item {
+    margin-bottom: 1rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .question-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba($accent-color, 0.2);
+  }
+  
+  .question-audio,
+  .question-video {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba($accent-color, 0.2);
+  }
+  
+  .question-audio {
+    height: 60px;
+  }
+  
+  .question-video {
+    height: auto;
+    max-height: 400px;
+  }
 }
 
 .options-container {

@@ -19,6 +19,11 @@ public class Result<T> {
         return new Result<>(0, "操作成功", data);
     }
 
+    //快速返回操作成功响应结果(带响应数据和消息)
+    public static <E> Result<E> success(E data, String message) {
+        return new Result<>(0, message, data);
+    }
+
     //快速返回操作成功响应结果
     public static Result success() {
         return new Result(0, "操作成功", null);

@@ -1,7 +1,7 @@
 package com.goodlab.server.service;
 
 import com.goodlab.server.dto.QuestionImportDto;
-import com.goodlab.server.model.Question;
+import com.goodlab.server.pojo.Question;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -127,18 +127,22 @@ public class ExcelService {
         question.setType(dto.getType());
         question.setTitle(dto.getTitle());
         question.setDescription(dto.getDescription());
-        question.setOptions(dto.getOptions());
-
-        // 处理正确答案
-        if ("true-false".equals(dto.getType())) {
-            question.setCorrectAnswer(Boolean.parseBoolean(dto.getCorrectAnswer()));
-        } else if ("choice".equals(dto.getType())) {
-            question.setCorrectAnswer(Integer.parseInt(dto.getCorrectAnswer()));
-        } else {
-            question.setCorrectAnswer(dto.getCorrectAnswer());
+        // 处理选项
+        if (dto.getOptions() != null && !dto.getOptions().isEmpty()) {
+            if (dto.getOptions().size() >= 1)
+                question.setOptionA(dto.getOptions().get(0));
+            if (dto.getOptions().size() >= 2)
+                question.setOptionB(dto.getOptions().get(1));
+            if (dto.getOptions().size() >= 3)
+                question.setOptionC(dto.getOptions().get(2));
+            if (dto.getOptions().size() >= 4)
+                question.setOptionD(dto.getOptions().get(3));
         }
 
-        question.setPoints(dto.getPoints());
+        // 处理正确答案
+        question.setCorrectAnswer(dto.getCorrectAnswer());
+
+        question.setScore(dto.getPoints());
         question.setExplanation(dto.getExplanation());
 
         return question;
