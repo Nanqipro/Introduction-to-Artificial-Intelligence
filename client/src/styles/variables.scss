@@ -1,159 +1,105 @@
-// 高级感黑色极简主题变量 - 统一管理
-$primary-color: #18191a; // 深黑主色
-$primary-color-light: #333; // 渐变终点深灰
-$primary-gradient-end: #232526; // 渐变终点深灰
-$primary-hover-color: #232526; // 主色悬停色
-$secondary-color: #23272e; // 深灰背景
-$secondary-color-light: #31343b; // 深灰背景浅色
-$accent-color: #b0b3b8; // 银灰点缀
-$accent-color-light: #d1d3d8; // 银灰点缀浅色
-$text-color: #f5f6fa; // 主文本色（白）
-$text-secondary-color: #b0b3b8; // 次文本色（银灰）
-$border-color: #393b40; // 边框色
-
-// 卡片组件通用变量
-$card-bg: #292c33; // 卡片背景色
-$card-border: rgba(57, 59, 64, 0.18); // 卡片边框色
-$card-shadow: 0 4px 24px rgba(0, 0, 0, 0.12); // 卡片阴影
-$card-radius: 16px; // 卡片圆角
-$card-header-border: rgba(57, 59, 64, 0.10); // 卡片头部边框色
-
-// 标签组件通用变量
-$tag-bg: #23272e; // 标签背景色
-$tag-color: #b0b3b8; // 标签文字色
-
-// 分割线通用变量
-$divider-bg: rgba(57, 59, 64, 0.18); // 分割线背景色
-
-// 链接通用变量
-$link-color: #58a6ff; // 链接色
-$link-hover-color: #79c0ff; // 链接悬停色
-
-// 描述组件通用变量
-$descriptions-bg: transparent; // 描述组件背景色
-$descriptions-cell-bg: #292c33; // 描述单元格背景色
-$descriptions-border: rgba(57, 59, 64, 0.18); // 描述边框色
-
-// 按钮组件通用变量
-$btn-primary-bg: linear-gradient(135deg, #4a90e2, #357abd); // 主按钮背景
-$btn-secondary-bg: #393b40; // 次按钮背景
-$btn-secondary-hover: #4a4c51; // 次按钮悬停色
-$btn-outline-color: #8fa1b3; // 轮廓按钮颜色
-$btn-outline-border: #8fa1b3; // 轮廓按钮边框色
-$btn-radius: 12px; // 按钮圆角
-$btn-shadow: 0 4px 16px rgba(74, 144, 226, 0.3); // 按钮阴影
-
-// 表单组件通用变量
-$form-bg: #23272e; // 表单背景色
-$form-border: rgba(57, 59, 64, 0.18); // 表单边框色
-$form-focus-border: #4a90e2; // 表单聚焦边框色
-$form-radius: 8px; // 表单圆角
-$input-radius: 8px; // 输入框圆角
-
-// 模态框通用变量
-$modal-overlay-bg: rgba(0, 0, 0, 0.8); // 模态框遮罩背景
-$modal-bg: #292c33; // 模态框背景色
-$modal-radius: 16px; // 模态框圆角
-
-// 上传区域通用变量
-$upload-border: #8fa1b3; // 上传区域边框色
-$upload-hover-border: #4a90e2; // 上传区域悬停边框色
-$upload-radius: 12px; // 上传区域圆角
-
-// 状态颜色变量
-$success-color: #4caf50; // 成功色
-$success-color-light: #66bb6a; // 成功色浅色
-$warning-color: #ff9800; // 警告色
-$warning-color-light: #ffb74d; // 警告色浅色
-$error-color: #f44336; // 错误色
-$error-color-light: #ef5350; // 错误色浅色
-$error-hover: #d32f2f; // 错误悬停色
-$info-color: #4a90e2; // 信息色
-$info-color-light: #64b5f6; // 信息色浅色
-
-// 题型颜色变量
-$type-choice-bg: linear-gradient(135deg, #667eea, #764ba2); // 选择题背景
-$type-tf-bg: linear-gradient(135deg, #f093fb, #f5576c); // 判断题背景
-$type-fill-bg: linear-gradient(135deg, #4facfe, #00f2fe); // 填空题背景
-
-// 难度等级颜色变量
-$difficulty-easy-bg: linear-gradient(135deg, #4caf50, #66bb6a); // 简单难度背景
-$difficulty-medium-bg: linear-gradient(135deg, #ff9800, #ffb74d); // 中等难度背景
-$difficulty-hard-bg: linear-gradient(135deg, #f44336, #ef5350); // 困难难度背景
-
-// 导航组件通用变量
-$nav-bg: rgba(41, 44, 51, 0.92); // 导航背景色
-$nav-border: rgba(57, 59, 64, 0.18); // 导航边框色
-$nav-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); // 导航阴影
-$nav-back-hover: #b0b3b8; // 导航返回按钮悬停色
-
-// 章节组件通用变量
-$chapter-badge-bg: linear-gradient(135deg, #18191a, #232526); // 章节徽章背景
-$chapter-badge-shadow: 0 2px 8px rgba(143, 161, 179, 0.08); // 章节徽章阴影
-$chapter-type-bg: #23272e; // 章节类型背景色
-$chapter-pagination-bg: #23272e; // 章节分页背景色
-$chapter-pagination-hover: #31343b; // 章节分页悬停色
-$chapter-pagination-hover-border: #8fa1b3; // 章节分页悬停边框色
-$chapter-pagination-hover-shadow: 0 4px 16px #8fa1b3; // 章节分页悬停阴影
-
-// 加载和错误状态变量
-$loading-border: #393b40; // 加载边框色
-$loading-spinner: #8fa1b3; // 加载旋转器色
-$error-icon-size: 4rem; // 错误图标大小
-
-// 列表组件通用变量
-$list-item-hover-bg: #31343b; // 列表项悬停背景色
-$list-item-hover-shadow: 0 8px 32px #8fa1b3; // 列表项悬停阴影
-$list-item-hover-border: #8fa1b3; // 列表项悬停边框色
-$list-item-gap: 1.5rem; // 列表项间距
-
-// 状态指示器变量
-$status-dot-size: 8px; // 状态点大小
-$status-dot-unpublished: #393b40; // 未发布状态点颜色
-$status-dot-published: #8fa1b3; // 已发布状态点颜色
-
-// 空状态变量
-$empty-icon-size: 4rem; // 空状态图标大小
-
-// 页面布局变量
-$page-max-width: 1000px; // 页面最大宽度
-$page-padding: 1rem; // 页面内边距
-$page-header-max-width: 1200px; // 页面头部最大宽度
-$page-header-padding: 2rem; // 页面头部内边距
-
-// 全局样式变量
-$body-bg: #f8f9fa; // 页面背景色
-$body-color: #333; // 页面文字色
-$link-color: #667eea; // 链接颜色
-$focus-color: #667eea; // 焦点颜色
-$selection-bg: #b0b3b8; // 选择文本背景色
-$selection-color: #ffffff; // 选择文本颜色
-
-// 滚动条变量
-$scrollbar-width: 8px; // 滚动条宽度
-$scrollbar-track: #f1f1f1; // 滚动条轨道色
-$scrollbar-thumb: #c1c1c1; // 滚动条滑块色
-$scrollbar-thumb-hover: #a8a8a8; // 滚动条滑块悬停色
-
-// 页脚变量
-$footer-bg: $primary-color-light; // 页脚背景色
-$footer-color: white; // 页脚文字色
-$footer-max-width: 1200px; // 页脚最大宽度
-
-// 工具类变量
-$spacing-xs: 0.5rem; // 超小间距
-$spacing-sm: 1rem; // 小间距
-$spacing-md: 1.5rem; // 中间距
-$spacing-lg: 2rem; // 大间距
-
-// 基础样式变量
+// 主题变量 - 这些将被CSS变量覆盖
+// 深色主题 (默认)
+$primary-color: #18191a;
+$secondary-color: #23272e;
+$text-color: #f5f6fa;
+$text-secondary-color: #b0b3b8;
+$border-color: #393b40;
+$card-bg: #292c33;
+$card-border: rgba(57, 59, 64, 0.18);
+$success-color: #4caf50;
+$success-color-light: #66bb6a;
+$warning-color: #ff9800;
+$warning-color-light: #ffb74d;
+$error-color: #f44336;
+$error-color-light: #ef5350;
+$info-color: #4a90e2;
+$info-color-light: #64b5f6;
+$accent-color: #b0b3b8;
+$accent-color-light: #d1d3d8;
+$nav-bg: rgba(41, 44, 51, 0.92);
+$nav-border: rgba(57, 59, 64, 0.18);
+$list-item-hover-bg: #31343b;
+$list-item-hover-shadow: 0 8px 32px #8fa1b3;
+$list-item-hover-border: #8fa1b3;
+$list-item-gap: 1.5rem;
+$btn-primary-bg: linear-gradient(135deg, #4a90e2, #357abd);
+$btn-secondary-bg: #393b40;
+$btn-radius: 12px;
+$btn-shadow: 0 4px 16px rgba(74, 144, 226, 0.3);
+$form-bg: #23272e;
+$form-border: rgba(57, 59, 64, 0.18);
+$form-focus-border: #4a90e2;
+$modal-overlay-bg: rgba(0, 0, 0, 0.8);
+$modal-bg: #292c33;
+$modal-radius: 16px;
+$type-choice-bg: linear-gradient(135deg, #667eea, #764ba2);
+$type-tf-bg: linear-gradient(135deg, #f093fb, #f5576c);
+$type-fill-bg: linear-gradient(135deg, #4facfe, #00f2fe);
+$difficulty-easy-bg: linear-gradient(135deg, #4caf50, #66bb6a);
+$difficulty-medium-bg: linear-gradient(135deg, #ff9800, #ffb74d);
+$difficulty-hard-bg: linear-gradient(135deg, #f44336, #ef5350);
+$chapter-badge-bg: linear-gradient(135deg, #18191a, #232526);
+$chapter-badge-shadow: 0 2px 8px rgba(143, 161, 179, 0.08);
+$chapter-type-bg: #23272e;
+$chapter-pagination-bg: #23272e;
+$chapter-pagination-hover: #31343b;
+$chapter-pagination-hover-border: #8fa1b3;
+$chapter-pagination-hover-shadow: 0 4px 16px #8fa1b3;
+$loading-border: #393b40;
+$loading-spinner: #8fa1b3;
+$error-icon-size: 4rem;
+$status-dot-size: 8px;
+$status-dot-unpublished: #393b40;
+$status-dot-published: #8fa1b3;
+$empty-icon-size: 4rem;
+$page-max-width: 1000px;
+$page-padding: 1rem;
+$page-header-max-width: 1200px;
+$page-header-padding: 2rem;
+$body-bg: #f8f9fa;
+$body-color: #333;
+$link-color: #667eea;
+$focus-color: #667eea;
+$selection-bg: #b0b3b8;
+$selection-color: #ffffff;
+$scrollbar-width: 8px;
+$scrollbar-track: #f1f1f1;
+$scrollbar-thumb: #c1c1c1;
+$scrollbar-thumb-hover: #a8a8a8;
+$footer-bg: #333;
+$footer-color: white;
+$footer-max-width: 1200px;
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 2.5rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
 $font-size-base: 16px;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
 $border-radius: 10px;
 $box-shadow: 0 4px 24px rgba(24, 25, 26, 0.10);
-
-// UserProfile 页面专用变量 - 深色主题
+$card-shadow: 0 4px 24px rgba(24, 25, 26, 0.10);
 $card-background: rgba(42, 42, 42, 0.9);
+$card-radius: 10px;
+$nav-shadow: 0 4px 24px rgba(24, 25, 26, 0.10);
+$primary-gradient-end: #232526;
 $header-background: linear-gradient(135deg, #333333, #404040);
+$secondary-color-light: #31343b;
+$btn-outline-color: #4a90e2;
+$btn-outline-border: #4a90e2;
+$btn-secondary-hover: #4a4a4a;
+$form-radius: 10px;
+$nav-back-hover: #ffffff;
+$primary-hover-color: #cccccc;
 $text-primary: #ffffff;
 $text-secondary: #b0b3b8;
 $text-placeholder: #8e9297;
@@ -163,101 +109,19 @@ $profile-button-primary: #ffffff;
 $profile-button-danger: #f56565;
 $disabled-background: rgba(50, 50, 50, 0.6);
 $disabled-border: rgba(80, 80, 80, 0.5);
-$border-color: rgba(255, 255, 255, 0.1);
 $border-hover: #ffffff;
 $button-secondary: rgba(60, 60, 60, 0.8);
 $button-secondary-hover: rgba(80, 80, 80, 0.9);
-$primary-color: #6c6c6c;
 $primary-hover: #cccccc;
 $danger-color: #f56565;
 $danger-hover: #e53e3e;
-
-// 缺失的样式变量补充
-$primary-color: #4a90e2; // 主色调
-$primary-hover-color: #357abd; // 主色调悬停状态
-
-// 按钮样式补充
-$btn-radius: 12px; // 按钮圆角
-$btn-shadow: 0 4px 16px rgba(74, 144, 226, 0.3); // 按钮阴影
-
-// 导航样式补充
-$nav-bg: rgba(41, 44, 51, 0.92); // 导航背景色
-$nav-border: rgba(57, 59, 64, 0.18); // 导航边框色
-$nav-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); // 导航阴影
-$nav-back-hover: #b0b3b8; // 导航返回按钮悬停色
-
-// 章节样式补充
-$chapter-badge-bg: linear-gradient(135deg, #18191a, #232526); // 章节徽章背景
-$chapter-badge-shadow: 0 2px 8px rgba(143, 161, 179, 0.08); // 章节徽章阴影
-$chapter-type-bg: #23272e; // 章节类型背景色
-
-// 列表样式补充
-$list-item-hover-bg: #31343b; // 列表项悬停背景色
-$list-item-hover-shadow: 0 8px 32px rgba(143, 161, 179, 0.15); // 列表项悬停阴影
-$list-item-hover-border: #8fa1b3; // 列表项悬停边框色
-$list-item-gap: 1.5rem; // 列表项间距
-
-// 状态指示器补充
-$status-dot-size: 8px; // 状态点大小
-$status-dot-unpublished: #393b40; // 未发布状态点颜色
-$status-dot-published: #8fa1b3; // 已发布状态点颜色
-
-// 加载状态补充
-$loading-border: #393b40; // 加载边框色
-$loading-spinner: #8fa1b3; // 加载旋转器色
-
-// 空状态补充
-$empty-icon-size: 4rem; // 空状态图标大小
-
-// 页面布局补充
-$page-max-width: 1000px; // 页面最大宽度
-$page-padding: 1rem; // 页面内边距
-
-// 卡片样式补充
-$card-bg: #292c33; // 卡片背景色
-$card-border: rgba(57, 59, 64, 0.18); // 卡片边框色
-$card-shadow: 0 4px 24px rgba(0, 0, 0, 0.12); // 卡片阴影
-$card-radius: 16px; // 卡片圆角
-
-// 文本颜色补充
-$text-color: #f5f6fa; // 主文本色（白）
-$text-secondary-color: #b0b3b8; // 次文本色（银灰）
-
-// 背景色补充
-$secondary-color: #23272e; // 深灰背景
-$accent-color: #b0b3b8; // 银灰点缀
-
-// 响应式断点
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
-
-// 动画时长
 $transition-fast: 0.15s;
 $transition-normal: 0.3s;
 $transition-slow: 0.5s;
-
-// 阴影深度
 $shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
 $shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
 $shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
-
-// 字体大小
-$font-size-xs: 0.75rem;
-$font-size-sm: 0.875rem;
-$font-size-base: 1rem;
-$font-size-lg: 1.125rem;
-$font-size-xl: 1.25rem;
-$font-size-2xl: 1.5rem;
-$font-size-3xl: 1.875rem;
-$font-size-4xl: 2.25rem;
-
-// 间距系统
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
-$spacing-2xl: 3rem;
-$spacing-3xl: 4rem;

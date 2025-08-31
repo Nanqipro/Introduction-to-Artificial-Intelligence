@@ -30,9 +30,10 @@
           <el-icon><Notebook /></el-icon>
           章节
         </el-menu-item>
-        <el-menu-item index="/regression-demo">
-          <el-icon><TrendCharts /></el-icon>
-          回归演示
+
+        <el-menu-item index="/quiz">
+          <el-icon><QuestionFilled /></el-icon>
+          题目自测
         </el-menu-item>
         <el-menu-item index="/network-training" class="special-menu-item">
           <el-icon><Connection /></el-icon>
@@ -106,7 +107,7 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted } from 'vue'
-import { House, Notebook, InfoFilled, TrendCharts, Connection, DataAnalysis, Setting, MoreFilled, User, ArrowDown, SwitchButton } from '@element-plus/icons-vue'
+import { House, Notebook, InfoFilled, TrendCharts, Connection, DataAnalysis, Setting, MoreFilled, User, ArrowDown, SwitchButton, QuestionFilled } from '@element-plus/icons-vue'
 import { useAuth } from '@/composables/useAuth'
 
 const route = useRoute()
@@ -167,12 +168,14 @@ onMounted(() => {
 
 .navigation {
   height: 80px;
-  background: rgba(51, 51, 51, 0.92); // 更通透的深灰
-  box-shadow: $box-shadow;
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--secondary-color, #23272e) 100%);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 1000;
   padding: 0;
+  border-bottom: 1px solid var(--border-color, rgba(57, 59, 64, 0.2));
 }
 
 .nav-container {
@@ -215,18 +218,42 @@ onMounted(() => {
 .brand-title {
   font-size: 1.22rem;
   font-weight: 800;
-  color: $accent-color;
+  color: var(--text-color, #f5f6fa);
   line-height: 1.1;
   letter-spacing: 1.2px;
-  white-space: nowrap; // 防止标题换行
+  white-space: nowrap;
+  
+  /* 深色主题下使用渐变效果 */
+  .dark-theme & {
+    background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* 浅色主题下使用深色文字 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+  }
 }
 
 .brand-subtitle {
   font-size: 0.9rem;
-  color: $text-secondary-color;
+  color: var(--text-color, #f5f6fa);
   line-height: 1.1;
   font-weight: 500;
-  white-space: nowrap; // 防止副标题换行
+  white-space: nowrap;
+  opacity: 0.9;
+  
+  /* 浅色主题下调整颜色 */
+  .light-theme & {
+    color: var(--text-secondary-color, #475569);
+    opacity: 0.8;
+  }
 }
 
 .nav-menu {
@@ -245,32 +272,67 @@ onMounted(() => {
 }
 .el-menu--horizontal > .el-menu-item {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   border-bottom: none !important;
   background: transparent !important;
-  border-radius: $border-radius;
-  margin: 0 0.5rem; // 进一步减少菜单项间距
-  padding: 0.7rem 1rem; // 进一步减少内边距
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  border-radius: 12px;
+  margin: 0 0.5rem;
+  padding: 0.8rem 1.2rem;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.4rem; // 减少图标和文字间距
-  white-space: nowrap; // 防止文字换行
+  gap: 0.5rem;
+  white-space: nowrap;
+  color: var(--text-color, #f5f6fa);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, #60a5fa 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+  }
+  
+  &:hover::before {
+    opacity: 0.1;
+  }
 }
 .el-menu--horizontal > .el-menu-item .el-icon {
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   margin-right: 0.3rem;
-  color: $accent-color;
+  color: var(--accent-color, #3b82f6);
+  transition: all 0.3s ease;
+  z-index: 1;
+  position: relative;
 }
 .el-menu--horizontal > .el-menu-item.is-active,
 .el-menu--horizontal > .el-menu-item:hover {
-  background: rgba(176,179,184,0.15) !important;
-  color: $accent-color !important;
-  box-shadow: 0 2px 12px rgba(176,179,184,0.10);
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: var(--accent-color, #3b82f6) !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+  
+  .el-icon {
+    color: var(--accent-color, #3b82f6);
+    transform: scale(1.1);
+  }
 }
 .el-menu--horizontal > .el-menu-item.is-active {
-  font-weight: 900;
-  letter-spacing: 1.2px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.1) 100%) !important;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  
+  &::before {
+    opacity: 0.15;
+  }
 }
 .el-menu--horizontal > .el-menu-item:focus {
   outline: none !important;
@@ -281,8 +343,8 @@ onMounted(() => {
 
 // 下拉菜单样式 - 现代简洁设计
 :deep(.el-dropdown-menu) {
-  background: $card-bg !important;
-  border: 1px solid $card-border !important;
+  background: var(--card-bg, #292c33) !important;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18)) !important;
   border-radius: 12px !important;
   box-shadow: 
     0 12px 32px rgba(0, 0, 0, 0.3),
@@ -295,7 +357,7 @@ onMounted(() => {
 }
 
 :deep(.el-dropdown-menu__item) {
-  color: $text-color !important;
+  color: var(--text-color, #f5f6fa) !important;
   font-size: 0.9rem !important;
   font-weight: 500 !important;
   padding: 0.75rem 1.25rem !important;
@@ -309,12 +371,12 @@ onMounted(() => {
   align-items: center !important;
   
   &:hover {
-    background: rgba($accent-color, 0.1) !important;
-    color: $accent-color-light !important;
+    background: rgba(var(--accent-color, #b0b3b8), 0.1) !important;
+    color: #d1d3d8 !important;
     transform: translateX(4px) !important;
     
     .el-icon {
-      color: $accent-color-light !important;
+      color: #d1d3d8 !important;
       transform: scale(1.05) !important;
     }
   }
@@ -334,7 +396,7 @@ onMounted(() => {
 // 分隔线样式
 .dropdown-divider {
   height: 1px;
-  background: $divider-bg;
+  background: var(--divider-bg, rgba(57, 59, 64, 0.18));
   margin: 0.4rem 1rem;
   border-radius: 1px;
 }
@@ -385,18 +447,18 @@ onMounted(() => {
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba($accent-color, 0.1);
+    background: rgba(var(--accent-color, #b0b3b8), 0.1);
   }
 
   .username {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     font-weight: 500;
     font-size: 0.9rem;
   }
 
   .dropdown-icon {
     font-size: 0.8rem;
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     transition: transform 0.2s ease;
   }
 
@@ -413,8 +475,8 @@ onMounted(() => {
 
 .more-btn {
   background: transparent;
-  border: 1px solid rgba($accent-color, 0.2);
-  color: $accent-color;
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.2);
+  color: var(--accent-color, #b0b3b8);
   font-size: 1.2rem;
   padding: 0.6rem;
   border-radius: 8px;
@@ -426,9 +488,9 @@ onMounted(() => {
   justify-content: center;
   
   &:hover {
-    background: rgba($accent-color, 0.1);
-    color: $accent-color-light;
-    border-color: rgba($accent-color, 0.3);
+    background: rgba(var(--accent-color, #b0b3b8), 0.1);
+    color: #d1d3d8;
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
     transform: translateY(-1px);
   }
   
@@ -438,24 +500,24 @@ onMounted(() => {
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba($accent-color, 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color, #b0b3b8), 0.2);
   }
 }
 
 // 特殊菜单项样式 - 优化显示
 .special-menu-item {
   position: relative;
-  background: rgba($accent-color, 0.05) !important;
-  border-radius: $border-radius !important;
+  background: rgba(var(--accent-color, #b0b3b8), 0.05) !important;
+  border-radius: var(--border-radius, 10px) !important;
   margin: 0 0.3rem !important;
   transition: all 0.2s ease !important;
   min-width: 0 !important;
   flex-shrink: 0 !important;
 
   &:hover {
-    background: rgba($accent-color, 0.1) !important;
+    background: rgba(var(--accent-color, #b0b3b8), 0.1) !important;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($accent-color, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.2) !important;
   }
 
   .menu-text {
@@ -467,7 +529,7 @@ onMounted(() => {
     font-size: 9px;
     padding: 1px 4px;
     border-radius: 6px;
-    background: $success-color;
+    background: var(--success-color, #4caf50);
     border: none;
     color: white;
     font-weight: 600;
@@ -475,10 +537,10 @@ onMounted(() => {
   }
 
   &.is-active {
-    background: rgba($accent-color, 0.15) !important;
+    background: rgba(var(--accent-color, #b0b3b8), 0.15) !important;
 
     .menu-tag {
-      background: $error-color;
+      background: var(--error-color, #f44336);
     }
   }
 }

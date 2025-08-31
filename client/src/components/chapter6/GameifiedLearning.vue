@@ -582,17 +582,17 @@ watch(playerExp, (newExp) => {
 
 .gamified-learning-container {
   padding: 2rem;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -602,17 +602,17 @@ watch(playerExp, (newExp) => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
   }
 }
@@ -621,11 +621,11 @@ watch(playerExp, (newExp) => {
   margin-bottom: 2rem;
 
   .status-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .player-info {
@@ -643,18 +643,18 @@ watch(playerExp, (newExp) => {
           width: 60px;
           height: 60px;
           border-radius: 50%;
-          background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+          background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: $primary-color;
+          color: var(--primary-color, #18191a);
           font-size: 1.5rem;
         }
 
         .player-details {
           h3 {
             margin: 0 0 0.5rem 0;
-            color: $text-color;
+            color: var(--text-color, #f5f6fa);
           }
 
           .level-info {
@@ -663,7 +663,7 @@ watch(playerExp, (newExp) => {
             gap: 0.5rem;
 
             .title {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
               font-style: italic;
             }
           }

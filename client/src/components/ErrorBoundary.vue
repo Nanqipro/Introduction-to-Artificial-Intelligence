@@ -93,130 +93,129 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
 
 .error-boundary {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: $secondary-color;
-  padding: $spacing-lg;
+  background: var(--secondary-color, #23272e);
+  padding: var(--spacing-lg, 2rem);
 }
 
 .error-container {
   max-width: 600px;
   text-align: center;
-  background: $card-bg;
-  border-radius: $card-radius;
-  padding: $spacing-2xl;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
+  padding: var(--spacing-2xl, 3rem);
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .error-icon {
   font-size: 4rem;
-  margin-bottom: $spacing-lg;
+  margin-bottom: var(--spacing-lg, 2rem);
   animation: bounce 2s infinite;
 }
 
 .error-title {
-  font-size: $font-size-2xl;
-  color: $text-color;
-  margin-bottom: $spacing-md;
+  font-size: var(--font-size-2xl, 1.5rem);
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-md, 1.5rem);
   font-weight: 700;
 }
 
 .error-message {
-  color: $text-secondary-color;
-  margin-bottom: $spacing-xl;
+  color: var(--text-secondary-color, #b0b3b8);
+  margin-bottom: var(--spacing-xl, 2.5rem);
   line-height: 1.6;
-  font-size: $font-size-lg;
+  font-size: var(--font-size-lg, 1.125rem);
 }
 
 .error-actions {
   display: flex;
-  gap: $spacing-md;
+  gap: var(--spacing-md, 1.5rem);
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: $spacing-xl;
+  margin-bottom: var(--spacing-xl, 2.5rem);
 }
 
 .btn {
-  padding: $spacing-md $spacing-lg;
+  padding: var(--spacing-md, 1.5rem) var(--spacing-lg, 2rem);
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 600;
   cursor: pointer;
-  transition: all $transition-normal ease;
+  transition: all var(--transition-normal, 0.3s) ease;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: var(--spacing-sm, 1rem);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $btn-shadow;
+    box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
   }
 }
 
 .btn-primary {
-  background: $primary-color;
+  background: var(--primary-color, #18191a);
   color: white;
   
   &:hover {
-    background: $primary-hover-color;
+    background: var(--primary-hover-color, #cccccc);
   }
 }
 
 .btn-secondary {
-  background: $secondary-color-light;
-  color: $text-color;
+  background: #31343b;
+  color: var(--text-color, #f5f6fa);
   
   &:hover {
-    background: $card-bg;
+    background: var(--card-bg, #292c33);
   }
 }
 
 .btn-outline {
   background: transparent;
-  color: $accent-color;
-  border: 2px solid $accent-color;
+  color: var(--accent-color, #b0b3b8);
+  border: 2px solid var(--accent-color, #b0b3b8);
   
   &:hover {
-    background: $accent-color;
-    color: $text-color;
+    background: var(--accent-color, #b0b3b8);
+    color: var(--text-color, #f5f6fa);
   }
 }
 
 .error-details {
-  margin-top: $spacing-lg;
+  margin-top: var(--spacing-lg, 2rem);
   text-align: left;
   
   details {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     
     summary {
       cursor: pointer;
-      padding: $spacing-sm;
-      border-radius: $form-radius;
-      background: $form-bg;
-      margin-bottom: $spacing-sm;
+      padding: var(--spacing-sm, 1rem);
+      border-radius: var(--form-radius, 10px);
+      background: var(--form-bg, #23272e);
+      margin-bottom: var(--spacing-sm, 1rem);
       
       &:hover {
-        background: $card-bg;
+        background: var(--card-bg, #292c33);
       }
     }
   }
   
   .error-stack {
-    background: $form-bg;
-    padding: $spacing-md;
-    border-radius: $form-radius;
+    background: var(--form-bg, #23272e);
+    padding: var(--spacing-md, 1.5rem);
+    border-radius: var(--form-radius, 10px);
     overflow-x: auto;
-    font-size: $font-size-sm;
+    font-size: var(--font-size-sm, 0.875rem);
     line-height: 1.4;
-    color: $text-secondary-color;
-    border: 1px solid $form-border;
+    color: var(--text-secondary-color, #b0b3b8);
+    border: 1px solid var(--form-border, rgba(57, 59, 64, 0.18));
   }
 }
 
@@ -232,9 +231,9 @@ export default {
   }
 }
 
-@media (max-width: $breakpoint-md) {
+@media (max-width: var(--breakpoint-md, 768px)) {
   .error-container {
-    padding: $spacing-xl;
+    padding: var(--spacing-xl, 2.5rem);
   }
   
   .error-actions {

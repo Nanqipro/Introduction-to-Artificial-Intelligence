@@ -524,7 +524,7 @@ onUnmounted(() => {
 
 .instructions-content {
   h3 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin: 1.5rem 0 1rem 0;
     display: flex;
     align-items: center;
@@ -532,7 +532,7 @@ onUnmounted(() => {
   }
 
   p, li {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     line-height: 1.6;
     margin-bottom: 0.5rem;
   }
@@ -542,7 +542,7 @@ onUnmounted(() => {
   }
 
   strong {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
   }
 }
 
@@ -557,20 +557,20 @@ onUnmounted(() => {
 
     .stat-item {
       padding: 1rem;
-      background: $secondary-color;
-      border: 1px solid $border-color;
+      background: var(--secondary-color, #23272e);
+      border: 1px solid var(--border-color, #393b40);
       border-radius: 8px;
 
       .stat-label {
         display: block;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
       }
 
       .stat-value {
         display: block;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         font-size: 1.5rem;
         font-weight: 600;
       }
@@ -579,7 +579,7 @@ onUnmounted(() => {
 
   .achievement-section {
     h4 {
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin-bottom: 1rem;
     }
     

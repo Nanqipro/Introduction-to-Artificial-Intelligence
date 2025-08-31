@@ -600,17 +600,17 @@ onMounted(() => {
 
 .ai-assistant-container {
   padding: 2rem;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -620,17 +620,17 @@ onMounted(() => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
   }
 }
@@ -639,11 +639,11 @@ onMounted(() => {
   margin-bottom: 2rem;
 
   .status-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .assistant-info {
@@ -661,7 +661,7 @@ onMounted(() => {
           width: 80px;
           height: 80px;
           border-radius: 50%;
-          background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+          background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -709,7 +709,7 @@ onMounted(() => {
         .assistant-details {
           h3 {
             margin: 0 0 0.5rem 0;
-            color: $text-color;
+            color: var(--text-color, #f5f6fa);
           }
 
           .status-info {
@@ -718,7 +718,7 @@ onMounted(() => {
             gap: 0.5rem;
 
             .mood {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
               font-size: 0.9rem;
             }
           }
@@ -736,11 +736,11 @@ onMounted(() => {
           .stat-value {
             font-size: 1.5rem;
             font-weight: bold;
-            color: $accent-color;
+            color: var(--accent-color, #b0b3b8);
           }
 
           .stat-label {
-            color: $text-secondary-color;
+            color: var(--text-secondary-color, #b0b3b8);
             font-size: 0.9rem;
           }
         }
@@ -753,17 +753,17 @@ onMounted(() => {
   margin-bottom: 2rem;
 
   .chat-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__header) {
-      background: $secondary-color;
-      border-bottom: 1px solid $border-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      border-bottom: 1px solid var(--border-color, #393b40);
+      color: var(--text-color, #f5f6fa);
     }
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .chat-header {
@@ -771,7 +771,7 @@ onMounted(() => {
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
 
       .chat-controls {
         display: flex;
@@ -783,7 +783,7 @@ onMounted(() => {
       height: 400px;
       overflow-y: auto;
       padding: 1rem 0;
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
       
       .message-item {
         display: flex;
@@ -794,8 +794,8 @@ onMounted(() => {
 
           .message-content {
             .message-bubble {
-              background: $accent-color;
-              color: $primary-color;
+              background: var(--accent-color, #b0b3b8);
+              color: var(--primary-color, #18191a);
             }
           }
         }
@@ -812,11 +812,11 @@ onMounted(() => {
           align-items: center;
           justify-content: center;
           margin: 0 0.5rem;
-          background: $secondary-color;
+          background: var(--secondary-color, #23272e);
 
           .el-icon {
             font-size: 1.2rem;
-            color: $accent-color;
+            color: var(--accent-color, #b0b3b8);
           }
 
           .ai-avatar {
@@ -828,11 +828,11 @@ onMounted(() => {
           max-width: 70%;
 
           .message-bubble {
-            background: $secondary-color;
+            background: var(--secondary-color, #23272e);
             padding: 0.8rem 1rem;
             border-radius: 12px;
             margin-bottom: 0.3rem;
-            border: 1px solid $border-color;
+            border: 1px solid var(--border-color, #393b40);
             
             .typing-indicator {
               display: flex;
@@ -841,7 +841,7 @@ onMounted(() => {
               span {
                 width: 8px;
                 height: 8px;
-                background: $text-secondary-color;
+                background: var(--text-secondary-color, #b0b3b8);
                 border-radius: 50%;
                 animation: typing 1.4s infinite ease-in-out;
 
@@ -856,22 +856,22 @@ onMounted(() => {
             }
 
             .message-text {
-              color: $text-color;
+              color: var(--text-color, #f5f6fa);
 
               // 消息文本选中样式
               ::selection {
-                background: $accent-color;
+                background: var(--accent-color, #b0b3b8);
                 color: #ffffff;
               }
 
               ::-moz-selection {
-                background: $accent-color;
+                background: var(--accent-color, #b0b3b8);
                 color: #ffffff;
               }
 
               :deep(p) {
                 margin: 0 0 0.5rem 0;
-                color: $text-color;
+                color: var(--text-color, #f5f6fa);
 
                 &:last-child {
                   margin-bottom: 0;
@@ -881,25 +881,25 @@ onMounted(() => {
               :deep(ul), :deep(ol) {
                 margin: 0.5rem 0;
                 padding-left: 1.5rem;
-                color: $text-color;
+                color: var(--text-color, #f5f6fa);
               }
 
               :deep(code) {
-                background: $primary-color;
-                color: $accent-color;
+                background: var(--primary-color, #18191a);
+                color: var(--accent-color, #b0b3b8);
                 padding: 0.2rem 0.4rem;
                 border-radius: 4px;
                 font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-                border: 1px solid $border-color;
+                border: 1px solid var(--border-color, #393b40);
 
                 // 代码块选中样式
                 ::selection {
-                  background: $accent-color-light;
+                  background: #d1d3d8;
                   color: #ffffff;
                 }
 
                 ::-moz-selection {
-                  background: $accent-color-light;
+                  background: #d1d3d8;
                   color: #ffffff;
                 }
               }
@@ -946,29 +946,29 @@ onMounted(() => {
 
         .message-input {
           :deep(.el-input__inner) {
-            background: $secondary-color;
-            border-color: $border-color;
-            color: $text-color;
+            background: var(--secondary-color, #23272e);
+            border-color: var(--border-color, #393b40);
+            color: var(--text-color, #f5f6fa);
 
             &::placeholder {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
             }
 
             &::selection {
-              background: $accent-color;
+              background: var(--accent-color, #b0b3b8);
               color: #ffffff;
             }
 
             &::-moz-selection {
-              background: $accent-color;
+              background: var(--accent-color, #b0b3b8);
               color: #ffffff;
             }
           }
 
           :deep(.el-input-group__append) {
             padding: 0;
-            background: $secondary-color;
-            border-color: $border-color;
+            background: var(--secondary-color, #23272e);
+            border-color: var(--border-color, #393b40);
 
             .el-button {
               border-radius: 0 4px 4px 0;

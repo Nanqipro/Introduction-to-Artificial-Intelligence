@@ -214,15 +214,14 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped lang="scss">
-@use '@/styles/variables.scss' as *;
 
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $primary-color, $primary-gradient-end);
-  padding: $page-padding;
+  background: linear-gradient(135deg, var(--primary-color, #18191a), var(--primary-gradient-end, #232526));
+  padding: var(--page-padding, 1rem);
   position: relative;
   
   &::before {
@@ -239,13 +238,13 @@ const handleSubmit = async () => {
 }
 
 .login-card {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 360px;
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(10px);
   position: relative;
   z-index: 1;
@@ -258,20 +257,20 @@ const handleSubmit = async () => {
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-radius: $card-radius;
+    border-radius: var(--card-radius, 10px);
     pointer-events: none;
   }
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: var(--spacing-lg, 2rem);
   position: relative;
   z-index: 2;
 }
 
 .brand-icon {
-  margin-bottom: $spacing-md;
+  margin-bottom: var(--spacing-md, 1.5rem);
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -295,16 +294,16 @@ const handleSubmit = async () => {
 .login-title {
   font-size: 2rem;
   font-weight: 700;
-  color: $text-color;
-  margin-bottom: $spacing-xs;
-  background: linear-gradient(135deg, $text-color, $accent-color-light);
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-xs, 0.5rem);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa), #d1d3d8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .login-subtitle {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.95rem;
   font-weight: 400;
   opacity: 0.9;
@@ -315,31 +314,31 @@ const handleSubmit = async () => {
   z-index: 2;
   
   .el-form-item {
-    margin-bottom: $spacing-md;
+    margin-bottom: var(--spacing-md, 1.5rem);
     
     :deep(.el-input) {
       .el-input__wrapper {
-        background: $form-bg;
-        border: 1px solid $form-border;
-        border-radius: $form-radius;
+        background: var(--form-bg, #23272e);
+        border: 1px solid var(--form-border, rgba(57, 59, 64, 0.18));
+        border-radius: var(--form-radius, 10px);
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         
         &:hover {
-          border-color: $accent-color;
+          border-color: var(--accent-color, #b0b3b8);
         }
         
         &.is-focus {
-          border-color: $form-focus-border;
+          border-color: var(--form-focus-border, #4a90e2);
           box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
       }
       
       .el-input__inner {
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         
         &::placeholder {
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
         }
       }
       
@@ -359,10 +358,10 @@ const handleSubmit = async () => {
   height: 52px;
   font-size: 1.1rem;
   font-weight: 600;
-  border-radius: $btn-radius;
-  background: $btn-primary-bg;
+  border-radius: var(--btn-radius, 12px);
+  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
   border: none;
-  box-shadow: $btn-shadow;
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -394,17 +393,17 @@ const handleSubmit = async () => {
 
 .form-footer {
   text-align: center;
-  margin-top: $spacing-md;
+  margin-top: var(--spacing-md, 1.5rem);
   position: relative;
   z-index: 2;
   
   .el-button {
-    color: $link-color;
+    color: var(--link-color, #667eea);
     font-weight: 500;
     transition: all 0.3s ease;
     
     &:hover {
-      color: $link-hover-color;
+      color: var(--link-hover-color, #5a67d8);
       transform: translateY(-1px);
     }
   }
@@ -412,7 +411,7 @@ const handleSubmit = async () => {
 
 @media (max-width: 480px) {
   .login-container {
-    padding: $spacing-sm;
+    padding: var(--spacing-sm, 1rem);
   }
   
   .login-card {

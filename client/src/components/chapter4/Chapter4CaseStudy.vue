@@ -787,6 +787,158 @@
         </div>
       </div>
     </div>
+
+    <!-- 章节测验板块 -->
+    <transition name="slide-fade" mode="out-in">
+      <div v-if="currentSection === 4" class="section quiz-section" key="quiz">
+        <div class="section-header">
+          <h3 class="section-title">
+            <span class="title-icon">📝</span>
+            <span class="title-text">章节测验</span>
+          </h3>
+          <p class="section-subtitle">测试您对第四章AI应用场景的理解</p>
+        </div>
+
+        <div class="quiz-container">
+          <!-- 测验说明 -->
+          <div class="quiz-intro" v-if="!quizStarted">
+            <div class="intro-card">
+              <h4>📋 测验说明</h4>
+              <ul class="quiz-rules">
+                <li>本测验包含10道选择题，涵盖智慧生活、智慧驾驶、智慧医疗等AI应用场景</li>
+                <li>每题10分，满分100分</li>
+                <li>答题时间不限，请仔细思考后选择</li>
+                <li>提交后可查看正确答案和详细解析</li>
+              </ul>
+              <button class="start-quiz-btn" @click="startQuiz">开始测验</button>
+            </div>
+          </div>
+
+          <!-- 测验进行中 -->
+          <div class="quiz-content" v-if="quizStarted && !quizCompleted">
+            <div class="quiz-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: (currentQuestionIndex / questions.length * 100) + '%' }"></div>
+              </div>
+              <span class="progress-text">第 {{ currentQuestionIndex + 1 }} 题 / 共 {{ questions.length }} 题</span>
+            </div>
+
+            <div class="question-card">
+              <h4 class="question-title">{{ currentQuestion.question }}</h4>
+              <div class="options-list">
+                <label 
+                  v-for="(option, index) in currentQuestion.options" 
+                  :key="index"
+                  :class="['option-item', { selected: selectedAnswer === index }]"
+                >
+                  <input 
+                    type="radio" 
+                    :name="'question-' + currentQuestionIndex" 
+                    :value="index"
+                    v-model="selectedAnswer"
+                    class="option-input"
+                  >
+                  <span class="option-text">{{ option }}</span>
+                </label>
+              </div>
+              
+              <div class="question-actions">
+                <button 
+                  v-if="currentQuestionIndex > 0" 
+                  class="prev-btn" 
+                  @click="previousQuestion"
+                >
+                  上一题
+                </button>
+                <button 
+                  v-if="currentQuestionIndex < questions.length - 1" 
+                  class="next-btn" 
+                  @click="nextQuestion"
+                  :disabled="selectedAnswer === null"
+                >
+                  下一题
+                </button>
+                <button 
+                  v-if="currentQuestionIndex === questions.length - 1" 
+                  class="submit-btn" 
+                  @click="submitQuiz"
+                  :disabled="selectedAnswer === null"
+                >
+                  提交答案
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 测验结果 -->
+          <div class="quiz-result" v-if="quizCompleted">
+            <div class="result-card">
+              <h4 class="result-title">🎉 测验完成！</h4>
+              <div class="score-display">
+                <div class="score-circle">
+                  <span class="score-number">{{ quizScore }}</span>
+                  <span class="score-label">分</span>
+                </div>
+                <div class="score-info">
+                  <p class="score-text">您的得分：{{ quizScore }} / 100</p>
+                  <p class="score-level">{{ getScoreLevel() }}</p>
+                </div>
+              </div>
+              
+              <div class="result-summary">
+                <div class="summary-item">
+                  <span class="summary-label">正确题数：</span>
+                  <span class="summary-value">{{ correctAnswers }}/{{ questions.length }}</span>
+                </div>
+                <div class="summary-item">
+                  <span class="summary-label">正确率：</span>
+                  <span class="summary-value">{{ (correctAnswers / questions.length * 100).toFixed(1) }}%</span>
+                </div>
+              </div>
+
+              <div class="result-actions">
+                <button class="review-btn" @click="reviewAnswers">查看答案解析</button>
+                <button class="retry-btn" @click="retryQuiz">重新测验</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 答案解析 -->
+          <div class="answer-review" v-if="showAnswerReview">
+            <div class="review-header">
+              <h4>📖 答案解析</h4>
+              <button class="close-review-btn" @click="closeAnswerReview">×</button>
+            </div>
+            
+            <div class="review-content">
+              <div 
+                v-for="(question, index) in questions" 
+                :key="index"
+                class="review-item"
+                :class="{ correct: userAnswers[index] === question.correctAnswer, incorrect: userAnswers[index] !== question.correctAnswer }"
+              >
+                <h5 class="review-question">{{ index + 1 }}. {{ question.question }}</h5>
+                <div class="review-options">
+                  <div 
+                    v-for="(option, optIndex) in question.options" 
+                    :key="optIndex"
+                    :class="['review-option', {
+                      'user-selected': userAnswers[index] === optIndex,
+                      'correct-answer': optIndex === question.correctAnswer
+                    }]"
+                  >
+                    {{ option }}
+                  </div>
+                </div>
+                <div class="explanation">
+                  <strong>解析：</strong>{{ question.explanation }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -1397,8 +1549,136 @@ const sections = ref([
   { id: 'smart-life', title: '智慧生活', icon: '🏠' },
   { id: 'smart-driving', title: '智慧驾驶', icon: '🚗' },
   { id: 'smart-medical', title: '智慧医疗', icon: '⚕️' },
-  { id: 'smart-entertainment', title: '智能娱乐', icon: '🎬' }
+  { id: 'smart-entertainment', title: '智能娱乐', icon: '🎬' },
+  { id: 'quiz', title: '章节测验', icon: '📝' }
 ])
+
+// 答题模块相关数据
+const quizStarted = ref(false)
+const quizCompleted = ref(false)
+const currentQuestionIndex = ref(0)
+const selectedAnswer = ref(null)
+const userAnswers = ref([])
+const quizScore = ref(0)
+const correctAnswers = ref(0)
+const showAnswerReview = ref(false)
+
+// 第四章测验题目
+const questions = ref([
+  {
+    question: "以下哪个不是智能家居系统的核心功能？",
+    options: [
+      "设备远程控制",
+      "环境自动调节", 
+      "设备间智能联动",
+      "自动驾驶功能"
+    ],
+    correctAnswer: 3,
+    explanation: "自动驾驶功能属于智慧驾驶领域，不是智能家居系统的功能。智能家居主要关注家庭环境的智能化控制。"
+  },
+  {
+    question: "Apple Watch的房颤检测功能主要依靠什么技术？",
+    options: [
+      "光学心率传感器",
+      "GPS定位技术",
+      "WiFi连接技术",
+      "蓝牙通信技术"
+    ],
+    correctAnswer: 0,
+    explanation: "Apple Watch通过光学心率传感器实时监测心率变化，能够智能识别房颤等心律不齐情况。"
+  },
+  {
+    question: "特斯拉自动驾驶系统的SAE级别是？",
+    options: [
+      "L2级别（部分自动驾驶）",
+      "L3级别（有条件自动驾驶）",
+      "L4级别（高度自动驾驶）",
+      "L5级别（完全自动驾驶）"
+    ],
+    correctAnswer: 0,
+    explanation: "特斯拉目前的自动驾驶系统属于L2级别，需要驾驶员随时准备接管车辆控制。"
+  },
+  {
+    question: "以下哪个AI技术在医疗诊断中应用最广泛？",
+    options: [
+      "计算机视觉",
+      "自然语言处理",
+      "语音识别",
+      "机器人技术"
+    ],
+    correctAnswer: 0,
+    explanation: "计算机视觉在医疗影像诊断中应用最广泛，如CT、MRI、X光片的AI辅助诊断。"
+  },
+  {
+    question: "Netflix的推荐系统主要基于什么技术？",
+    options: [
+      "机器学习算法",
+      "简单的规则匹配",
+      "人工推荐",
+      "随机推荐"
+    ],
+    correctAnswer: 0,
+    explanation: "Netflix使用复杂的机器学习算法分析用户观看行为，提供个性化内容推荐。"
+  },
+  {
+    question: "智能语音助手最核心的技术是什么？",
+    options: [
+      "自然语言处理",
+      "图像识别",
+      "机器人控制",
+      "自动驾驶"
+    ],
+    correctAnswer: 0,
+    explanation: "智能语音助手需要理解用户的语音输入并生成合适的回复，这主要依靠自然语言处理技术。"
+  },
+  {
+    question: "以下哪个不是智慧医疗的主要应用场景？",
+    options: [
+      "医学影像诊断",
+      "药物研发",
+      "个性化治疗",
+      "汽车制造"
+    ],
+    correctAnswer: 3,
+    explanation: "汽车制造属于工业领域，不是智慧医疗的应用场景。智慧医疗主要关注医疗健康相关的AI应用。"
+  },
+  {
+    question: "智能家居设备之间的通信协议主要是什么？",
+    options: [
+      "Zigbee和WiFi",
+      "蓝牙和GPS",
+      "4G和5G",
+      "卫星通信"
+    ],
+    correctAnswer: 0,
+    explanation: "智能家居设备主要使用Zigbee和WiFi协议进行通信，实现设备间的互联互通。"
+  },
+  {
+    question: "AI在娱乐行业的主要作用是？",
+    options: [
+      "内容推荐和个性化",
+      "设备制造",
+      "建筑设计",
+      "农业种植"
+    ],
+    correctAnswer: 0,
+    explanation: "AI在娱乐行业主要用于内容推荐和个性化服务，提升用户体验。"
+  },
+  {
+    question: "以下哪个技术不是自动驾驶汽车的核心技术？",
+    options: [
+      "传感器融合",
+      "路径规划",
+      "语音识别",
+      "环境感知"
+    ],
+    correctAnswer: 2,
+    explanation: "语音识别主要用于智能语音助手，不是自动驾驶汽车的核心技术。自动驾驶主要依靠传感器融合、环境感知和路径规划等技术。"
+  }
+])
+
+// 计算当前问题
+const currentQuestion = computed(() => questions.value[currentQuestionIndex.value])
 
 // 方法定义
 const handleSmartHomeHover = () => {
@@ -1486,6 +1766,72 @@ const handleGeneAnalysisClick = () => {
   }
   incrementInteraction()
   console.log('基因分析图片点击')
+}
+
+// 答题模块相关方法
+const startQuiz = () => {
+  quizStarted.value = true
+  quizCompleted.value = false
+  currentQuestionIndex.value = 0
+  selectedAnswer.value = null
+  userAnswers.value = []
+  quizScore.value = 0
+  correctAnswers.value = 0
+  showAnswerReview.value = false
+}
+
+const nextQuestion = () => {
+  if (selectedAnswer.value !== null) {
+    userAnswers.value[currentQuestionIndex.value] = selectedAnswer.value
+    if (currentQuestionIndex.value < questions.value.length - 1) {
+      currentQuestionIndex.value++
+      selectedAnswer.value = userAnswers.value[currentQuestionIndex.value] || null
+    }
+  }
+}
+
+const previousQuestion = () => {
+  if (currentQuestionIndex.value > 0) {
+    currentQuestionIndex.value--
+    selectedAnswer.value = userAnswers.value[currentQuestionIndex.value] || null
+  }
+}
+
+const submitQuiz = () => {
+  if (selectedAnswer.value !== null) {
+    userAnswers.value[currentQuestionIndex.value] = selectedAnswer.value
+  }
+  
+  // 计算得分
+  correctAnswers.value = 0
+  userAnswers.value.forEach((answer, index) => {
+    if (answer === questions.value[index].correctAnswer) {
+      correctAnswers.value++
+    }
+  })
+  
+  quizScore.value = correctAnswers.value * 10
+  quizCompleted.value = true
+}
+
+const getScoreLevel = () => {
+  if (quizScore.value >= 90) return "优秀"
+  if (quizScore.value >= 80) return "良好"
+  if (quizScore.value >= 70) return "中等"
+  if (quizScore.value >= 60) return "及格"
+  return "需要加强"
+}
+
+const reviewAnswers = () => {
+  showAnswerReview.value = true
+}
+
+const closeAnswerReview = () => {
+  showAnswerReview.value = false
+}
+
+const retryQuiz = () => {
+  startQuiz()
 }
 
 const handleGeneTestClick = (test) => {
@@ -1681,13 +2027,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
 /* 基础样式 */
 .chapter4-case-study {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
   color: #fff;
   overflow-x: hidden;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: var(--text-color, #1e293b);
+  }
 }
 
 /* 粒子背景动效 */
@@ -1730,6 +2083,14 @@ onMounted(async () => {
   z-index: 2;
   text-align: center;
   padding: 40px 20px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
 }
 
 .case-title {
@@ -1738,6 +2099,15 @@ onMounted(async () => {
   opacity: 0;
   transform: translateY(30px) blur(10px);
   transition: all 1s ease;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 .case-title.visible {
@@ -1751,6 +2121,11 @@ onMounted(async () => {
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.8s ease;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #475569);
+  }
 }
 
 .case-description.visible {
@@ -1774,11 +2149,25 @@ onMounted(async () => {
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .progress-item.completed {
   background: rgba(76, 175, 80, 0.2);
   border-color: rgba(76, 175, 80, 0.5);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(13, 110, 253, 0.1);
+    border-color: rgba(13, 110, 253, 0.3);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.15);
+  }
 }
 
 .progress-icon {
@@ -1789,21 +2178,41 @@ onMounted(async () => {
 .progress-info h4 {
   margin: 0 0 5px 0;
   font-size: 1.1rem;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
 }
 
 .progress-info p {
   margin: 0 0 8px 0;
   opacity: 0.8;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #64748b);
+  }
 }
 
 .status-completed {
   color: #4caf50;
   font-weight: bold;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--accent-color, #0d6efd);
+  }
 }
 
 .status-pending {
   color: #ff9800;
   font-weight: bold;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: #f59e0b;
+  }
 }
 
 /* 板块导航 */
@@ -1823,6 +2232,13 @@ onMounted(async () => {
   border-radius: 50px;
   padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .nav-button {
@@ -1837,16 +2253,34 @@ onMounted(async () => {
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
 }
 
 .nav-button:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(13, 110, 253, 0.1);
+    color: var(--accent-color, #0d6efd);
+  }
 }
 
 .nav-button.active {
   background: rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+  }
 }
 
 .nav-icon {
@@ -1878,6 +2312,11 @@ onMounted(async () => {
   gap: 10px;
   font-size: 2rem;
   margin-bottom: 10px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
 }
 
 .title-icon {
@@ -1887,6 +2326,11 @@ onMounted(async () => {
 .section-subtitle {
   font-size: 1.1rem;
   opacity: 0.9;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #64748b);
+  }
 }
 
 /* 内容网格 */
@@ -1900,6 +2344,13 @@ onMounted(async () => {
 .content-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
   border-radius: 20px;
   padding: 25px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1915,6 +2366,11 @@ onMounted(async () => {
   font-size: 1.3rem;
   margin-bottom: 15px;
   text-align: center;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
 }
 
 .image-container {
@@ -2146,6 +2602,11 @@ onMounted(async () => {
 .card-description {
   line-height: 1.6;
   opacity: 0.9;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #64748b);
+  }
 }
 
 /* 过渡动画 */
@@ -2521,7 +2982,7 @@ onMounted(async () => {
 
 .filter-btn.active {
   background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
+  color: #0d6efd;
   font-weight: 600;
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
 }
@@ -2571,7 +3032,7 @@ onMounted(async () => {
 }
 
 .entertainment-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
   border-radius: 20px;
   padding: 28px;
   color: white;
@@ -2579,7 +3040,7 @@ onMounted(async () => {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+  box-shadow: 0 8px 32px rgba(13, 110, 253, 0.15);
 }
 
 .entertainment-card::before {
@@ -2608,7 +3069,7 @@ onMounted(async () => {
 
 .entertainment-card:hover {
   transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(102, 126, 234, 0.25);
+  box-shadow: 0 25px 50px rgba(13, 110, 253, 0.25);
 }
 
 .entertainment-card:hover::before {
@@ -2894,7 +3355,7 @@ onMounted(async () => {
 }
 
 .entertainment-modal .platform-badge {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 50%, #20c997 100%);
   color: white;
   padding: 10px 20px;
   border-radius: 25px;
@@ -2902,7 +3363,7 @@ onMounted(async () => {
   font-weight: 600;
   display: inline-block;
   margin-bottom: 16px;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
   border: 1px solid rgba(255,255,255,0.2);
   backdrop-filter: blur(10px);
   animation: pulse 2s infinite;
@@ -2925,7 +3386,7 @@ onMounted(async () => {
 }
 
 .platform-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -2963,7 +3424,7 @@ onMounted(async () => {
   transform: translateY(-50%);
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #20c997 100%);
   border-radius: 2px;
 }
 
@@ -3457,7 +3918,7 @@ onMounted(async () => {
 }
 
 .device-detail-modal .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
   border-radius: 20px;
   max-width: 600px;
   width: 90%;
@@ -3646,6 +4107,591 @@ onMounted(async () => {
   font-size: 1.1rem;
   font-weight: 600;
   color: #81c784;
+}
+
+/* 答题模块样式 */
+.quiz-section {
+  padding: 20px;
+}
+
+.quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.quiz-intro {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.intro-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.intro-card h4 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.quiz-rules {
+  text-align: left;
+  margin-bottom: 30px;
+  color: #fff;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.quiz-rules li {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.quiz-rules li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color, #3b82f6);
+}
+
+.start-quiz-btn {
+  background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+}
+
+.start-quiz-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(13, 110, 253, 0.35);
+}
+
+.quiz-progress {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(203, 213, 225, 0.5);
+  }
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #fff;
+  font-size: 0.9rem;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.question-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.question-title {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.options-list {
+  margin-bottom: 30px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.8);
+    border: 2px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.option-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.9);
+    border-color: rgba(13, 110, 253, 0.3);
+  }
+}
+
+.option-item.selected {
+  background: rgba(13, 110, 253, 0.2);
+  border-color: rgba(13, 110, 253, 0.5);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(13, 110, 253, 0.1);
+    border-color: rgba(13, 110, 253, 0.4);
+  }
+}
+
+.option-input {
+  margin-right: 15px;
+  transform: scale(1.2);
+}
+
+.option-text {
+  color: #fff;
+  font-size: 1rem;
+  flex: 1;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.question-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.prev-btn, .next-btn, .submit-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.prev-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.8);
+    color: var(--text-color, #1e293b);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.next-btn, .submit-btn {
+  background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+  color: white;
+}
+
+.next-btn:disabled, .submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.next-btn:hover:not(:disabled), .submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+}
+
+.result-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.result-title {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+}
+
+.score-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.score-info {
+  text-align: left;
+}
+
+.score-text {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.score-level {
+  color: var(--accent-color, #3b82f6);
+  font-size: 1.1rem;
+  font-weight: bold;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--accent-color, #0d6efd);
+  }
+}
+
+.result-summary {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-label {
+  color: #fff;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 5px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #64748b);
+  }
+}
+
+.summary-value {
+  color: var(--accent-color, #3b82f6);
+  font-size: 1.3rem;
+  font-weight: bold;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--accent-color, #0d6efd);
+  }
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.review-btn, .retry-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.review-btn {
+  background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+  color: white;
+}
+
+.retry-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.8);
+    color: var(--text-color, #1e293b);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
+}
+
+.review-btn:hover, .retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+}
+
+.answer-review {
+  background: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.review-header h4 {
+  color: #fff;
+  margin: 0;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.close-review-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.8);
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.close-review-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.9);
+  }
+}
+
+.review-content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+  }
+}
+
+.review-item {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 15px;
+  border-left: 4px solid transparent;
+}
+
+.review-item.correct {
+  background: rgba(76, 175, 80, 0.1);
+  border-left-color: #4caf50;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(76, 175, 80, 0.05);
+  }
+}
+
+.review-item.incorrect {
+  background: rgba(244, 67, 54, 0.1);
+  border-left-color: #f44336;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(244, 67, 54, 0.05);
+  }
+}
+
+.review-question {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.review-options {
+  margin-bottom: 15px;
+}
+
+.review-option {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(248, 250, 252, 0.8);
+    color: var(--text-color, #1e293b);
+  }
+}
+
+.review-option.user-selected {
+  background: rgba(244, 67, 54, 0.3);
+  border: 2px solid #f44336;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(244, 67, 54, 0.1);
+  }
+}
+
+.review-option.correct-answer {
+  background: rgba(76, 175, 80, 0.3);
+  border: 2px solid #4caf50;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(76, 175, 80, 0.1);
+  }
+}
+
+.explanation {
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #64748b);
+  }
+}
+
+/* 动画效果 */
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
 @keyframes modalSlideIn {
@@ -3876,7 +4922,7 @@ onMounted(async () => {
 }
 
 .medical-detail-modal .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
   border-radius: 20px;
   max-width: 700px;
   width: 90%;

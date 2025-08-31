@@ -471,17 +471,17 @@ onUnmounted(() => {
 
 .data-flow-container {
   padding: 2rem;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -491,17 +491,17 @@ onUnmounted(() => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
   }
 }
@@ -510,11 +510,11 @@ onUnmounted(() => {
   margin-bottom: 2rem;
 
   .control-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .control-content {
@@ -530,7 +530,7 @@ onUnmounted(() => {
       .speed-control {
         display: flex;
         align-items: center;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
       }
     }
   }
@@ -540,11 +540,11 @@ onUnmounted(() => {
   margin-bottom: 2rem;
 
   .diagram-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .flow-steps {
@@ -560,18 +560,18 @@ onUnmounted(() => {
         text-align: center;
         padding: 1.5rem;
         border-radius: 12px;
-        border: 2px solid $border-color;
-        background: $secondary-color;
+        border: 2px solid var(--border-color, #393b40);
+        background: var(--secondary-color, #23272e);
         transition: all 0.3s ease;
 
         &.active {
-          border-color: $accent-color;
+          border-color: var(--accent-color, #b0b3b8);
           background: rgba(176, 179, 184, 0.1);
           transform: scale(1.05);
         }
 
         &.completed {
-          border-color: $accent-color-light;
+          border-color: #d1d3d8;
           background: rgba(209, 211, 216, 0.1);
         }
         

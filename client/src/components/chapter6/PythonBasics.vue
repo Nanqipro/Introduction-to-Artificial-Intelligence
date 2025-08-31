@@ -367,17 +367,17 @@ watch(overallProgress, (newProgress) => {
 
 .python-basics-container {
   padding: 2rem;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -387,17 +387,17 @@ watch(overallProgress, (newProgress) => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
   }
 }
@@ -421,18 +421,18 @@ watch(overallProgress, (newProgress) => {
   margin-bottom: 2rem;
 
   .content-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__header) {
-      background: $secondary-color;
-      border-bottom: 1px solid $border-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      border-bottom: 1px solid var(--border-color, #393b40);
+      color: var(--text-color, #f5f6fa);
     }
 
     :deep(.el-card__body) {
-      background: $primary-color;
-      color: $text-color;
+      background: var(--primary-color, #18191a);
+      color: var(--text-color, #f5f6fa);
     }
 
     .card-header {
@@ -441,14 +441,14 @@ watch(overallProgress, (newProgress) => {
       align-items: center;
       font-weight: 600;
       font-size: 1.1rem;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
     }
 
     .theory-section, .code-example-section, .practice-section {
       margin-bottom: 2rem;
 
       h3 {
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         margin-bottom: 1rem;
         font-size: 1.2rem;
       }
@@ -460,14 +460,14 @@ watch(overallProgress, (newProgress) => {
           li {
             margin-bottom: 0.5rem;
             line-height: 1.6;
-            color: $text-secondary-color;
+            color: var(--text-secondary-color, #b0b3b8);
           }
         }
 
         :deep(p) {
           line-height: 1.6;
           margin-bottom: 1rem;
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
         }
       }
     }
@@ -477,13 +477,13 @@ watch(overallProgress, (newProgress) => {
         margin-bottom: 1.5rem;
 
         h4 {
-          color: $accent-color;
+          color: var(--accent-color, #b0b3b8);
           margin-bottom: 0.5rem;
         }
 
         .code-block {
-          background: $secondary-color;
-          border: 1px solid $border-color;
+          background: var(--secondary-color, #23272e);
+          border: 1px solid var(--border-color, #393b40);
           border-radius: 4px;
           margin-bottom: 0.5rem;
 
@@ -494,16 +494,16 @@ watch(overallProgress, (newProgress) => {
             font-size: 14px;
             line-height: 1.5;
             overflow-x: auto;
-            color: $text-color;
+            color: var(--text-color, #f5f6fa);
 
             // 代码块内的选中样式
             ::selection {
-              background: $accent-color;
+              background: var(--accent-color, #b0b3b8);
               color: #ffffff;
             }
 
             ::-moz-selection {
-              background: $accent-color;
+              background: var(--accent-color, #b0b3b8);
               color: #ffffff;
             }
 
@@ -511,13 +511,13 @@ watch(overallProgress, (newProgress) => {
               background: none;
               padding: 0;
               font-size: inherit;
-              color: $text-color;
+              color: var(--text-color, #f5f6fa);
             }
           }
         }
 
         .example-explanation {
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
           font-style: italic;
         }
       }
@@ -526,7 +526,7 @@ watch(overallProgress, (newProgress) => {
     .practice-content {
       .question {
         h4 {
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
           margin-bottom: 1rem;
         }
 
@@ -541,7 +541,7 @@ watch(overallProgress, (newProgress) => {
             transition: background-color 0.3s;
 
             :deep(.el-radio__label) {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
             }
 
             &:hover {
@@ -568,11 +568,11 @@ watch(overallProgress, (newProgress) => {
 
 .progress-section {
   .progress-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .progress-content {
@@ -583,7 +583,7 @@ watch(overallProgress, (newProgress) => {
 
       .progress-stats {
         h3 {
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
           margin-bottom: 1rem;
         }
 
@@ -595,18 +595,18 @@ watch(overallProgress, (newProgress) => {
           .stat-item {
             text-align: center;
             padding: 1rem;
-            background: $secondary-color;
+            background: var(--secondary-color, #23272e);
             border-radius: 8px;
-            border: 1px solid $border-color;
+            border: 1px solid var(--border-color, #393b40);
 
             .stat-number {
               font-size: 2rem;
               font-weight: bold;
-              color: $accent-color;
+              color: var(--accent-color, #b0b3b8);
             }
 
             .stat-label {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
               font-size: 0.9rem;
             }
           }
@@ -615,7 +615,7 @@ watch(overallProgress, (newProgress) => {
 
       .progress-bar {
         h4 {
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
           margin-bottom: 1rem;
         }
       }

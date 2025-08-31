@@ -12,12 +12,7 @@
       </div>
     </nav>
     
-    <!-- 导航提示 -->
-    <div style="background: #ff6b6b; color: white; padding: 15px; margin: 20px; border-radius: 8px; text-align: center; font-size: 16px;">
-      🎯 <strong>提示：</strong>要查看第一章的案例演示，请点击左上角的"← 返回章节"按钮
-      <br>
-      📍 或者直接访问：<code style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">/chapters/1</code>
-    </div>
+
 
     <!-- 答题系统组件 -->
     <QuizSystem 
@@ -78,25 +73,25 @@ export default {
 <style lang="scss" scoped>
 
 .quiz-page {
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 }
 
 .quiz-nav {
-  background: $nav-bg;
-  border-bottom: 1px solid $nav-border;
+  background: var(--nav-bg, rgba(41, 44, 51, 0.92));
+  border-bottom: 1px solid var(--nav-border, rgba(57, 59, 64, 0.18));
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: $nav-shadow;
+  box-shadow: var(--nav-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   backdrop-filter: blur(4px);
 }
 
 .nav-container {
-  max-width: $page-max-width;
+  max-width: var(--page-max-width, 1000px);
   margin: 0 auto;
-  padding: 0 $page-padding;
+  padding: 0 var(--page-padding, 1rem);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -105,7 +100,7 @@ export default {
 .nav-back {
   background: none;
   border: none;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   cursor: pointer;
   font-size: 0.95rem;
   padding: 0.5rem 0;
@@ -114,13 +109,13 @@ export default {
   letter-spacing: 0.5px;
   
   &:hover {
-    color: $nav-back-hover;
+    color: var(--nav-back-hover, #ffffff);
   }
 }
 
 .nav-title {
   font-weight: 700;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.05rem;
   letter-spacing: 1px;
 }

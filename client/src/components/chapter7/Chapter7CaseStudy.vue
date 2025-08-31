@@ -1039,13 +1039,12 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-@use "../../styles/variables.scss" as *;
 /* 基础样式 */
 .chapter7-case-study {
   position: relative;
   min-height: 100vh;
-  background: $secondary-color; // 使用主题深色背景，移除紫色
-  color: $text-color;
+  background: var(--secondary-color, #23272e);
+  color: var(--text-color, #f5f6fa);
   overflow-x: hidden;
 }
 
@@ -1132,11 +1131,11 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 15px;
-  background: $card-bg;
+  background: var(--card-bg, #292c33);
   border-radius: 20px;
   padding: 20px 30px;
-  border: 1px solid $card-border;
-  box-shadow: $card-shadow;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   transition: all 0.3s ease;
 }
 
@@ -1182,11 +1181,11 @@ onMounted(async () => {
 .nav-buttons {
   display: flex;
   gap: 15px;
-  background: $card-bg;
+  background: var(--card-bg, #292c33);
   border-radius: 50px;
   padding: 10px;
-  border: 1px solid $card-border;
-  box-shadow: $card-shadow;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 }
 
 .nav-button {
@@ -1197,20 +1196,20 @@ onMounted(async () => {
   border: none;
   border-radius: 25px;
   background: transparent;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
 .nav-button:hover {
-  background: $chapter-type-bg;
+  background: var(--chapter-type-bg, #23272e);
   transform: translateY(-2px);
 }
 
 .nav-button.active {
-  background: $chapter-badge-bg;
-  box-shadow: $card-shadow;
+  background: var(--chapter-badge-bg, linear-gradient(135deg, #18191a, #232526));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 }
 
 .nav-icon {
@@ -1255,12 +1254,12 @@ onMounted(async () => {
 
 /* 案例卡片 */
 .case-card {
-  background: $card-bg;
+  background: var(--card-bg, #292c33);
   border-radius: 20px;
   padding: 30px;
   margin-bottom: 30px;
-  border: 1px solid $card-border;
-  box-shadow: $card-shadow;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 }
 
 .card-header {
@@ -1933,12 +1932,12 @@ onMounted(async () => {
 
 /* 监管框架 */
 .governance-framework {
-  background: $card-bg;
-  border: 1px solid $card-border;
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   border-radius: 20px;
   padding: 30px;
   margin-top: 30px;
-  box-shadow: $card-shadow;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 }
 
 .framework-tabs {
@@ -1964,8 +1963,8 @@ onMounted(async () => {
 }
 
 .framework-tab.active {
-  background: $chapter-type-bg;
-  border: 1px solid $card-border;
+  background: var(--chapter-type-bg, #23272e);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .framework-overview {
@@ -2029,8 +2028,8 @@ onMounted(async () => {
 }
 
 .timeline-marker {
-  background: $accent-color;
-  color: $text-color;
+  background: var(--accent-color, #b0b3b8);
+  color: var(--text-color, #f5f6fa);
   width: 30px;
   height: 30px;
   border-radius: 50%;

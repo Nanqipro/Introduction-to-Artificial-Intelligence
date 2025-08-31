@@ -27,27 +27,27 @@ export default {
 <style lang="scss" scoped>
 
 .stats-page {
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 }
 
 .page-header {
-  background: linear-gradient(135deg, $card-bg, $secondary-color);
+  background: linear-gradient(135deg, var(--card-bg, #292c33), var(--secondary-color, #23272e));
   padding: 3rem 0;
   margin-bottom: 2rem;
-  border-bottom: 1px solid $card-border;
+  border-bottom: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .header-content {
-  max-width: $page-header-max-width;
+  max-width: var(--page-header-max-width, 1200px);
   margin: 0 auto;
-  padding: 0 $page-header-padding;
+  padding: 0 var(--page-header-padding, 2rem);
   text-align: center;
 }
 
 .page-title {
   font-size: 2.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -55,7 +55,7 @@ export default {
 
 .page-description {
   font-size: 1.1rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -67,7 +67,7 @@ export default {
   }
   
   .header-content {
-    padding: 0 $page-padding;
+    padding: 0 var(--page-padding, 1rem);
   }
 }
 </style> 

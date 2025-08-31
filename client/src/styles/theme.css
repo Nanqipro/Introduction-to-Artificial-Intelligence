@@ -1,0 +1,268 @@
+/* 主题切换CSS变量 */
+
+/* 深色主题 (默认) */
+:root {
+    --primary-color: #18191a;
+    --secondary-color: #23272e;
+    --text-color: #f5f6fa;
+    --text-secondary-color: #b0b3b8;
+    --border-color: #393b40;
+    --card-bg: #292c33;
+    --card-border: rgba(57, 59, 64, 0.18);
+    --success-color: #4caf50;
+    --success-color-light: #66bb6a;
+    --warning-color: #ff9800;
+    --warning-color-light: #ffb74d;
+    --error-color: #f44336;
+    --error-color-light: #ef5350;
+    --info-color: #4a90e2;
+    --info-color-light: #64b5f6;
+    --accent-color: #3b82f6;
+    --accent-color-light: #60a5fa;
+    --nav-bg: rgba(41, 44, 51, 0.92);
+    --nav-border: rgba(57, 59, 64, 0.18);
+    --list-item-hover-bg: #31343b;
+    --list-item-hover-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    --list-item-hover-border: #3b82f6;
+    --list-item-gap: 1.5rem;
+    --btn-primary-bg: linear-gradient(135deg, #3b82f6, #2563eb);
+    --btn-secondary-bg: #393b40;
+    --btn-radius: 12px;
+    --btn-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    --form-bg: #23272e;
+    --form-border: rgba(57, 59, 64, 0.18);
+    --form-focus-border: #3b82f6;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.8);
+    --modal-bg: #292c33;
+    --modal-radius: 16px;
+    --type-choice-bg: linear-gradient(135deg, #3b82f6, #2563eb);
+    --type-tf-bg: linear-gradient(135deg, #f59e0b, #d97706);
+    --type-fill-bg: linear-gradient(135deg, #10b981, #059669);
+    --difficulty-easy-bg: linear-gradient(135deg, #4caf50, #66bb6a);
+    --difficulty-medium-bg: linear-gradient(135deg, #ff9800, #ffb74d);
+    --difficulty-hard-bg: linear-gradient(135deg, #f44336, #ef5350);
+    --chapter-badge-bg: linear-gradient(135deg, #18191a, #232526);
+    --chapter-badge-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+    --chapter-type-bg: #23272e;
+    --chapter-pagination-bg: #23272e;
+    --chapter-pagination-hover: #31343b;
+    --chapter-pagination-hover-border: #3b82f6;
+    --chapter-pagination-hover-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    --loading-border: #393b40;
+    --loading-spinner: #3b82f6;
+    --error-icon-size: 4rem;
+    --status-dot-size: 8px;
+    --status-dot-unpublished: #393b40;
+    --status-dot-published: #3b82f6;
+    --empty-icon-size: 4rem;
+    --page-max-width: 1000px;
+    --page-padding: 1rem;
+    --page-header-max-width: 1200px;
+    --page-header-padding: 2rem;
+    --body-bg: #18191a;
+    --body-color: #f5f6fa;
+    --link-color: #3b82f6;
+    --focus-color: #3b82f6;
+    --selection-bg: #3b82f6;
+    --selection-color: #ffffff;
+    --scrollbar-width: 8px;
+    --scrollbar-track: #23272e;
+    --scrollbar-thumb: #393b40;
+    --scrollbar-thumb-hover: #4a5568;
+    --footer-bg: #23272e;
+    --footer-color: #f5f6fa;
+    --footer-max-width: 1200px;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --font-size-base: 16px;
+    --border-radius: 10px;
+    --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    --card-background: rgba(41, 44, 51, 0.9);
+    --header-background: linear-gradient(135deg, #18191a, #23272e);
+    --text-primary: #f5f6fa;
+    --text-secondary: #b0b3b8;
+    --text-placeholder: #8e9297;
+    --text-disabled: #6c757d;
+    --input-background: rgba(41, 44, 51, 0.8);
+    --profile-button-primary: #3b82f6;
+    --profile-button-danger: #f56565;
+    --disabled-background: rgba(57, 59, 64, 0.6);
+    --disabled-border: rgba(57, 59, 64, 0.8);
+    --border-hover: #3b82f6;
+    --button-secondary: rgba(57, 59, 64, 0.8);
+    --button-secondary-hover: rgba(57, 59, 64, 0.9);
+    --primary-hover: #2563eb;
+    --danger-color: #f56565;
+    --danger-hover: #e53e3e;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --spacing-xl: 2.5rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+}
+
+/* 浅色主题 */
+:root.light-theme {
+    --primary-color: #ffffff;
+    --secondary-color: #f8f9fa;
+    --text-color: #212529;
+    --text-secondary-color: #6c757d;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --success-color: #198754;
+    --success-color-light: #20c997;
+    --warning-color: #fd7e14;
+    --warning-color-light: #ffc107;
+    --error-color: #dc3545;
+    --error-color-light: #e74c3c;
+    --info-color: #0d6efd;
+    --info-color-light: #0dcaf0;
+    --accent-color: #0d6efd;
+    --accent-color-light: #0dcaf0;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --nav-border: rgba(0, 0, 0, 0.125);
+    --list-item-hover-bg: #f8f9fa;
+    --list-item-hover-shadow: 0 8px 32px rgba(13, 110, 253, 0.1);
+    --list-item-hover-border: #0d6efd;
+    --list-item-gap: 1.5rem;
+    --btn-primary-bg: linear-gradient(135deg, #0d6efd, #0a58ca);
+    --btn-secondary-bg: #6c757d;
+    --btn-radius: 12px;
+    --btn-shadow: 0 4px 16px rgba(13, 110, 253, 0.3);
+    --form-bg: #ffffff;
+    --form-border: rgba(0, 0, 0, 0.125);
+    --form-focus-border: #0d6efd;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: #ffffff;
+    --modal-radius: 16px;
+    --type-choice-bg: linear-gradient(135deg, #0d6efd, #0a58ca);
+    --type-tf-bg: linear-gradient(135deg, #fd7e14, #e74c3c);
+    --type-fill-bg: linear-gradient(135deg, #20c997, #0dcaf0);
+    --difficulty-easy-bg: linear-gradient(135deg, #198754, #20c997);
+    --difficulty-medium-bg: linear-gradient(135deg, #fd7e14, #ffc107);
+    --difficulty-hard-bg: linear-gradient(135deg, #dc3545, #e74c3c);
+    --chapter-badge-bg: linear-gradient(135deg, #ffffff, #f8f9fa);
+    --chapter-badge-shadow: 0 2px 8px rgba(13, 110, 253, 0.08);
+    --chapter-type-bg: #f8f9fa;
+    --chapter-pagination-bg: #f8f9fa;
+    --chapter-pagination-hover: #e9ecef;
+    --chapter-pagination-hover-border: #0d6efd;
+    --chapter-pagination-hover-shadow: 0 4px 16px rgba(13, 110, 253, 0.3);
+    --loading-border: #dee2e6;
+    --loading-spinner: #0d6efd;
+    --error-icon-size: 4rem;
+    --status-dot-size: 8px;
+    --status-dot-unpublished: #dee2e6;
+    --status-dot-published: #0d6efd;
+    --empty-icon-size: 4rem;
+    --page-max-width: 1000px;
+    --page-padding: 1rem;
+    --page-header-max-width: 1200px;
+    --page-header-padding: 2rem;
+    --body-bg: #ffffff;
+    --body-color: #212529;
+    --link-color: #0d6efd;
+    --focus-color: #0d6efd;
+    --selection-bg: #0d6efd;
+    --selection-color: #ffffff;
+    --scrollbar-width: 8px;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-thumb-hover: #a8a8a8;
+    --footer-bg: #f8f9fa;
+    --footer-color: #212529;
+    --footer-max-width: 1200px;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --font-size-base: 16px;
+    --border-radius: 10px;
+    --box-shadow: 0 4px 24px rgba(13, 110, 253, 0.08);
+    --card-background: rgba(255, 255, 255, 0.95);
+    --header-background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-placeholder: #adb5bd;
+    --text-disabled: #6c757d;
+    --input-background: rgba(255, 255, 255, 0.95);
+    --profile-button-primary: #0d6efd;
+    --profile-button-danger: #dc3545;
+    --disabled-background: rgba(108, 117, 125, 0.1);
+    --disabled-border: rgba(108, 117, 125, 0.2);
+    --border-color: rgba(0, 0, 0, 0.125);
+    --border-hover: #0d6efd;
+    --button-secondary: rgba(108, 117, 125, 0.1);
+    --button-secondary-hover: rgba(108, 117, 125, 0.2);
+    --primary-color: #0d6efd;
+    --primary-hover: #0a58ca;
+    --danger-color: #dc3545;
+    --danger-hover: #c82333;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+    --shadow-sm: 0 2px 4px rgba(13, 110, 253, 0.08);
+    --shadow-md: 0 4px 16px rgba(13, 110, 253, 0.12);
+    --shadow-lg: 0 8px 32px rgba(13, 110, 253, 0.16);
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --spacing-xl: 2.5rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+}
+
+/* 主题切换过渡动画 */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 全局背景色 */
+body {
+    background-color: var(--body-bg);
+    color: var(--body-color);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}

@@ -75,13 +75,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
 
 .loading-spinner {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-xl;
+  padding: var(--spacing-xl, 2.5rem);
   
   &.fullscreen {
     position: fixed;
@@ -89,7 +88,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba($secondary-color, 0.95);
+    background: rgba(var(--secondary-color, #23272e), 0.95);
     backdrop-filter: blur(8px);
     z-index: 9999;
   }
@@ -100,7 +99,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba($secondary-color, 0.8);
+    background: rgba(var(--secondary-color, #23272e), 0.8);
     backdrop-filter: blur(4px);
     z-index: 100;
   }
@@ -115,7 +114,7 @@ export default {
   position: relative;
   width: 80px;
   height: 80px;
-  margin: 0 auto $spacing-lg;
+  margin: 0 auto var(--spacing-lg, 2rem);
 }
 
 .spinner-ring {
@@ -125,7 +124,7 @@ export default {
   width: 100%;
   height: 100%;
   border: 3px solid transparent;
-  border-top: 3px solid $accent-color;
+  border-top: 3px solid var(--accent-color, #b0b3b8);
   border-radius: 50%;
   animation: spin 1.2s linear infinite;
   
@@ -134,7 +133,7 @@ export default {
     height: 60px;
     top: 10px;
     left: 10px;
-    border-top-color: $primary-color;
+    border-top-color: var(--primary-color, #18191a);
     animation-duration: 1s;
     animation-direction: reverse;
   }
@@ -144,7 +143,7 @@ export default {
     height: 40px;
     top: 20px;
     left: 20px;
-    border-top-color: $accent-color-light;
+    border-top-color: #d1d3d8;
     animation-duration: 0.8s;
   }
 }
@@ -155,13 +154,13 @@ export default {
 }
 
 .loading-text {
-  margin-bottom: $spacing-lg;
-  color: $text-color;
-  font-size: $font-size-lg;
+  margin-bottom: var(--spacing-lg, 2rem);
+  color: var(--text-color, #f5f6fa);
+  font-size: var(--font-size-lg, 1.125rem);
   font-weight: 500;
   
   .text-content {
-    margin-right: $spacing-sm;
+    margin-right: var(--spacing-sm, 1rem);
   }
   
   .text-dots {
@@ -171,7 +170,7 @@ export default {
     .dot {
       width: 4px;
       height: 4px;
-      background: $accent-color;
+      background: var(--accent-color, #b0b3b8);
       border-radius: 50%;
       animation: pulse 1.4s ease-in-out infinite both;
     }
@@ -190,20 +189,20 @@ export default {
 }
 
 .progress-bar {
-  margin-bottom: $spacing-lg;
+  margin-bottom: var(--spacing-lg, 2rem);
   
   .progress-track {
     width: 100%;
     height: 6px;
-    background: rgba($accent-color, 0.2);
+    background: rgba(var(--accent-color, #b0b3b8), 0.2);
     border-radius: 3px;
     overflow: hidden;
-    margin-bottom: $spacing-sm;
+    margin-bottom: var(--spacing-sm, 1rem);
   }
   
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, $primary-color, $accent-color);
+    background: linear-gradient(90deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
     border-radius: 3px;
     transition: width 0.3s ease;
     position: relative;
@@ -221,8 +220,8 @@ export default {
   }
   
   .progress-text {
-    color: $text-secondary-color;
-    font-size: $font-size-sm;
+    color: var(--text-secondary-color, #b0b3b8);
+    font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
   }
 }
@@ -234,17 +233,17 @@ export default {
 
 .cancel-btn {
   background: transparent;
-  border: 2px solid $accent-color;
-  color: $accent-color;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $btn-radius;
+  border: 2px solid var(--accent-color, #b0b3b8);
+  color: var(--accent-color, #b0b3b8);
+  padding: var(--spacing-sm, 1rem) var(--spacing-lg, 2rem);
+  border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   font-weight: 500;
-  transition: all $transition-normal ease;
+  transition: all var(--transition-normal, 0.3s) ease;
   
   &:hover {
-    background: $accent-color;
-    color: $text-color;
+    background: var(--accent-color, #b0b3b8);
+    color: var(--text-color, #f5f6fa);
     transform: translateY(-1px);
   }
   
@@ -254,7 +253,7 @@ export default {
 }
 
 // 响应式设计
-@media (max-width: $breakpoint-md) {
+@media (max-width: var(--breakpoint-md, 768px)) {
   .spinner-main {
     width: 60px;
     height: 60px;
@@ -275,7 +274,7 @@ export default {
   }
   
   .loading-text {
-    font-size: $font-size-base;
+    font-size: var(--font-size-base, 1rem);
   }
 }
 
@@ -284,7 +283,7 @@ export default {
   .loading-spinner {
     &.fullscreen,
     &.overlay {
-      background: rgba($primary-color, 0.95);
+      background: rgba(var(--primary-color, #18191a), 0.95);
     }
   }
 }

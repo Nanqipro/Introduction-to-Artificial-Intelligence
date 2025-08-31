@@ -357,17 +357,17 @@ onMounted(() => {
 
 .code-editor-container {
   padding: 2rem;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
 
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -377,17 +377,17 @@ onMounted(() => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
   }
 }
@@ -396,23 +396,23 @@ onMounted(() => {
   margin-bottom: 2rem;
 
   .selector-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__header) {
-      background: $secondary-color;
-      border-bottom: 1px solid $border-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      border-bottom: 1px solid var(--border-color, #393b40);
+      color: var(--text-color, #f5f6fa);
     }
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .selector-header {
       h3 {
         margin-bottom: 1rem;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
       }
     }
   }
@@ -423,24 +423,24 @@ onMounted(() => {
 
   .editor-card, .output-card {
     height: 500px;
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__header) {
-      background: $secondary-color;
-      border-bottom: 1px solid $border-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      border-bottom: 1px solid var(--border-color, #393b40);
+      color: var(--text-color, #f5f6fa);
     }
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
 
       .header-actions {
         display: flex;
@@ -461,29 +461,29 @@ onMounted(() => {
       font-size: 14px;
       line-height: 1.5;
       padding: 1rem;
-      background: $secondary-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      color: var(--text-color, #f5f6fa);
       border-radius: 4px;
       resize: none;
-      border: 1px solid $border-color;
+      border: 1px solid var(--border-color, #393b40);
 
       &::placeholder {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
       }
 
       &:focus {
-        outline: 2px solid $accent-color;
-        border-color: $accent-color;
+        outline: 2px solid var(--accent-color, #b0b3b8);
+        border-color: var(--accent-color, #b0b3b8);
       }
 
       // 文本选中样式
       &::selection {
-        background: $accent-color;
+        background: var(--accent-color, #b0b3b8);
         color: #ffffff;
       }
 
       &::-moz-selection {
-        background: $accent-color;
+        background: var(--accent-color, #b0b3b8);
         color: #ffffff;
       }
     }
@@ -499,23 +499,23 @@ onMounted(() => {
       align-items: center;
       justify-content: center;
       height: 100%;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
 
       .output-icon {
         font-size: 3rem;
         margin-bottom: 1rem;
-        color: $accent-color;
+        color: var(--accent-color, #b0b3b8);
       }
 
       p {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
       }
     }
     
     .output-result {
       .output-text {
-        background: $secondary-color;
-        color: $text-color;
+        background: var(--secondary-color, #23272e);
+        color: var(--text-color, #f5f6fa);
         padding: 1rem;
         border-radius: 4px;
         font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -523,16 +523,16 @@ onMounted(() => {
         line-height: 1.5;
         margin: 0;
         white-space: pre-wrap;
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color, #393b40);
 
         // 输出文本选中样式
         ::selection {
-          background: $accent-color;
+          background: var(--accent-color, #b0b3b8);
           color: #ffffff;
         }
 
         ::-moz-selection {
-          background: $accent-color;
+          background: var(--accent-color, #b0b3b8);
           color: #ffffff;
         }
       }
@@ -560,11 +560,11 @@ onMounted(() => {
 
 .learning-progress {
   .progress-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
 
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
 
     .progress-content {
@@ -575,19 +575,19 @@ onMounted(() => {
       .progress-info {
         h3 {
           margin-bottom: 1rem;
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
         }
 
         .progress-text {
           margin-top: 1rem;
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
         }
       }
 
       .hints {
         h4 {
           margin-bottom: 1rem;
-          color: $accent-color;
+          color: var(--accent-color, #b0b3b8);
         }
 
         ul {
@@ -596,8 +596,8 @@ onMounted(() => {
 
           li {
             padding: 0.5rem 0;
-            color: $text-secondary-color;
-            border-bottom: 1px solid $border-color;
+            color: var(--text-secondary-color, #b0b3b8);
+            border-bottom: 1px solid var(--border-color, #393b40);
 
             &:last-child {
               border-bottom: none;
@@ -615,31 +615,31 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  background: linear-gradient(135deg, $accent-color, $accent-color-light);
-  color: $primary-color;
+  background: linear-gradient(135deg, var(--accent-color, #b0b3b8), #d1d3d8);
+  color: var(--primary-color, #18191a);
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
   animation: bounceIn 0.6s ease-out;
   box-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
-  border: 1px solid $accent-color-light;
+  border: 1px solid #d1d3d8;
 
   .success-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
   }
 
   h3 {
     margin: 0 0 0.5rem 0;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
   }
 
   p {
     margin: 0;
     font-size: 1.2rem;
     font-weight: bold;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
   }
 }
 

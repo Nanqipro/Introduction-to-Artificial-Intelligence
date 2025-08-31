@@ -4,6 +4,7 @@ import ChapterList from '../views/ChapterList.vue'
 import ChapterDetail from '../views/ChapterDetail.vue'
 import About from '../views/About.vue'
 import QuizPage from '../views/QuizPage.vue'
+import QuizSelection from '../views/QuizSelection.vue'
 import StatsPage from '../views/StatsPage.vue'
 import AdminPage from '../views/AdminPage.vue'
 import LoginPage from '../views/LoginPage.vue'
@@ -33,11 +34,7 @@ const routes = [
     name: 'About',
     component: About
   },
-  {
-    path: '/regression-demo',
-    name: 'RegressionDemo',
-    component: () => import('@/views/RegressionDemo.vue')
-  },
+
   {
     path: '/network-training',
     name: 'NetworkTraining',
@@ -45,6 +42,24 @@ const routes = [
     meta: {
       title: '神经网络训练实验室',
       description: '交互式神经网络训练可视化'
+    }
+  },
+  {
+    path: '/regression-demo',
+    name: 'RegressionDemo',
+    component: () => import('@/views/RegressionDemo.vue'),
+    meta: {
+      title: '回归演示实验室',
+      description: '线性回归与逻辑回归交互式演示'
+    }
+  },
+  {
+    path: '/quiz',
+    name: 'QuizSelection',
+    component: QuizSelection,
+    meta: {
+      title: '题目自测',
+      description: '选择章节进行知识测验'
     }
   },
   {

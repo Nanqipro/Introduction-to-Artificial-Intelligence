@@ -209,7 +209,7 @@
           <div class="launch-content">
             <div class="launch-info">
               <h5>🚀 开始您的回归学习之旅</h5>
-              <p>完整的学习环境已准备就绪，包含理论讲解、实践操作和效果验证</p>
+              <p>线性回归与逻辑回归交互式演示实验室已准备就绪，包含数据生成、模型训练和可视化</p>
             </div>
             <button @click="redirectToRegressionPlatform" class="launch-button">
               <div class="button-background">
@@ -218,14 +218,14 @@
               </div>
               <div class="button-content">
                 <span class="button-icon">🎯</span>
-                <span class="button-text">进入实验室</span>
+                <span class="button-text">进入回归实验室</span>
                 <span class="button-arrow">→</span>
               </div>
             </button>
           </div>
           <div class="launch-note">
             <div class="note-icon">💡</div>
-            <p>学习完成后系统将自动记录您的进度，为后续测验做准备</p>
+            <p>在回归实验室中，您可以生成数据、训练模型、观察拟合效果，为后续测验做准备</p>
           </div>
         </div>
       </div>
@@ -939,7 +939,7 @@ export default {
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
 
-    // 跳转到平台学习方法
+    // 跳转到回归演示实验室
     redirectToRegressionPlatform() {
       this.$router.push("/regression-demo");
     },
@@ -1033,7 +1033,7 @@ export default {
 
 <style lang="scss" scoped>
 @use "sass:color";
-@use "../../styles/variables.scss" as *;
+
 
 .chapter2-case-study {
   max-width: 1200px;
@@ -1045,15 +1045,32 @@ export default {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: $chapter-badge-bg; // 使用主题深色渐变，避免紫色
+  background: var(--chapter-badge-bg, linear-gradient(135deg, #18191a, #232526));
   border-radius: 16px;
   color: white;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: var(--text-color, #1e293b);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+  }
 }
 
 .case-title {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   font-weight: 900;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-color, #1e293b);
+    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 .case-description {
@@ -1061,6 +1078,12 @@ export default {
   opacity: 0.9;
   line-height: 1.6;
   margin-bottom: 2rem;
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    color: var(--text-secondary-color, #475569);
+    opacity: 0.8;
+  }
 }
 
 .progress-indicator {
@@ -1085,6 +1108,19 @@ export default {
     border-color: rgba(76, 175, 80, 0.5);
     transform: scale(1.02);
   }
+  
+  /* 浅色主题样式 */
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(203, 213, 225, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    
+    &.completed {
+      background: rgba(13, 110, 253, 0.1);
+      border-color: rgba(13, 110, 253, 0.3);
+      box-shadow: 0 6px 20px rgba(13, 110, 253, 0.15);
+    }
+  }
 }
 
 .progress-icon {
@@ -1101,12 +1137,22 @@ export default {
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 600;
+    
+    /* 浅色主题样式 */
+    .light-theme & {
+      color: var(--text-color, #1e293b);
+    }
   }
 
   p {
     color: rgba(255, 255, 255, 0.8);
     margin: 0 0 0.5rem 0;
     font-size: 0.9rem;
+    
+    /* 浅色主题样式 */
+    .light-theme & {
+      color: var(--text-secondary-color, #64748b);
+    }
   }
 }
 
@@ -1114,26 +1160,36 @@ export default {
   .status-completed {
     color: #4caf50;
     font-weight: 600;
+    
+    /* 浅色主题样式 */
+    .light-theme & {
+      color: var(--accent-color, #0d6efd);
+    }
   }
 
   .status-pending {
     color: #ffc107;
     font-weight: 600;
+    
+    /* 浅色主题样式 */
+    .light-theme & {
+      color: #f59e0b;
+    }
   }
 }
 
 .case-section {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .section-title {
   font-size: 1.8rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1.5rem;
   font-weight: 700;
   display: flex;
@@ -1162,7 +1218,7 @@ export default {
   flex-direction: column;
   gap: 0.5rem;
   font-weight: 600;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
 }
 
 .slider {
@@ -1180,13 +1236,13 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     cursor: pointer;
   }
 }
 
 .btn-generate {
-  background: $accent-color;
+  background: var(--accent-color, #b0b3b8);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -1196,7 +1252,7 @@ export default {
   transition: all 0.3s ease;
 
   &:hover {
-    background: $accent-color; // 避免 inline 调整
+    background: var(--accent-color, #b0b3b8);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
   }
@@ -1213,7 +1269,7 @@ export default {
     margin: 0.25rem;
 
     &.btn-animate {
-      background: linear-gradient(135deg, $info-color 0%, $info-color-light 100%);
+      background: linear-gradient(135deg, var(--info-color, #4a90e2) 0%, #64b5f6 100%);
       color: white;
 
       &:hover {
@@ -1263,11 +1319,11 @@ export default {
     }
 
     &.btn-train {
-      background: $info-color;
+      background: var(--info-color, #4a90e2);
       color: white;
 
       &:hover {
-        background: $info-color-light;
+        background: #64b5f6;
         transform: translateY(-2px);
       }
     }
@@ -1293,7 +1349,7 @@ export default {
 
     label {
       font-weight: 600;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       font-size: 0.9rem;
     }
 
@@ -1306,7 +1362,7 @@ export default {
 
       &:focus {
         outline: none;
-        border-color: $accent-color;
+        border-color: var(--accent-color, #b0b3b8);
       }
     }
   }
@@ -1337,12 +1393,12 @@ export default {
     text-align: center;
 
     h4 {
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
       margin-bottom: 0.5rem;
     }
 
     p {
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       margin-bottom: 1rem;
     }
   }
@@ -1352,7 +1408,7 @@ export default {
     gap: 1rem;
 
     .metric {
-      background: $accent-color;
+      background: var(--accent-color, #b0b3b8);
       color: white;
       padding: 0.3rem 0.8rem;
       border-radius: 20px;
@@ -1374,13 +1430,13 @@ export default {
     padding: 1.5rem;
 
     h4 {
-      color: $info-color;
+      color: var(--info-color, #4a90e2);
       margin-bottom: 0.5rem;
       font-weight: 700;
     }
 
     p {
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       margin-bottom: 1rem;
       line-height: 1.6;
     }
@@ -1518,7 +1574,7 @@ export default {
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: $accent-color;
+      background: var(--accent-color, #b0b3b8);
       color: white;
       display: flex;
       align-items: center;
@@ -1661,7 +1717,7 @@ export default {
     .viz-title {
       font-size: 1.1rem;
       font-weight: 700;
-      color: $primary-color;
+      color: var(--primary-color, #18191a);
       margin-bottom: 1rem;
       text-align: center;
     }
@@ -1681,7 +1737,7 @@ export default {
 
       .viz-label {
         font-weight: 600;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         margin-bottom: 0.5rem;
         font-size: 0.9rem;
       }
@@ -1773,14 +1829,14 @@ export default {
 
       .comparison-title {
         font-weight: 600;
-        color: $primary-color;
+        color: var(--primary-color, #18191a);
         margin-bottom: 0.5rem;
       }
 
       .comparison-result {
         font-size: 1.2rem;
         font-weight: 700;
-        color: $accent-color;
+        color: var(--accent-color, #b0b3b8);
         margin: 0.5rem 0;
       }
 
@@ -1863,7 +1919,7 @@ export default {
     &:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-      border-color: $accent-color;
+      border-color: var(--accent-color, #b0b3b8);
     }
   }
 
@@ -1876,13 +1932,13 @@ export default {
     h4 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: $primary-color;
+      color: var(--primary-color, #18191a);
       margin: 0;
     }
   }
 
   .redirect-badge {
-    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+    background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--accent-color, #b0b3b8) 100%);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -1902,7 +1958,7 @@ export default {
   .redirect-info {
     .redirect-desc {
       font-size: 1.1rem;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       line-height: 1.6;
       margin-bottom: 1.5rem;
     }
@@ -1914,7 +1970,7 @@ export default {
     h5 {
       font-size: 1.1rem;
       font-weight: 600;
-      color: $primary-color;
+      color: var(--primary-color, #18191a);
       margin-bottom: 0.75rem;
     }
 
@@ -1926,7 +1982,7 @@ export default {
         position: relative;
         padding-left: 1.5rem;
         margin-bottom: 0.5rem;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         line-height: 1.5;
 
         &:before {
@@ -1949,24 +2005,24 @@ export default {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      background: $card-bg;
+      background: var(--card-bg, #292c33);
       padding: 0.75rem 1.25rem;
-      border-radius: $form-radius;
-      border: 1px solid $card-border;
+      border-radius: var(--form-radius, 10px);
+      border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
       transition: all 0.3s ease;
 
       &:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
-        border-color: $primary-color;
+        border-color: var(--primary-color, #18191a);
       }
 
       .feature-icon {
         font-size: 1.3rem;
         background: linear-gradient(
           135deg,
-          $primary-color 0%,
-          $accent-color 100%
+          var(--primary-color, #18191a) 0%,
+          var(--accent-color, #b0b3b8) 100%
         );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -1976,7 +2032,7 @@ export default {
       .feature-text {
         font-size: 0.9rem;
         font-weight: 500;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
       }
     }
   }
@@ -1988,9 +2044,9 @@ export default {
     margin: 1.5rem 0;
 
     .algorithm-card {
-      background: $card-bg;
-      border: 2px solid $card-border;
-      border-radius: $card-radius;
+      background: var(--card-bg, #292c33);
+      border: 2px solid var(--card-border, rgba(57, 59, 64, 0.18));
+      border-radius: var(--card-radius, 10px);
       padding: 1.25rem;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
@@ -2005,16 +2061,16 @@ export default {
         height: 4px;
         background: linear-gradient(
           90deg,
-          $primary-color 0%,
-          $accent-color 50%,
-          $info-color 100%
+          var(--primary-color, #18191a) 0%,
+          var(--accent-color, #b0b3b8) 50%,
+          var(--info-color, #4a90e2) 100%
         );
         opacity: 0;
         transition: opacity 0.3s ease;
       }
 
       &:hover {
-        border-color: $primary-color;
+        border-color: var(--primary-color, #18191a);
         transform: translateY(-3px);
         box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
 
@@ -2033,8 +2089,8 @@ export default {
           font-size: 1.8rem;
           background: linear-gradient(
             135deg,
-            $primary-color 0%,
-            $accent-color 100%
+            var(--primary-color, #18191a) 0%,
+            var(--accent-color, #b0b3b8) 100%
           );
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -2044,11 +2100,11 @@ export default {
         .algorithm-name {
           font-size: 1.1rem;
           font-weight: 600;
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
           background: linear-gradient(
             135deg,
-            $text-color 0%,
-            $text-secondary-color 100%
+            var(--text-color, #f5f6fa) 0%,
+            var(--text-secondary-color, #b0b3b8) 100%
           );
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -2058,7 +2114,7 @@ export default {
 
       .algorithm-desc {
         font-size: 0.9rem;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         line-height: 1.5;
         font-weight: 400;
       }
@@ -2098,16 +2154,16 @@ export default {
     &.linear {
       background: linear-gradient(
         135deg,
-        $success-color 0%,
-        $success-color-light 100%
+        var(--success-color, #4caf50) 0%,
+        #66bb6a 100%
       );
       box-shadow: 0 4px 20px rgba(82, 196, 26, 0.25);
 
       &:hover {
         background: linear-gradient(
           135deg,
-          $success-color-light 0%,
-          color.adjust($success-color-light, $lightness: -10%) 100%
+          #66bb6a 0%,
+          #4caf50 100%
         );
         transform: translateY(-3px);
         box-shadow: 0 12px 35px rgba(82, 196, 26, 0.4);
@@ -2115,14 +2171,14 @@ export default {
     }
 
     &.logistic {
-      background: linear-gradient(135deg, $primary-color 0%, $info-color 100%);
+      background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--info-color, #4a90e2) 100%);
       box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
 
       &:hover {
         background: linear-gradient(
           135deg,
-          $info-color 0%,
-          color.adjust($info-color, $lightness: -10%) 100%
+          var(--info-color, #4a90e2) 0%,
+          #357abd 100%
         );
         transform: translateY(-3px);
         box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
@@ -2132,16 +2188,16 @@ export default {
     &.unified {
       background: linear-gradient(
         135deg,
-        $primary-color 0%,
-        $accent-color 100%
+        var(--primary-color, #18191a) 0%,
+        var(--accent-color, #b0b3b8) 100%
       );
       box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
 
       &:hover {
         background: linear-gradient(
           135deg,
-          $info-color 0%,
-          color.adjust($accent-color, $lightness: -10%) 100%
+          var(--info-color, #4a90e2) 0%,
+          #8fa1b3 100%
         );
         transform: translateY(-3px);
         box-shadow: 0 12px 35px rgba(74, 144, 226, 0.4);
@@ -2419,9 +2475,9 @@ export default {
     height: 4px;
     background: linear-gradient(
       90deg,
-      $primary-color,
-      $accent-color,
-      $info-color
+      var(--primary-color, #18191a),
+      var(--accent-color, #b0b3b8),
+      var(--info-color, #4a90e2)
     );
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
@@ -2459,7 +2515,7 @@ export default {
     }
 
     .title-text {
-      background: linear-gradient(135deg, $primary-color, $accent-color);
+      background: linear-gradient(135deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2474,13 +2530,13 @@ export default {
       transform: translateX(-50%);
       width: 60px;
       height: 3px;
-      background: linear-gradient(90deg, $primary-color, $accent-color);
+      background: linear-gradient(90deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       border-radius: 2px;
     }
   }
 
   .section-subtitle {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
     font-weight: 500;
     margin: 0;
@@ -2514,7 +2570,7 @@ export default {
     .logo-circle {
       width: 64px;
       height: 64px;
-      background: linear-gradient(135deg, $primary-color, $accent-color);
+      background: linear-gradient(135deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -2551,11 +2607,11 @@ export default {
         margin: 0 0 4px 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
       }
 
       .logo-subtitle {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 0.9rem;
         font-weight: 500;
         opacity: 0.8;
@@ -2629,12 +2685,12 @@ export default {
     h5 {
       font-size: 1.4rem;
       font-weight: 700;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin-bottom: 8px;
     }
 
     p {
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       font-size: 1rem;
       margin: 0;
       opacity: 0.8;
@@ -2790,12 +2846,12 @@ export default {
         .algorithm-title {
           font-size: 1.3rem;
           font-weight: 700;
-          color: $text-color;
+          color: var(--text-color, #f5f6fa);
           margin: 0 0 4px 0;
         }
 
         .algorithm-desc {
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
           font-size: 0.9rem;
           margin: 0 0 16px 0;
           opacity: 0.8;
@@ -2830,7 +2886,7 @@ export default {
           gap: 12px;
           padding: 8px 0;
           font-size: 0.9rem;
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
 
           .feature-dot {
             width: 6px;
@@ -2873,13 +2929,13 @@ export default {
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
-      border-color: $primary-color;
+      border-color: var(--primary-color, #18191a);
     }
 
     .highlight-icon {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, $primary-color, $accent-color);
+      background: linear-gradient(135deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -2893,13 +2949,13 @@ export default {
       h6 {
         font-size: 1rem;
         font-weight: 600;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         margin: 0 0 4px 0;
       }
 
       p {
         font-size: 0.875rem;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         margin: 0;
         opacity: 0.8;
       }
@@ -2944,12 +3000,12 @@ export default {
       h5 {
         font-size: 1.4rem;
         font-weight: 700;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         margin: 0 0 8px 0;
       }
 
       p {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 1rem;
         margin: 0;
         opacity: 0.8;
@@ -2984,9 +3040,9 @@ export default {
           height: 100%;
           background: linear-gradient(
             135deg,
-            $primary-color 0%,
-            $accent-color 50%,
-            $info-color 100%
+            var(--primary-color, #18191a) 0%,
+            var(--accent-color, #b0b3b8) 50%,
+            var(--info-color, #4a90e2) 100%
           );
           background-size: 200% 200%;
           animation: gradientShift 4s ease-in-out infinite;
@@ -3061,11 +3117,11 @@ export default {
 
     .note-icon {
       font-size: 1.2rem;
-      color: $warning-color;
+      color: var(--warning-color, #ff9800);
     }
 
     p {
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       font-size: 0.9rem;
       margin: 0;
       text-align: center;
@@ -3076,7 +3132,7 @@ export default {
 
 /* 深度学习展示样式 */
 .deep-learning-showcase {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-color-light 100%);
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, #232526 100%);
   border-radius: 16px;
   padding: 2rem;
   margin-top: 2rem;

@@ -1032,7 +1032,6 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
 </script>
 
 <style scoped lang="scss">
-@use '@/styles/variables.scss' as *;
 
 .profile-container {
   min-height: 100vh;
@@ -1249,9 +1248,9 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
   overflow: hidden;
   
   .card-header {
-    background: $header-background;
+    background: var(--header-background, linear-gradient(135deg, #333333, #404040));
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color, #393b40);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1281,13 +1280,13 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
         h3 {
           font-size: 1.25rem;
           font-weight: 600;
-          color: $text-primary;
+          color: var(--text-primary, #ffffff);
           margin: 0 0 0.25rem 0;
         }
         
         p {
           font-size: 0.9rem;
-          color: $text-secondary;
+          color: var(--text-secondary, #b0b3b8);
           margin: 0;
         }
       }
@@ -1328,13 +1327,13 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
           h4 {
             font-size: 1.75rem;
             font-weight: 700;
-            color: $text-primary;
+            color: var(--text-primary, #ffffff);
             margin: 0 0 0.25rem 0;
           }
           
           p {
             font-size: 0.9rem;
-            color: $text-secondary;
+            color: var(--text-secondary, #b0b3b8);
             margin: 0;
           }
         }
@@ -1345,7 +1344,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       h4 {
         font-size: 1.1rem;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         margin: 0 0 1.5rem 0;
       }
       
@@ -1364,11 +1363,11 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
           
           span {
             font-size: 0.9rem;
-            color: $text-primary;
+            color: var(--text-primary, #ffffff);
             font-weight: 500;
             
             &:last-child {
-              color: $primary-color;
+              color: var(--primary-color, #18191a);
               font-weight: 600;
             }
           }
@@ -1393,17 +1392,30 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
 .info-card,
 .notification-card,
 .security-card {
-  background: rgba(42, 42, 42, 0.9);
+  background: var(--card-bg, #292c33);
   border-radius: 16px;
   padding: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
   
   .card-header {
-    background: $header-background;
+    background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1416,20 +1428,21 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       .card-icon {
         width: 48px;
         height: 48px;
-        background: linear-gradient(135deg, #333333, #555555);
+        background: rgba(255, 255, 255, 0.2);
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-size: 20px;
+        backdrop-filter: blur(10px);
         
         &.notification-icon {
-          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+          background: rgba(255, 255, 255, 0.2);
         }
         
         &.security-icon {
-          background: linear-gradient(135deg, #f56565, #e53e3e);
+          background: rgba(255, 255, 255, 0.2);
         }
       }
       
@@ -1437,13 +1450,13 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
         h3 {
           font-size: 1.25rem;
           font-weight: 600;
-          color: $text-primary;
+          color: white;
           margin: 0 0 0.25rem 0;
         }
         
         p {
           font-size: 0.9rem;
-          color: $text-secondary;
+          color: rgba(255, 255, 255, 0.8);
           margin: 0;
         }
       }
@@ -1451,7 +1464,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     
     .edit-switch {
       :deep(.el-switch__label) {
-        color: $text-secondary;
+        color: rgba(255, 255, 255, 0.8);
         font-weight: 500;
       }
     }
@@ -1459,6 +1472,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
   
   .card-content {
     padding: 2rem;
+    background: var(--card-bg, #292c33);
   }
 }
 
@@ -1473,10 +1487,10 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     h4 {
       font-size: 1.1rem;
       font-weight: 600;
-      color: $text-primary;
+      color: var(--text-color, #f5f6fa);
       margin: 0 0 1rem 0;
       padding-bottom: 0.5rem;
-      border-bottom: 1px solid $border-color;
+      border-bottom: 2px solid var(--accent-color, #3b82f6);
     }
     
     .setting-item {
@@ -1484,7 +1498,15 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       justify-content: space-between;
       align-items: center;
       padding: 1rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: var(--secondary-color, #23272e);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 0 -1rem;
+      }
       
       &:last-child {
         border-bottom: none;
@@ -1497,46 +1519,55 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
           display: block;
           font-size: 0.95rem;
           font-weight: 500;
-          color: $text-primary;
+          color: var(--text-color, #f5f6fa);
           margin-bottom: 0.25rem;
         }
         
         .setting-desc {
           font-size: 0.85rem;
-          color: $text-secondary;
+          color: var(--text-secondary-color, #b0b3b8);
           line-height: 1.4;
         }
       }
       
       :deep(.el-switch) {
         .el-switch__core {
-          background-color: rgba(255, 255, 255, 0.2);
-          border-color: transparent;
+          background-color: var(--secondary-color, #23272e);
+          border-color: var(--border-color, rgba(57, 59, 64, 0.18));
           
           &.is-checked {
-            background-color: $primary-color;
+            background-color: var(--accent-color, #3b82f6);
+            border-color: var(--accent-color, #3b82f6);
           }
         }
       }
       
       :deep(.el-time-picker) {
         .el-input__wrapper {
-          background: $input-background;
-          border: 2px solid $border-color;
-          border-radius: 6px;
+          background: var(--secondary-color, #23272e);
+          border: 2px solid var(--border-color, rgba(57, 59, 64, 0.18));
+          border-radius: 8px;
+          transition: all 0.3s ease;
           
           &:hover {
-            border-color: $primary-color;
+            border-color: var(--accent-color, #3b82f6);
+            background: var(--card-bg, #292c33);
           }
           
           &.is-focus {
-            border-color: $primary-color;
+            border-color: var(--accent-color, #3b82f6);
+            background: var(--card-bg, #292c33);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
           }
         }
         
         .el-input__inner {
-          color: $text-primary;
+          color: var(--text-color, #f5f6fa);
           font-size: 0.9rem;
+          
+          &::placeholder {
+            color: var(--text-secondary-color, #b0b3b8);
+          }
         }
       }
     }
@@ -1547,33 +1578,37 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     gap: 1rem;
     justify-content: flex-end;
     padding-top: 1.5rem;
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
     margin-top: 2rem;
     
     .el-button {
       padding: 0.75rem 2rem;
       border-radius: 8px;
       font-weight: 600;
+      transition: all 0.3s ease;
       
       &[type="primary"] {
-        background: $primary-color;
+        background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
         border: none;
         color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         
         &:hover {
-          background: $primary-hover;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
       }
       
       &:not([type]) {
-        background: $button-secondary;
-        border: 2px solid $border-color;
-        color: $text-secondary;
+        background: var(--secondary-color, #23272e);
+        border: 2px solid var(--border-color, rgba(57, 59, 64, 0.18));
+        color: var(--text-color, #f5f6fa);
         
         &:hover {
-          background: $button-secondary-hover;
-          border-color: $border-hover;
-          color: $text-primary;
+          background: var(--card-bg, #292c33);
+          border-color: var(--accent-color, #3b82f6);
+          color: var(--text-color, #f5f6fa);
+          transform: translateY(-1px);
         }
       }
     }
@@ -1592,7 +1627,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     margin-bottom: 1.5rem;
     
     .el-form-item__label {
-      color: $text-primary;
+      color: var(--text-primary, #ffffff);
       font-weight: 600;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
@@ -1602,95 +1637,95 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     
     .el-input {
       .el-input__wrapper {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
+        border: 2px solid var(--border-color, #393b40);
         border-radius: 8px;
         padding: 0.75rem 1rem;
         box-shadow: none;
         
         &:hover {
-          border-color: $primary-color;
-          background: $card-background;
+          border-color: var(--primary-color, #18191a);
+          background: var(--card-background, rgba(42, 42, 42, 0.9));
         }
         
         &.is-focus {
-          border-color: $primary-color;
-          background: $card-background;
+          border-color: var(--primary-color, #18191a);
+          background: var(--card-background, rgba(42, 42, 42, 0.9));
         }
         
         &.is-disabled {
-          background: $disabled-background;
-          border-color: $disabled-border;
+          background: var(--disabled-background, rgba(50, 50, 50, 0.6));
+          border-color: var(--disabled-border, rgba(80, 80, 80, 0.5));
         }
       }
       
       .el-input__inner {
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         font-weight: 500;
         
         &::placeholder {
-          color: $text-placeholder;
+          color: var(--text-placeholder, #8e9297);
         }
         
         &:disabled {
-          color: $text-disabled;
+          color: var(--text-disabled, #6c757d);
         }
       }
       
       .el-input__prefix {
-        color: $primary-color;
+        color: var(--primary-color, #18191a);
       }
     }
     
     .el-select {
       .el-input__wrapper {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
+        border: 2px solid var(--border-color, #393b40);
         border-radius: 8px;
         
         &:hover {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
         
         &.is-focus {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
       }
     }
     
     .el-date-editor {
       .el-input__wrapper {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
+        border: 2px solid var(--border-color, #393b40);
         border-radius: 8px;
         
         &:hover {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
         
         &.is-focus {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
       }
     }
     
     .el-textarea {
       .el-textarea__inner {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
+        border: 2px solid var(--border-color, #393b40);
         border-radius: 8px;
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         
         &:hover {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
         
         &:focus {
-          border-color: $primary-color;
+          border-color: var(--primary-color, #18191a);
         }
         
         &::placeholder {
-          color: $text-placeholder;
+          color: var(--text-placeholder, #8e9297);
         }
       }
     }
@@ -1701,7 +1736,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     gap: 1rem;
     justify-content: flex-end;
     padding-top: 1rem;
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--border-color, #393b40);
     
     .el-button {
       padding: 0.75rem 2rem;
@@ -1709,24 +1744,25 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       font-weight: 600;
       
       &.save-btn {
-        background: $primary-color;
+        background: var(--primary-color, #18191a);
         border: none;
         color: white;
         
         &:hover {
-          background: $primary-hover;
+          background: var(--primary-hover, #cccccc);
         }
       }
       
       &.cancel-btn {
-        background: $button-secondary;
-        border: 2px solid $border-color;
-        color: $text-secondary;
+        background: var(--secondary-color, #23272e);
+        border: 2px solid var(--border-color, rgba(57, 59, 64, 0.18));
+        color: var(--text-color, #f5f6fa);
         
         &:hover {
-          background: $button-secondary-hover;
-          border-color: $border-hover;
-          color: $text-primary;
+          background: var(--card-bg, #292c33);
+          border-color: var(--accent-color, #3b82f6);
+          color: var(--text-color, #f5f6fa);
+          transform: translateY(-1px);
         }
       }
     }
@@ -1738,7 +1774,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     margin-bottom: 1.5rem;
     
     .el-form-item__label {
-      color: $text-primary;
+      color: var(--text-primary, #ffffff);
       font-weight: 600;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
@@ -1748,34 +1784,36 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     
     .el-input {
       .el-input__wrapper {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--secondary-color, #23272e);
+        border: 2px solid var(--border-color, rgba(57, 59, 64, 0.18));
         border-radius: 8px;
         padding: 0.75rem 1rem;
         box-shadow: none;
+        transition: all 0.3s ease;
         
         &:hover {
-          border-color: $danger-color;
-          background: $card-background;
+          border-color: var(--accent-color, #3b82f6);
+          background: var(--card-bg, #292c33);
         }
         
         &.is-focus {
-          border-color: $danger-color;
-          background: $card-background;
+          border-color: var(--accent-color, #3b82f6);
+          background: var(--card-bg, #292c33);
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
       }
       
       .el-input__inner {
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         font-weight: 500;
         
         &::placeholder {
-          color: $text-placeholder;
+          color: var(--text-placeholder, #8e9297);
         }
       }
       
       .el-input__prefix {
-        color: $danger-color;
+        color: var(--danger-color, #f56565);
       }
     }
   }
@@ -1785,7 +1823,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     gap: 1rem;
     justify-content: flex-end;
     padding-top: 1rem;
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--border-color, #393b40);
     
     .el-button {
       padding: 0.75rem 2rem;
@@ -1793,24 +1831,25 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       font-weight: 600;
       
       &.update-btn {
-        background: $danger-color;
+        background: var(--danger-color, #f56565);
         border: none;
         color: white;
         
         &:hover {
-          background: $danger-hover;
+          background: var(--danger-hover, #e53e3e);
         }
       }
       
       &.reset-btn {
-        background: $button-secondary;
-        border: 2px solid $border-color;
-        color: $text-secondary;
+        background: var(--secondary-color, #23272e);
+        border: 2px solid var(--border-color, rgba(57, 59, 64, 0.18));
+        color: var(--text-color, #f5f6fa);
         
         &:hover {
-          background: $button-secondary-hover;
-          border-color: $border-hover;
-          color: $text-primary;
+          background: var(--card-bg, #292c33);
+          border-color: var(--accent-color, #3b82f6);
+          color: var(--text-color, #f5f6fa);
+          transform: translateY(-1px);
         }
       }
     }
@@ -1826,18 +1865,18 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     }
     
     :deep(.el-tabs__nav-wrap::after) {
-      background-color: $border-color;
+      background-color: var(--border-color, #393b40);
     }
     
     :deep(.el-tabs__active-bar) {
-      background-color: $primary-color;
+      background-color: var(--primary-color, #18191a);
     }
     
     :deep(.el-tabs__item) {
-      color: $text-secondary;
+      color: var(--text-secondary, #b0b3b8);
       
       &.is-active {
-        color: $primary-color;
+        color: var(--primary-color, #18191a);
       }
     }
   }
@@ -1847,35 +1886,35 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     
     .avatar-input {
       :deep(.el-input-group__prepend) {
-        background: $primary-color;
+        background: var(--primary-color, #18191a);
         border: none;
         color: white;
         border-radius: 8px 0 0 8px;
       }
       
       :deep(.el-input__wrapper) {
-        background: $input-background;
-        border: 2px solid $border-color;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
+        border: 2px solid var(--border-color, #393b40);
         border-left: none;
         border-radius: 0 8px 8px 0;
         
         &:hover {
-          border-color: $primary-color;
-          background: $card-background;
+          border-color: var(--primary-color, #18191a);
+          background: var(--card-background, rgba(42, 42, 42, 0.9));
         }
         
         &.is-focus {
-          border-color: $primary-color;
-          background: $card-background;
+          border-color: var(--primary-color, #18191a);
+          background: var(--card-background, rgba(42, 42, 42, 0.9));
         }
       }
       
       :deep(.el-input__inner) {
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         font-weight: 500;
         
         &::placeholder {
-          color: $text-placeholder;
+          color: var(--text-placeholder, #8e9297);
         }
       }
     }
@@ -1890,9 +1929,9 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       .upload-dragger {
         width: 100%;
         height: 120px;
-        border: 2px dashed $border-color;
+        border: 2px dashed var(--border-color, #393b40);
         border-radius: 8px;
-        background: $input-background;
+        background: var(--input-background, rgba(60, 60, 60, 0.8));
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1901,13 +1940,13 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
         transition: all 0.3s ease;
         
         &:hover {
-          border-color: $primary-color;
-          background: $card-background;
+          border-color: var(--primary-color, #18191a);
+          background: var(--card-background, rgba(42, 42, 42, 0.9));
         }
         
         .upload-icon {
           font-size: 32px;
-          color: $text-placeholder;
+          color: var(--text-placeholder, #8e9297);
           margin-bottom: 8px;
         }
         
@@ -1916,11 +1955,11 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
           
           p {
             margin: 0;
-            color: $text-primary;
+            color: var(--text-primary, #ffffff);
             
             &.upload-hint {
               font-size: 0.75rem;
-              color: $text-placeholder;
+              color: var(--text-placeholder, #8e9297);
               margin-top: 4px;
             }
           }
@@ -1933,7 +1972,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
       
       p {
         font-size: 0.85rem;
-        color: $text-secondary;
+        color: var(--text-secondary, #b0b3b8);
         margin: 0;
         text-align: center;
       }
@@ -1950,7 +1989,7 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     h4 {
       font-size: 1rem;
       font-weight: 600;
-      color: $text-primary;
+      color: var(--text-primary, #ffffff);
       margin: 0 0 1rem 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -1973,13 +2012,13 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     
     .el-dialog__header {
-      background: $header-background;
-      border-bottom: 1px solid $border-color;
+      background: var(--header-background, linear-gradient(135deg, #333333, #404040));
+      border-bottom: 1px solid var(--border-color, #393b40);
       border-radius: 16px 16px 0 0;
       padding: 1.5rem 2rem;
       
       .el-dialog__title {
-        color: $text-primary;
+        color: var(--text-primary, #ffffff);
         font-weight: 700;
         font-size: 1.25rem;
       }
@@ -1987,11 +2026,11 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
     
     .el-dialog__body {
       padding: 2rem;
-      color: $text-primary;
+      color: var(--text-primary, #ffffff);
     }
     
     .el-dialog__footer {
-      border-top: 1px solid $border-color;
+      border-top: 1px solid var(--border-color, #393b40);
       padding: 1.5rem 2rem;
       
       .dialog-footer {
@@ -2005,24 +2044,24 @@ watch([isLoggedIn, authUserInfo], async ([newIsLoggedIn, newUserInfo]) => {
           font-weight: 600;
           
           &.confirm-btn {
-            background: $primary-color;
+            background: var(--primary-color, #18191a);
             border: none;
             color: white;
             
             &:hover {
-              background: $primary-hover;
+              background: var(--primary-hover, #cccccc);
             }
           }
           
           &.cancel-btn {
-            background: $button-secondary;
-            border: 2px solid $border-color;
-            color: $text-secondary;
+            background: var(--button-secondary, rgba(60, 60, 60, 0.8));
+            border: 2px solid var(--border-color, #393b40);
+            color: var(--text-secondary, #b0b3b8);
             
             &:hover {
-              background: $button-secondary-hover;
-              border-color: $border-hover;
-              color: $text-primary;
+              background: var(--button-secondary, rgba(60, 60, 60, 0.8))-hover;
+              border-color: var(--border-hover, #ffffff);
+              color: var(--text-primary, #ffffff);
             }
           }
         }

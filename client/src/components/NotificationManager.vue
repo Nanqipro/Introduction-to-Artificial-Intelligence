@@ -123,7 +123,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
 
 .notification-manager {
   position: fixed;
@@ -141,7 +140,7 @@ export default {
 // 通知列表动画
 .toast-list-enter-active,
 .toast-list-leave-active {
-  transition: all $transition-normal ease;
+  transition: all var(--transition-normal, 0.3s) ease;
 }
 
 .toast-list-enter-from {
@@ -155,11 +154,11 @@ export default {
 }
 
 .toast-list-move {
-  transition: transform $transition-normal ease;
+  transition: transform var(--transition-normal, 0.3s) ease;
 }
 
 // 响应式设计
-@media (max-width: $breakpoint-md) {
+@media (max-width: var(--breakpoint-md, 768px)) {
   .notification-manager {
     left: 0;
     right: 0;

@@ -409,13 +409,13 @@ export default {
 </script>
 
 <style lang="scss">
-@use '../styles/variables.scss' as *;
+
 
 .system-test-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
   padding: 2rem 0;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   
   .container {
     max-width: 1200px;
@@ -431,26 +431,26 @@ export default {
       font-size: 2.5rem;
       margin-bottom: 1rem;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
     }
     
     .test-description {
       font-size: 1.1rem;
       opacity: 0.9;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
     }
   }
 
   .quick-test-panel, .comprehensive-test-panel {
-    background: $card-bg;
+    background: var(--card-bg, #292c33);
     border-radius: 16px;
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-    border: 1px solid $card-border;
+    border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
     
     h2 {
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin-bottom: 1.5rem;
       font-size: 1.5rem;
     }
@@ -464,7 +464,7 @@ export default {
   }
 
   .test-card {
-    background: linear-gradient(135deg, $secondary-color, $secondary-color-light);
+    background: linear-gradient(135deg, var(--secondary-color, #23272e), #31343b);
     border-radius: 16px;
     padding: 1.5rem;
     text-align: center;
@@ -475,7 +475,7 @@ export default {
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      border-color: $accent-color;
+      border-color: var(--accent-color, #b0b3b8);
     }
     
     .test-icon {
@@ -485,11 +485,11 @@ export default {
     
     h3 {
       margin-bottom: 0.5rem;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
     }
     
     p {
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       margin-bottom: 1rem;
     }
   }
@@ -501,33 +501,33 @@ export default {
     font-size: 0.9rem;
     
     &.pending {
-      background: rgba($accent-color, 0.1);
-      color: $accent-color;
-      border: 1px solid rgba($accent-color, 0.3);
+      background: rgba(var(--accent-color, #b0b3b8), 0.1);
+      color: var(--accent-color, #b0b3b8);
+      border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.3);
     }
     
     &.testing {
-      background: rgba($info-color, 0.1);
-      color: $info-color;
-      border: 1px solid rgba($info-color, 0.3);
+      background: rgba(var(--info-color, #4a90e2), 0.1);
+      color: var(--info-color, #4a90e2);
+      border: 1px solid rgba(var(--info-color, #4a90e2), 0.3);
     }
     
     &.success {
-      background: rgba($success-color, 0.1);
-      color: $success-color;
-      border: 1px solid rgba($success-color, 0.3);
+      background: rgba(var(--success-color, #4caf50), 0.1);
+      color: var(--success-color, #4caf50);
+      border: 1px solid rgba(var(--success-color, #4caf50), 0.3);
     }
     
     &.error {
-      background: rgba($error-color, 0.1);
-      color: $error-color;
-      border: 1px solid rgba($error-color, 0.3);
+      background: rgba(var(--error-color, #f44336), 0.1);
+      color: var(--error-color, #f44336);
+      border: 1px solid rgba(var(--error-color, #f44336), 0.3);
     }
     
     &.warning {
-      background: rgba($warning-color, 0.1);
-      color: $warning-color;
-      border: 1px solid rgba($warning-color, 0.3);
+      background: rgba(var(--warning-color, #ff9800), 0.1);
+      color: var(--warning-color, #ff9800);
+      border: 1px solid rgba(var(--warning-color, #ff9800), 0.3);
     }
   }
 
@@ -568,12 +568,12 @@ export default {
     
     &.btn-secondary {
       background: #393b40;
-      color: $text-color;
-      border: 1px solid $border-color;
+      color: var(--text-color, #f5f6fa);
+      border: 1px solid var(--border-color, #393b40);
       
       &:hover:not(:disabled) {
         background: #4a4c51;
-        border-color: $accent-color;
+        border-color: var(--accent-color, #b0b3b8);
       }
     }
     
@@ -591,12 +591,12 @@ export default {
       padding: 0.5rem 1rem;
       font-size: 0.9rem;
       background: #393b40;
-      color: $text-color;
-      border: 1px solid $border-color;
+      color: var(--text-color, #f5f6fa);
+      border: 1px solid var(--border-color, #393b40);
       
       &:hover {
         background: #4a4c51;
-        border-color: $accent-color;
+        border-color: var(--accent-color, #b0b3b8);
       }
     }
   }
@@ -607,15 +607,15 @@ export default {
     .progress-bar {
       width: 100%;
       height: 12px;
-      background: rgba($accent-color, 0.2);
+      background: rgba(var(--accent-color, #b0b3b8), 0.2);
       border-radius: 6px;
       overflow: hidden;
-      border: 1px solid rgba($accent-color, 0.3);
+      border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.3);
     }
     
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, $accent-color, $accent-color-light);
+      background: linear-gradient(90deg, var(--accent-color, #b0b3b8), #d1d3d8);
       transition: width 0.3s ease;
       border-radius: 6px;
     }
@@ -623,7 +623,7 @@ export default {
     .progress-text {
       text-align: center;
       margin-top: 0.5rem;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       font-size: 0.9rem;
     }
   }
@@ -641,25 +641,25 @@ export default {
     padding: 1.5rem;
     border-radius: 16px;
     border-left: 4px solid;
-    background: $card-bg;
-    border: 1px solid $card-border;
+    background: var(--card-bg, #292c33);
+    border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
     
     &.success {
-      background: rgba($success-color, 0.05);
-      border-left-color: $success-color;
-      border-color: rgba($success-color, 0.3);
+      background: rgba(var(--success-color, #4caf50), 0.05);
+      border-left-color: var(--success-color, #4caf50);
+      border-color: rgba(var(--success-color, #4caf50), 0.3);
     }
     
     &.error {
-      background: rgba($error-color, 0.05);
-      border-left-color: $error-color;
-      border-color: rgba($error-color, 0.3);
+      background: rgba(var(--error-color, #f44336), 0.05);
+      border-left-color: var(--error-color, #f44336);
+      border-color: rgba(var(--error-color, #f44336), 0.3);
     }
     
     &.warning {
-      background: rgba($warning-color, 0.05);
-      border-left-color: $warning-color;
-      border-color: rgba($warning-color, 0.3);
+      background: rgba(var(--warning-color, #ff9800), 0.05);
+      border-left-color: var(--warning-color, #ff9800);
+      border-color: rgba(var(--warning-color, #ff9800), 0.3);
     }
     
     .result-icon {
@@ -670,17 +670,17 @@ export default {
     .result-content {
       h4 {
         margin: 0 0 0.25rem 0;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         font-size: 1.125rem;
       }
       
       p {
         margin: 0 0 0.25rem 0;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
       }
       
       .result-details {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 0.875rem;
         opacity: 0.8;
       }
@@ -688,26 +688,26 @@ export default {
   }
 
   .test-logs {
-    background: $card-bg;
+    background: var(--card-bg, #292c33);
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-    border: 1px solid $card-border;
+    border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
     
     h3 {
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin-bottom: 1.5rem;
     }
     
     .log-container {
       max-height: 300px;
       overflow-y: auto;
-      background: $secondary-color;
+      background: var(--secondary-color, #23272e);
       border-radius: 8px;
       padding: 1rem;
       margin: 1rem 0;
       font-family: 'Courier New', monospace;
-      border: 1px solid $card-border;
+      border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
     }
     
     .log-item {
@@ -717,30 +717,30 @@ export default {
       font-size: 0.875rem;
       
       .log-time {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         flex-shrink: 0;
         font-size: 0.75rem;
       }
       
       .log-message {
         flex: 1;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
       }
       
       &.info .log-message {
-        color: $info-color;
+        color: var(--info-color, #4a90e2);
       }
       
       &.success .log-message {
-        color: $success-color;
+        color: var(--success-color, #4caf50);
       }
       
       &.error .log-message {
-        color: $error-color;
+        color: var(--error-color, #f44336);
       }
       
       &.warning .log-message {
-        color: $warning-color;
+        color: var(--warning-color, #ff9800);
       }
     }
   }

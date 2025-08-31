@@ -262,12 +262,12 @@ const getTabLabel = (tabName) => {
 .chapter6-interactive {
   // 全局选中样式
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
   
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -276,29 +276,29 @@ const getTabLabel = (tabName) => {
   margin-bottom: 2rem;
   
   .intro-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
     
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
     
     .intro-content {
       text-align: center;
       
       h2 {
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
         margin-bottom: 1rem;
         font-size: 2rem;
         
         .el-icon {
           margin-right: 0.5rem;
-          color: $accent-color;
+          color: var(--accent-color, #b0b3b8);
         }
       }
       
       p {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 1.1rem;
         margin-bottom: 2rem;
       }
@@ -313,9 +313,9 @@ const getTabLabel = (tabName) => {
           flex-direction: column;
           align-items: center;
           padding: 1rem;
-          background: $secondary-color;
+          background: var(--secondary-color, #23272e);
           border-radius: 8px;
-          border: 1px solid $border-color;
+          border: 1px solid var(--border-color, #393b40);
           transition: all 0.3s ease;
           
           &:hover {
@@ -325,12 +325,12 @@ const getTabLabel = (tabName) => {
           
           .el-icon {
             font-size: 2rem;
-            color: $accent-color;
+            color: var(--accent-color, #b0b3b8);
             margin-bottom: 0.5rem;
           }
           
           span {
-            color: $text-color;
+            color: var(--text-color, #f5f6fa);
             font-weight: 600;
           }
         }
@@ -343,18 +343,18 @@ const getTabLabel = (tabName) => {
   margin-bottom: 2rem;
   
   .progress-card {
-    background: $primary-color;
-    border: 1px solid $border-color;
+    background: var(--primary-color, #18191a);
+    border: 1px solid var(--border-color, #393b40);
     
     :deep(.el-card__header) {
-      background: $secondary-color;
-      border-bottom: 1px solid $border-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      border-bottom: 1px solid var(--border-color, #393b40);
+      color: var(--text-color, #f5f6fa);
       font-weight: 600;
     }
     
     :deep(.el-card__body) {
-      background: $primary-color;
+      background: var(--primary-color, #18191a);
     }
     
     .progress-content {
@@ -362,7 +362,7 @@ const getTabLabel = (tabName) => {
       
       .progress-text {
         margin-top: 1rem;
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 1.1rem;
       }
     }
@@ -379,21 +379,21 @@ const getTabLabel = (tabName) => {
   .chapter-tabs {
     :deep(.el-tabs__header) {
       margin: 0;
-      border-bottom: 2px solid $border-color;
+      border-bottom: 2px solid var(--border-color, #393b40);
     }
     
     :deep(.el-tabs__item) {
       font-size: 1rem;
       font-weight: 600;
       padding: 1rem 1.5rem;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       
       &.is-active {
-        color: $accent-color;
+        color: var(--accent-color, #b0b3b8);
       }
       
       &:hover {
-        color: $accent-color-light;
+        color: #d1d3d8;
       }
     }
     
@@ -407,11 +407,11 @@ const getTabLabel = (tabName) => {
 
 .chapter-content {
   .content-section {
-    background: $secondary-color;
+    background: var(--secondary-color, #23272e);
     border-radius: 12px;
-    box-shadow: $box-shadow;
+    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
     overflow: hidden;
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-color, #393b40);
   }
 }
 
@@ -423,7 +423,7 @@ const getTabLabel = (tabName) => {
   animation: slideInRight 0.5s ease-out;
   
   .achievement-card {
-    background: linear-gradient(135deg, $accent-color, $accent-color-light);
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8), #d1d3d8);
     border: none;
     box-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
     
@@ -433,20 +433,20 @@ const getTabLabel = (tabName) => {
       
       .achievement-icon {
         font-size: 2rem;
-        color: $primary-color;
+        color: var(--primary-color, #18191a);
         margin-right: 1rem;
       }
       
       .achievement-text {
         h3 {
           margin: 0 0 0.5rem 0;
-          color: $primary-color;
+          color: var(--primary-color, #18191a);
           font-weight: 700;
         }
         
         p {
           margin: 0;
-          color: $primary-color-light;
+          color: #232526;
         }
       }
     }
