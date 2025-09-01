@@ -2,6 +2,23 @@
 
 /* 深色主题 (默认) */
 :root {
+    /* RGB variants for rgba() usage */
+    --text-color-rgb: 245, 246, 250;
+    --text-secondary-color-rgb: 176, 179, 184;
+    --accent-color-rgb: 59, 130, 246;
+    --accent-color-light-rgb: 96, 165, 250;
+    --success-color-rgb: 76, 175, 80;
+    --success-color-light-rgb: 102, 187, 106;
+    --warning-color-rgb: 255, 152, 0;
+    --warning-color-light-rgb: 255, 183, 77;
+    --error-color-rgb: 244, 67, 54;
+    --error-color-light-rgb: 239, 83, 80;
+    --info-color-rgb: 74, 144, 226;
+    --info-color-light-rgb: 100, 181, 246;
+    --card-bg-rgb: 41, 44, 51;
+    --shadow-color-rgb: 0, 0, 0;
+    --highlight-color-rgb: 255, 255, 255;
+    --card-border-rgb: 57, 59, 64;
     --primary-color: #18191a;
     --secondary-color: #23272e;
     --text-color: #f5f6fa;
@@ -120,6 +137,23 @@
 
 /* 浅色主题 */
 :root.light-theme {
+    /* RGB variants for rgba() usage */
+    --text-color-rgb: 33, 37, 41;
+    --text-secondary-color-rgb: 108, 117, 125;
+    --accent-color-rgb: 13, 110, 253;
+    --accent-color-light-rgb: 13, 202, 240;
+    --success-color-rgb: 25, 135, 84;
+    --success-color-light-rgb: 32, 201, 151;
+    --warning-color-rgb: 253, 126, 20;
+    --warning-color-light-rgb: 255, 193, 7;
+    --error-color-rgb: 220, 53, 69;
+    --error-color-light-rgb: 231, 76, 60;
+    --info-color-rgb: 13, 110, 253;
+    --info-color-light-rgb: 13, 202, 240;
+    --card-bg-rgb: 255, 255, 255;
+    --shadow-color-rgb: 0, 0, 0;
+    --highlight-color-rgb: 255, 255, 255;
+    --card-border-rgb: 203, 213, 225;
     --primary-color: #ffffff;
     --secondary-color: #f8f9fa;
     --text-color: #212529;

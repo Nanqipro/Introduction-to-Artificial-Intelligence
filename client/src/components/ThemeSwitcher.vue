@@ -74,22 +74,22 @@ onMounted(() => {
   color: var(--text-color, #f5f6fa);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   font-size: 14px;
   font-weight: 500;
 }
 
 .theme-toggle-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.2);
 }
 
 .theme-toggle-btn.light {
   background: var(--card-bg, #ffffff);
   color: var(--text-color, #212529);
-  border-color: var(--border-color, rgba(0, 0, 0, 0.125));
+  border-color: rgba(var(--card-border-rgb, 0, 0, 0), 0.125);
 }
 
 .theme-icon {

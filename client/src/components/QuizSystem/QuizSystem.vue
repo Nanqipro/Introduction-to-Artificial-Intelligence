@@ -45,7 +45,7 @@
     </div>
 
     <!-- 答题设置面板 -->
-    <div class="quiz-settings" v-if="currentQuestionIndex === 0 && !showAnswer">
+    <div class="quiz-settings" v-if="!hasStarted && !showAnswer && !quizCompleted">
       <div class="settings-panel">
         <h3 class="settings-title">答题设置</h3>
         
@@ -109,21 +109,21 @@
     </div>
 
     <!-- 答题区域 -->
-    <div class="quiz-container" v-if="!quizCompleted && (currentQuestionIndex > 0 || showAnswer)">
+    <div class="quiz-container" v-if="!quizCompleted && hasStarted">
       <!-- 进度条和计时器 -->
       <div class="quiz-progress">
         <div class="progress-section">
           <div class="progress-bar">
             <div 
               class="progress-fill" 
-              :style="{ width: `${(currentQuestionIndex / questions.length) * 100}%` }"
+              :style="{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }"
             ></div>
           </div>
           <span class="progress-text">{{ currentQuestionIndex + 1 }} / {{ questions.length }}</span>
         </div>
         
         <!-- 计时器 -->
-        <div class="timer-section" v-if="!practiceMode">
+        <div class="timer-section" v-if="!practiceMode && isTimerActive">
           <div class="timer-display" :class="{ warning: timeRemaining <= 10, critical: timeRemaining <= 5 }">
             <div class="timer-icon">⏱️</div>
             <div class="timer-text">
@@ -430,10 +430,12 @@ export default {
       showHint: false,
       
       // 新增功能数据
-      timeLimit: 60, // 每题时间限制（秒）
+      baseTimeLimit: 60, // 基础时间限制（秒），随难度调整
+      timeLimit: 60, // 当前题目的时间限制（秒）
       timeRemaining: 60,
       timerInterval: null,
       isTimerActive: false,
+      hasStarted: false,
       
       // 答题历史和统计
       quizHistory: [],
@@ -522,14 +524,23 @@ export default {
       this.loading = true
       console.log('🚀 开始加载题目，章节ID:', this.chapterId)
       
-      // 直接使用默认题目，跳过API调用
-      console.log('🔄 直接使用默认题目...')
-      this.questions = this.getDefaultQuestions()
-      console.log('📚 默认题目加载完成:', this.questions.length, '道题目')
-      console.log('📋 题目详情:', this.questions)
-      
-      this.loading = false
-      console.log('✅ 题目加载完成，loading状态:', this.loading)
+      try {
+        // 直接使用默认题目，跳过API调用
+        console.log('🔄 直接使用默认题目...')
+        this.questions = this.getDefaultQuestions()
+        console.log('📚 默认题目加载完成:', this.questions.length, '道题目')
+        console.log('📋 题目详情:', this.questions)
+        
+        if (this.questions.length === 0) {
+          console.warn('⚠️ 警告：没有找到章节', this.chapterId, '的题目')
+        }
+      } catch (error) {
+        console.error('❌ 加载题目失败:', error)
+        this.questions = []
+      } finally {
+        this.loading = false
+        console.log('✅ 题目加载完成，loading状态:', this.loading)
+      }
     },
     /**
      * 转换数据库题目格式为答题系统格式
@@ -861,14 +872,121 @@ export default {
             correctAnswer: 2,
             points: 20,
             explanation: '语音识别主要用于智能语音助手，不是自动驾驶汽车的核心技术。自动驾驶主要依靠传感器融合、环境感知和路径规划等技术。'
-          }
-        ]
-      }
-      const questions = defaultQuestions[this.chapterId] || []
-      console.log('📚 找到默认题目:', questions.length, '道题目')
-      return questions
-    },
-    selectAnswer(answer) {
+                  }
+      ],
+      '5': [
+        {
+          id: 20,
+          type: 'choice',
+          title: 'AI发展的下一个重要方向是什么？',
+          description: '选择AI发展的主要趋势',
+          options: [
+            '通用人工智能(AGI)',
+            '更大的模型',
+            '更快的计算',
+            '更多的数据'
+          ],
+          correctAnswer: 0,
+          points: 20,
+          explanation: '通用人工智能(AGI)是AI发展的下一个重要方向，目标是让AI具备人类的通用智能。'
+        },
+        {
+          id: 21,
+          type: 'true-false',
+          title: '量子计算将显著提升AI的性能。',
+          description: '',
+          correctAnswer: true,
+          points: 15,
+          explanation: '量子计算确实将显著提升AI的性能，特别是在复杂优化和机器学习算法方面。'
+        },
+        {
+          id: 22,
+          type: 'fill',
+          title: '边缘AI的主要优势是什么？',
+          description: '请输入答案',
+          correctAnswer: '实时处理',
+          points: 25,
+          explanation: '边缘AI的主要优势是实时处理，减少网络延迟，提高响应速度。'
+        }
+      ],
+      '6': [
+        {
+          id: 23,
+          type: 'choice',
+          title: '第一个AI项目应该从什么开始？',
+          description: '选择AI项目的最佳起点',
+          options: [
+            '复杂的深度学习模型',
+            '简单的机器学习算法',
+            '数据收集和预处理',
+            '硬件配置'
+          ],
+          correctAnswer: 2,
+          points: 20,
+          explanation: '第一个AI项目应该从数据收集和预处理开始，这是AI项目成功的基础。'
+        },
+        {
+          id: 24,
+          type: 'true-false',
+          title: 'Python是AI开发的首选语言。',
+          description: '',
+          correctAnswer: true,
+          points: 15,
+          explanation: 'Python确实是AI开发的首选语言，拥有丰富的AI库和工具。'
+        },
+        {
+          id: 25,
+          type: 'fill',
+          title: '机器学习项目的基本流程是什么？',
+          description: '请输入答案',
+          correctAnswer: '数据-模型-训练-评估',
+          points: 25,
+          explanation: '机器学习项目的基本流程是：数据准备、模型选择、训练模型、评估结果。'
+        }
+      ],
+      '7': [
+        {
+          id: 26,
+          type: 'choice',
+          title: 'AI伦理的核心问题是什么？',
+          description: '选择AI伦理的核心问题',
+          options: [
+            '技术发展速度',
+            '公平性和偏见',
+            '计算成本',
+            '数据存储'
+          ],
+          correctAnswer: 1,
+          points: 20,
+          explanation: 'AI伦理的核心问题是公平性和偏见，确保AI系统不会歧视特定群体。'
+        },
+        {
+          id: 27,
+          type: 'true-false',
+          title: 'AI系统应该承担法律责任。',
+          description: '',
+          correctAnswer: false,
+          points: 15,
+          explanation: 'AI系统本身不应该承担法律责任，责任应该由开发者和使用者承担。'
+        },
+        {
+          id: 28,
+          type: 'fill',
+          title: 'AI安全的三个主要方面是什么？',
+          description: '请输入答案',
+          correctAnswer: '鲁棒性、隐私、控制',
+          points: 25,
+          explanation: 'AI安全的三个主要方面是：鲁棒性（抗攻击能力）、隐私保护、控制（防止失控）。'
+        }
+      ]
+    }
+    
+    const questions = defaultQuestions[this.chapterId] || []
+    console.log('📚 找到默认题目:', questions.length, '道题目')
+    return questions
+  },
+  
+  selectAnswer(answer) {
       if (this.showAnswer) return
       this.selectedAnswer = answer
     },
@@ -1079,15 +1197,21 @@ export default {
     },
     
     startTimer() {
+      // 练习模式下不启动计时器
       if (this.practiceMode) return
+      
+      // 如果已经有计时器在运行，先停止
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval)
+      }
       
       this.isTimerActive = true
       this.timeRemaining = this.timeLimit
       
       this.timerInterval = setInterval(() => {
-        this.timeRemaining--
-        
-        if (this.timeRemaining <= 0) {
+        if (this.timeRemaining > 0) {
+          this.timeRemaining--
+        } else {
           this.timeUp()
         }
       }, 1000)
@@ -1129,12 +1253,13 @@ export default {
       }
       this.difficultyMultiplier = multipliers[diff]
       
-      const timeLimits = {
-        'easy': 90,
-        'normal': 60,
-        'hard': 45
+      const baseLimits = {
+        'easy': 120,
+        'normal': 90,
+        'hard': 60
       }
-      this.timeLimit = timeLimits[diff]
+      this.baseTimeLimit = baseLimits[diff]
+      this.timeLimit = this.baseTimeLimit
     },
     
     setQuizMode(mode) {
@@ -1148,7 +1273,6 @@ export default {
       } else if (mode === 'exam') {
         this.maxHints = 1
         this.hintPenalty = 0.2
-        this.timeLimit = Math.floor(this.timeLimit * 0.8) // 考试模式时间更紧
       }
     },
     
@@ -1164,23 +1288,22 @@ export default {
       }
       
       // 开始答题，设置第一个题目
-      this.currentQuestionIndex = 1
+      this.currentQuestionIndex = 0
+      this.hasStarted = true
       this.showAnswer = false
       this.selectedAnswer = null
       this.fillAnswer = ''
-      this.timeRemaining = this.timeLimit
-      this.startTimer()
       
-      // 根据难度调整时间限制
-      if (this.difficulty === 'easy') {
-        this.timeLimit = 120 // 简单模式：2分钟
-      } else if (this.difficulty === 'normal') {
-        this.timeLimit = 90  // 普通模式：1.5分钟
-      } else {
-        this.timeLimit = 60  // 困难模式：1分钟
+      // 根据难度和模式设置时间限制
+      this.timeLimit = this.baseTimeLimit
+      if (this.examMode) this.timeLimit = Math.floor(this.baseTimeLimit * 0.8)
+      
+      this.timeRemaining = this.timeLimit
+      
+      // 启动计时器（非练习模式）
+      if (!this.practiceMode) {
+        this.startTimer()
       }
-      
-      this.timeRemaining = this.timeLimit
     },
     
     getDifficultyIcon(diff) {
@@ -1279,11 +1402,11 @@ export default {
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
   border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+    inset 0 1px 0 rgba(var(--highlight-color-rgb, 255, 255, 255), 0.05);
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -1309,7 +1432,7 @@ export default {
   margin-bottom: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, var(--accent-color-light, #d1d3d8) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1331,7 +1454,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.05) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.05) 100%);
   padding: 1rem 1.2rem;
   border-radius: var(--btn-radius, 12px);
   border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
@@ -1363,7 +1486,7 @@ export default {
 
 .progress-icon {
   font-size: 1.4rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
 }
 
 .progress-info {
@@ -1384,7 +1507,7 @@ export default {
   font-size: 1.3rem;
   color: var(--text-color, #f5f6fa);
   font-weight: 800;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
 }
 
 .quiz-container {
@@ -1397,23 +1520,37 @@ export default {
 
 // 答题设置样式
 .quiz-settings {
-  max-width: 800px;
-  margin: 0 auto 2rem;
+  max-width: 900px;
+  margin: 0 auto 3rem;
   padding: 0 1rem;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent-color, #3b82f6), transparent);
+    border-radius: 2px;
+  }
 }
 
 .settings-panel {
-  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
-  border-radius: var(--card-radius, 10px);
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.98) 100%);
+  border-radius: var(--border-radius, 10px);
   padding: 2.5rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.4),
+    0 8px 16px rgba(var(--accent-color-rgb, 176, 179, 184), 0.15),
+    inset 0 1px 0 rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.3);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
+  animation: slideInUp 0.6s ease-out;
   
   &::before {
     content: '';
@@ -1428,14 +1565,12 @@ export default {
 
 .settings-title {
   color: var(--text-color, #f5f6fa);
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   margin-bottom: 2rem;
   text-align: center;
-  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
+  letter-spacing: 0.5px;
 }
 
 .setting-group {
@@ -1445,16 +1580,18 @@ export default {
 .setting-label {
   display: block;
   color: var(--text-color, #f5f6fa);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.2);
 }
 
 .difficulty-options, .mode-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .difficulty-btn, .mode-btn {
@@ -1462,9 +1599,9 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 0.8rem;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
-  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  padding: 1.8rem;
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.08) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.08) 100%);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.25);
   border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1484,8 +1621,9 @@ export default {
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.2);
-    border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
+    box-shadow: 0 8px 24px rgba(var(--accent-color-rgb, 176, 179, 184), 0.3);
+    border-color: rgba(var(--accent-color-rgb, 176, 179, 184), 0.4);
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.12) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.12) 100%);
     
     &::before {
       left: 100%;
@@ -1493,53 +1631,59 @@ export default {
   }
   
   &.active {
-    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.15) 0%, rgba(#d1d3d8, 0.15) 100%);
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.2) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.2) 100%);
     border-color: var(--accent-color, #b0b3b8);
-    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.3);
+    border-width: 3px;
+    box-shadow: 0 8px 24px rgba(var(--accent-color-rgb, 176, 179, 184), 0.4);
+    transform: translateY(-2px);
   }
 }
 
 .diff-icon, .mode-icon {
   font-size: 2rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
 }
 
 .diff-text, .mode-text {
   color: var(--text-color, #f5f6fa);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.2);
 }
 
 .diff-desc, .mode-desc {
   color: var(--text-secondary-color, #b0b3b8);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
 .start-quiz-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1rem;
   width: 100%;
-  max-width: 300px;
-  margin: 2rem auto 0;
-  padding: 1.2rem 2rem;
-  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  max-width: 350px;
+  margin: 2.5rem auto 0;
+  padding: 1.5rem 2.5rem;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #3b82f6, #2563eb));
   border: none;
   border-radius: var(--btn-radius, 12px);
   color: white;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.3);
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(59, 130, 246, 0.3));
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(var(--accent-color, #b0b3b8), 0.4);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+    filter: brightness(1.05);
   }
   
   &:active {
@@ -1548,17 +1692,17 @@ export default {
 }
 
 .quiz-progress {
-  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
-  border-radius: var(--card-radius, 10px);
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.98) 100%);
+  border-radius: var(--border-radius, 10px);
   padding: 2rem;
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 
-    0 16px 32px rgba(0, 0, 0, 0.2),
-    0 4px 8px rgba(var(--accent-color, #b0b3b8), 0.1);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+    0 16px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
+    0 4px 8px rgba(var(--accent-color-rgb, 176, 179, 184), 0.15);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.25);
   backdrop-filter: blur(12px);
   gap: 2rem;
   flex-wrap: wrap;
@@ -1584,20 +1728,20 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba(var(--info-color, #4a90e2), 0.1) 0%, rgba(#64b5f6, 0.1) 100%);
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, rgba(var(--info-color-rgb, 74, 144, 226), 0.15) 0%, rgba(var(--info-color-light-rgb, 100, 181, 246), 0.15) 100%);
   border-radius: var(--btn-radius, 12px);
-  border: 1px solid rgba(var(--info-color, #4a90e2), 0.2);
+  border: 2px solid rgba(var(--info-color-rgb, 74, 144, 226), 0.3);
   transition: all 0.3s ease;
   
   &.warning {
-    background: linear-gradient(135deg, rgba(var(--warning-color, #ff9800), 0.1) 0%, rgba(#ffb74d, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(var(--warning-color, #ff9800), 0.1) 0%, rgba(var(--warning-color-light, #ffb74d), 0.1) 100%);
     border-color: rgba(var(--warning-color, #ff9800), 0.3);
     animation: pulse 1s ease-in-out infinite;
   }
   
   &.critical {
-    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(#ef5350, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(var(--error-color-light, #ef5350), 0.1) 100%);
     border-color: rgba(var(--error-color, #f44336), 0.3);
     animation: shake 0.5s ease-in-out infinite;
   }
@@ -1636,15 +1780,15 @@ export default {
 
 .timer-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--info-color, #4a90e2) 0%, #64b5f6 100%);
+  background: linear-gradient(90deg, var(--info-color, #4a90e2) 0%, var(--info-color-light, #64b5f6) 100%);
   transition: all 0.3s ease;
   
   &.warning {
-    background: linear-gradient(90deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
+    background: linear-gradient(90deg, var(--warning-color, #ff9800) 0%, var(--warning-color-light, #ffb74d) 100%);
   }
   
   &.critical {
-    background: linear-gradient(90deg, var(--error-color, #f44336) 0%, #ef5350 100%);
+    background: linear-gradient(90deg, var(--error-color, #f44336) 0%, var(--error-color-light, #ef5350) 100%);
   }
 }
 
@@ -1659,7 +1803,7 @@ export default {
   align-items: center;
   gap: 0.2rem;
   padding: 0.5rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(var(--accent-color-light, #d1d3d8), 0.05) 100%);
   border-radius: var(--btn-radius, 12px);
   border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   min-width: 60px;
@@ -1685,16 +1829,16 @@ export default {
 .progress-bar {
   flex: 1;
   height: 12px;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.1) 0%, rgba(#d1d3d8, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.1) 0%, rgba(var(--accent-color-light, #d1d3d8), 0.1) 100%);
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.2);
   border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  background: linear-gradient(90deg, var(--accent-color, #b0b3b8) 0%, var(--accent-color-light, #d1d3d8) 100%);
   transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.4);
   position: relative;
@@ -1706,7 +1850,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--highlight-color-rgb, 255, 255, 255), 0.3), transparent);
     animation: shimmer 2s infinite;
   }
 }
@@ -1715,20 +1859,20 @@ export default {
   color: var(--text-color, #f5f6fa);
   font-weight: 700;
   font-size: 1rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
   min-width: 60px;
   text-align: center;
 }
 
 .question-container {
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
-  border-radius: var(--card-radius, 10px);
+  border-radius: var(--border-radius, 10px);
   padding: 2.5rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+    inset 0 1px 0 rgba(var(--highlight-color-rgb, 255, 255, 255), 0.05);
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -1756,18 +1900,18 @@ export default {
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #f5f6fa;
+  color: var(--text-color, #f5f6fa);
   
   &.type-choice {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: var(--btn-primary-bg, linear-gradient(135deg, #3b82f6, #2563eb));
   }
   
   &.type-tf {
-    background: linear-gradient(135deg, #f093fb, #f5576c);
+    background: linear-gradient(135deg, var(--error-color, #f44336), var(--error-color-light, #ef5350));
   }
   
   &.type-fill {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    background: linear-gradient(135deg, var(--info-color, #4a90e2), var(--info-color-light, #64b5f6));
   }
 }
 
@@ -1775,10 +1919,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  background: #23272e;
+  background: var(--secondary-color, #23272e);
   padding: 0.5rem 0.8rem;
   border-radius: 12px;
-  border: 1px solid rgba(57,59,64,0.18);
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
 }
 
 .points-icon {
@@ -1786,7 +1930,7 @@ export default {
 }
 
 .points-value {
-  color: #8fa1b3;
+  color: var(--text-secondary-color, #8fa1b3);
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -1831,7 +1975,7 @@ export default {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.1);
     border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.2);
   }
   
@@ -1839,7 +1983,7 @@ export default {
   .question-video {
     width: 100%;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.1);
     border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.2);
   }
   
@@ -1865,8 +2009,8 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1.2rem 1.5rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.03) 0%, rgba(#d1d3d8, 0.03) 100%);
-  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.03) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.03) 100%);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.1);
   border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1880,15 +2024,15 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color-rgb, 176, 179, 184), 0.1), transparent);
     transition: left 0.6s ease;
   }
   
   &:hover {
-    border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
-    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.08) 0%, rgba(#d1d3d8, 0.08) 100%);
+    border-color: rgba(var(--accent-color-rgb, 176, 179, 184), 0.3);
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.08) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.08) 100%);
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(var(--accent-color, #b0b3b8), 0.2);
+    box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 176, 179, 184), 0.2);
     
     &::before {
       left: 100%;
@@ -1897,18 +2041,18 @@ export default {
   
   &.selected {
     border-color: var(--info-color, #4a90e2);
-    background: linear-gradient(135deg, rgba(var(--info-color, #4a90e2), 0.15) 0%, rgba(var(--info-color, #4a90e2), 0.1) 100%);
-    box-shadow: 0 4px 16px rgba(var(--info-color, #4a90e2), 0.3);
+    background: linear-gradient(135deg, rgba(var(--info-color-rgb, 74, 144, 226), 0.15) 0%, rgba(var(--info-color-light-rgb, 100, 181, 246), 0.1) 100%);
+    box-shadow: 0 4px 16px rgba(var(--info-color-rgb, 74, 144, 226), 0.3);
   }
   
   &.correct {
-    border-color: #4caf50;
-    background: rgba(76, 175, 80, 0.1);
+    border-color: var(--success-color, #4caf50);
+    background: rgba(var(--success-color-rgb, 76, 175, 80), 0.1);
   }
   
   &.incorrect {
-    border-color: #f44336;
-    background: rgba(244, 67, 54, 0.1);
+    border-color: var(--error-color, #f44336);
+    background: rgba(var(--error-color-rgb, 244, 67, 54), 0.1);
   }
 }
 
@@ -1916,16 +2060,16 @@ export default {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.1) 0%, rgba(#d1d3d8, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.1) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.1) 100%);
   color: var(--accent-color, #b0b3b8);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1rem;
-  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.2);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.2);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.1);
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 176, 179, 184), 0.1);
 }
 
 .option-text {
@@ -1941,11 +2085,11 @@ export default {
   font-weight: bold;
   
   .status-correct {
-    color: #4caf50;
+    color: var(--success-color, #4caf50);
   }
   
   .status-incorrect {
-    color: #f44336;
+    color: var(--error-color, #f44336);
   }
 }
 
@@ -1961,14 +2105,14 @@ export default {
 .fill-input {
   flex: 1;
   padding: 1.2rem 1.5rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.03) 0%, rgba(#d1d3d8, 0.03) 100%);
-  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.03) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.03) 100%);
+  border: 2px solid rgba(var(--accent-color-rgb, 176, 179, 184), 0.1);
   border-radius: var(--btn-radius, 12px);
   color: var(--text-color, #f5f6fa);
   font-size: 1.1rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.05);
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 176, 179, 184), 0.05);
   
   &:focus {
     outline: none;
@@ -1995,20 +2139,20 @@ export default {
   align-items: center;
   gap: 1rem;
   padding: 1.2rem;
-  background: #23272e;
-  border: 2px solid rgba(57,59,64,0.18);
-  border-radius: 12px;
+  background: var(--secondary-color, #23272e);
+  border: 2px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
+  border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #8fa1b3;
-    background: #2a2d34;
+    border-color: var(--accent-color, #b0b3b8);
+    background: var(--list-item-hover-bg, #2a2d34);
   }
   
   &.selected {
-    border-color: #4a90e2;
-    background: rgba(74, 144, 226, 0.1);
+    border-color: var(--info-color, #4a90e2);
+    background: rgba(var(--info-color-rgb, 74, 144, 226), 0.1);
   }
 }
 
@@ -2016,8 +2160,8 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #393b40;
-  color: #8fa1b3;
+  background: var(--btn-secondary-bg, #393b40);
+  color: var(--accent-color, #b0b3b8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2026,7 +2170,7 @@ export default {
 }
 
 .tf-text {
-  color: #f5f6fa;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -2040,17 +2184,17 @@ export default {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: linear-gradient(135deg, rgba(var(--warning-color, #ff9800), 0.1) 0%, rgba(#ffb74d, 0.1) 100%);
-  border: 1px solid rgba(var(--warning-color, #ff9800), 0.3);
-  border-radius: var(--card-radius, 10px);
+  background: linear-gradient(135deg, rgba(var(--warning-color-rgb, 255, 152, 0), 0.1) 0%, rgba(var(--warning-color-light-rgb, 255, 183, 77), 0.1) 100%);
+  border: 1px solid rgba(var(--warning-color-rgb, 255, 152, 0), 0.3);
+  border-radius: var(--border-radius, 10px);
   padding: 1.5rem;
-  box-shadow: 0 8px 24px rgba(var(--warning-color, #ff9800), 0.2);
+  box-shadow: 0 8px 24px rgba(var(--warning-color-rgb, 255, 152, 0), 0.2);
   backdrop-filter: blur(12px);
 }
 
 .hint-icon {
   font-size: 2rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
   animation: glow 2s ease-in-out infinite;
 }
 
@@ -2098,7 +2242,7 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2), transparent);
     transition: left 0.6s ease;
   }
   
@@ -2114,13 +2258,13 @@ export default {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  background: var(--btn-primary-bg, linear-gradient(135deg, #3b82f6, #2563eb));
   color: var(--text-color, #f5f6fa);
-  box-shadow: 0 4px 16px rgba(var(--accent-color, #b0b3b8), 0.3);
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(59, 130, 246, 0.3));
   
   &:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.4);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
   }
   
   &:active {
@@ -2129,7 +2273,7 @@ export default {
 }
 
 .btn-next {
-  background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, #66bb6a 100%);
+  background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, var(--success-color-light, #66bb6a) 100%);
   color: var(--text-color, #f5f6fa);
   box-shadow: 0 4px 16px rgba(var(--success-color, #4caf50), 0.3);
   
@@ -2149,7 +2293,7 @@ export default {
   align-items: flex-start;
   gap: 1.5rem;
   padding: 2rem;
-  border-radius: var(--card-radius, 10px);
+  border-radius: var(--border-radius, 10px);
   backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
@@ -2161,18 +2305,18 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(var(--accent-color-light, #d1d3d8), 0.05) 100%);
     z-index: -1;
   }
   
   &.correct {
-    background: linear-gradient(135deg, rgba(var(--success-color, #4caf50), 0.1) 0%, rgba(#66bb6a, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(var(--success-color, #4caf50), 0.1) 0%, rgba(var(--success-color-light, #66bb6a), 0.1) 100%);
     border: 1px solid rgba(var(--success-color, #4caf50), 0.3);
     box-shadow: 0 8px 24px rgba(var(--success-color, #4caf50), 0.2);
   }
   
   &.incorrect {
-    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(#ef5350, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(var(--error-color-light, #ef5350), 0.1) 100%);
     border: 1px solid rgba(var(--error-color, #f44336), 0.3);
     box-shadow: 0 8px 24px rgba(var(--error-color, #f44336), 0.2);
   }
@@ -2180,7 +2324,7 @@ export default {
 
 .feedback-icon {
   font-size: 2.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
   animation: bounce 0.6s ease-out;
 }
 
@@ -2206,12 +2350,12 @@ export default {
 }
 
 .score-label {
-  color: #8fa1b3;
+  color: var(--text-secondary-color, #8fa1b3);
   font-size: 0.9rem;
 }
 
 .score-value {
-  color: #4caf50;
+  color: var(--success-color, #4caf50);
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -2229,10 +2373,10 @@ export default {
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
   border-radius: var(--card-radius, 10px);
   padding: 3rem 2rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2251,7 +2395,7 @@ export default {
 .result-icon {
   font-size: 5rem;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 8px 16px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
   animation: celebration 1s ease-out;
 }
 
@@ -2261,7 +2405,7 @@ export default {
   margin-bottom: 1rem;
   font-weight: 800;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, var(--accent-color-light, #d1d3d8) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2281,10 +2425,10 @@ export default {
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
   border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2305,7 +2449,7 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.05) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.05) 100%);
   border-radius: var(--btn-radius, 12px);
   border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   transition: all 0.3s ease;
@@ -2319,7 +2463,7 @@ export default {
 
 .stat-icon {
   font-size: 2.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
 }
 
 .stat-info {
@@ -2332,7 +2476,7 @@ export default {
   font-size: 1.8rem;
   color: var(--text-color, #f5f6fa);
   font-weight: 800;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
 }
 
 .stat-label {
@@ -2348,10 +2492,10 @@ export default {
   border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2387,7 +2531,7 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 176, 179, 184), 0.05) 0%, rgba(var(--accent-color-light-rgb, 209, 211, 216), 0.05) 100%);
   border-radius: var(--btn-radius, 12px);
   border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   transition: all 0.3s ease;
@@ -2418,7 +2562,7 @@ export default {
 
 .reward-icon {
   font-size: 2rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
 }
 
 .reward-info {
@@ -2441,7 +2585,7 @@ export default {
 }
 
 .level-up {
-  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, var(--accent-color-light, #d1d3d8) 100%);
   border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   margin-bottom: 2rem;
@@ -2473,7 +2617,7 @@ export default {
   font-size: 1.8rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
 }
 
 .level-up-content p {
@@ -2486,7 +2630,7 @@ export default {
 .level-up-icon {
   font-size: 4rem;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 8px 16px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
   animation: rocketLaunch 1s ease-out;
 }
 
@@ -2498,7 +2642,7 @@ export default {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--secondary-color, #23272e) 0%, #31343b 100%);
+  background: linear-gradient(135deg, var(--secondary-color, #23272e) 0%, var(--card-bg, #31343b) 100%);
   color: var(--text-color, #f5f6fa);
   box-shadow: 0 4px 16px rgba(var(--secondary-color, #23272e), 0.3);
   
@@ -2509,7 +2653,7 @@ export default {
 }
 
 .btn-hint {
-  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
+  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, var(--warning-color-light, #ffb74d) 100%);
   color: var(--text-color, #f5f6fa);
   box-shadow: 0 4px 16px rgba(var(--warning-color, #ff9800), 0.3);
   
@@ -2519,13 +2663,13 @@ export default {
   }
   
   &.active {
-    background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, #66bb6a 100%);
+    background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, var(--success-color-light, #66bb6a) 100%);
     box-shadow: 0 4px 16px rgba(var(--success-color, #4caf50), 0.3);
   }
 }
 
 .btn-share {
-  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
+  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, var(--warning-color-light, #ffb74d) 100%);
   color: var(--text-color, #f5f6fa);
   box-shadow: 0 4px 16px rgba(var(--warning-color, #ff9800), 0.3);
   
@@ -2667,11 +2811,11 @@ export default {
   justify-content: center;
   padding: 4rem 2rem;
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
-  border-radius: var(--card-radius, 10px);
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+  border-radius: var(--border-radius, 10px);
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border: 1px solid rgba(var(--card-border-rgb, 57, 59, 64), 0.18);
   backdrop-filter: blur(20px);
   margin: 2rem 0;
 }
@@ -2698,6 +2842,33 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // 错误状态样式
 .error-container {
   display: flex;
@@ -2706,9 +2877,9 @@ export default {
   justify-content: center;
   padding: 4rem 2rem;
   background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
-  border-radius: var(--card-radius, 10px);
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
+  border-radius: var(--border-radius, 10px);
+    box-shadow:
+    0 20px 40px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3),
     0 8px 16px rgba(var(--error-color, #f44336), 0.1);
   border: 1px solid rgba(var(--error-color, #f44336), 0.3);
   backdrop-filter: blur(20px);
@@ -2719,7 +2890,7 @@ export default {
 .error-icon {
   font-size: 4rem;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3));
 }
 
 .error-title {
@@ -2735,5 +2906,63 @@ export default {
   line-height: 1.6;
   margin-bottom: 2rem;
   max-width: 400px;
+}
+
+// 响应式样式
+@media (max-width: 768px) {
+  .quiz-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .user-progress {
+    justify-content: center;
+  }
+  
+  .quiz-progress {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .progress-section {
+    width: 100%;
+  }
+  
+  .timer-section {
+    width: 100%;
+  }
+  
+  .quiz-stats {
+    justify-content: center;
+  }
+  
+  .difficulty-options, .mode-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .settings-panel {
+    padding: 1.5rem;
+  }
+  
+  .settings-title {
+    font-size: 1.5rem;
+  }
+  
+  .question-container {
+    padding: 1.5rem;
+  }
+  
+  .question-title {
+    font-size: 1.3rem;
+  }
+  
+  .option-btn {
+    padding: 1rem;
+  }
+  
+  .option-text {
+    font-size: 0.95rem;
+  }
 }
 </style>
