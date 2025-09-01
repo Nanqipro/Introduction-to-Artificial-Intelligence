@@ -155,6 +155,20 @@
         </div>
       </div>
 
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">正在加载题目...</p>
+      </div>
+
+      <!-- 错误状态 -->
+      <div v-else-if="!currentQuestion && questions.length === 0" class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3 class="error-title">题目加载失败</h3>
+        <p class="error-message">无法加载题目，请检查网络连接或稍后重试</p>
+        <button @click="loadQuestions" class="btn btn-primary">重新加载</button>
+      </div>
+
       <!-- 当前题目 -->
       <div class="question-container" v-if="currentQuestion">
         <div class="question-header">
@@ -450,6 +464,8 @@ export default {
       return this.currentQuestionIndex === this.questions.length - 1
     },
     canSubmit() {
+      if (!this.currentQuestion) return false
+      
       if (this.currentQuestion.type === 'choice' || this.currentQuestion.type === 'true-false') {
         return this.selectedAnswer !== null
       } else if (this.currentQuestion.type === 'fill') {
@@ -468,10 +484,10 @@ export default {
       return false
     },
     earnedPoints() {
-      if (this.isAnswerCorrect) {
-        return this.currentQuestion.points
+      if (!this.currentQuestion || !this.isAnswerCorrect) {
+        return 0
       }
-      return 0
+      return this.currentQuestion.points
     },
     userLevel() {
       if (this.totalScore < 100) return '初学者'
@@ -504,37 +520,16 @@ export default {
   methods: {
     async loadQuestions() {
       this.loading = true
-      try {
-        // 首先尝试从数据库加载题目
-        console.log('🔄 尝试从数据库加载题目...')
-        const dbResponse = await quizApi.getQuestionsFromDB(this.chapterId)
-        
-        if (dbResponse && dbResponse.data && dbResponse.data.length > 0) {
-          // 转换数据库题目格式为答题系统格式
-          this.questions = this.convertDBQuestionsToQuizFormat(dbResponse.data)
-          console.log('✅ 从数据库加载题目成功:', this.questions.length, '道题目')
-        } else {
-          // 如果数据库没有题目，尝试从原有API加载
-          console.log('🔄 数据库无题目，尝试从原有API加载...')
-          const questions = await quizApi.getQuestionsByChapter(this.chapterId)
-          this.questions = questions || []
-          console.log('✅ 从原有API加载题目成功:', this.questions.length, '道题目')
-        }
-        
-        // 如果都没有题目，使用默认题目
-        if (!this.questions || this.questions.length === 0) {
-          console.log('⚠️ 没有找到题目，使用默认题目')
-          this.questions = this.getDefaultQuestions()
-        }
-        
-        console.log('📚 最终题目数量:', this.questions.length)
-      } catch (error) {
-        console.error('❌ 加载题目失败:', error)
-        // 如果API失败，使用默认题目
-        this.questions = this.getDefaultQuestions()
-      } finally {
-        this.loading = false
-      }
+      console.log('🚀 开始加载题目，章节ID:', this.chapterId)
+      
+      // 直接使用默认题目，跳过API调用
+      console.log('🔄 直接使用默认题目...')
+      this.questions = this.getDefaultQuestions()
+      console.log('📚 默认题目加载完成:', this.questions.length, '道题目')
+      console.log('📋 题目详情:', this.questions)
+      
+      this.loading = false
+      console.log('✅ 题目加载完成，loading状态:', this.loading)
     },
     /**
      * 转换数据库题目格式为答题系统格式
@@ -608,6 +603,7 @@ export default {
     },
     
     getDefaultQuestions() {
+      console.log('🔍 获取默认题目，章节ID:', this.chapterId)
       // 根据章节ID返回默认题目
       const defaultQuestions = {
         '1': [
@@ -719,39 +715,158 @@ export default {
           {
             id: 10,
             type: 'choice',
-            title: 'AI在医疗领域的主要应用不包括？',
-            description: '选择不属于AI医疗应用的选项',
+            title: '以下哪个不是智能家居系统的核心功能？',
+            description: '选择不属于智能家居功能的选项',
             options: [
-              '医学影像诊断',
-              '药物发现',
-              '患者护理',
-              '硬件制造'
+              '设备远程控制',
+              '环境自动调节',
+              '设备间智能联动',
+              '自动驾驶功能'
             ],
             correctAnswer: 3,
             points: 20,
-            explanation: '硬件制造不属于AI医疗应用，其他都是AI在医疗领域的重要应用。'
+            explanation: '自动驾驶功能属于智慧驾驶领域，不是智能家居系统的功能。智能家居主要关注家庭环境的智能化控制。'
           },
           {
             id: 11,
-            type: 'true-false',
-            title: '自动驾驶汽车使用多种AI技术。',
-            description: '',
-            correctAnswer: true,
-            points: 15,
-            explanation: '自动驾驶汽车确实使用计算机视觉、机器学习等多种AI技术。'
+            type: 'choice',
+            title: 'Apple Watch的房颤检测功能主要依靠什么技术？',
+            description: '选择Apple Watch房颤检测的核心技术',
+            options: [
+              '光学心率传感器',
+              'GPS定位技术',
+              'WiFi连接技术',
+              '蓝牙通信技术'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: 'Apple Watch通过光学心率传感器实时监测心率变化，能够智能识别房颤等心律不齐情况。'
           },
           {
             id: 12,
-            type: 'fill',
-            title: '智能语音助手主要使用什么技术？',
-            description: '请输入答案',
-            correctAnswer: '自然语言处理',
-            points: 25,
-            explanation: '智能语音助手主要使用自然语言处理技术来理解和生成人类语言。'
+            type: 'choice',
+            title: '特斯拉自动驾驶系统的SAE级别是？',
+            description: '选择特斯拉当前自动驾驶系统的级别',
+            options: [
+              'L2级别（部分自动驾驶）',
+              'L3级别（有条件自动驾驶）',
+              'L4级别（高度自动驾驶）',
+              'L5级别（完全自动驾驶）'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: '特斯拉目前的自动驾驶系统属于L2级别，需要驾驶员随时准备接管车辆控制。'
+          },
+          {
+            id: 13,
+            type: 'choice',
+            title: '以下哪个AI技术在医疗诊断中应用最广泛？',
+            description: '选择医疗诊断中最常用的AI技术',
+            options: [
+              '计算机视觉',
+              '自然语言处理',
+              '语音识别',
+              '机器人技术'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: '计算机视觉在医疗影像诊断中应用最广泛，如CT、MRI、X光片的AI辅助诊断。'
+          },
+          {
+            id: 14,
+            type: 'choice',
+            title: 'Netflix的推荐系统主要基于什么技术？',
+            description: '选择Netflix推荐系统的核心技术',
+            options: [
+              '机器学习算法',
+              '简单的规则匹配',
+              '人工推荐',
+              '随机推荐'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: 'Netflix使用复杂的机器学习算法分析用户观看行为，提供个性化内容推荐。'
+          },
+          {
+            id: 15,
+            type: 'choice',
+            title: '智能语音助手最核心的技术是什么？',
+            description: '选择智能语音助手的核心技术',
+            options: [
+              '自然语言处理',
+              '图像识别',
+              '机器人控制',
+              '自动驾驶'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: '智能语音助手需要理解用户的语音输入并生成合适的回复，这主要依靠自然语言处理技术。'
+          },
+          {
+            id: 16,
+            type: 'choice',
+            title: '以下哪个不是智慧医疗的主要应用场景？',
+            description: '选择不属于智慧医疗应用的选项',
+            options: [
+              '医学影像诊断',
+              '药物研发',
+              '个性化治疗',
+              '汽车制造'
+            ],
+            correctAnswer: 3,
+            points: 20,
+            explanation: '汽车制造属于工业领域，不是智慧医疗的应用场景。智慧医疗主要关注医疗健康相关的AI应用。'
+          },
+          {
+            id: 17,
+            type: 'choice',
+            title: '智能家居设备之间的通信协议主要是什么？',
+            description: '选择智能家居设备的主要通信协议',
+            options: [
+              'Zigbee和WiFi',
+              '蓝牙和GPS',
+              '4G和5G',
+              '卫星通信'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: '智能家居设备主要使用Zigbee和WiFi协议进行通信，实现设备间的互联互通。'
+          },
+          {
+            id: 18,
+            type: 'choice',
+            title: 'AI在娱乐行业的主要作用是？',
+            description: '选择AI在娱乐行业的主要应用',
+            options: [
+              '内容推荐和个性化',
+              '设备制造',
+              '建筑设计',
+              '农业种植'
+            ],
+            correctAnswer: 0,
+            points: 20,
+            explanation: 'AI在娱乐行业主要用于内容推荐和个性化服务，提升用户体验。'
+          },
+          {
+            id: 19,
+            type: 'choice',
+            title: '以下哪个技术不是自动驾驶汽车的核心技术？',
+            description: '选择不属于自动驾驶核心技术的选项',
+            options: [
+              '传感器融合',
+              '路径规划',
+              '语音识别',
+              '环境感知'
+            ],
+            correctAnswer: 2,
+            points: 20,
+            explanation: '语音识别主要用于智能语音助手，不是自动驾驶汽车的核心技术。自动驾驶主要依靠传感器融合、环境感知和路径规划等技术。'
           }
         ]
       }
-      return defaultQuestions[this.chapterId] || []
+      const questions = defaultQuestions[this.chapterId] || []
+      console.log('📚 找到默认题目:', questions.length, '道题目')
+      return questions
     },
     selectAnswer(answer) {
       if (this.showAnswer) return
@@ -1135,7 +1250,7 @@ export default {
 
 
 .quiz-system {
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--secondary-color, #23272e) 100%);
   min-height: 100vh;
   padding: 2rem 0;
   position: relative;
@@ -1148,8 +1263,8 @@ export default {
     right: 0;
     bottom: 0;
     background: 
-      radial-gradient(circle at 20% 80%, rgba($accent-color, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba($accent-color, 0.02) 0%, transparent 50%);
+      radial-gradient(circle at 20% 80%, rgba(var(--accent-color, #b0b3b8), 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(var(--accent-color, #b0b3b8), 0.02) 0%, transparent 50%);
     pointer-events: none;
   }
 }
@@ -1161,14 +1276,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1),
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -1180,7 +1295,7 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
@@ -1190,18 +1305,18 @@ export default {
 
 .quiz-title {
   font-size: 2rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, $text-color 0%, $accent-color-light 100%);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .quiz-description {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 1.1rem;
   line-height: 1.6;
   font-weight: 400;
@@ -1216,10 +1331,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
   padding: 1rem 1.2rem;
-  border-radius: $btn-radius;
-  border: 1px solid rgba($accent-color, 0.1);
+  border-radius: var(--btn-radius, 12px);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -1231,14 +1346,14 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.1), transparent);
     transition: left 0.6s ease;
   }
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($accent-color, 0.2);
-    border-color: rgba($accent-color, 0.2);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.2);
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.2);
     
     &::before {
       left: 100%;
@@ -1259,7 +1374,7 @@ export default {
 
 .progress-label {
   font-size: 0.85rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1267,7 +1382,7 @@ export default {
 
 .progress-value {
   font-size: 1.3rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 800;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -1288,14 +1403,14 @@ export default {
 }
 
 .settings-panel {
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1),
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -1307,17 +1422,17 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
 .settings-title {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 2rem;
   text-align: center;
-  background: linear-gradient(135deg, $text-color 0%, $accent-color-light 100%);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1329,7 +1444,7 @@ export default {
 
 .setting-label {
   display: block;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -1348,9 +1463,9 @@ export default {
   align-items: center;
   gap: 0.8rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
-  border: 2px solid rgba($accent-color, 0.1);
-  border-radius: $btn-radius;
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -1363,14 +1478,14 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.1), transparent);
     transition: left 0.6s ease;
   }
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($accent-color, 0.2);
-    border-color: rgba($accent-color, 0.3);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.2);
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
     
     &::before {
       left: 100%;
@@ -1378,9 +1493,9 @@ export default {
   }
   
   &.active {
-    background: linear-gradient(135deg, rgba($accent-color, 0.15) 0%, rgba($accent-color-light, 0.15) 100%);
-    border-color: $accent-color;
-    box-shadow: 0 8px 24px rgba($accent-color, 0.3);
+    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.15) 0%, rgba(#d1d3d8, 0.15) 100%);
+    border-color: var(--accent-color, #b0b3b8);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.3);
   }
 }
 
@@ -1390,14 +1505,14 @@ export default {
 }
 
 .diff-text, .mode-text {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
 }
 
 .diff-desc, .mode-desc {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.9rem;
   text-align: center;
   line-height: 1.4;
@@ -1412,19 +1527,19 @@ export default {
   max-width: 300px;
   margin: 2rem auto 0;
   padding: 1.2rem 2rem;
-  background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   color: white;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba($accent-color, 0.3);
+  box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba($accent-color, 0.4);
+    box-shadow: 0 12px 32px rgba(var(--accent-color, #b0b3b8), 0.4);
   }
   
   &:active {
@@ -1433,8 +1548,8 @@ export default {
 }
 
 .quiz-progress {
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
   margin-bottom: 2rem;
   display: flex;
@@ -1442,8 +1557,8 @@ export default {
   justify-content: space-between;
   box-shadow: 
     0 16px 32px rgba(0, 0, 0, 0.2),
-    0 4px 8px rgba($accent-color, 0.1);
-  border: 1px solid $card-border;
+    0 4px 8px rgba(var(--accent-color, #b0b3b8), 0.1);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(12px);
   gap: 2rem;
   flex-wrap: wrap;
@@ -1470,20 +1585,20 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba($info-color, 0.1) 0%, rgba($info-color-light, 0.1) 100%);
-  border-radius: $btn-radius;
-  border: 1px solid rgba($info-color, 0.2);
+  background: linear-gradient(135deg, rgba(var(--info-color, #4a90e2), 0.1) 0%, rgba(#64b5f6, 0.1) 100%);
+  border-radius: var(--btn-radius, 12px);
+  border: 1px solid rgba(var(--info-color, #4a90e2), 0.2);
   transition: all 0.3s ease;
   
   &.warning {
-    background: linear-gradient(135deg, rgba($warning-color, 0.1) 0%, rgba($warning-color-light, 0.1) 100%);
-    border-color: rgba($warning-color, 0.3);
+    background: linear-gradient(135deg, rgba(var(--warning-color, #ff9800), 0.1) 0%, rgba(#ffb74d, 0.1) 100%);
+    border-color: rgba(var(--warning-color, #ff9800), 0.3);
     animation: pulse 1s ease-in-out infinite;
   }
   
   &.critical {
-    background: linear-gradient(135deg, rgba($error-color, 0.1) 0%, rgba($error-color-light, 0.1) 100%);
-    border-color: rgba($error-color, 0.3);
+    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(#ef5350, 0.1) 100%);
+    border-color: rgba(var(--error-color, #f44336), 0.3);
     animation: shake 0.5s ease-in-out infinite;
   }
 }
@@ -1501,12 +1616,12 @@ export default {
 .timer-value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
 }
 
 .timer-label {
   font-size: 0.75rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1514,22 +1629,22 @@ export default {
 .timer-progress {
   width: 100px;
   height: 4px;
-  background: rgba($text-secondary-color, 0.2);
+  background: rgba(var(--text-secondary-color, #b0b3b8), 0.2);
   border-radius: 2px;
   overflow: hidden;
 }
 
 .timer-fill {
   height: 100%;
-  background: linear-gradient(90deg, $info-color 0%, $info-color-light 100%);
+  background: linear-gradient(90deg, var(--info-color, #4a90e2) 0%, #64b5f6 100%);
   transition: all 0.3s ease;
   
   &.warning {
-    background: linear-gradient(90deg, $warning-color 0%, $warning-color-light 100%);
+    background: linear-gradient(90deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
   }
   
   &.critical {
-    background: linear-gradient(90deg, $error-color 0%, $error-color-light 100%);
+    background: linear-gradient(90deg, var(--error-color, #f44336) 0%, #ef5350 100%);
   }
 }
 
@@ -1544,9 +1659,9 @@ export default {
   align-items: center;
   gap: 0.2rem;
   padding: 0.5rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
-  border-radius: $btn-radius;
-  border: 1px solid rgba($accent-color, 0.1);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  border-radius: var(--btn-radius, 12px);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   min-width: 60px;
 }
 
@@ -1557,12 +1672,12 @@ export default {
 .stat-value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
 }
 
 .stat-label {
   font-size: 0.7rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1570,18 +1685,18 @@ export default {
 .progress-bar {
   flex: 1;
   height: 12px;
-  background: linear-gradient(135deg, rgba($accent-color, 0.1) 0%, rgba($accent-color-light, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.1) 0%, rgba(#d1d3d8, 0.1) 100%);
   border-radius: 6px;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba($accent-color, 0.1);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, $accent-color 0%, $accent-color-light 100%);
+  background: linear-gradient(90deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
   transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 2px 8px rgba($accent-color, 0.4);
+  box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.4);
   position: relative;
   
   &::after {
@@ -1597,7 +1712,7 @@ export default {
 }
 
 .progress-text {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 700;
   font-size: 1rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -1606,14 +1721,14 @@ export default {
 }
 
 .question-container {
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1),
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -1625,7 +1740,7 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
@@ -1682,7 +1797,7 @@ export default {
 
 .question-title {
   font-size: 1.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1.2rem;
   font-weight: 700;
   line-height: 1.6;
@@ -1690,14 +1805,14 @@ export default {
 }
 
 .question-description {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 1.1rem;
   line-height: 1.7;
   font-weight: 400;
-  background: rgba($accent-color, 0.05);
+  background: rgba(var(--accent-color, #b0b3b8), 0.05);
   padding: 1rem;
   border-radius: 8px;
-  border-left: 4px solid $accent-color;
+  border-left: 4px solid var(--accent-color, #b0b3b8);
   margin-bottom: 1rem;
 }
 
@@ -1717,7 +1832,7 @@ export default {
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba($accent-color, 0.2);
+    border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.2);
   }
   
   .question-audio,
@@ -1725,7 +1840,7 @@ export default {
     width: 100%;
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba($accent-color, 0.2);
+    border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.2);
   }
   
   .question-audio {
@@ -1750,9 +1865,9 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1.2rem 1.5rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.03) 0%, rgba($accent-color-light, 0.03) 100%);
-  border: 2px solid rgba($accent-color, 0.1);
-  border-radius: $btn-radius;
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.03) 0%, rgba(#d1d3d8, 0.03) 100%);
+  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  border-radius: var(--btn-radius, 12px);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
@@ -1765,15 +1880,15 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.1), transparent);
     transition: left 0.6s ease;
   }
   
   &:hover {
-    border-color: rgba($accent-color, 0.3);
-    background: linear-gradient(135deg, rgba($accent-color, 0.08) 0%, rgba($accent-color-light, 0.08) 100%);
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
+    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.08) 0%, rgba(#d1d3d8, 0.08) 100%);
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba($accent-color, 0.2);
+    box-shadow: 0 4px 12px rgba(var(--accent-color, #b0b3b8), 0.2);
     
     &::before {
       left: 100%;
@@ -1781,9 +1896,9 @@ export default {
   }
   
   &.selected {
-    border-color: $info-color;
-    background: linear-gradient(135deg, rgba($info-color, 0.15) 0%, rgba($info-color, 0.1) 100%);
-    box-shadow: 0 4px 16px rgba($info-color, 0.3);
+    border-color: var(--info-color, #4a90e2);
+    background: linear-gradient(135deg, rgba(var(--info-color, #4a90e2), 0.15) 0%, rgba(var(--info-color, #4a90e2), 0.1) 100%);
+    box-shadow: 0 4px 16px rgba(var(--info-color, #4a90e2), 0.3);
   }
   
   &.correct {
@@ -1801,21 +1916,21 @@ export default {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba($accent-color, 0.1) 0%, rgba($accent-color-light, 0.1) 100%);
-  color: $accent-color;
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.1) 0%, rgba(#d1d3d8, 0.1) 100%);
+  color: var(--accent-color, #b0b3b8);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1rem;
-  border: 2px solid rgba($accent-color, 0.2);
+  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.2);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba($accent-color, 0.1);
+  box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.1);
 }
 
 .option-text {
   flex: 1;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.5;
@@ -1846,24 +1961,24 @@ export default {
 .fill-input {
   flex: 1;
   padding: 1.2rem 1.5rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.03) 0%, rgba($accent-color-light, 0.03) 100%);
-  border: 2px solid rgba($accent-color, 0.1);
-  border-radius: $btn-radius;
-  color: $text-color;
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.03) 0%, rgba(#d1d3d8, 0.03) 100%);
+  border: 2px solid rgba(var(--accent-color, #b0b3b8), 0.1);
+  border-radius: var(--btn-radius, 12px);
+  color: var(--text-color, #f5f6fa);
   font-size: 1.1rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba($accent-color, 0.05);
+  box-shadow: 0 2px 8px rgba(var(--accent-color, #b0b3b8), 0.05);
   
   &:focus {
     outline: none;
-    border-color: $accent-color;
-    box-shadow: 0 4px 16px rgba($accent-color, 0.2);
+    border-color: var(--accent-color, #b0b3b8);
+    box-shadow: 0 4px 16px rgba(var(--accent-color, #b0b3b8), 0.2);
     transform: translateY(-1px);
   }
   
   &::placeholder {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-weight: 400;
   }
 }
@@ -1925,11 +2040,11 @@ export default {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: linear-gradient(135deg, rgba($warning-color, 0.1) 0%, rgba($warning-color-light, 0.1) 100%);
-  border: 1px solid rgba($warning-color, 0.3);
-  border-radius: $card-radius;
+  background: linear-gradient(135deg, rgba(var(--warning-color, #ff9800), 0.1) 0%, rgba(#ffb74d, 0.1) 100%);
+  border: 1px solid rgba(var(--warning-color, #ff9800), 0.3);
+  border-radius: var(--card-radius, 10px);
   padding: 1.5rem;
-  box-shadow: 0 8px 24px rgba($warning-color, 0.2);
+  box-shadow: 0 8px 24px rgba(var(--warning-color, #ff9800), 0.2);
   backdrop-filter: blur(12px);
 }
 
@@ -1943,14 +2058,14 @@ export default {
   flex: 1;
   
   h4 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 700;
   }
   
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     margin: 0;
     font-size: 1rem;
     line-height: 1.6;
@@ -1967,7 +2082,7 @@ export default {
 .btn {
   padding: 1.2rem 2.5rem;
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
@@ -1999,13 +2114,13 @@ export default {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-  color: $text-color;
-  box-shadow: 0 4px 16px rgba($accent-color, 0.3);
+  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: 0 4px 16px rgba(var(--accent-color, #b0b3b8), 0.3);
   
   &:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($accent-color, 0.4);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.4);
   }
   
   &:active {
@@ -2014,13 +2129,13 @@ export default {
 }
 
 .btn-next {
-  background: linear-gradient(135deg, $success-color 0%, $success-color-light 100%);
-  color: $text-color;
-  box-shadow: 0 4px 16px rgba($success-color, 0.3);
+  background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, #66bb6a 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: 0 4px 16px rgba(var(--success-color, #4caf50), 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($success-color, 0.4);
+    box-shadow: 0 8px 24px rgba(var(--success-color, #4caf50), 0.4);
   }
 }
 
@@ -2034,7 +2149,7 @@ export default {
   align-items: flex-start;
   gap: 1.5rem;
   padding: 2rem;
-  border-radius: $card-radius;
+  border-radius: var(--card-radius, 10px);
   backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
@@ -2046,20 +2161,20 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
     z-index: -1;
   }
   
   &.correct {
-    background: linear-gradient(135deg, rgba($success-color, 0.1) 0%, rgba($success-color-light, 0.1) 100%);
-    border: 1px solid rgba($success-color, 0.3);
-    box-shadow: 0 8px 24px rgba($success-color, 0.2);
+    background: linear-gradient(135deg, rgba(var(--success-color, #4caf50), 0.1) 0%, rgba(#66bb6a, 0.1) 100%);
+    border: 1px solid rgba(var(--success-color, #4caf50), 0.3);
+    box-shadow: 0 8px 24px rgba(var(--success-color, #4caf50), 0.2);
   }
   
   &.incorrect {
-    background: linear-gradient(135deg, rgba($error-color, 0.1) 0%, rgba($error-color-light, 0.1) 100%);
-    border: 1px solid rgba($error-color, 0.3);
-    box-shadow: 0 8px 24px rgba($error-color, 0.2);
+    background: linear-gradient(135deg, rgba(var(--error-color, #f44336), 0.1) 0%, rgba(#ef5350, 0.1) 100%);
+    border: 1px solid rgba(var(--error-color, #f44336), 0.3);
+    box-shadow: 0 8px 24px rgba(var(--error-color, #f44336), 0.2);
   }
 }
 
@@ -2070,7 +2185,7 @@ export default {
 }
 
 .feedback-text h4 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 0.8rem;
   font-weight: 700;
   font-size: 1.3rem;
@@ -2078,7 +2193,7 @@ export default {
 }
 
 .feedback-text p {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   margin-bottom: 1.2rem;
   line-height: 1.7;
   font-size: 1.1rem;
@@ -2111,13 +2226,13 @@ export default {
 .result-header {
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 3rem 2rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1);
-  border: 1px solid $card-border;
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2129,7 +2244,7 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
@@ -2142,18 +2257,18 @@ export default {
 
 .result-title {
   font-size: 3rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-weight: 800;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, $text-color 0%, $accent-color-light 100%);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, #d1d3d8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .result-subtitle {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 1.3rem;
   font-weight: 500;
   line-height: 1.6;
@@ -2163,13 +2278,13 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-bottom: 3rem;
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1);
-  border: 1px solid $card-border;
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2181,7 +2296,7 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
@@ -2190,15 +2305,15 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
-  border-radius: $btn-radius;
-  border: 1px solid rgba($accent-color, 0.1);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  border-radius: var(--btn-radius, 12px);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($accent-color, 0.2);
-    border-color: rgba($accent-color, 0.2);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.2);
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.2);
   }
 }
 
@@ -2215,13 +2330,13 @@ export default {
 
 .stat-value {
   font-size: 1.8rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 800;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 1rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -2229,14 +2344,14 @@ export default {
 }
 
 .rewards-section {
-  background: linear-gradient(145deg, $card-bg 0%, rgba($card-bg, 0.95) 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   margin-bottom: 2rem;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba($accent-color, 0.1);
-  border: 1px solid $card-border;
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2248,12 +2363,12 @@ export default {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.3), transparent);
   }
 }
 
 .rewards-title {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 2rem;
   font-size: 1.5rem;
   font-weight: 700;
@@ -2272,9 +2387,9 @@ export default {
   align-items: center;
   gap: 1.2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba($accent-color, 0.05) 0%, rgba($accent-color-light, 0.05) 100%);
-  border-radius: $btn-radius;
-  border: 1px solid rgba($accent-color, 0.1);
+  background: linear-gradient(135deg, rgba(var(--accent-color, #b0b3b8), 0.05) 0%, rgba(#d1d3d8, 0.05) 100%);
+  border-radius: var(--btn-radius, 12px);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -2286,14 +2401,14 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($accent-color, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--accent-color, #b0b3b8), 0.1), transparent);
     transition: left 0.6s ease;
   }
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($accent-color, 0.2);
-    border-color: rgba($accent-color, 0.2);
+    box-shadow: 0 8px 24px rgba(var(--accent-color, #b0b3b8), 0.2);
+    border-color: rgba(var(--accent-color, #b0b3b8), 0.2);
     
     &::before {
       left: 100%;
@@ -2313,28 +2428,28 @@ export default {
 }
 
 .reward-name {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: 0.3px;
 }
 
 .reward-desc {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .level-up {
-  background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-  border-radius: $card-radius;
+  background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+  border-radius: var(--card-radius, 10px);
   padding: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
   box-shadow: 
-    0 20px 40px rgba($accent-color, 0.4),
-    0 8px 16px rgba($accent-color, 0.2);
-  border: 1px solid rgba($accent-color, 0.3);
+    0 20px 40px rgba(var(--accent-color, #b0b3b8), 0.4),
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.2);
+  border: 1px solid rgba(var(--accent-color, #b0b3b8), 0.3);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
@@ -2353,7 +2468,7 @@ export default {
 }
 
 .level-up-content h3 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-size: 1.8rem;
   font-weight: 800;
@@ -2362,7 +2477,7 @@ export default {
 }
 
 .level-up-content p {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.6;
@@ -2383,40 +2498,40 @@ export default {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, $secondary-color 0%, $secondary-color-light 100%);
-  color: $text-color;
-  box-shadow: 0 4px 16px rgba($secondary-color, 0.3);
+  background: linear-gradient(135deg, var(--secondary-color, #23272e) 0%, #31343b 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: 0 4px 16px rgba(var(--secondary-color, #23272e), 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($secondary-color, 0.4);
+    box-shadow: 0 8px 24px rgba(var(--secondary-color, #23272e), 0.4);
   }
 }
 
 .btn-hint {
-  background: linear-gradient(135deg, $warning-color 0%, $warning-color-light 100%);
-  color: $text-color;
-  box-shadow: 0 4px 16px rgba($warning-color, 0.3);
+  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: 0 4px 16px rgba(var(--warning-color, #ff9800), 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($warning-color, 0.4);
+    box-shadow: 0 8px 24px rgba(var(--warning-color, #ff9800), 0.4);
   }
   
   &.active {
-    background: linear-gradient(135deg, $success-color 0%, $success-color-light 100%);
-    box-shadow: 0 4px 16px rgba($success-color, 0.3);
+    background: linear-gradient(135deg, var(--success-color, #4caf50) 0%, #66bb6a 100%);
+    box-shadow: 0 4px 16px rgba(var(--success-color, #4caf50), 0.3);
   }
 }
 
 .btn-share {
-  background: linear-gradient(135deg, $warning-color 0%, $warning-color-light 100%);
-  color: $text-color;
-  box-shadow: 0 4px 16px rgba($warning-color, 0.3);
+  background: linear-gradient(135deg, var(--warning-color, #ff9800) 0%, #ffb74d 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: 0 4px 16px rgba(var(--warning-color, #ff9800), 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba($warning-color, 0.4);
+    box-shadow: 0 8px 24px rgba(var(--warning-color, #ff9800), 0.4);
   }
 }
 
@@ -2486,14 +2601,14 @@ export default {
   0%, 100% {
     transform: scale(1);
     box-shadow: 
-      0 20px 40px rgba($accent-color, 0.4),
-      0 8px 16px rgba($accent-color, 0.2);
+      0 20px 40px rgba(var(--accent-color, #b0b3b8), 0.4),
+      0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.2);
   }
   50% {
     transform: scale(1.02);
     box-shadow: 
-      0 25px 50px rgba($accent-color, 0.5),
-      0 12px 24px rgba($accent-color, 0.3);
+      0 25px 50px rgba(var(--accent-color, #b0b3b8), 0.5),
+      0 12px 24px rgba(var(--accent-color, #b0b3b8), 0.3);
   }
 }
 
@@ -2542,5 +2657,83 @@ export default {
   .true-false-container {
     flex-direction: column;
   }
+}
+
+// 加载状态样式
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(var(--accent-color, #b0b3b8), 0.1);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  backdrop-filter: blur(20px);
+  margin: 2rem 0;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(var(--accent-color, #b0b3b8), 0.2);
+  border-top: 4px solid var(--accent-color, #b0b3b8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+.loading-text {
+  color: var(--text-color, #f5f6fa);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// 错误状态样式
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(145deg, var(--card-bg, #292c33) 0%, rgba(var(--card-bg, #292c33), 0.95) 100%);
+  border-radius: var(--card-radius, 10px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(var(--error-color, #f44336), 0.1);
+  border: 1px solid rgba(var(--error-color, #f44336), 0.3);
+  backdrop-filter: blur(20px);
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.error-title {
+  color: var(--text-color, #f5f6fa);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 400px;
 }
 </style>

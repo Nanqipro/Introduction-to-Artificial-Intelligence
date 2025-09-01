@@ -1035,150 +1035,142 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
 
 /* 第一章案例演示样式 */
 .case-study-section {
-  margin: $spacing-lg 0;
+  margin: var(--spacing-lg, 2rem) 0;
 }
 
 .case-study-header {
   text-align: center;
-  margin-bottom: $spacing-lg;
-  padding: $spacing-lg;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
-  border-radius: $card-radius;
-  color: $text-color;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  margin-bottom: var(--spacing-lg, 2rem);
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .case-study-title {
-  font-size: $font-size-3xl;
+  font-size: var(--font-size-3xl, 1.875rem);
   font-weight: 700;
-  margin-bottom: $spacing-md;
-  color: $text-color;
+  margin-bottom: var(--spacing-md, 1.5rem);
+  color: var(--text-color, #f5f6fa);
 }
 
 .case-study-description {
-  font-size: $font-size-lg;
+  font-size: var(--font-size-lg, 1.125rem);
   opacity: 0.9;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
 }
 
 .case-study-card {
-  background: $card-bg;
-  border-radius: $card-radius;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
-  transition: all $transition-normal ease;
+  background: var(--card-bg, #292c33);
+  margin-bottom: var(--spacing-lg, 2rem);
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  transition: all var(--transition-normal, 0.3s) ease;
 }
 
 .case-study-card:hover {
   transform: translateY(-2px);
-  box-shadow: $shadow-lg;
+  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.2));
 }
 
 .case-study-question {
   text-align: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: var(--spacing-lg, 2rem);
 }
 
 .question-title {
-  font-size: $font-size-2xl;
+  font-size: var(--font-size-2xl, 1.5rem);
   font-weight: 600;
-  color: $text-color;
-  margin-bottom: $spacing-md;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .question-description {
-  color: $text-secondary-color;
-  font-size: $font-size-lg;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: var(--font-size-lg, 1.125rem);
 }
 
 .case-study-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  gap: var(--spacing-lg, 2rem);
+  margin-bottom: var(--spacing-lg, 2rem);
 }
 
 .option-card {
-  background: $secondary-color;
-  border-radius: $form-radius;
-  padding: $spacing-md;
-  border: 2px solid $card-border;
-  transition: all $transition-normal ease;
+  background: var(--secondary-color, #23272e);
+  padding: var(--spacing-md, 1.5rem);
+  border: 2px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  transition: all var(--transition-normal, 0.3s) ease;
 }
 
 .option-card:hover {
-  border-color: $accent-color;
+  border-color: var(--accent-color, #b0b3b8);
   transform: translateY(-2px);
-  box-shadow: $shadow-md;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
 }
 
 .option-a {
-  border-left: 4px solid $success-color;
+  border-left: 4px solid var(--success-color, #4caf50);
 }
 
 .option-b {
-  border-left: 4px solid $error-color;
+  border-left: 4px solid var(--error-color, #f44336);
 }
 
 .option-label {
-  font-size: $font-size-lg;
+  font-size: var(--font-size-lg, 1.125rem);
   font-weight: 600;
-  color: $text-color;
-  margin-bottom: $spacing-md;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-md, 1.5rem);
   text-align: center;
 }
 
 .option-image {
-  margin-bottom: $spacing-md;
+  margin-bottom: var(--spacing-md, 1.5rem);
   text-align: center;
 }
 
 .option-image img {
   max-width: 100%;
   height: auto;
-  border-radius: $form-radius;
-  box-shadow: $shadow-sm;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .option-content {
-  margin-bottom: $spacing-md;
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .option-text {
-  background: $card-bg;
-  padding: $spacing-md;
-  border-radius: $form-radius;
-  border: 1px solid $card-border;
-  margin-bottom: $spacing-md;
+  background: var(--card-bg, #292c33);
+  padding: var(--spacing-md, 1.5rem);
+  border-radius: var(--form-radius, 10px);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .option-text p {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   line-height: 1.6;
   margin: 0;
 }
 
 .text-source {
-  font-size: $font-size-sm;
-  color: $text-secondary-color;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary-color, #b0b3b8);
   font-style: italic;
-  margin-top: $spacing-sm;
-  padding-top: $spacing-sm;
-  border-top: 1px solid $card-border;
+  margin-top: var(--spacing-sm, 1rem);
+  padding-top: var(--spacing-sm, 1rem);
+  border-top: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .audio-placeholder, .video-placeholder {
-  background: $secondary-color;
-  border: 2px dashed $accent-color;
-  border-radius: $form-radius;
-  padding: $spacing-lg $spacing-md;
+  background: var(--secondary-color, #23272e);
+  border: 2px dashed var(--accent-color, #b0b3b8);
+  padding: var(--spacing-lg, 2rem) var(--spacing-md, 1.5rem);
   text-align: center;
   min-height: 120px;
   display: flex;
@@ -1188,20 +1180,20 @@ export default {
 }
 
 .placeholder-icon {
-  font-size: $font-size-3xl;
-  margin-bottom: $spacing-sm;
+  font-size: var(--font-size-3xl, 1.875rem);
+  margin-bottom: var(--spacing-sm, 1rem);
 }
 
 .placeholder-title {
   font-weight: 600;
-  color: $text-color;
-  margin-bottom: $spacing-sm;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-sm, 1rem);
 }
 
 .placeholder-desc {
-  color: $text-secondary-color;
-  font-size: $font-size-base;
-  margin-bottom: $spacing-md;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: var(--font-size-base, 1rem);
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .placeholder-link {
@@ -1210,136 +1202,135 @@ export default {
 
 .link-btn {
   display: inline-block;
-  background: $btn-primary-bg;
-  color: $text-color;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $btn-radius;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
+  color: var(--text-color, #f5f6fa);
+  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
+  border-radius: var(--btn-radius, 12px);
   text-decoration: none;
-  font-size: $font-size-base;
-  transition: all $transition-normal ease;
-  box-shadow: $btn-shadow;
+  font-size: var(--font-size-base, 1rem);
+  transition: all var(--transition-normal, 0.3s) ease;
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
 }
 
 .link-btn:hover {
-  background: $primary-hover-color;
-  color: $text-color;
+  background: var(--primary-hover-color, #cccccc);
+  color: var(--text-color, #f5f6fa);
   text-decoration: none;
   transform: translateY(-1px);
 }
 
 .option-actions {
   display: flex;
-  gap: $spacing-sm;
+  gap: var(--spacing-sm, 1rem);
   justify-content: center;
 }
 
 .btn {
-  padding: $spacing-sm $spacing-md;
+  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 500;
   cursor: pointer;
-  transition: all $transition-normal ease;
-  font-size: $font-size-base;
-  box-shadow: $btn-shadow;
+  transition: all var(--transition-normal, 0.3s) ease;
+  font-size: var(--font-size-base, 1rem);
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
 }
 
 .btn-primary {
-  background: $btn-primary-bg;
-  color: $text-color;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
+  color: var(--text-color, #f5f6fa);
 }
 
 .btn-primary:hover {
-  background: $primary-hover-color;
+  background: var(--primary-hover-color, #cccccc);
   transform: translateY(-1px);
-  box-shadow: $shadow-md;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
 }
 
 .btn-secondary {
-  background: $btn-secondary-bg;
-  color: $text-color;
+  background: var(--btn-secondary-bg, #393b40);
+  color: var(--text-color, #f5f6fa);
 }
 
 .btn-secondary:hover {
-  background: $btn-secondary-hover;
+  background: var(--btn-secondary-hover, #4a4a4a);
   transform: translateY(-1px);
-  box-shadow: $shadow-md;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
 }
 
 .btn-outline {
   background: transparent;
-  color: $accent-color;
-  border: 1px solid $accent-color;
+  color: var(--accent-color, #b0b3b8);
+  border: 1px solid var(--accent-color, #b0b3b8);
 }
 
 .btn-outline:hover {
-  background: $accent-color;
-  color: $text-color;
+  background: var(--accent-color, #b0b3b8);
+  color: var(--text-color, #f5f6fa);
   transform: translateY(-1px);
 }
 
 .feedback-card {
   text-align: center;
-  padding: $spacing-md;
-  border-radius: $form-radius;
-  margin-top: $spacing-md;
-  border: 1px solid $card-border;
+  padding: var(--spacing-md, 1.5rem);
+  margin-top: var(--spacing-md, 1.5rem);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .feedback-card.correct {
-  background: rgba($success-color, 0.1);
-  color: $success-color;
-  border-color: $success-color;
+  background: rgba(var(--success-color, #4caf50), 0.1);
+  color: var(--success-color, #4caf50);
+  border-color: var(--success-color, #4caf50);
 }
 
 .feedback-card.incorrect {
-  background: rgba($error-color, 0.1);
-  color: $error-color;
-  border-color: $error-color;
+  background: rgba(var(--error-color, #f44336), 0.1);
+  color: var(--error-color, #f44336);
+  border-color: var(--error-color, #f44336);
 }
 
 .feedback-icon {
-  font-size: $font-size-3xl;
-  margin-bottom: $spacing-md;
+  font-size: var(--font-size-3xl, 1.875rem);
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .feedback-message {
-  font-size: $font-size-lg;
-  margin-bottom: $spacing-md;
+  font-size: var(--font-size-lg, 1.125rem);
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .case-study-overview {
-  background: $secondary-color;
-  border-radius: $card-radius;
-  padding: $spacing-lg;
-  border: 1px solid $card-border;
-  box-shadow: $card-shadow;
+  background: var(--secondary-color, #23272e);
+  border-radius: var(--card-radius, 10px);
+  padding: var(--spacing-lg, 2rem);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 }
 
 .overview-title {
-  font-size: $font-size-2xl;
+  font-size: var(--font-size-2xl, 1.5rem);
   font-weight: 600;
-  color: $text-color;
-  margin-bottom: $spacing-md;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-md, 1.5rem);
   text-align: center;
 }
 
 .overview-description {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   text-align: center;
-  margin-bottom: $spacing-md;
+  margin-bottom: var(--spacing-md, 1.5rem);
 }
 
 .overview-list {
-  background: $card-bg;
-  padding: $spacing-md;
-  border-radius: $form-radius;
-  border: 1px solid $card-border;
+  background: var(--card-bg, #292c33);
+  padding: var(--spacing-md, 1.5rem);
+  border-radius: var(--form-radius, 10px);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .overview-list h4 {
-  color: $text-color;
-  margin-bottom: $spacing-md;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: var(--spacing-md, 1.5rem);
   font-weight: 600;
 }
 
@@ -1350,11 +1341,11 @@ export default {
 }
 
 .overview-list li {
-  padding: $spacing-sm 0;
-  border-bottom: 1px solid $card-border;
-  color: $text-secondary-color;
-  font-size: $font-size-base;
-  transition: all $transition-normal ease;
+  padding: var(--spacing-sm, 1rem) 0;
+  border-bottom: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: var(--font-size-base, 1rem);
+  transition: all var(--transition-normal, 0.3s) ease;
 }
 
 .overview-list li:last-child {
@@ -1362,10 +1353,10 @@ export default {
 }
 
 .overview-list li:hover {
-  color: $text-color;
-  background: $list-item-hover-bg;
-  padding-left: $spacing-sm;
-  border-radius: $form-radius;
+  color: var(--text-color, #f5f6fa);
+  background: var(--list-item-hover-bg, #31343b);
+  padding-left: var(--spacing-sm, 1rem);
+  border-radius: var(--form-radius, 10px);
 }
 
 @media (max-width: 768px) {
@@ -1388,66 +1379,74 @@ export default {
 }
 
 .chapter-detail {
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
   padding: 2rem 0;
 }
 
 .chapter-nav {
-  background: $nav-bg;
-  border-bottom: 1px solid $nav-border;
+  background: var(--nav-bg, rgba(41, 44, 51, 0.92));
+  border-bottom: 1px solid var(--nav-border, rgba(57, 59, 64, 0.18));
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: $nav-shadow;
+  box-shadow: var(--nav-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   backdrop-filter: blur(4px);
 }
 
 .nav-container {
-  max-width: 1000px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .nav-back {
-  background: none;
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
   border: none;
-  color: $accent-color;
+  color: white;
   cursor: pointer;
   font-size: 0.95rem;
-  padding: 0.5rem 0;
-  transition: color 0.2s;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
   font-weight: 600;
   letter-spacing: 0.5px;
+  border-radius: 25px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   
   &:hover {
-    color: $nav-back-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
   }
 }
 
 .nav-title {
   font-weight: 700;
-  color: $text-color;
-  font-size: 1.05rem;
+  color: var(--text-color, #f5f6fa);
+  font-size: 1.1rem;
   letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  background: $card-bg;
-  border-radius: $card-radius;
-  box-shadow: $card-shadow;
-  padding: 2.5rem 2rem;
-  border: 1px solid $card-border;
+  background: var(--card-bg, #292c33);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 3rem 2.5rem;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  backdrop-filter: blur(10px);
 }
 
 .chapter-content {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.08rem;
   line-height: 1.8;
   margin-bottom: 2.5rem;
@@ -1455,136 +1454,209 @@ export default {
 
 .chapter-header {
   display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.05));
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .chapter-meta {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .chapter-badge {
-  background: $chapter-badge-bg;
-  color: $accent-color;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
   font-size: 1rem;
   font-weight: 600;
-  box-shadow: $chapter-badge-shadow;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   letter-spacing: 1px;
+  border: none;
 }
 
 .chapter-type {
-  color: $accent-color;
-  background: $chapter-type-bg;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  color: var(--text-color, #f5f6fa);
+  background: var(--secondary-color, #23272e);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
   font-size: 0.95rem;
   font-weight: 600;
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
 }
 
 .chapter-title {
-  font-size: 2rem;
-  color: $text-color;
+  font-size: 2.5rem;
+  color: var(--text-color, #f5f6fa);
   font-weight: 900;
   letter-spacing: 1px;
+  line-height: 1.2;
+  margin-bottom: 1rem;
 }
 
 .chapter-summary {
-  color: $text-secondary-color;
-  font-size: 1.1rem;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: 1.2rem;
   margin-bottom: 2rem;
   line-height: 1.7;
+  padding: 1.5rem;
+  background: var(--secondary-color, #23272e);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-color, #3b82f6);
 }
 
 .chapter-info {
   display: flex;
   gap: 2rem;
   font-size: 0.95rem;
+  flex-wrap: wrap;
 }
 
 .info-item {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--secondary-color, #23272e);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
 }
 
 .info-label {
-  color: $accent-color;
+  color: var(--accent-color, #3b82f6);
+  font-weight: 600;
 }
 
 .info-value {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 600;
   
   &.published {
-    color: $accent-color;
+    color: var(--success-color, #4caf50);
   }
 }
 
 .chapter-body {
   margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--secondary-color, #23272e);
+  border-radius: 16px;
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
+  background: var(--secondary-color, #23272e);
+  border-radius: 16px;
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
 }
 
 .content-text {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   
   :deep(p) {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
+    text-align: justify;
+  }
+  
+  :deep(h2) {
+    font-size: 1.8rem;
+    color: var(--accent-color, #3b82f6);
+    margin: 2.5rem 0 1.5rem 0;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent-color, #3b82f6);
+    padding-bottom: 0.5rem;
+  }
+  
+  :deep(h3) {
+    font-size: 1.5rem;
+    color: var(--text-color, #f5f6fa);
+    margin: 2rem 0 1rem 0;
+    font-weight: 600;
+  }
+  
+  :deep(ul), :deep(ol) {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+  }
+  
+  :deep(li) {
+    margin-bottom: 0.8rem;
+  }
+  
+  :deep(blockquote) {
+    border-left: 4px solid var(--accent-color, #3b82f6);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
   }
 }
 
 .chapter-pagination {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  padding-top: 2rem;
-  border-top: 1px solid $card-header-border;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: var(--secondary-color, #23272e);
+  border-radius: 16px;
+  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
+  margin-top: 2rem;
 }
 
 .quiz-section {
-  background: $secondary-color;
-  border-radius: $card-radius;
-  padding: 2rem;
+  background: linear-gradient(135deg, var(--secondary-color, #23272e), rgba(59, 130, 246, 0.1));
+  border-radius: 20px;
+  padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .quiz-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .quiz-title {
-  font-size: 1.4rem;
-  color: $text-color;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: 1rem;
   font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .quiz-description {
-  color: $text-secondary-color;
-  font-size: 1rem;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: 1.1rem;
   line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .quiz-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
   flex-wrap: wrap;
 }
 
 .btn-quiz {
-  background: $btn-primary-bg;
-  color: $text-color;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
+  color: var(--text-color, #f5f6fa);
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   padding: 1rem 2rem;
   font-weight: 600;
   font-size: 1rem;
@@ -1596,7 +1668,7 @@ export default {
   
   &:hover:not(.disabled) {
     transform: translateY(-2px);
-    box-shadow: $btn-shadow;
+    box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
   }
   
   &.disabled {
@@ -1625,7 +1697,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 0.9rem;
 }
 
@@ -1634,23 +1706,23 @@ export default {
 }
 
 .pagination-btn {
-  background: $chapter-pagination-bg;
-  border: 1px solid $card-border;
-  border-radius: $btn-radius;
+  background: var(--chapter-pagination-bg, #23272e);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--btn-radius, 12px);
   padding: 1rem;
   cursor: pointer;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
   flex: 1;
   max-width: 300px;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-weight: 600;
   font-size: 1rem;
   
   &:hover {
-    background: $chapter-pagination-hover;
-    border-color: $chapter-pagination-hover-border;
-    box-shadow: $chapter-pagination-hover-shadow;
-    color: $text-color;
+    background: var(--chapter-pagination-hover, #31343b);
+    border-color: var(--chapter-pagination-hover, #31343b)-border;
+    box-shadow: var(--chapter-pagination-hover, #31343b)-shadow;
+    color: var(--text-color, #f5f6fa);
   }
   
   &.prev {
@@ -1666,14 +1738,14 @@ export default {
 .btn-label {
   display: block;
   font-size: 0.8rem;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   margin-bottom: 0.25rem;
 }
 
 .btn-title {
   display: block;
   font-weight: 700;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
 }
 
 .loading-container, .error-container {
@@ -1684,8 +1756,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid $loading-border;
-  border-top: 4px solid $loading-spinner;
+  border: 4px solid var(--loading-border, #393b40);
+  border-top: 4px solid var(--loading-spinner, #8fa1b3);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -1697,44 +1769,44 @@ export default {
 }
 
 .error-icon {
-  font-size: $error-icon-size;
+  font-size: var(--error-icon-size, 4rem);
   margin-bottom: 1rem;
 }
 
 .error-container h3 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 0.5rem;
 }
 
 .error-container p {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: $primary-color;
-  color: $text-color;
+  background: var(--primary-color, #18191a);
+  color: var(--text-color, #f5f6fa);
   border: none;
   
   &:hover {
-    background: $primary-hover-color;
-    color: $text-secondary-color;
-    border-color: $primary-hover-color;
+    background: var(--primary-hover-color, #cccccc);
+    color: var(--text-secondary-color, #b0b3b8);
+    border-color: var(--primary-hover-color, #cccccc);
     transform: translateY(-1px);
   }
 }
 
 .back-link {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 1rem;
   text-decoration: underline;
   cursor: pointer;
@@ -1773,33 +1845,33 @@ export default {
   /* 第一章案例演示响应式样式 */
   .case-study-options {
     grid-template-columns: 1fr;
-    gap: $spacing-md;
+    gap: var(--spacing-md, 1.5rem);
   }
   
   .case-study-header {
-    padding: $spacing-md;
+    padding: var(--spacing-md, 1.5rem);
   }
   
   .case-study-title {
-    font-size: $font-size-xl;
+    font-size: var(--font-size-xl, 1.25rem);
   }
   
   .case-study-card {
-    padding: $spacing-md;
+    padding: var(--spacing-md, 1.5rem);
   }
   
   .question-title {
-    font-size: $font-size-lg;
+    font-size: var(--font-size-lg, 1.125rem);
   }
   
   .option-actions {
     flex-direction: column;
-    gap: $spacing-sm;
+    gap: var(--spacing-sm, 1rem);
   }
   
   .btn {
     width: 100%;
-    padding: $spacing-md;
+    padding: var(--spacing-md, 1.5rem);
   }
 }
 
@@ -1807,18 +1879,18 @@ export default {
 .progress-bar {
   width: 100%;
   height: 12px;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   border-radius: 6px;
   overflow: hidden;
-  margin-top: $spacing-md;
-  border: 1px solid $card-border;
+  margin-top: var(--spacing-md, 1.5rem);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, $success-color, $success-color-light);
+  background: linear-gradient(90deg, var(--success-color, #4caf50), #66bb6a);
   border-radius: 6px;
-  transition: width $transition-normal ease;
-  box-shadow: 0 2px 8px rgba($success-color, 0.3);
+  transition: width var(--transition-normal, 0.3s) ease;
+  box-shadow: 0 2px 8px rgba(var(--success-color, #4caf50), 0.3);
 }
 </style>

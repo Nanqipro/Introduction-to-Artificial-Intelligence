@@ -1471,16 +1471,16 @@ onUnmounted(() => {
 
 .network-visualization-container {
   padding: 1.5rem;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
   min-height: 100vh;
 
   ::selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: $accent-color;
+    background: var(--accent-color, #b0b3b8);
     color: #ffffff;
   }
 }
@@ -1490,19 +1490,19 @@ onUnmounted(() => {
   margin-bottom: 2rem;
 
   h2 {
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 0.5rem;
     font-size: 2rem;
     font-weight: 600;
 
     .el-icon {
       margin-right: 0.5rem;
-      color: $accent-color;
+      color: var(--accent-color, #b0b3b8);
     }
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
     max-width: 600px;
     margin: 0 auto;
@@ -1514,13 +1514,13 @@ onUnmounted(() => {
 
   .control-card {
     border-radius: 12px;
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    box-shadow: $box-shadow;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-      color: $primary-color;
+      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+      color: var(--primary-color, #18191a);
       border-radius: 12px 12px 0 0;
 
       span {
@@ -1535,8 +1535,8 @@ onUnmounted(() => {
     }
 
     :deep(.el-card__body) {
-      background: $secondary-color;
-      color: $text-color;
+      background: var(--secondary-color, #23272e);
+      color: var(--text-color, #f5f6fa);
     }
 
     .training-controls, .dataset-selection, .network-config {
@@ -1580,7 +1580,7 @@ onUnmounted(() => {
 
       .speed-control {
         .speed-label {
-          color: $text-secondary-color;
+          color: var(--text-secondary-color, #b0b3b8);
           font-size: 0.9rem;
           font-weight: 500;
           margin-bottom: 0.75rem;
@@ -1593,12 +1593,12 @@ onUnmounted(() => {
 
         .speed-value {
           text-align: center;
-          color: $accent-color;
+          color: var(--accent-color, #b0b3b8);
           font-size: 0.85rem;
           font-weight: 600;
           padding: 0.25rem 0.5rem;
-          background: $primary-color;
-          border: 1px solid $border-color;
+          background: var(--primary-color, #18191a);
+          border: 1px solid var(--border-color, #393b40);
           border-radius: 4px;
           display: inline-block;
           min-width: 40px;
@@ -1611,8 +1611,8 @@ onUnmounted(() => {
       .dataset-info {
         margin-bottom: 1.5rem;
         padding: 1rem;
-        background: $primary-color;
-        border: 1px solid $border-color;
+        background: var(--primary-color, #18191a);
+        border: 1px solid var(--border-color, #393b40);
         border-radius: 8px;
 
         .current-dataset {
@@ -1621,12 +1621,12 @@ onUnmounted(() => {
           .dataset-name {
             display: block;
             font-weight: 600;
-            color: $text-color;
+            color: var(--text-color, #f5f6fa);
             font-size: 1.1rem;
           }
 
           .dataset-size {
-            color: $text-secondary-color;
+            color: var(--text-secondary-color, #b0b3b8);
             font-size: 0.9rem;
           }
         }
@@ -1641,12 +1641,12 @@ onUnmounted(() => {
             gap: 0.25rem;
 
             .stat-label {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
               font-size: 0.9rem;
             }
 
             .stat-value {
-              color: $accent-color;
+              color: var(--accent-color, #b0b3b8);
               font-weight: 600;
             }
           }
@@ -1663,30 +1663,30 @@ onUnmounted(() => {
           align-items: center;
           gap: 0.75rem;
           padding: 0.75rem;
-          background: $secondary-color;
-          border: 1px solid $border-color;
+          background: var(--secondary-color, #23272e);
+          border: 1px solid var(--border-color, #393b40);
           border-radius: 8px;
           cursor: pointer;
           transition: all 0.3s ease;
 
           &:hover {
-            background: $primary-hover-color;
-            border-color: $accent-color;
+            background: var(--primary-hover-color, #cccccc);
+            border-color: var(--accent-color, #b0b3b8);
             transform: translateY(-1px);
           }
 
           &.active {
-            background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-            border-color: $accent-color;
-            color: $primary-color;
+            background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+            border-color: var(--accent-color, #b0b3b8);
+            color: var(--primary-color, #18191a);
 
             .dataset-icon {
-              color: $primary-color;
+              color: var(--primary-color, #18191a);
             }
 
             .dataset-details {
               .dataset-title {
-                color: $primary-color;
+                color: var(--primary-color, #18191a);
               }
 
               .dataset-description {
@@ -1703,7 +1703,7 @@ onUnmounted(() => {
 
           .dataset-icon {
             font-size: 1.5rem;
-            color: $accent-color;
+            color: var(--accent-color, #b0b3b8);
             flex-shrink: 0;
           }
 
@@ -1712,13 +1712,13 @@ onUnmounted(() => {
 
             .dataset-title {
               font-weight: 600;
-              color: $text-color;
+              color: var(--text-color, #f5f6fa);
               margin-bottom: 0.25rem;
               font-size: 0.95rem;
             }
 
             .dataset-description {
-              color: $text-secondary-color;
+              color: var(--text-secondary-color, #b0b3b8);
               font-size: 0.85rem;
               margin-bottom: 0.25rem;
               line-height: 1.3;
@@ -1729,10 +1729,10 @@ onUnmounted(() => {
               gap: 0.75rem;
 
               span {
-                color: $text-secondary-color;
+                color: var(--text-secondary-color, #b0b3b8);
                 font-size: 0.8rem;
                 padding: 0.125rem 0.375rem;
-                background: $primary-color;
+                background: var(--primary-color, #18191a);
                 border-radius: 4px;
               }
             }
@@ -1825,13 +1825,13 @@ onUnmounted(() => {
 
   .network-card {
     border-radius: 12px;
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    box-shadow: $box-shadow;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-      color: $primary-color;
+      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+      color: var(--primary-color, #18191a);
       border-radius: 12px 12px 0 0;
 
       .network-header {
@@ -1860,7 +1860,7 @@ onUnmounted(() => {
       .network-svg {
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
+        background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
         border-radius: 0 0 12px 12px;
 
         .connection-line {
@@ -1918,13 +1918,13 @@ onUnmounted(() => {
 
 .metrics-card {
   border-radius: 12px;
-  background: $secondary-color;
-  border: 1px solid $border-color;
-  box-shadow: $box-shadow;
+  background: var(--secondary-color, #23272e);
+  border: 1px solid var(--border-color, #393b40);
+  box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 
   :deep(.el-card__header) {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-    color: $primary-color;
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+    color: var(--primary-color, #18191a);
     border-radius: 12px 12px 0 0;
 
     span {
@@ -1996,13 +1996,13 @@ onUnmounted(() => {
 
   .node-details-card {
     border-radius: 12px;
-    background: $secondary-color;
-    border: 1px solid $border-color;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
     box-shadow: 0 8px 24px rgba(24, 25, 26, 0.3);
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-      color: $primary-color;
+      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+      color: var(--primary-color, #18191a);
       border-radius: 12px 12px 0 0;
 
       .node-header {
@@ -2054,13 +2054,13 @@ onUnmounted(() => {
 .training-log {
   .log-card {
     border-radius: 12px;
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    box-shadow: $box-shadow;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
 
     :deep(.el-card__header) {
-      background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
-      color: $primary-color;
+      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
+      color: var(--primary-color, #18191a);
       border-radius: 12px 12px 0 0;
 
       .log-header {
@@ -2415,92 +2415,92 @@ onUnmounted(() => {
 
 // Element Plus 组件样式覆盖
 :deep(.el-card__body) {
-  background: $secondary-color;
-  color: $text-color;
+  background: var(--secondary-color, #23272e);
+  color: var(--text-color, #f5f6fa);
 }
 
 :deep(.el-button) {
   &.el-button--primary {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
     border: none;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
 
     &:hover {
-      background: linear-gradient(135deg, $accent-color-light 0%, $accent-color 100%);
+      background: linear-gradient(135deg, #d1d3d8 0%, var(--accent-color, #b0b3b8) 100%);
       transform: translateY(-1px);
     }
   }
 
   &.el-button--default {
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    color: $text-color;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    color: var(--text-color, #f5f6fa);
 
     &:hover {
-      background: $primary-hover-color;
-      border-color: $accent-color;
+      background: var(--primary-hover-color, #cccccc);
+      border-color: var(--accent-color, #b0b3b8);
     }
   }
 }
 
 :deep(.el-slider) {
   .el-slider__runway {
-    background: $border-color;
+    background: var(--border-color, #393b40);
   }
 
   .el-slider__bar {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
   }
 
   .el-slider__button {
-    border: 2px solid $accent-color;
-    background: $text-color;
+    border: 2px solid var(--accent-color, #b0b3b8);
+    background: var(--text-color, #f5f6fa);
   }
 }
 
 :deep(.el-select) {
   .el-input__inner {
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    color: $text-color;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    color: var(--text-color, #f5f6fa);
 
     &:focus {
-      border-color: $accent-color;
+      border-color: var(--accent-color, #b0b3b8);
     }
   }
 }
 
 :deep(.el-input) {
   .el-input__inner {
-    background: $secondary-color;
-    border: 1px solid $border-color;
-    color: $text-color;
+    background: var(--secondary-color, #23272e);
+    border: 1px solid var(--border-color, #393b40);
+    color: var(--text-color, #f5f6fa);
 
     &:focus {
-      border-color: $accent-color;
+      border-color: var(--accent-color, #b0b3b8);
     }
   }
 }
 
 :deep(.el-progress) {
   .el-progress-bar__outer {
-    background: $border-color;
+    background: var(--border-color, #393b40);
   }
 
   .el-progress-bar__inner {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
   }
 }
 
 :deep(.el-tag) {
-  background: $secondary-color;
-  border: 1px solid $border-color;
-  color: $text-color;
+  background: var(--secondary-color, #23272e);
+  border: 1px solid var(--border-color, #393b40);
+  color: var(--text-color, #f5f6fa);
 
   &.el-tag--success {
-    background: linear-gradient(135deg, $accent-color 0%, $accent-color-light 100%);
+    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
     border: none;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
   }
 }
 
@@ -2514,7 +2514,7 @@ onUnmounted(() => {
   .dialog-title {
     font-size: 18px;
     font-weight: 600;
-    color: $primary-color;
+    color: var(--primary-color, #18191a);
   }
 }
 

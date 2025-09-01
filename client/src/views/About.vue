@@ -160,90 +160,90 @@ import { InfoFilled, Notebook, UserFilled, Message, Cpu } from '@element-plus/ic
 .page-header { text-align: center; margin-bottom: 3rem; }
 .page-title { 
   font-size: 2.5rem; 
-  color: $text-color; 
+  color: var(--text-color, #f5f6fa); 
   margin-bottom: 1rem; 
   font-weight: 900; 
   letter-spacing: 1.5px; 
 }
 .page-description { 
   font-size: 1.1rem; 
-  color: $text-secondary-color; 
+  color: var(--text-secondary-color, #b0b3b8); 
   max-width: 600px; 
   margin: 0 auto; 
   line-height: 1.6; 
 }
 .book-description { 
   margin-top: 1.5rem; 
-  color: $text-secondary-color; 
+  color: var(--text-secondary-color, #b0b3b8); 
   line-height: 1.6; 
 }
 .contact-icon { 
   font-size: 2rem; 
   margin-bottom: 0.5rem; 
-  color: $accent-color; 
+  color: var(--accent-color, #b0b3b8); 
 }
 
 /* Element Plus 卡片和描述组件深色主题适配 */
 .el-card {
-  background: $card-bg !important;
-  color: $text-color !important;
-  border: 1px solid $card-border !important;
-  box-shadow: $card-shadow;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33) !important;
+  color: var(--text-color, #f5f6fa) !important;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18)) !important;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border-radius: var(--card-radius, 10px);
 }
 .el-card__header {
   background: transparent !important;
-  color: $text-color !important;
+  color: var(--text-color, #f5f6fa) !important;
   font-weight: 700;
   font-size: 1.1rem;
-  border-bottom: 1px solid $card-header-border;
+  border-bottom: 1px solid var(--card-header-border, rgba(57, 59, 64, 0.18));
 }
 .el-descriptions__title {
-  color: $text-color !important;
+  color: var(--text-color, #f5f6fa) !important;
   font-weight: 700;
 }
 .el-descriptions__label {
-  color: $accent-color !important;
+  color: var(--accent-color, #b0b3b8) !important;
   font-weight: 600;
 }
 .el-descriptions__cell {
-  color: $text-color !important;
+  color: var(--text-color, #f5f6fa) !important;
 }
 .el-tag {
-  background: $tag-bg !important;
-  color: $tag-color !important;
+  background: var(--tag-bg, #4a90e2) !important;
+  color: var(--tag-color, #ffffff) !important;
   border: none;
   font-weight: 600;
   border-radius: 8px;
 }
 .el-divider {
-  background: $divider-bg !important;
+  background: var(--divider-bg, rgba(57, 59, 64, 0.18)) !important;
 }
 .el-card h3, .el-card h4 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 700;
 }
 .el-card p {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
 }
 .about {
   min-height: 100vh;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   padding: 2rem 0;
 }
 .about .el-descriptions,
 .about .el-descriptions__body,
 .about .el-descriptions__table {
-  background: $descriptions-bg !important;
+  background: var(--descriptions-bg, #292c33) !important;
 }
 .about .el-descriptions__cell,
 .about .el-descriptions__label {
-  background: $descriptions-cell-bg !important;
-  color: $text-color !important;
-  border-color: $descriptions-border !important;
+  background: var(--descriptions-cell-bg, #23272e) !important;
+  color: var(--text-color, #f5f6fa) !important;
+  border-color: var(--descriptions-border, rgba(57, 59, 64, 0.18)) !important;
 }
 .about .el-descriptions__label {
-  color: $accent-color !important;
+  color: var(--accent-color, #b0b3b8) !important;
   font-weight: 600;
 }
 .tech-tags {
@@ -254,12 +254,12 @@ import { InfoFilled, Notebook, UserFilled, Message, Cpu } from '@element-plus/ic
   margin-bottom: 0.5rem;
 }
 .github-link {
-  color: $link-color !important;
+  color: var(--link-color, #667eea) !important;
   text-decoration: none;
   transition: color 0.3s ease;
   
   &:hover {
-    color: $link-hover-color !important;
+    color: var(--link-hover-color, #5a67d8) !important;
     text-decoration: underline;
   }
 }

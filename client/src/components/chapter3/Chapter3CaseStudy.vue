@@ -530,7 +530,6 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:color';
-@use '../../styles/variables.scss' as *;
 
 .chapter3-case-study {
   max-width: 1200px;
@@ -620,12 +619,12 @@ export default {
 }
 
 .case-section {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .section-header {
@@ -646,7 +645,7 @@ export default {
     }
 
     .title-text {
-      background: linear-gradient(135deg, $primary-color, $accent-color);
+      background: linear-gradient(135deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -661,13 +660,13 @@ export default {
       transform: translateX(-50%);
       width: 60px;
       height: 3px;
-      background: linear-gradient(90deg, $primary-color, $accent-color);
+      background: linear-gradient(90deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       border-radius: 2px;
     }
   }
 
   .section-subtitle {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1.1rem;
     font-weight: 500;
     margin: 0;
@@ -703,7 +702,7 @@ export default {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color, $accent-color, $info-color);
+    background: linear-gradient(90deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8), var(--info-color, #4a90e2));
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
   }
@@ -739,7 +738,7 @@ export default {
     .logo-circle {
       width: 64px;
       height: 64px;
-      background: linear-gradient(135deg, $primary-color, $accent-color);
+      background: linear-gradient(135deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -771,11 +770,11 @@ export default {
         margin: 0 0 4px 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: $text-color;
+        color: var(--text-color, #f5f6fa);
       }
 
       .logo-subtitle {
-        color: $text-secondary-color;
+        color: var(--text-secondary-color, #b0b3b8);
         font-size: 0.9rem;
         font-weight: 500;
         opacity: 0.8;
@@ -851,12 +850,12 @@ export default {
   h5 {
     font-size: 1.4rem;
     font-weight: 700;
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 8px;
   }
 
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-size: 1rem;
     margin: 0;
     opacity: 0.8;
@@ -961,13 +960,13 @@ export default {
     h6 {
       font-size: 1.2rem;
       font-weight: 600;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin: 0 0 8px 0;
     }
 
     p {
       font-size: 0.95rem;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
       margin: 0;
       line-height: 1.5;
     }
@@ -995,7 +994,7 @@ export default {
     h6 {
       font-size: 1.1rem;
       font-weight: 600;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       margin: 0;
     }
   }
@@ -1023,14 +1022,14 @@ export default {
 
     .rgb-label {
       font-weight: 700;
-      color: $text-color;
+      color: var(--text-color, #f5f6fa);
       font-size: 0.9rem;
       margin-bottom: 4px;
     }
 
     .rgb-desc {
       font-size: 0.8rem;
-      color: $text-secondary-color;
+      color: var(--text-secondary-color, #b0b3b8);
     }
   }
 }
@@ -1076,13 +1075,13 @@ export default {
     display: block;
     font-size: 1.4rem;
     font-weight: 700;
-    color: $text-color;
+    color: var(--text-color, #f5f6fa);
     margin-bottom: 4px;
   }
 
   .stat-label {
     font-size: 0.9rem;
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #b0b3b8);
     font-weight: 500;
   }
 }

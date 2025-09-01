@@ -307,17 +307,17 @@ export default {
 
 .chapter-list {
   min-height: 100vh;
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   padding: 2rem 0;
 }
 
 /* 第一章样例样式，使用 variables.scss 主题变量 */
 .chapter1-demo {
   margin: 2rem 0 3rem;
-  background: $card-bg;
-  border: 1px solid $card-border;
-  border-radius: $card-radius;
-  box-shadow: $card-shadow;
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--card-radius, 10px);
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   padding: 1.5rem;
 }
 
@@ -328,23 +328,23 @@ export default {
 
 .demo-badge {
   display: inline-block;
-  background: $chapter-badge-bg;
-  color: $accent-color;
+  background: var(--chapter-badge-bg, linear-gradient(135deg, #18191a, #232526));
+  color: var(--accent-color, #b0b3b8);
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   font-weight: 600;
-  box-shadow: $chapter-badge-shadow;
+  box-shadow: var(--chapter-badge-shadow, 0 2px 8px rgba(143, 161, 179, 0.08));
 }
 
 .demo-title {
   margin: 0.75rem 0 0.25rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 800;
 }
 
 .demo-desc {
   margin: 0;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
 }
 
 .demo-grid {
@@ -355,9 +355,9 @@ export default {
 }
 
 .demo-card {
-  background: $secondary-color;
-  border: 1px solid $card-border;
-  border-radius: $card-radius;
+  background: var(--secondary-color, #23272e);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--card-radius, 10px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -365,8 +365,8 @@ export default {
 
 .demo-label {
   padding: 0.5rem 0.75rem;
-  background: $chapter-type-bg;
-  color: $accent-color;
+  background: var(--chapter-type-bg, #23272e);
+  color: var(--accent-color, #b0b3b8);
   font-weight: 700;
 }
 
@@ -384,22 +384,22 @@ export default {
 }
 
 .btn-secondary {
-  background: $btn-secondary-bg;
-  color: $text-color;
-  box-shadow: $btn-shadow;
-  border-radius: $btn-radius;
+  background: var(--btn-secondary-bg, #393b40);
+  color: var(--text-color, #f5f6fa);
+  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
+  border-radius: var(--btn-radius, 12px);
 }
 
 .btn-secondary:hover {
-  background: $btn-secondary-hover;
+  background: var(--btn-secondary-hover, #4a4a4a);
   transform: translateY(-1px);
 }
 
 .btn-outline {
   background: transparent;
-  color: $accent-color;
-  border: 1px solid $btn-outline-border;
-  border-radius: $btn-radius;
+  color: var(--accent-color, #b0b3b8);
+  border: 1px solid var(--btn-outline-border, #4a90e2);
+  border-radius: var(--btn-radius, 12px);
   padding: 0.5rem 1rem;
 }
 
@@ -410,11 +410,11 @@ export default {
 .demo-feedback {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: $card-radius;
+  border-radius: var(--card-radius, 10px);
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .demo-feedback.success {
@@ -438,14 +438,14 @@ export default {
 }
 
 .quiz-row {
-  background: $card-bg;
-  border: 1px solid $card-border;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--card-radius, 10px);
   padding: 1rem;
 }
 
 .quiz-title {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -470,7 +470,7 @@ export default {
 
 .page-title {
   font-size: 2.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-weight: 900;
   letter-spacing: 1.5px;
@@ -478,7 +478,7 @@ export default {
 
 .page-description {
   font-size: 1.1rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   max-width: 600px;
   margin: 0 auto 20px;
   line-height: 1.6;
@@ -573,25 +573,25 @@ export default {
 .chapters-container {
   display: flex;
   flex-direction: column;
-  gap: $list-item-gap;
+  gap: var(--list-item-gap, 1.5rem);
 }
 
 .chapter-item {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
-  box-shadow: $card-shadow;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   cursor: pointer;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
-  border: 1px solid $card-border;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   
   &:hover {
-    background: $list-item-hover-bg;
-    box-shadow: $list-item-hover-shadow;
-    border-color: $list-item-hover-border;
+    background: var(--list-item-hover-bg, #31343b);
+    box-shadow: var(--list-item-hover-shadow, 0 8px 32px #8fa1b3);
+    border-color: var(--list-item-hover-border, #8fa1b3);
   }
 }
 
@@ -603,20 +603,20 @@ export default {
 }
 
 .chapter-badge {
-  background: $chapter-badge-bg;
-  color: $accent-color;
+  background: var(--chapter-badge-bg, linear-gradient(135deg, #18191a, #232526));
+  color: var(--accent-color, #b0b3b8);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: $chapter-badge-shadow;
+  box-shadow: var(--chapter-badge-shadow, 0 2px 8px rgba(143, 161, 179, 0.08));
   letter-spacing: 1px;
 }
 
 .chapter-type {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 0.95rem;
-  background: $chapter-type-bg;
+  background: var(--chapter-type-bg, #23272e);
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   font-weight: 600;
@@ -624,14 +624,14 @@ export default {
 
 .chapter-title {
   font-size: 1.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .chapter-summary {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   line-height: 1.6;
   margin-bottom: 1.5rem;
   font-size: 1.05rem;
@@ -648,23 +648,23 @@ export default {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-weight: 600;
 }
 
 .status-dot {
-  width: $status-dot-size;
-  height: $status-dot-size;
+  width: var(--status-dot-size, 8px);
+  height: var(--status-dot-size, 8px);
   border-radius: 50%;
-  background: $status-dot-unpublished;
+  background: var(--status-dot-unpublished, #393b40);
   
   &.published {
-    background: $status-dot-published;
+    background: var(--status-dot-published, #8fa1b3);
   }
 }
 
 .read-more {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
@@ -678,8 +678,8 @@ export default {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid $loading-border;
-  border-top: 4px solid $loading-spinner;
+  border: 4px solid var(--loading-border, #393b40);
+  border-top: 4px solid var(--loading-spinner, #8fa1b3);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -691,24 +691,24 @@ export default {
 }
 
 .error-icon, .empty-icon {
-  font-size: $empty-icon-size;
+  font-size: var(--empty-icon-size, 4rem);
   margin-bottom: 1rem;
 }
 
 .error-container h3, .empty-container h3 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 0.5rem;
 }
 
 .error-container p, .empty-container p {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   margin-bottom: 1.5rem;
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -723,13 +723,13 @@ export default {
 }
 
 .btn-primary {
-  background: $primary-color;
-  color: $text-color;
+  background: var(--primary-color, #18191a);
+  color: var(--text-color, #f5f6fa);
   border: none;
   
   &:hover {
-    background: $primary-hover-color;
-    border-color: $primary-hover-color;
+    background: var(--primary-hover-color, #cccccc);
+    border-color: var(--primary-hover-color, #cccccc);
     transform: translateY(-1px);
   }
 }

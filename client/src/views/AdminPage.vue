@@ -819,16 +819,16 @@ export default {
 <style lang="scss" scoped>
 
 .admin-page {
-  background: $secondary-color;
+  background: var(--secondary-color, #23272e);
   min-height: 100vh;
   padding: 2rem 0;
 }
 
 .page-header {
-  background: linear-gradient(135deg, $card-bg, $secondary-color);
+  background: linear-gradient(135deg, var(--card-bg, #292c33), var(--secondary-color, #23272e));
   padding: 3rem 0;
   margin-bottom: 2rem;
-  border-bottom: 1px solid $card-border;
+  border-bottom: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .header-content {
@@ -840,7 +840,7 @@ export default {
 
 .page-title {
   font-size: 2.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -848,7 +848,7 @@ export default {
 
 .page-description {
   font-size: 1.1rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -867,14 +867,14 @@ export default {
 }
 
 .stat-card {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .stat-icon {
@@ -888,12 +888,12 @@ export default {
 
 .stat-value {
   font-size: 2rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 700;
 }
 
 .stat-label {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 0.9rem;
 }
 
@@ -915,7 +915,7 @@ export default {
   gap: 0.5rem;
   padding: 1rem 2rem;
   border: none;
-  border-radius: $btn-radius;
+  border-radius: var(--btn-radius, 12px);
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
@@ -923,33 +923,33 @@ export default {
 }
 
 .btn-primary {
-  background: $btn-primary-bg;
-  color: $text-color;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
+  color: var(--text-color, #f5f6fa);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $btn-shadow;
+    box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
   }
 }
 
 .btn-secondary {
-  background: $btn-secondary-bg;
-  color: $text-color;
+  background: var(--btn-secondary-bg, #393b40);
+  color: var(--text-color, #f5f6fa);
   
   &:hover {
-    background: $btn-secondary-hover;
+    background: var(--btn-secondary-hover, #4a4a4a);
     transform: translateY(-2px);
   }
 }
 
 .btn-outline {
   background: transparent;
-  color: $btn-outline-color;
-  border: 2px solid $btn-outline-border;
+  color: var(--btn-outline-color, #4a90e2);
+  border: 2px solid var(--btn-outline-border, #4a90e2);
   
   &:hover {
-    background: $btn-outline-color;
-    color: $text-color;
+    background: var(--btn-outline-color, #4a90e2);
+    color: var(--text-color, #f5f6fa);
     transform: translateY(-2px);
   }
 }
@@ -969,20 +969,20 @@ export default {
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
-  background: $card-bg;
-  border-radius: $form-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--form-radius, 10px);
   padding: 0.5rem 1rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background: $form-bg;
-  border-radius: $form-radius;
+  background: var(--form-bg, #23272e);
+  border-radius: var(--form-radius, 10px);
   padding: 0.5rem 1rem;
-  border: 1px solid $form-border;
+  border: 1px solid var(--form-border, rgba(57, 59, 64, 0.18));
   flex: 1;
   max-width: 300px;
 }
@@ -990,7 +990,7 @@ export default {
 .search-input {
   background: none;
   border: none;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1rem;
   width: 100%;
   
@@ -1001,7 +1001,7 @@ export default {
 
 .search-icon {
   font-size: 1.2rem;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
 }
 
 .filters {
@@ -1012,10 +1012,10 @@ export default {
 
 .filter-select {
   padding: 0.5rem 1rem;
-  background: $card-bg;
-  border: 1px solid $card-border;
-  border-radius: $form-radius;
-  color: $text-color;
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--form-radius, 10px);
+  color: var(--text-color, #f5f6fa);
   font-size: 0.9rem;
 }
 
@@ -1035,7 +1035,7 @@ export default {
 }
 
 .section-title {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
@@ -1049,7 +1049,7 @@ export default {
 }
 
 .question-count {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.9rem;
 }
 
@@ -1057,21 +1057,21 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-size: 0.9rem;
 }
 
 .btn-page {
-  background: $card-bg;
-  border: 1px solid $card-border;
-  border-radius: $form-radius;
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--form-radius, 10px);
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   
   &:hover:not(:disabled) {
-            background: $list-item-hover-bg;
-    border-color: $card-border;
+            background: var(--list-item-hover-bg, #31343b);
+    border-color: var(--card-border, rgba(57, 59, 64, 0.18));
   }
   
   &:disabled {
@@ -1087,11 +1087,11 @@ export default {
 }
 
 .question-item {
-  background: $card-bg;
-  border-radius: $card-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
   padding: 1.5rem;
-  box-shadow: $card-shadow;
-  border: 1px solid $card-border;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
 .question-header {
@@ -1109,13 +1109,13 @@ export default {
 }
 
 .question-id {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .question-chapter {
-  color: $info-color;
+  color: var(--info-color, #4a90e2);
   font-weight: 600;
 }
 
@@ -1126,18 +1126,18 @@ export default {
   font-weight: 600;
   
   &.type-choice {
-    background: $type-choice-bg;
-    color: $text-color;
+    background: var(--type-choice-bg, linear-gradient(135deg, #667eea, #764ba2));
+    color: var(--text-color, #f5f6fa);
   }
   
   &.type-tf {
-    background: $type-tf-bg;
-    color: $text-color;
+    background: var(--type-tf-bg, linear-gradient(135deg, #f093fb, #f5576c));
+    color: var(--text-color, #f5f6fa);
   }
   
   &.type-fill {
-    background: $type-fill-bg;
-    color: $text-color;
+    background: var(--type-fill-bg, linear-gradient(135deg, #4facfe, #00f2fe));
+    color: var(--text-color, #f5f6fa);
   }
 }
 
@@ -1148,23 +1148,23 @@ export default {
   font-weight: 600;
   
   &.difficulty-easy {
-    background: $difficulty-easy-bg;
-    color: $text-color;
+    background: var(--difficulty-easy-bg, linear-gradient(135deg, #4caf50, #66bb6a));
+    color: var(--text-color, #f5f6fa);
   }
   
   &.difficulty-medium {
-    background: $difficulty-medium-bg;
-    color: $text-color;
+    background: var(--difficulty-medium-bg, linear-gradient(135deg, #ff9800, #ffb74d));
+    color: var(--text-color, #f5f6fa);
   }
   
   &.difficulty-hard {
-    background: $difficulty-hard-bg;
-    color: $text-color;
+    background: var(--difficulty-hard-bg, linear-gradient(135deg, #f44336, #ef5350));
+    color: var(--text-color, #f5f6fa);
   }
 }
 
 .question-score {
-  color: $success-color;
+  color: var(--success-color, #4caf50);
   font-weight: 600;
 }
 
@@ -1179,7 +1179,7 @@ export default {
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: $form-radius;
+  border-radius: var(--form-radius, 10px);
   transition: background 0.2s ease;
   
   &:hover {
@@ -1187,12 +1187,12 @@ export default {
   }
   
   &.delete:hover {
-    background: rgba($error-color, 0.1);
+    background: rgba(var(--error-color, #f44336), 0.1);
   }
 }
 
 .question-content {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
 }
 
 .question-title {
@@ -1203,7 +1203,7 @@ export default {
 }
 
 .question-description {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -1211,7 +1211,7 @@ export default {
 .question-options {
   margin-top: 0.5rem;
   padding-left: 1.5rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.9rem;
 }
 
@@ -1238,11 +1238,11 @@ export default {
 }
 
 .media-item {
-  background: $card-bg;
-  border-radius: $form-radius;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--form-radius, 10px);
   padding: 0.5rem;
-  border: 1px solid $card-border;
-  box-shadow: $card-shadow;
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1263,7 +1263,7 @@ export default {
 
 .question-footer {
   margin-top: 1rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   font-size: 0.9rem;
   display: flex;
   gap: 1rem;
@@ -1272,18 +1272,18 @@ export default {
 
 .correct-answer {
   font-weight: 600;
-  color: $success-color;
+  color: var(--success-color, #4caf50);
 }
 
 .explanation {
   font-style: italic;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
 }
 
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
 }
 
 .empty-icon {
@@ -1298,7 +1298,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: $modal-overlay-bg;
+  background: var(--modal-overlay-bg, rgba(0, 0, 0, 0.8));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1307,8 +1307,8 @@ export default {
 }
 
 .modal-content {
-  background: $modal-bg;
-  border-radius: $modal-radius;
+  background: var(--modal-bg, #292c33);
+  border-radius: var(--modal-radius, 16px);
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
@@ -1324,11 +1324,11 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid $card-header-border;
+  border-bottom: 1px solid var(--card-header-border, rgba(57, 59, 64, 0.18));
 }
 
 .modal-header h3 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin: 0;
   font-size: 1.3rem;
 }
@@ -1336,11 +1336,11 @@ export default {
 .modal-close {
   background: none;
   border: none;
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: $form-radius;
+  border-radius: var(--form-radius, 10px);
   transition: background 0.2s ease;
   
   &:hover {
@@ -1357,24 +1357,24 @@ export default {
   justify-content: flex-end;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  border-top: 1px solid $card-header-border;
+  border-top: 1px solid var(--card-header-border, rgba(57, 59, 64, 0.18));
 }
 
 .upload-area {
-  border: 2px dashed $upload-border;
-  border-radius: $upload-radius;
+  border: 2px dashed var(--upload-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--upload-radius, 10px);
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s ease;
   
   &:hover {
-    border-color: $upload-hover-border;
+    border-color: var(--upload-hover-border, #4a90e2);
   }
 }
 
 .upload-content {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
 }
 
 .upload-icon {
@@ -1390,38 +1390,38 @@ export default {
 .file-info {
   margin-top: 1rem;
   padding: 1rem;
-  background: $secondary-color;
-  border-radius: $form-radius;
+  background: var(--secondary-color, #23272e);
+  border-radius: var(--form-radius, 10px);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .file-name {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 600;
 }
 
 .file-size {
-  color: $accent-color;
+  color: var(--accent-color, #b0b3b8);
   font-size: 0.9rem;
 }
 
 .import-tips {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: $secondary-color;
-  border-radius: $upload-radius;
-  border-left: 4px solid $info-color;
+  background: var(--secondary-color, #23272e);
+  border-radius: var(--upload-radius, 10px);
+  border-left: 4px solid var(--info-color, #4a90e2);
 }
 
 .import-tips h4 {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   margin-bottom: 1rem;
 }
 
 .import-tips ul {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #b0b3b8);
   line-height: 1.6;
   padding-left: 1.5rem;
 }
@@ -1445,7 +1445,7 @@ export default {
 }
 
 .form-group label {
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -1454,15 +1454,15 @@ export default {
 .form-group select,
 .form-group textarea {
   padding: 0.8rem 1rem;
-  background: $form-bg;
-  border: 1px solid $form-border;
-  border-radius: $form-radius;
-  color: $text-color;
+  background: var(--form-bg, #23272e);
+  border: 1px solid var(--form-border, rgba(57, 59, 64, 0.18));
+  border-radius: var(--form-radius, 10px);
+  color: var(--text-color, #f5f6fa);
   font-size: 1rem;
   
   &:focus {
     outline: none;
-    border-color: $form-focus-border;
+    border-color: var(--form-focus-border, #4a90e2);
   }
 }
 
@@ -1488,8 +1488,8 @@ export default {
 }
 
 .remove-option {
-  background: $error-color;
-  color: $text-color;
+  background: var(--error-color, #f44336);
+  color: var(--text-color, #f5f6fa);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -1501,7 +1501,7 @@ export default {
   justify-content: center;
   
   &:hover {
-    background: $error-hover;
+    background: var(--error-hover, #e53e3e);
   }
 }
 

@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import './styles/theme.css'
 import { useAuth } from '@/composables/useAuth'
 
 // 全局关闭浏览器控制台输出（覆盖所有 console 方法）

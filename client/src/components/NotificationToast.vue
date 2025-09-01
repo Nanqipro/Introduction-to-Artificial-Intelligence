@@ -129,25 +129,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
 
 .notification-toast {
   position: fixed;
   top: 20px;
   right: 20px;
   max-width: 400px;
-  background: $card-bg;
-  border-radius: $card-radius;
-  box-shadow: $shadow-lg;
-  border: 1px solid $card-border;
+  background: var(--card-bg, #292c33);
+  border-radius: var(--card-radius, 10px);
+  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
   z-index: 10000;
   overflow: hidden;
   cursor: pointer;
-  transition: all $transition-normal ease;
+  transition: all var(--transition-normal, 0.3s) ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.2)), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   &.toast-closable:hover .toast-close {
@@ -158,12 +157,12 @@ export default {
 .toast-content {
   display: flex;
   align-items: flex-start;
-  gap: $spacing-md;
-  padding: $spacing-lg;
+  gap: var(--spacing-md, 1.5rem);
+  padding: var(--spacing-lg, 2rem);
 }
 
 .toast-icon {
-  font-size: $font-size-xl;
+  font-size: var(--font-size-xl, 1.25rem);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -174,25 +173,25 @@ export default {
 }
 
 .toast-title {
-  margin: 0 0 $spacing-sm 0;
-  font-size: $font-size-lg;
+  margin: 0 0 var(--spacing-sm, 1rem) 0;
+  font-size: var(--font-size-lg, 1.125rem);
   font-weight: 600;
-  color: $text-color;
+  color: var(--text-color, #f5f6fa);
   line-height: 1.3;
 }
 
 .toast-message {
   margin: 0;
-  font-size: $font-size-base;
-  color: $text-secondary-color;
+  font-size: var(--font-size-base, 1rem);
+  color: var(--text-secondary-color, #b0b3b8);
   line-height: 1.5;
 }
 
 .toast-close {
   background: none;
   border: none;
-  color: $text-secondary-color;
-  font-size: $font-size-xl;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: var(--font-size-xl, 1.25rem);
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -201,13 +200,13 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: all $transition-fast ease;
+  transition: all var(--transition-fast, 0.15s) ease;
   opacity: 0.6;
   flex-shrink: 0;
   
   &:hover {
-    background: rgba($accent-color, 0.1);
-    color: $accent-color;
+    background: rgba(var(--accent-color, #b0b3b8), 0.1);
+    color: var(--accent-color, #b0b3b8);
     opacity: 1;
   }
   
@@ -218,7 +217,7 @@ export default {
 
 .toast-progress {
   height: 3px;
-  background: linear-gradient(90deg, $primary-color, $accent-color);
+  background: linear-gradient(90deg, var(--primary-color, #18191a), var(--accent-color, #b0b3b8));
   animation: progress-shrink linear forwards;
 }
 
@@ -229,41 +228,41 @@ export default {
 
 // 类型样式
 .toast-success {
-  border-left: 4px solid $success-color;
+  border-left: 4px solid var(--success-color, #4caf50);
   
   .toast-icon {
-    color: $success-color;
+    color: var(--success-color, #4caf50);
   }
 }
 
 .toast-warning {
-  border-left: 4px solid $warning-color;
+  border-left: 4px solid var(--warning-color, #ff9800);
   
   .toast-icon {
-    color: $warning-color;
+    color: var(--warning-color, #ff9800);
   }
 }
 
 .toast-error {
-  border-left: 4px solid $error-color;
+  border-left: 4px solid var(--error-color, #f44336);
   
   .toast-icon {
-    color: $error-color;
+    color: var(--error-color, #f44336);
   }
 }
 
 .toast-info {
-  border-left: 4px solid $info-color;
+  border-left: 4px solid var(--info-color, #4a90e2);
   
   .toast-icon {
-    color: $info-color;
+    color: var(--info-color, #4a90e2);
   }
 }
 
 // 动画
 .toast-enter-active,
 .toast-leave-active {
-  transition: all $transition-normal ease;
+  transition: all var(--transition-normal, 0.3s) ease;
 }
 
 .toast-enter-from {
@@ -277,7 +276,7 @@ export default {
 }
 
 // 响应式设计
-@media (max-width: $breakpoint-md) {
+@media (max-width: var(--breakpoint-md, 768px)) {
   .notification-toast {
     top: 10px;
     right: 10px;
@@ -286,22 +285,22 @@ export default {
   }
   
   .toast-content {
-    padding: $spacing-md;
+    padding: var(--spacing-md, 1.5rem);
   }
   
   .toast-title {
-    font-size: $font-size-base;
+    font-size: var(--font-size-base, 1rem);
   }
   
   .toast-message {
-    font-size: $font-size-sm;
+    font-size: var(--font-size-sm, 0.875rem);
   }
 }
 
 // 深色主题适配
 @media (prefers-color-scheme: dark) {
   .notification-toast {
-    background: rgba($primary-color, 0.95);
+    background: rgba(var(--primary-color, #18191a), 0.95);
     backdrop-filter: blur(8px);
   }
 }

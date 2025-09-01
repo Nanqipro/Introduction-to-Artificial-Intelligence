@@ -109,8 +109,8 @@ export default {
 }
 
 .hero {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-gradient-end 100%);
-  color: $text-color;
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
+  color: var(--text-color, #f5f6fa);
   padding: 100px 20px 60px 20px;
   text-align: center;
   position: relative;
@@ -122,7 +122,7 @@ export default {
   left: 50%; top: 100%;
   transform: translate(-50%, -50%);
   width: 120vw; height: 400px;
-  background: radial-gradient(ellipse at center, $accent-color 0%, transparent 80%);
+  background: radial-gradient(ellipse at center, var(--accent-color, #3b82f6) 0%, transparent 80%);
   opacity: 0.18;
   z-index: 0;
 }
@@ -141,7 +141,7 @@ export default {
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  color: $accent-color;
+  color: var(--accent-color, #3b82f6);
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -149,7 +149,7 @@ export default {
   font-size: 1.15rem;
   line-height: 1.7;
   margin-bottom: 2.2rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #475569);
   opacity: 0.92;
 }
 .hero-actions {
@@ -159,46 +159,46 @@ export default {
   flex-wrap: wrap;
 }
 .btn-primary {
-  background: $accent-color;
-  color: $primary-color;
+  background: var(--accent-color, #3b82f6);
+  color: var(--card-bg, #ffffff);
   border: none;
-  border-radius: $border-radius * 1.2;
+  border-radius: 12px;
   font-weight: 700;
   font-size: 1.1rem;
   padding: 14px 36px;
-  box-shadow: 0 4px 24px rgba(176,179,184,0.18);
+  box-shadow: 0 4px 24px rgba(59, 130, 246, 0.18);
   transition: all 0.25s;
 }
 .btn-primary:hover {
-  background: $accent-color-light;
-  color: $primary-hover-color;
-  box-shadow: 0 8px 32px $accent-color;
+  background: var(--primary-hover, #2563eb);
+  color: var(--card-bg, #ffffff);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
   transform: translateY(-2px) scale(1.05);
 }
 .btn-secondary {
   background: transparent;
-  color: $accent-color;
-  border: 2px solid $accent-color;
-  border-radius: $border-radius * 1.2;
+  color: var(--accent-color, #3b82f6);
+  border: 2px solid var(--accent-color, #3b82f6);
+  border-radius: 12px;
   font-weight: 700;
   font-size: 1.1rem;
   padding: 14px 36px;
   transition: all 0.25s;
 }
 .btn-secondary:hover {
-  background: $accent-color;
-  color: $primary-color;
+  background: var(--accent-color, #3b82f6);
+  color: var(--card-bg, #ffffff);
 }
 
 .features {
   padding: 90px 20px 50px 20px;
-  background: $secondary-color;
+  background: var(--secondary-color, #f8fafc);
 }
 .section-title {
   text-align: center;
   font-size: 2.6rem;
   margin-bottom: 3.5rem;
-  color: $text-color;
+  color: var(--text-color, #1e293b);
   font-weight: 800;
   letter-spacing: 2px;
 }
@@ -208,15 +208,15 @@ export default {
   gap: 2.8rem;
 }
 .feature-card {
-  background: rgba(36, 38, 44, 0.85);
-  border-radius: $border-radius * 1.5;
-  box-shadow: 0 8px 32px rgba(24, 25, 26, 0.18);
+  background: var(--card-bg, #ffffff);
+  border-radius: 15px;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.1));
   padding: 2.8rem 2rem 2.2rem 2rem;
   text-align: left;
-  border: 1.5px solid rgba(176,179,184,0.08);
+  border: 1.5px solid var(--border-color, #e2e8f0);
   position: relative;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #475569);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -229,35 +229,35 @@ export default {
     align-items: center;
     justify-content: center;
     font-size: 2.5rem;
-    background: $accent-color;
-    color: $primary-color;
+    background: var(--accent-color, #3b82f6);
+    color: var(--card-bg, #ffffff);
     border-radius: 50%;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 12px rgba(176,179,184,0.13);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.2);
   }
   h3 {
-    color: $text-color;
+    color: var(--text-color, #1e293b);
     font-size: 1.18rem;
     font-weight: 700;
     margin-bottom: 0.6rem;
     letter-spacing: 1px;
   }
   p {
-    color: $text-secondary-color;
+    color: var(--text-secondary-color, #475569);
     font-size: 1.05rem;
     line-height: 1.8;
     margin-bottom: 0;
   }
 }
 .feature-card:hover {
-  box-shadow: 0 8px 24px $accent-color;
-  background: rgba(36, 38, 44, 0.97);
-  border: 1.5px solid $accent-color;
+  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.15));
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--accent-color, #3b82f6);
 }
 
 .chapters-preview {
   padding: 90px 20px 50px 20px;
-  background: $secondary-color;
+  background: var(--secondary-color, #f8fafc);
 }
 .chapters-grid {
   display: grid;
@@ -266,24 +266,24 @@ export default {
   margin-bottom: 3rem;
 }
 .chapter-card {
-  background: rgba(36, 38, 44, 0.85);
-  border-radius: $border-radius * 1.5;
+  background: var(--card-bg, #ffffff);
+  border-radius: 15px;
   padding: 1.8rem;
-  box-shadow: $box-shadow;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: box-shadow 0.18s, background 0.18s, border 0.18s;
-  border: 1.5px solid rgba(176,179,184,0.08);
+  border: 1.5px solid var(--border-color, #e2e8f0);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 .chapter-card:hover {
-  box-shadow: 0 8px 24px $accent-color;
-  background: rgba(36, 38, 44, 0.97);
-  border: 1.5px solid $accent-color;
+  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.15));
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--accent-color, #3b82f6);
 }
 .chapter-number {
-  color: $accent-color;
+  color: var(--accent-color, #3b82f6);
   font-weight: bold;
   font-size: 1rem;
   margin-bottom: 0.5rem;
@@ -291,18 +291,18 @@ export default {
 .chapter-title {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
-  color: $text-color;
+  color: var(--text-color, #1e293b);
   font-weight: 700;
 }
 .chapter-summary {
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #475569);
   line-height: 1.6;
   font-size: 1.02rem;
 }
 .loading {
   text-align: center;
   padding: 2rem;
-  color: $text-secondary-color;
+  color: var(--text-secondary-color, #475569);
 }
 .text-center {
   text-align: center;
@@ -317,13 +317,13 @@ export default {
   .hero { padding: 60px 8px 30px 8px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
   .features, .chapters-preview { padding: 40px 8px 20px 8px; }
   .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; }
-  .feature-card, .chapter-card { padding: 1.2rem; border-radius: $border-radius; }
+  .feature-card, .chapter-card { padding: 1.2rem; border-radius: var(--border-radius, 10px); }
 }
 @media (hover: none) {
   .feature-card:hover, .chapter-card:hover {
-    box-shadow: $box-shadow;
-    background: rgba(36, 38, 44, 0.85);
-    border: 1.5px solid rgba(176,179,184,0.08);
+    box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.1));
+    background: var(--card-bg, #ffffff);
+    border: 1.5px solid var(--border-color, #e2e8f0);
   }
 }
 </style>
