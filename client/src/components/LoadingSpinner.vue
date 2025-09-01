@@ -88,7 +88,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(var(--secondary-color, #23272e), 0.95);
+    background: rgba(var(--card-bg-rgb, 41, 44, 51), 0.95);
     backdrop-filter: blur(8px);
     z-index: 9999;
   }
@@ -99,7 +99,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(var(--secondary-color, #23272e), 0.8);
+    background: rgba(var(--card-bg-rgb, 41, 44, 51), 0.8);
     backdrop-filter: blur(4px);
     z-index: 100;
   }
@@ -194,7 +194,7 @@ export default {
   .progress-track {
     width: 100%;
     height: 6px;
-    background: rgba(var(--accent-color, #b0b3b8), 0.2);
+    background: rgba(var(--text-secondary-color-rgb, 176, 179, 184), 0.2);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: var(--spacing-sm, 1rem);

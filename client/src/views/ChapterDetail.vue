@@ -40,11 +40,9 @@
         </header>
 
         <!-- 章节正文 -->
-        <div class="chapter-body">
-
-          
+        <div class="chapter-body" v-if="isChapter1 && !showChapter1Quiz">
           <!-- 第一章案例演示 -->
-          <div v-if="isChapter1 && !showChapter1Quiz" class="case-study-section">
+          <div class="case-study-section">
             <div class="case-study-header">
               <h2 class="case-study-title">🎯 第一章案例演示</h2>
               <p class="case-study-description">通过实际案例学习，掌握人工智能的基本概念和应用</p>
@@ -60,9 +58,9 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实图片）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-image">
-                    <img src="/images/chapter1/A_真实照片.png" alt="A 真实图片" />
+                    <img src="/images/chapter1/A_真实照片.png" alt="A 选项图片" />
                   </div>
                   <div class="option-actions">
                     <button @click="answerQuestion(1, 'A', 'human')" class="btn btn-primary">
@@ -76,9 +74,9 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 图片）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-image">
-                    <img src="/images/chapter1/A_ai生成.png" alt="B AI 图片" />
+                    <img src="/images/chapter1/A_ai生成.png" alt="B 选项图片" />
                   </div>
                   <div class="option-actions">
                     <button @click="answerQuestion(1, 'B', 'human')" class="btn btn-primary">
@@ -111,11 +109,11 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（人声翻唱）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-content">
                     <div class="audio-placeholder">
                       <div class="placeholder-icon">🎵</div>
-                      <div class="placeholder-title">人声翻唱《告白气球》</div>
+                      <div class="placeholder-title">音频片段A</div>
                       <div class="placeholder-desc">请听音频判断</div>
                       <div class="placeholder-link">
                         <a href="https://www.bilibili.com/video/BV1ts41117qh/" target="_blank" class="link-btn">观看原视频</a>
@@ -134,11 +132,11 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI翻唱）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-content">
                     <div class="audio-placeholder">
                       <div class="placeholder-icon">🎵</div>
-                      <div class="placeholder-title">AI翻唱《告白气球》</div>
+                      <div class="placeholder-title">音频片段B</div>
                       <div class="placeholder-desc">请听音频判断</div>
                       <div class="placeholder-link">
                         <a href="https://www.bilibili.com/video/BV17t421E7pz/" target="_blank" class="link-btn">观看原视频</a>
@@ -176,7 +174,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实图片）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/B_真实图片.png" alt="A 真实图片" />
                   </div>
@@ -192,7 +190,7 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 图片）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/B_ai生成.png" alt="B AI 图片" />
                   </div>
@@ -227,7 +225,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（AI 生成）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-text">
                     <p>在现有的研究体系中，对于不确定性的探讨大多集中在宏观经济不确定性（Jurado et al., 2015）以及经济政策不确定性（Baker et al., 2016），而相较之下，金融市场层面的不确定性议题则明显被边缘化。这种现象在一定程度上反映了传统文献对于宏观经济变量影响力的过度强调，而对金融市场内生波动性的关注不足。</p>
                   </div>
@@ -243,7 +241,7 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（人类优秀论文）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-text">
                     <p>目前，关于不确定性的研究主要集中在宏观经济不确定性(Jurado et al.，2015) 和经济政策不确定性(Baker et al., 2016) ，关于金融市场的不确定性关注较少。因为在传统文献中，金融市场主要受到宏观经济影响。</p>
                     <div class="text-source">引自：黄卓,邱晗,沈艳 & 童晨.(2018).测量中国的金融不确定性——基于大数据的方法.金融研究,(11),30-46.</div>
@@ -279,11 +277,11 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实视频）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-content">
                     <div class="video-placeholder">
                       <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">真实猫咪玩耍视频</div>
+                      <div class="placeholder-title">视频片段A</div>
                       <div class="placeholder-desc">请观看视频判断</div>
                       <div class="placeholder-link">
                         <a href="https://www.bilibili.com/video/BV1n83tzdEsK" target="_blank" class="link-btn">观看原视频</a>
@@ -302,11 +300,11 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI视频）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-content">
                     <div class="video-placeholder">
                       <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">AI生成猫咪视频</div>
+                      <div class="placeholder-title">视频片段B</div>
                       <div class="placeholder-desc">请观看视频判断</div>
                       <div class="placeholder-link">
                         <a href="https://jcni7655zeyq.feishu.cn/file/D1u0bKaTwoBRASxxJaicBsi9nid" target="_blank" class="link-btn">观看原视频</a>
@@ -343,7 +341,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实图片）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/C_真实图片.png" alt="A 真实图片" />
                   </div>
@@ -359,7 +357,7 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 图片）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/C_ai生成.png" alt="B AI 图片" />
                   </div>
@@ -394,7 +392,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实图片）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/D_真实图片.png" alt="A 真实图片" />
                   </div>
@@ -410,7 +408,7 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 图片）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/D_ai生成.png" alt="B AI 图片" />
                   </div>
@@ -445,7 +443,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（黑格尔原句）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-text">
                     <p>精神不是一个存在在外的东西，而是自我认识、自我实现的过程。</p>
                     <div class="text-source">黑格尔. (1979). 精神现象学 (贺麟 译). 商务印书馆. (原著发表于 1807)</div>
@@ -462,7 +460,7 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 哲学语句）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-text">
                     <p>意识不是孤立的旁观者，而是不断映照自身的镜子，通过反思获得存在的意义。</p>
                   </div>
@@ -497,7 +495,7 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实画作）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-image">
                     <img src="/images/chapter1/E_真实图片.png" alt="A 真实画作" />
                   </div>
@@ -513,9 +511,9 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI 画作）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-image">
-                    <img src="/images/chapter1/E_ai生成.png" alt="B AI 画作" />
+                    <img src="/images/chapter1/E_ai生成.png" alt="B 选项画作" />
                   </div>
                   <div class="option-actions">
                     <button @click="answerQuestion(9, 'B', 'human')" class="btn btn-primary">
@@ -548,11 +546,11 @@
               <div class="case-study-options">
                 <!-- A选项 -->
                 <div class="option-card option-a">
-                  <h4 class="option-label">A（真实拍摄）</h4>
+                  <h4 class="option-label">A</h4>
                   <div class="option-content">
                     <div class="video-placeholder">
                       <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">真实可口可乐广告</div>
+                      <div class="placeholder-title">广告视频A</div>
                       <div class="placeholder-desc">请观看视频判断</div>
                       <div class="placeholder-link">
                         <a href="https://www.youtube.com/watch?v=6wtxogfPieA" target="_blank" class="link-btn">观看原视频</a>
@@ -571,11 +569,11 @@
                 
                 <!-- B选项 -->
                 <div class="option-card option-b">
-                  <h4 class="option-label">B（AI制作）</h4>
+                  <h4 class="option-label">B</h4>
                   <div class="option-content">
                     <div class="video-placeholder">
                       <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">AI制作可口可乐广告</div>
+                      <div class="placeholder-title">广告视频B</div>
                       <div class="placeholder-desc">请观看视频判断</div>
                       <div class="placeholder-link">
                         <a href="https://www.youtube.com/watch?v=4RSTupbfGog" target="_blank" class="link-btn">观看原视频</a>
@@ -1546,9 +1544,6 @@ export default {
 .chapter-body {
   margin-bottom: 3rem;
   padding: 2rem;
-  background: var(--secondary-color, #23272e);
-  border-radius: 16px;
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
   background: var(--secondary-color, #23272e);
   border-radius: 16px;
   border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));

@@ -30,8 +30,8 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue": "^4.6.2",
     "sass-embedded": "^1.89.2",
-    "vite": "^7.0.4"
+    "vite": "^4.5.14"
   }
 }

@@ -30,19 +30,29 @@ export default {
   components: {
     QuizSystem
   },
-  props: {
-    chapterId: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
+      chapterId: '',
       chapterTitle: ''
     }
   },
   async mounted() {
+    // 从路由参数获取章节ID
+    this.chapterId = this.$route.params.chapterId
+    console.log('📚 QuizPage mounted, chapterId:', this.chapterId)
     await this.loadChapterInfo()
+  },
+  watch: {
+    '$route.params.chapterId': {
+      handler(newChapterId) {
+        if (newChapterId && newChapterId !== this.chapterId) {
+          this.chapterId = newChapterId
+          console.log('🔄 章节ID变化:', newChapterId)
+          this.loadChapterInfo()
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     async loadChapterInfo() {

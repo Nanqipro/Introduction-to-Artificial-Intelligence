@@ -2032,13 +2032,13 @@ onMounted(async () => {
 .chapter4-case-study {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, var(--info-color, #06b6d4) 100%);
+  color: var(--text-color, #f5f6fa);
   overflow-x: hidden;
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, var(--card-bg, #ffffff) 0%, var(--secondary-color, #f1f5f9) 100%);
     color: var(--text-color, #1e293b);
   }
 }
@@ -2083,13 +2083,17 @@ onMounted(async () => {
   z-index: 2;
   text-align: center;
   padding: 40px 20px;
+  background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
+  box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.1);
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(203, 213, 225, 0.3);
+    background: rgba(var(--card-bg, #ffffff), 0.9);
+    border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.3);
+    box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.08);
   }
 }
 
@@ -2099,14 +2103,17 @@ onMounted(async () => {
   opacity: 0;
   transform: translateY(30px) blur(10px);
   transition: all 1s ease;
+  color: var(--text-color, #f5f6fa);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
   
   /* 浅色主题样式 */
   .light-theme & {
     color: var(--text-color, #1e293b);
-    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+    background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, var(--info-color, #06b6d4) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: none;
   }
 }
 
@@ -2143,18 +2150,18 @@ onMounted(async () => {
 .progress-item {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transition: all 0.3s ease;
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.8);
     border: 1px solid rgba(203, 213, 225, 0.4);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.05);
   }
 }
 
@@ -2196,22 +2203,22 @@ onMounted(async () => {
 }
 
 .status-completed {
-  color: #4caf50;
+  color: var(--success-color, #4caf50);
   font-weight: bold;
   
   /* 浅色主题样式 */
   .light-theme & {
-    color: var(--accent-color, #0d6efd);
+    color: var(--accent-color, #3b82f6);
   }
 }
 
 .status-pending {
-  color: #ff9800;
+  color: var(--warning-color, #ff9800);
   font-weight: bold;
   
   /* 浅色主题样式 */
   .light-theme & {
-    color: #f59e0b;
+    color: var(--warning-color, #f59e0b);
   }
 }
 
@@ -2227,17 +2234,17 @@ onMounted(async () => {
 .nav-buttons {
   display: flex;
   gap: 15px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 50px;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.8);
     border: 1px solid rgba(203, 213, 225, 0.4);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.05);
   }
 }
 
@@ -2249,7 +2256,7 @@ onMounted(async () => {
   border: none;
   border-radius: 25px;
   background: transparent;
-  color: #fff;
+  color: var(--text-color, #f5f6fa);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
@@ -2261,25 +2268,25 @@ onMounted(async () => {
 }
 
 .nav-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
   transform: translateY(-2px);
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: rgba(13, 110, 253, 0.1);
-    color: var(--accent-color, #0d6efd);
+    background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.1);
+    color: var(--accent-color, #3b82f6);
   }
 }
 
 .nav-button.active {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.3);
+  box-shadow: 0 4px 15px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, #0dcaf0 100%);
+    background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, var(--info-color, #06b6d4) 100%);
     color: white;
-    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+    box-shadow: 0 6px 20px rgba(var(--accent-color-rgb, 59, 130, 246), 0.25);
   }
 }
 
@@ -2342,24 +2349,26 @@ onMounted(async () => {
 
 /* 内容卡片 */
 .content-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 25px;
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.1);
   
   /* 浅色主题样式 */
   .light-theme & {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(203, 213, 225, 0.3);
+    background: rgba(var(--card-bg, #ffffff), 0.9);
+    box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.08);
+    border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.3);
   }
-  border-radius: 20px;
-  padding: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
 }
 
 .content-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
+  border-color: rgba(var(--accent-color-rgb, 59, 130, 246), 0.4);
 }
 
 .card-header h4 {
@@ -2403,8 +2412,8 @@ onMounted(async () => {
 
 .device-overlay {
   position: absolute;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(0, 122, 204, 0.5);
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.1);
+  border: 2px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.5);
   border-radius: 12px;
   padding: 8px;
   cursor: pointer;
@@ -2415,15 +2424,15 @@ onMounted(async () => {
 }
 
 .device-overlay:hover {
-  background: rgba(0, 122, 204, 0.2);
-  border-color: #007acc;
-  box-shadow: 0 4px 20px rgba(0, 122, 204, 0.4);
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
+  border-color: var(--accent-color, #3b82f6);
+  box-shadow: 0 4px 20px rgba(var(--accent-color-rgb, 59, 130, 246), 0.4);
   transform: translate(-50%, -50%) scale(1.05);
 }
 
 .device-info {
   text-align: center;
-  color: #fff;
+  color: var(--text-color, #f5f6fa);
 }
 
 .device-name {
@@ -2535,7 +2544,7 @@ onMounted(async () => {
   bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(var(--shadow-color-rgb, 0, 0, 0), 0.9);
   color: #fff;
   padding: 12px 16px;
   border-radius: 8px;
@@ -2654,7 +2663,7 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(var(--shadow-color-rgb, 0, 0, 0), 0.7);
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
@@ -2804,16 +2813,16 @@ onMounted(async () => {
 }
 
 .scenario-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   border-radius: 8px;
   padding: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
 }
 
 .scenario-card:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transform: translateY(-2px);
 }
 
@@ -2855,16 +2864,16 @@ onMounted(async () => {
 }
 
 .medical-case-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   border-radius: 10px;
   padding: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
 }
 
 .medical-case-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transform: translateY(-2px);
 }
 
@@ -2911,10 +2920,10 @@ onMounted(async () => {
   gap: 20px;
   margin: 30px 0;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   border-radius: 15px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   flex-wrap: wrap;
 }
 
@@ -2966,7 +2975,7 @@ onMounted(async () => {
   padding: 8px 16px;
   border: none;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   color: white;
   font-size: 13px;
   cursor: pointer;
@@ -2975,7 +2984,7 @@ onMounted(async () => {
 }
 
 .filter-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.3);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -3032,15 +3041,15 @@ onMounted(async () => {
 }
 
 .entertainment-card {
-  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+  background: linear-gradient(135deg, var(--accent-color, #3b82f6) 0%, var(--info-color, #06b6d4) 100%);
   border-radius: 20px;
   padding: 28px;
-  color: white;
+  color: var(--text-color, #f5f6fa);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(13, 110, 253, 0.15);
+  box-shadow: 0 8px 32px rgba(var(--accent-color-rgb, 59, 130, 246), 0.15);
 }
 
 .entertainment-card::before {
@@ -3069,7 +3078,7 @@ onMounted(async () => {
 
 .entertainment-card:hover {
   transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(13, 110, 253, 0.25);
+  box-shadow: 0 25px 50px rgba(var(--accent-color-rgb, 59, 130, 246), 0.25);
 }
 
 .entertainment-card:hover::before {
@@ -3126,7 +3135,7 @@ onMounted(async () => {
 
 .platform-icon i {
   font-size: 28px;
-  color: white;
+  color: var(--text-color, #f5f6fa);
   transition: all 0.3s ease;
   position: relative;
   z-index: 3;
@@ -3239,16 +3248,16 @@ onMounted(async () => {
 }
 
 .entertainment-modal .modal-content {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: linear-gradient(135deg, var(--secondary-color, #1e293b) 0%, var(--card-bg, #334155) 50%, var(--accent-color, #3b82f6) 100%);
   border-radius: 24px;
   max-width: 700px;
   width: 90%;
   max-height: 85vh;
   overflow-y: auto;
   animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
+  box-shadow: 0 25px 50px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.5);
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
+  color: var(--text-color, #f5f6fa);
   position: relative;
 }
 
@@ -3276,22 +3285,22 @@ onMounted(async () => {
 
 .entertainment-modal .modal-header h3 {
   margin: 0;
-  color: white;
+  color: var(--text-color, #f5f6fa);
   font-size: 1.8rem;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+  text-shadow: 0 2px 4px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.3);
+  background: linear-gradient(135deg, var(--text-color, #f5f6fa) 0%, var(--accent-color, #3b82f6) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .entertainment-modal .close-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.1);
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
   font-size: 24px;
   cursor: pointer;
-  color: white;
+  color: var(--text-color, #f5f6fa);
   padding: 0;
   width: 40px;
   height: 40px;
@@ -3663,11 +3672,11 @@ onMounted(async () => {
 }
 
 .gene-test-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
@@ -3834,7 +3843,7 @@ onMounted(async () => {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   border-radius: 4px;
   overflow: hidden;
   margin-top: 10px;
@@ -3891,7 +3900,7 @@ onMounted(async () => {
   left: 50%;
   width: 0;
   height: 0;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.3);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
@@ -3944,7 +3953,7 @@ onMounted(async () => {
 
 .device-icon {
   font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   padding: 10px;
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -3958,7 +3967,7 @@ onMounted(async () => {
 }
 
 .close-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   border: none;
   color: white;
   font-size: 1.5rem;
@@ -3974,7 +3983,7 @@ onMounted(async () => {
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.3);
   transform: scale(1.1);
 }
 
@@ -3989,7 +3998,7 @@ onMounted(async () => {
 
 .brand-badge {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
@@ -4040,7 +4049,7 @@ onMounted(async () => {
   font-size: 0.9rem;
   font-weight: 500;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transition: all 0.3s ease;
 }
 
@@ -4058,7 +4067,7 @@ onMounted(async () => {
 
 .tech-list li,
 .scenarios-list li {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   margin-bottom: 8px;
   padding: 12px 16px;
   border-radius: 8px;
@@ -4080,12 +4089,12 @@ onMounted(async () => {
 }
 
 .spec-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   padding: 15px;
   border-radius: 12px;
   text-align: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transition: all 0.3s ease;
 }
 
@@ -4125,16 +4134,16 @@ onMounted(async () => {
 }
 
 .intro-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
     background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.08);
     border: 1px solid rgba(203, 213, 225, 0.3);
   }
 }
@@ -4199,7 +4208,7 @@ onMounted(async () => {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -4227,16 +4236,16 @@ onMounted(async () => {
 }
 
 .question-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
     background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.08);
     border: 1px solid rgba(203, 213, 225, 0.3);
   }
 }
@@ -4262,7 +4271,7 @@ onMounted(async () => {
   align-items: center;
   padding: 15px 20px;
   margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -4276,7 +4285,7 @@ onMounted(async () => {
 }
 
 .option-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transform: translateX(5px);
   
   /* 浅色主题样式 */
@@ -4329,7 +4338,7 @@ onMounted(async () => {
 }
 
 .prev-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   color: #fff;
   
   /* 浅色主题样式 */
@@ -4356,17 +4365,17 @@ onMounted(async () => {
 }
 
 .result-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
     background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.08);
     border: 1px solid rgba(203, 213, 225, 0.3);
   }
 }
@@ -4495,7 +4504,7 @@ onMounted(async () => {
 }
 
 .retry-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   color: #fff;
   
   /* 浅色主题样式 */
@@ -4543,7 +4552,7 @@ onMounted(async () => {
 }
 
 .close-review-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   border: none;
   color: #fff;
   font-size: 1.5rem;
@@ -4564,7 +4573,7 @@ onMounted(async () => {
 }
 
 .close-review-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.3);
   transform: scale(1.1);
   
   /* 浅色主题样式 */
@@ -4574,7 +4583,7 @@ onMounted(async () => {
 }
 
 .review-content {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   max-width: 800px;
@@ -4582,7 +4591,7 @@ onMounted(async () => {
   max-height: 80vh;
   overflow-y: auto;
   padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   
   /* 浅色主题样式 */
   .light-theme & {
@@ -4638,7 +4647,7 @@ onMounted(async () => {
   padding: 10px 15px;
   margin-bottom: 8px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   color: #fff;
   
   /* 浅色主题样式 */
@@ -4747,7 +4756,7 @@ onMounted(async () => {
 
 .driving-icon {
   font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   padding: 10px;
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -4817,7 +4826,7 @@ onMounted(async () => {
   font-size: 0.9rem;
   font-weight: 500;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
 }
 
 .features-list {
@@ -4827,7 +4836,7 @@ onMounted(async () => {
 }
 
 .features-list li {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   margin-bottom: 10px;
   padding: 12px 16px;
   border-radius: 10px;
@@ -4849,7 +4858,7 @@ onMounted(async () => {
   border-radius: 12px;
   text-align: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transition: transform 0.3s ease;
 }
 
@@ -4948,7 +4957,7 @@ onMounted(async () => {
 
 .medical-icon {
   font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   padding: 10px;
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -4982,7 +4991,7 @@ onMounted(async () => {
 }
 
 .impact-info {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   padding: 12px 16px;
   border-radius: 10px;
   backdrop-filter: blur(10px);
@@ -5028,7 +5037,7 @@ onMounted(async () => {
   font-size: 0.9rem;
   font-weight: 500;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
 }
 
 .medical-detail-modal .features-list {
@@ -5038,7 +5047,7 @@ onMounted(async () => {
 }
 
 .medical-detail-modal .features-list li {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--highlight-color-rgb, 255, 255, 255), 0.1);
   margin-bottom: 10px;
   padding: 12px 16px;
   border-radius: 10px;
@@ -5060,7 +5069,7 @@ onMounted(async () => {
   border-radius: 12px;
   text-align: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--highlight-color-rgb, 255, 255, 255), 0.2);
   transition: transform 0.2s ease;
 }
 

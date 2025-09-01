@@ -170,7 +170,7 @@ onMounted(() => {
   height: 80px;
   background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--secondary-color, #23272e) 100%);
   backdrop-filter: blur(20px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.15);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -202,7 +202,7 @@ onMounted(() => {
 .brand-icon {
   font-size: 2.5rem;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(176,179,184,0.10);
+  box-shadow: 0 2px 8px rgba(var(--text-secondary-color-rgb, 176, 179, 184), 0.10);
   border-radius: 50%;
   padding: 0.2rem;
   flex-shrink: 0; // 防止图标被压缩
@@ -314,9 +314,9 @@ onMounted(() => {
 }
 .el-menu--horizontal > .el-menu-item.is-active,
 .el-menu--horizontal > .el-menu-item:hover {
-  background: rgba(59, 130, 246, 0.1) !important;
+  background: rgba(var(--accent-color-rgb, 59, 130, 246), 0.1) !important;
   color: var(--accent-color, #3b82f6) !important;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 4px 16px rgba(var(--accent-color-rgb, 59, 130, 246), 0.15);
   transform: translateY(-1px);
   
   .el-icon {
@@ -327,8 +327,8 @@ onMounted(() => {
 .el-menu--horizontal > .el-menu-item.is-active {
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.1) 100%) !important;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 59, 130, 246), 0.15) 0%, rgba(var(--accent-color-light-rgb, 96, 165, 250), 0.1) 100%) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.2);
   
   &::before {
     opacity: 0.15;

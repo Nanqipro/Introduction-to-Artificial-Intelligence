@@ -99,7 +99,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--secondary-color, #23272e);
+  background: var(--body-bg, #18191a);
   padding: var(--spacing-lg, 2rem);
 }
 
@@ -159,20 +159,20 @@ export default {
 }
 
 .btn-primary {
-  background: var(--primary-color, #18191a);
-  color: white;
+  background: var(--btn-primary-bg, linear-gradient(135deg, #3b82f6, #2563eb));
+  color: var(--text-color, #f5f6fa);
   
   &:hover {
-    background: var(--primary-hover-color, #cccccc);
+    filter: brightness(1.05);
   }
 }
 
 .btn-secondary {
-  background: #31343b;
+  background: var(--btn-secondary-bg, #393b40);
   color: var(--text-color, #f5f6fa);
   
   &:hover {
-    background: var(--card-bg, #292c33);
+    filter: brightness(1.05);
   }
 }
 
