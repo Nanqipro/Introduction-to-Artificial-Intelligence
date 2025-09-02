@@ -157,7 +157,8 @@
     --primary-color: #ffffff;
     --secondary-color: #f8f9fa;
     --text-color: #212529;
-    --text-secondary-color: #6c757d;
+    /* Darken secondary text for better contrast on light bg */
+    --text-secondary-color: #495057;
     --border-color: #dee2e6;
     --card-bg: #ffffff;
     --card-border: rgba(0, 0, 0, 0.125);
