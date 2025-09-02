@@ -662,6 +662,11 @@
           <div v-else class="content-text" v-html="formatContent(chapter.content)"></div>
         </div>
 
+        <!-- 续章（序章）案例演示：播放预热视频 -->
+        <div v-if="isPrologue" class="case-study-section">
+          <PrologueCase poster-url="/images/cover_prologue.jpg" />
+        </div>
+
         <!-- 第二章案例学习 -->
         <div v-if="isChapter2" class="case-study-section">
           <Chapter2CaseStudy 
@@ -798,7 +803,8 @@ export default {
     Chapter2CaseStudy,
     Chapter3CaseStudy,
     Chapter4CaseStudy,
-    Chapter7CaseStudy
+    Chapter7CaseStudy,
+    PrologueCase: () => import('../components/chapter0/PrologueCase.vue')
   },
   props: {
     id: {
@@ -858,6 +864,13 @@ export default {
         this.chapter.title.includes('图像识别') ||
         this.chapter.title.includes('计算机视觉') ||
         this.id === '3'
+      )
+    },
+    isPrologue() {
+      return this.chapter && (
+        this.chapter.chapterNumber === '0' ||
+        this.chapter.type === 'prologue' ||
+        this.id === '0'
       )
     },
     isChapter4() {
