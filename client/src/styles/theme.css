@@ -246,10 +246,10 @@
     --border-hover: #0d6efd;
     --button-secondary: rgba(108, 117, 125, 0.1);
     --button-secondary-hover: rgba(108, 117, 125, 0.2);
-    --primary-color: #0d6efd;
-    --primary-hover: #0a58ca;
-    --danger-color: #dc3545;
-    --danger-hover: #c82333;
+    /* Keep light theme primary surfaces light to ensure contrast in hero */
+    /* --primary-color is already defined as #ffffff above; avoid overriding it here */
+    /* --primary-hover is already defined above; avoid duplicate definitions */
+    /* Danger colors are defined above as well; avoid duplicate definitions */
     --breakpoint-sm: 576px;
     --breakpoint-md: 768px;
     --breakpoint-lg: 992px;
