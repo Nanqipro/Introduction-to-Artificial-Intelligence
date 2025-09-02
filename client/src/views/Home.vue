@@ -117,7 +117,13 @@ export default {
   overflow: hidden;
   /* Light theme: restore blue hero background */
   .light-theme & {
-    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, var(--primary-hover, #0a58ca) 100%);
+    background: linear-gradient(
+      135deg,
+      #0d6efd 0%,
+      #1d74ff 35%,
+      #3b82f6 65%,
+      #60a5fa 100%
+    );
     color: var(--text-primary, #ffffff);
   }
 }
