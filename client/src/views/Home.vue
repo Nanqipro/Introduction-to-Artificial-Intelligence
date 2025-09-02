@@ -115,6 +115,11 @@ export default {
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Light theme: restore blue hero background */
+  .light-theme & {
+    background: linear-gradient(135deg, var(--accent-color, #0d6efd) 0%, var(--primary-hover, #0a58ca) 100%);
+    color: var(--text-primary, #ffffff);
+  }
 }
 .hero::after {
   content: '';
@@ -151,6 +156,11 @@ export default {
   margin-bottom: 2.2rem;
   color: var(--text-secondary-color, #475569);
   opacity: 0.92;
+  /* Light theme: make this sentence white for better contrast */
+  .light-theme & {
+    color: #ffffff;
+    opacity: 1;
+  }
 }
 .hero-actions {
   display: flex;
