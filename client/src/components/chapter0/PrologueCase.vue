@@ -56,6 +56,10 @@ export default {
 .case-header {
   text-align: center;
   margin-bottom: 1rem;
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 59, 130, 246), 0.15), rgba(var(--accent-color-rgb, 59, 130, 246), 0.05));
+  border: 1px solid rgba(var(--accent-color-rgb, 59, 130, 246), 0.25);
+  border-radius: 12px;
+  padding: 1rem;
 }
 
 .case-title {
@@ -77,7 +81,9 @@ export default {
 
 .video-player {
   width: 100%;
-  max-height: 70vh;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: 85vh;
   border-radius: 12px;
   outline: none;
   background: #000;
@@ -111,8 +117,55 @@ export default {
 }
 
 /* 浅色主题优化 */
-.light-theme & {
-  background: #f8fafc;
+:root.light-theme .prologue-case {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+:root.light-theme .prologue-case .case-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+:root.light-theme .prologue-case .case-title {
+  color: #212529;
+}
+
+:root.light-theme .prologue-case .case-desc {
+  color: #495057;
+}
+
+:root.light-theme .prologue-case .video-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+:root.light-theme .prologue-case .btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+:root.light-theme .prologue-case .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+:root.light-theme .prologue-case .btn-outline {
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  background: transparent;
+}
+
+:root.light-theme .prologue-case .btn-outline:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 </style>
 

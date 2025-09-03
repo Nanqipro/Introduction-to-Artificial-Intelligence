@@ -170,7 +170,8 @@ onMounted(() => {
   height: 80px;
   background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--secondary-color, #23272e) 100%);
   backdrop-filter: blur(20px);
-  box-shadow: 0 4px 20px rgba(var(--shadow-color-rgb, 0, 0, 0), 0.15);
+  /* remove global navbar shadow to avoid layered effect */
+  box-shadow: none;
   position: sticky;
   top: 0;
   z-index: 1000;

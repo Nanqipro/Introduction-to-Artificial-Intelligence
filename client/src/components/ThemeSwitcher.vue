@@ -58,9 +58,9 @@ onMounted(() => {
 <style scoped>
 .theme-switcher {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  right: calc(16px + env(safe-area-inset-right));
+  z-index: 3000; /* keep above sticky headers/overlays */
 }
 
 .theme-toggle-btn {

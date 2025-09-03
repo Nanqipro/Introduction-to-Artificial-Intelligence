@@ -1,564 +1,87 @@
 <template>
   <div class="network-visualization-container">
-    <div class="visualization-header">
-      <h2>
-        <el-icon><Connection /></el-icon>
-        交互式神经网络训练可视化
-      </h2>
-      <p>实时观察数据在神经网络中的流动过程，体验猫狗分类的完整训练流程</p>
-    </div>
+    <!-- 头部组件 -->
+    <VisualizationHeader />
 
     <!-- 主控制面板 -->
-    <div class="main-control-panel">
-      <el-row :gutter="20">
-        <!-- 训练控制 -->
-        <el-col :span="8">
-          <el-card class="control-card">
-            <template #header>
-              <span><el-icon><VideoPlay /></el-icon> 训练控制</span>
-            </template>
-            <div class="training-controls">
-              <div class="control-buttons">
-                <el-button
-                  type="primary"
-                  @click="startTraining"
-                  :disabled="isTraining"
-                  size="large"
-                  class="control-button"
-                >
-                  <el-icon><VideoPlay /></el-icon>
-                  {{ isTraining ? '训练中...' : '开始训练' }}
-                </el-button>
-
-                <el-button
-                  type="warning"
-                  @click="pauseTraining"
-                  :disabled="!isTraining"
-                  size="large"
-                  class="control-button"
-                >
-                  <el-icon><VideoPause /></el-icon>
-                  暂停训练
-                </el-button>
-
-                <el-button
-                  type="info"
-                  @click="resetTraining"
-                  size="large"
-                  class="control-button"
-                >
-                  <el-icon><Refresh /></el-icon>
-                  重置训练
-                </el-button>
-              </div>
-
-              <div class="speed-control">
-                <div class="speed-label">训练速度</div>
-                <el-slider
-                  v-model="trainingSpeed"
-                  :min="0.5"
-                  :max="3"
-                  :step="0.5"
-                  show-stops
-                  class="speed-slider"
-                />
-                <div class="speed-value">{{ trainingSpeed }}x</div>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-
-        <!-- 训练数据集选择 -->
-        <el-col :span="8">
-          <el-card class="control-card">
-            <template #header>
-              <span><el-icon><Document /></el-icon> 训练数据集</span>
-            </template>
-            <div class="dataset-selection">
-              <div class="dataset-info">
-                <div class="current-dataset">
-                  <span class="dataset-name">{{ selectedDataset.name }}</span>
-                  <span class="dataset-size">{{ selectedDataset.size }} 张图片</span>
-                </div>
-                <div class="dataset-stats">
-                  <div class="stat-item">
-                    <span class="stat-label">猫:</span>
-                    <span class="stat-value">{{ selectedDataset.catCount }}</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">狗:</span>
-                    <span class="stat-value">{{ selectedDataset.dogCount }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="dataset-options">
-                <div
-                  v-for="(dataset, index) in availableDatasets"
-                  :key="index"
-                  class="dataset-item"
-                  :class="{ active: selectedDatasetIndex === index }"
-                  @click="selectDataset(index)"
-                >
-                  <div class="dataset-icon">
-                    <el-icon><Document /></el-icon>
-                  </div>
-                  <div class="dataset-details">
-                    <div class="dataset-title">{{ dataset.name }}</div>
-                    <div class="dataset-description">{{ dataset.description }}</div>
-                    <div class="dataset-meta">
-                      <span>{{ dataset.size }} 张</span>
-                      <span>{{ dataset.difficulty }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-
-        <!-- 网络配置 -->
-        <el-col :span="8">
-          <el-card class="control-card">
-            <template #header>
-              <span><el-icon><Setting /></el-icon> 网络配置</span>
-            </template>
-            <div class="network-config">
-              <div class="config-item">
-                <span>学习率：</span>
-                <el-input-number
-                  v-model="learningRate"
-                  :min="0.0001"
-                  :max="0.1"
-                  :step="0.0001"
-                  :precision="4"
-                  size="small"
-                />
-              </div>
-
-              <div class="config-item">
-                <span>批次大小：</span>
-                <el-select v-model="batchSize" size="small">
-                  <el-option label="16" :value="16" />
-                  <el-option label="32" :value="32" />
-                  <el-option label="64" :value="64" />
-                </el-select>
-              </div>
-
-              <div class="config-item">
-                <span>显示模式：</span>
-                <el-radio-group v-model="visualizationMode" size="small">
-                  <el-radio value="dataflow">数据流</el-radio>
-                  <el-radio value="activation">激活值</el-radio>
-                </el-radio-group>
-              </div>
-
-              <div class="config-item">
-                <el-button
-                  @click="showNetworkStructureDialog = true"
-                  type="primary"
-                  size="small"
-                  style="width: 100%;"
-                >
-                  <el-icon><Edit /></el-icon>
-                  自定义网络结构
-                </el-button>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
+    <MainControlPanel 
+      :is-training="isTraining"
+      :training-speed="trainingSpeed"
+      :learning-rate="learningRate"
+      :batch-size="batchSize"
+      :visualization-mode="visualizationMode"
+      :selected-dataset-index="selectedDatasetIndex"
+      :available-datasets="availableDatasets"
+      @start-training="startTraining"
+      @pause-training="pauseTraining"
+      @reset-training="resetTraining"
+      @select-dataset="selectDataset"
+      @show-network-structure="showNetworkStructureDialog = true"
+      @update:training-speed="trainingSpeed = $event"
+      @update:learning-rate="learningRate = $event"
+      @update:batch-size="batchSize = $event"
+      @update:visualization-mode="visualizationMode = $event"
+    />
 
     <!-- 神经网络可视化区域 -->
-    <div class="network-visualization-area">
-      <el-row :gutter="20">
-        <!-- 网络结构图 -->
-        <el-col :span="16">
-          <el-card class="network-card">
-            <template #header>
-              <div class="network-header">
-                <span>神经网络结构 - 实时数据流</span>
-                <div class="network-status">
-                  <el-tag :type="isTraining ? 'success' : 'info'" size="small">
-                    {{ isTraining ? '训练中' : '待机' }}
-                  </el-tag>
-                  <span class="epoch-info">Epoch: {{ currentEpoch }}/{{ totalEpochs }}</span>
-                </div>
-              </div>
-            </template>
-
-            <div ref="networkContainer" class="network-container">
-              <!-- 网络层渲染区域 -->
-              <svg
-                ref="networkSvg"
-                class="network-svg"
-                :width="networkWidth"
-                :height="networkHeight"
-                @click="handleNetworkClick"
-              >
-                <!-- 连接线 -->
-                <g class="connections">
-                  <line
-                    v-for="connection in connections"
-                    :key="connection.id"
-                    :x1="connection.x1"
-                    :y1="connection.y1"
-                    :x2="connection.x2"
-                    :y2="connection.y2"
-                    :stroke="connection.color"
-                    :stroke-width="connection.width"
-                    :opacity="connection.opacity"
-                    class="connection-line"
-                  />
-                </g>
-
-                <!-- 数据流动粒子 -->
-                <g class="data-particles">
-                  <circle
-                    v-for="particle in dataParticles"
-                    :key="particle.id"
-                    :cx="particle.x"
-                    :cy="particle.y"
-                    :r="particle.radius"
-                    :fill="particle.color"
-                    :opacity="particle.opacity"
-                    class="data-particle"
-                  />
-                </g>
-
-                <!-- 网络节点 -->
-                <g class="network-nodes">
-                  <g
-                    v-for="layer in networkLayers"
-                    :key="layer.id"
-                    class="layer-group"
-                  >
-                    <circle
-                      v-for="(node, nodeIndex) in layer.nodes"
-                      :key="`${layer.id}-${nodeIndex}`"
-                      :cx="node.x"
-                      :cy="node.y"
-                      :r="node.radius"
-                      :fill="node.color"
-                      :stroke="node.strokeColor"
-                      :stroke-width="node.strokeWidth"
-                      :opacity="node.opacity"
-                      class="network-node"
-                      :class="{
-                        active: node.active,
-                        disabled: node.disabled,
-                        highlighted: node.highlighted
-                      }"
-                      @click="toggleNode(layer.id, nodeIndex)"
-                      @mouseenter="highlightNode(layer.id, nodeIndex)"
-                      @mouseleave="unhighlightNode(layer.id, nodeIndex)"
-                    />
-
-                    <!-- 节点激活值显示 -->
-                    <text
-                      v-if="visualizationMode === 'activation' && node.activation !== undefined"
-                      :x="node.x"
-                      :y="node.y + 25"
-                      text-anchor="middle"
-                      class="activation-text"
-                      :fill="node.activation > 0.5 ? '#e74c3c' : '#3498db'"
-                    >
-                      {{ node.activation.toFixed(2) }}
-                    </text>
-                  </g>
-                </g>
-
-                <!-- 层标签 -->
-                <g class="layer-labels">
-                  <text
-                    v-for="layer in networkLayers"
-                    :key="`label-${layer.id}`"
-                    :x="layer.labelX"
-                    :y="layer.labelY"
-                    text-anchor="middle"
-                    class="layer-label"
-                  >
-                    {{ layer.name }}
-                  </text>
-                </g>
-              </svg>
-
-
-            </div>
-          </el-card>
-        </el-col>
-
-        <!-- 训练指标面板 -->
-        <el-col :span="8">
-          <el-card class="metrics-card">
-            <template #header>
-              <span><el-icon><TrendCharts /></el-icon> 训练指标</span>
-            </template>
-
-            <div class="metrics-content">
-              <!-- 实时指标 -->
-              <div class="current-metrics">
-                <div class="metric-item">
-                  <span class="metric-label">准确率</span>
-                  <div class="metric-value accuracy">
-                    {{ (currentAccuracy * 100).toFixed(2) }}%
-                  </div>
-                  <el-progress
-                    :percentage="currentAccuracy * 100"
-                    :stroke-width="8"
-                    :show-text="false"
-                    status="success"
-                  />
-                </div>
-
-                <div class="metric-item">
-                  <span class="metric-label">损失率</span>
-                  <div class="metric-value loss">
-                    {{ currentLoss.toFixed(4) }}
-                  </div>
-                  <el-progress
-                    :percentage="Math.max(0, 100 - currentLoss * 100)"
-                    :stroke-width="8"
-                    :show-text="false"
-                    status="warning"
-                  />
-                </div>
-
-                <div class="metric-item">
-                  <span class="metric-label">学习率</span>
-                  <div class="metric-value learning-rate">
-                    {{ learningRate.toFixed(4) }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- 训练曲线图 -->
-              <div ref="chartContainer" class="chart-container">
-                <canvas ref="metricsChart" class="metrics-chart"></canvas>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
+    <NetworkVisualizationArea 
+      :is-training="isTraining"
+      :current-epoch="currentEpoch"
+      :total-epochs="totalEpochs"
+      :network-layers="networkLayers"
+      :connections="connections"
+      :data-particles="dataParticles"
+      :visualization-mode="visualizationMode"
+      :current-accuracy="currentAccuracy"
+      :current-loss="currentLoss"
+      :learning-rate="learningRate"
+      :accuracy-history="accuracyHistory"
+      :loss-history="lossHistory"
+      @toggle-node="toggleNode"
+      @highlight-node="highlightNode"
+      @unhighlight-node="unhighlightNode"
+      @network-click="handleNetworkClick"
+    />
 
     <!-- 节点详情面板 -->
-    <div v-if="selectedNode" class="node-details-panel">
-      <el-card class="node-details-card">
-        <template #header>
-          <div class="node-header">
-            <span>节点详情 - {{ selectedNode.layerName }} 第{{ selectedNode.nodeIndex + 1 }}个节点</span>
-            <el-button @click="selectedNode = null" link size="small">
-              <el-icon><Close /></el-icon>
-            </el-button>
-          </div>
-        </template>
-
-        <div class="node-content">
-          <div class="node-info">
-            <div class="info-item">
-              <span>状态:</span>
-              <el-tag :type="selectedNode.active ? 'success' : 'danger'">
-                {{ selectedNode.active ? '激活' : '禁用' }}
-              </el-tag>
-            </div>
-
-            <div class="info-item">
-              <span>激活值:</span>
-              <span class="activation-value">{{ selectedNode.activation?.toFixed(4) || '0.0000' }}</span>
-            </div>
-
-            <div class="info-item">
-              <span>权重:</span>
-              <span class="weight-value">{{ selectedNode.weight?.toFixed(4) || '0.0000' }}</span>
-            </div>
-
-            <div class="info-item">
-              <span>偏置:</span>
-              <span class="bias-value">{{ selectedNode.bias?.toFixed(4) || '0.0000' }}</span>
-            </div>
-          </div>
-
-          <div class="node-controls">
-            <el-button
-              :type="selectedNode.active ? 'danger' : 'success'"
-              @click="toggleSelectedNode"
-              size="small"
-            >
-              {{ selectedNode.active ? '禁用节点' : '启用节点' }}
-            </el-button>
-
-            <el-button
-              type="primary"
-              @click="resetNodeWeights"
-              size="small"
-            >
-              重置权重
-            </el-button>
-          </div>
-        </div>
-      </el-card>
-    </div>
+    <NodeDetailsPanel 
+      v-if="selectedNode"
+      :selected-node="selectedNode"
+      @close="selectedNode = null"
+      @toggle-node="toggleSelectedNode"
+      @reset-weights="resetNodeWeights"
+    />
 
     <!-- 训练日志 -->
-    <div class="training-log">
-      <el-card class="log-card">
-        <template #header>
-          <div class="log-header">
-            <span><el-icon><Document /></el-icon> 训练日志</span>
-            <el-button @click="clearLog" link size="small">清空日志</el-button>
-          </div>
-        </template>
-
-        <div class="log-content">
-          <div
-            v-for="(log, index) in trainingLogs"
-            :key="index"
-            class="log-entry"
-            :class="log.type"
-          >
-            <span class="log-time">{{ log.time }}</span>
-            <span class="log-message">{{ log.message }}</span>
-          </div>
-        </div>
-      </el-card>
-    </div>
+    <TrainingLog 
+      :training-logs="trainingLogs"
+      @clear-log="clearLog"
+    />
 
     <!-- 网络结构配置对话框 -->
-    <el-dialog
+    <NetworkStructureDialog 
       v-model="showNetworkStructureDialog"
-      width="700px"
-      :before-close="handleCloseStructureDialog"
-      :close-on-click-modal="true"
-      :close-on-press-escape="true"
-      :destroy-on-close="true"
-      :modal="true"
-      :lock-scroll="true"
-      :append-to-body="true"
-    >
-      <template #header>
-        <div class="dialog-header">
-          <span class="dialog-title">自定义神经网络结构</span>
-          <el-button
-            @click="forceCloseStructureDialog"
-            type="danger"
-            size="small"
-            :icon="Close"
-            circle
-            title="强制关闭"
-            style="margin-left: auto;"
-          />
-        </div>
-      </template>
-      <div class="structure-config-content">
-        <div class="config-header">
-          <el-alert
-            title="配置说明"
-            description="您可以自定义每层神经元的数量（1-10个），输入层固定为1个，输出层固定为2个（猫、狗分类）"
-            type="info"
-            :closable="false"
-            show-icon
-          />
-        </div>
-
-        <div class="layer-configs">
-          <div
-            v-for="(layer, index) in layerConfigs"
-            :key="layer.id"
-            class="layer-config-item"
-            :class="{ disabled: layer.fixed }"
-          >
-            <div class="layer-info">
-              <div class="layer-icon">
-                <el-icon>
-                  <component :is="layer.icon" />
-                </el-icon>
-              </div>
-              <div class="layer-details">
-                <h4>{{ layer.name }}</h4>
-                <p>{{ layer.description }}</p>
-              </div>
-            </div>
-
-            <div class="layer-control">
-              <el-input-number
-                v-model="layer.nodeCount"
-                :min="1"
-                :max="10"
-                :disabled="layer.fixed"
-                @change="validateNodeCount(layer, $event)"
-                size="small"
-                style="width: 120px;"
-              />
-              <span class="unit-text">个神经元</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="structure-preview">
-          <h4>网络结构预览</h4>
-          <div class="preview-network">
-            <div
-              v-for="(layer, index) in layerConfigs"
-              :key="layer.id"
-              class="preview-layer"
-            >
-              <div class="layer-name">{{ layer.name }}</div>
-              <div class="layer-nodes">
-                <div
-                  v-for="i in layer.nodeCount"
-                  :key="i"
-                  class="preview-node"
-                  :class="{ fixed: layer.fixed }"
-                ></div>
-              </div>
-              <div class="node-count">{{ layer.nodeCount }}个</div>
-
-              <!-- 连接线 -->
-              <div
-                v-if="index < layerConfigs.length - 1"
-                class="layer-connection"
-              ></div>
-            </div>
-          </div>
-
-          <div class="total-stats">
-            <div class="stat-item">
-              <span class="stat-label">总层数：</span>
-              <span class="stat-value">{{ layerConfigs.length }}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">总神经元：</span>
-              <span class="stat-value">{{ totalNeurons }}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">预估参数：</span>
-              <span class="stat-value">{{ estimatedParameters }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="resetToDefault">恢复默认</el-button>
-          <el-button @click="closeStructureDialog">取消</el-button>
-          <el-button type="primary" @click="applyNetworkStructure">应用配置</el-button>
-        </span>
-      </template>
-    </el-dialog>
+      :layer-configs="layerConfigs"
+      :total-neurons="totalNeurons"
+      :estimated-parameters="estimatedParameters"
+      @apply="applyNetworkStructure"
+      @reset="resetToDefault"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
-import {
-  Connection, Refresh, VideoPlay, VideoPause, Setting,
-  TrendCharts, Close, Document, Edit
-} from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Chart from 'chart.js/auto'
+
+// 导入子组件
+import VisualizationHeader from './components/VisualizationHeader.vue'
+import MainControlPanel from './components/MainControlPanel.vue'
+import NetworkVisualizationArea from './components/NetworkVisualizationArea.vue'
+import NodeDetailsPanel from './components/NodeDetailsPanel.vue'
+import TrainingLog from './components/TrainingLog.vue'
+import NetworkStructureDialog from './components/NetworkStructureDialog.vue'
 
 // 定义事件
 const emit = defineEmits(['progress-update', 'training-complete'])
@@ -1035,8 +558,6 @@ const selectDataset = (index) => {
   addLog('info', `数据集包含 ${dataset.size} 张图片 (猫: ${dataset.catCount}, 狗: ${dataset.dogCount})`)
 }
 
-
-
 const toggleNode = (layerId, nodeIndex) => {
   const layer = networkLayers.value.find(l => l.id === layerId)
   if (layer && layer.nodes[nodeIndex]) {
@@ -1267,43 +788,6 @@ const validateNodeCount = (layer, newValue) => {
   }
 }
 
-const handleCloseStructureDialog = (done) => {
-  try {
-    // Element Plus 的 before-close 回调需要调用 done() 来关闭对话框
-    console.log('Closing structure dialog, done function:', typeof done)
-
-    // 先更新状态
-    showNetworkStructureDialog.value = false
-
-    // 然后调用 done() 让 Element Plus 处理关闭逻辑
-    if (done && typeof done === 'function') {
-      done()
-    }
-  } catch (error) {
-    console.error('Error closing structure dialog:', error)
-    // 即使出错也要确保对话框能关闭
-    showNetworkStructureDialog.value = false
-    if (done && typeof done === 'function') {
-      done()
-    }
-  }
-}
-
-const closeStructureDialog = () => {
-  console.log('Manually closing structure dialog')
-  showNetworkStructureDialog.value = false
-}
-
-// 强制关闭弹框的方法，用于处理特殊情况
-const forceCloseStructureDialog = () => {
-  console.log('Force closing structure dialog')
-  showNetworkStructureDialog.value = false
-  // 使用 nextTick 确保 DOM 更新
-  nextTick(() => {
-    showNetworkStructureDialog.value = false
-  })
-}
-
 const resetToDefault = () => {
   ElMessageBox.confirm(
     '确定要恢复到默认的网络结构吗？这将重置所有自定义配置。',
@@ -1435,18 +919,6 @@ onMounted(async () => {
 
   // 监听进度变化
   emit('progress-update', 'network-training', trainingProgress.value)
-
-  // 添加键盘事件监听器，处理弹框关闭
-  const handleKeydown = (event) => {
-    if (event.key === 'Escape' && showNetworkStructureDialog.value) {
-      console.log('ESC key pressed, force closing dialog')
-      forceCloseStructureDialog()
-    }
-  }
-  document.addEventListener('keydown', handleKeydown)
-
-  // 保存事件监听器引用以便清理
-  window.dialogKeydownHandler = handleKeydown
 })
 
 onUnmounted(() => {
@@ -1457,1107 +929,109 @@ onUnmounted(() => {
     chartInstance.destroy()
   }
   isTraining.value = false
-
-  // 清理键盘事件监听器
-  if (window.dialogKeydownHandler) {
-    document.removeEventListener('keydown', window.dialogKeydownHandler)
-    delete window.dialogKeydownHandler
-  }
 })
 </script>
 
 <style lang="scss" scoped>
-
-
 .network-visualization-container {
   padding: 1.5rem;
-  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
+  background: var(--body-bg);
   min-height: 100vh;
+  color: var(--text-color);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, var(--glow-color) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, var(--glow-light) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
 
   ::selection {
-    background: var(--accent-color, #b0b3b8);
+    background: var(--accent-color);
     color: #ffffff;
   }
 
   ::-moz-selection {
-    background: var(--accent-color, #b0b3b8);
+    background: var(--accent-color);
     color: #ffffff;
   }
 }
 
-.visualization-header {
-  text-align: center;
-  margin-bottom: 2rem;
+/* 深色主题优化 - 完全重新设计 */
+html.dark-theme .network-visualization-container {
+  background: var(--body-bg);
+  position: relative;
+  overflow: hidden;
 
-  h2 {
-    color: var(--text-color, #f5f6fa);
-    margin-bottom: 0.5rem;
-    font-size: 2rem;
-    font-weight: 600;
-
-    .el-icon {
-      margin-right: 0.5rem;
-      color: var(--accent-color, #b0b3b8);
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(ellipse 800px 600px at 20% 30%, var(--bg-glow-blue) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 800px at 80% 70%, var(--bg-glow-green) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 400px at 50% 20%, var(--bg-glow-orange) 0%, transparent 50%),
+      radial-gradient(ellipse 300px 300px at 10% 80%, var(--bg-glow-gold) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  p {
-    color: var(--text-secondary-color, #b0b3b8);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(90deg, transparent 0%, var(--bg-glow-blue) 15%, transparent 30%),
+      linear-gradient(180deg, transparent 0%, var(--bg-glow-green) 25%, transparent 40%),
+      linear-gradient(45deg, transparent 0%, var(--bg-glow-orange) 35%, transparent 50%);
+    animation: subtleFlow 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
   }
-}
 
-.main-control-panel {
-  margin-bottom: 2rem;
-
-  .control-card {
-    border-radius: 12px;
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-
-    :deep(.el-card__header) {
-      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-      color: var(--primary-color, #18191a);
-      border-radius: 12px 12px 0 0;
-
-      span {
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-
-        .el-icon {
-          margin-right: 8px;
-        }
-      }
+  @keyframes subtleFlow {
+    0%, 100% { 
+      opacity: 0.2; 
+      transform: translateX(0) translateY(0);
     }
-
-    :deep(.el-card__body) {
-      background: var(--secondary-color, #23272e);
-      color: var(--text-color, #f5f6fa);
+    25% { 
+      opacity: 0.4; 
+      transform: translateX(-10px) translateY(-5px);
     }
-
-    .training-controls, .dataset-selection, .network-config {
-      padding: 1rem;
+    50% { 
+      opacity: 0.3; 
+      transform: translateX(5px) translateY(-10px);
     }
-
-    // 训练控制样式
-    .training-controls {
-      .control-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
-
-        .control-button {
-          width: 100%;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          font-weight: 500;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-
-          .el-icon {
-            font-size: 1.1rem;
-          }
-
-          &:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          }
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-        }
-      }
-
-      .speed-control {
-        .speed-label {
-          color: var(--text-secondary-color, #b0b3b8);
-          font-size: 0.9rem;
-          font-weight: 500;
-          margin-bottom: 0.75rem;
-          display: block;
-        }
-
-        .speed-slider {
-          margin-bottom: 0.5rem;
-        }
-
-        .speed-value {
-          text-align: center;
-          color: var(--accent-color, #b0b3b8);
-          font-size: 0.85rem;
-          font-weight: 600;
-          padding: 0.25rem 0.5rem;
-          background: var(--primary-color, #18191a);
-          border: 1px solid var(--border-color, #393b40);
-          border-radius: 4px;
-          display: inline-block;
-          min-width: 40px;
-        }
-      }
-    }
-
-    // 数据集选择样式
-    .dataset-selection {
-      .dataset-info {
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background: var(--primary-color, #18191a);
-        border: 1px solid var(--border-color, #393b40);
-        border-radius: 8px;
-
-        .current-dataset {
-          margin-bottom: 0.5rem;
-
-          .dataset-name {
-            display: block;
-            font-weight: 600;
-            color: var(--text-color, #f5f6fa);
-            font-size: 1.1rem;
-          }
-
-          .dataset-size {
-            color: var(--text-secondary-color, #b0b3b8);
-            font-size: 0.9rem;
-          }
-        }
-
-        .dataset-stats {
-          display: flex;
-          gap: 1rem;
-
-          .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-
-            .stat-label {
-              color: var(--text-secondary-color, #b0b3b8);
-              font-size: 0.9rem;
-            }
-
-            .stat-value {
-              color: var(--accent-color, #b0b3b8);
-              font-weight: 600;
-            }
-          }
-        }
-      }
-
-      .dataset-options {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-
-        .dataset-item {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          padding: 0.75rem;
-          background: var(--secondary-color, #23272e);
-          border: 1px solid var(--border-color, #393b40);
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-
-          &:hover {
-            background: var(--primary-hover-color, #cccccc);
-            border-color: var(--accent-color, #b0b3b8);
-            transform: translateY(-1px);
-          }
-
-          &.active {
-            background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-            border-color: var(--accent-color, #b0b3b8);
-            color: var(--primary-color, #18191a);
-
-            .dataset-icon {
-              color: var(--primary-color, #18191a);
-            }
-
-            .dataset-details {
-              .dataset-title {
-                color: var(--primary-color, #18191a);
-              }
-
-              .dataset-description {
-                color: rgba(24, 25, 26, 0.8);
-              }
-
-              .dataset-meta {
-                span {
-                  color: rgba(24, 25, 26, 0.7);
-                }
-              }
-            }
-          }
-
-          .dataset-icon {
-            font-size: 1.5rem;
-            color: var(--accent-color, #b0b3b8);
-            flex-shrink: 0;
-          }
-
-          .dataset-details {
-            flex: 1;
-
-            .dataset-title {
-              font-weight: 600;
-              color: var(--text-color, #f5f6fa);
-              margin-bottom: 0.25rem;
-              font-size: 0.95rem;
-            }
-
-            .dataset-description {
-              color: var(--text-secondary-color, #b0b3b8);
-              font-size: 0.85rem;
-              margin-bottom: 0.25rem;
-              line-height: 1.3;
-            }
-
-            .dataset-meta {
-              display: flex;
-              gap: 0.75rem;
-
-              span {
-                color: var(--text-secondary-color, #b0b3b8);
-                font-size: 0.8rem;
-                padding: 0.125rem 0.375rem;
-                background: var(--primary-color, #18191a);
-                border-radius: 4px;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .sample-images {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-
-      .sample-item {
-        border: 2px solid #ecf0f1;
-        border-radius: 8px;
-        padding: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-
-        &:hover {
-          border-color: #3498db;
-          transform: translateY(-2px);
-        }
-
-        &.active {
-          border-color: #e74c3c;
-          background: #fdf2f2;
-        }
-
-        img {
-          width: 40px;
-          height: 40px;
-          border-radius: 4px;
-        }
-
-        .label {
-          display: block;
-          margin-top: 5px;
-          font-size: 0.8rem;
-          color: #7f8c8d;
-        }
-      }
-    }
-
-    .upload-area {
-      border: 2px dashed #bdc3c7;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        border-color: #3498db;
-        background: #f8f9fa;
-      }
-
-      .el-icon {
-        font-size: 1.5rem;
-        color: #7f8c8d;
-        margin-bottom: 5px;
-        display: block;
-      }
-
-      span {
-        color: #7f8c8d;
-        font-size: 0.9rem;
-      }
-    }
-
-    .config-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-
-      span {
-        color: #7f8c8d;
-        font-size: 0.9rem;
-      }
+    75% { 
+      opacity: 0.5; 
+      transform: translateX(-5px) translateY(5px);
     }
   }
 }
 
-.network-visualization-area {
-  margin-bottom: 2rem;
-
-  .network-card {
-    border-radius: 12px;
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-
-    :deep(.el-card__header) {
-      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-      color: var(--primary-color, #18191a);
-      border-radius: 12px 12px 0 0;
-
-      .network-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .network-status {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-
-          .epoch-info {
-            font-size: 0.9rem;
-            opacity: 0.9;
-          }
-        }
-      }
-    }
-
-    .network-container {
-      position: relative;
-      height: 500px;
-      overflow: hidden;
-
-      .network-svg {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
-        border-radius: 0 0 12px 12px;
-
-        .connection-line {
-          transition: all 0.3s ease;
-        }
-
-        .data-particle {
-          animation: pulse 1s ease-in-out infinite alternate;
-        }
-
-        .network-node {
-          cursor: pointer;
-          transition: all 0.3s ease;
-
-          &:hover {
-            stroke-width: 4;
-            filter: drop-shadow(0 0 8px rgba(52, 152, 219, 0.6));
-          }
-
-          &.active {
-            filter: drop-shadow(0 0 6px rgba(39, 174, 96, 0.8));
-          }
-
-          &.disabled {
-            opacity: 0.3;
-            filter: grayscale(100%);
-          }
-
-          &.highlighted {
-            stroke-width: 6;
-            filter: drop-shadow(0 0 12px rgba(231, 76, 60, 0.8));
-          }
-        }
-
-        .activation-text {
-          font-size: 10px;
-          font-weight: 600;
-          pointer-events: none;
-        }
-
-        .layer-label {
-          font-size: 12px;
-          font-weight: 600;
-          fill: #2c3e50;
-          pointer-events: none;
-        }
-      }
-
-
-
-
-    }
-  }
-}
-
-.metrics-card {
-  border-radius: 12px;
-  background: var(--secondary-color, #23272e);
-  border: 1px solid var(--border-color, #393b40);
-  box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-
-  :deep(.el-card__header) {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-    color: var(--primary-color, #18191a);
-    border-radius: 12px 12px 0 0;
-
-    span {
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-
-      .el-icon {
-        margin-right: 8px;
-      }
-    }
-  }
-
-  .metrics-content {
-    padding: 1rem;
-
-    .current-metrics {
-      margin-bottom: 20px;
-
-      .metric-item {
-        margin-bottom: 20px;
-
-        .metric-label {
-          display: block;
-          font-size: 0.9rem;
-          color: #7f8c8d;
-          margin-bottom: 5px;
-        }
-
-        .metric-value {
-          font-size: 1.5rem;
-          font-weight: 600;
-          margin-bottom: 8px;
-
-          &.accuracy {
-            color: #27ae60;
-          }
-
-          &.loss {
-            color: #e74c3c;
-          }
-
-          &.learning-rate {
-            color: #3498db;
-          }
-        }
-      }
-    }
-
-    .chart-container {
-      height: 200px;
-      position: relative;
-
-      .metrics-chart {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-}
-
-.node-details-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  min-width: 400px;
-
-  .node-details-card {
-    border-radius: 12px;
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    box-shadow: 0 8px 24px rgba(24, 25, 26, 0.3);
-
-    :deep(.el-card__header) {
-      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-      color: var(--primary-color, #18191a);
-      border-radius: 12px 12px 0 0;
-
-      .node-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-
-    .node-content {
-      padding: 1.5rem;
-
-      .node-info {
-        margin-bottom: 20px;
-
-        .info-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
-          padding: 8px 0;
-          border-bottom: 1px solid #ecf0f1;
-
-          &:last-child {
-            border-bottom: none;
-          }
-
-          span:first-child {
-            color: #7f8c8d;
-            font-weight: 500;
-          }
-
-          .activation-value, .weight-value, .bias-value {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-weight: 600;
-            color: #2c3e50;
-          }
-        }
-      }
-
-      .node-controls {
-        display: flex;
-        gap: 10px;
-      }
-    }
-  }
-}
-
-.training-log {
-  .log-card {
-    border-radius: 12px;
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-
-    :deep(.el-card__header) {
-      background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-      color: var(--primary-color, #18191a);
-      border-radius: 12px 12px 0 0;
-
-      .log-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        span {
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-
-          .el-icon {
-            margin-right: 8px;
-          }
-        }
-      }
-    }
-
-    .log-content {
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 1rem;
-
-      .log-entry {
-        display: flex;
-        align-items: center;
-        padding: 8px 12px;
-        margin-bottom: 5px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-
-        &.info {
-          background: #e8f4fd;
-          color: #2980b9;
-        }
-
-        &.success {
-          background: #d5f4e6;
-          color: #27ae60;
-        }
-
-        &.warning {
-          background: #fef9e7;
-          color: #f39c12;
-        }
-
-        &.error {
-          background: #fdf2f2;
-          color: #e74c3c;
-        }
-
-        .log-time {
-          font-weight: 600;
-          margin-right: 10px;
-          min-width: 80px;
-        }
-
-        .log-message {
-          flex: 1;
-        }
-      }
-    }
-  }
-}
-
-// 网络结构配置对话框样式
-.structure-config-content {
-  .config-header {
-    margin-bottom: 2rem;
-  }
-
-  .layer-configs {
-    margin-bottom: 2rem;
-
-    .layer-config-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ecf0f1;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-
-      &:hover {
-        border-color: #3498db;
-        background: #f8f9fa;
-      }
-
-      &.disabled {
-        background: #f5f5f5;
-        opacity: 0.7;
-
-        .layer-control {
-          opacity: 0.5;
-        }
-      }
-
-      .layer-info {
-        display: flex;
-        align-items: center;
-        flex: 1;
-
-        .layer-icon {
-          margin-right: 1rem;
-
-          .el-icon {
-            font-size: 1.5rem;
-            color: #3498db;
-          }
-        }
-
-        .layer-details {
-          h4 {
-            margin: 0 0 0.3rem 0;
-            color: #2c3e50;
-            font-size: 1rem;
-          }
-
-          p {
-            margin: 0;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-          }
-        }
-      }
-
-      .layer-control {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        .unit-text {
-          color: #7f8c8d;
-          font-size: 0.9rem;
-        }
-      }
-    }
-  }
-
-  .structure-preview {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-
-    h4 {
-      margin: 0 0 1rem 0;
-      color: #2c3e50;
-    }
-
-    .preview-network {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: white;
-      border-radius: 8px;
-      overflow-x: auto;
-
-      .preview-layer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0 1rem;
-        position: relative;
-
-        .layer-name {
-          font-size: 0.8rem;
-          color: #7f8c8d;
-          margin-bottom: 0.5rem;
-          text-align: center;
-        }
-
-        .layer-nodes {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          margin-bottom: 0.5rem;
-
-          .preview-node {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #3498db;
-            border: 2px solid #2980b9;
-
-            &.fixed {
-              background: #e74c3c;
-              border-color: #c0392b;
-            }
-          }
-        }
-
-        .node-count {
-          font-size: 0.7rem;
-          color: #7f8c8d;
-        }
-
-        .layer-connection {
-          position: absolute;
-          right: -1rem;
-          top: 50%;
-          width: 2rem;
-          height: 2px;
-          background: #bdc3c7;
-          transform: translateY(-50%);
-
-          &::after {
-            content: '';
-            position: absolute;
-            right: -4px;
-            top: -2px;
-            width: 0;
-            height: 0;
-            border-left: 6px solid #bdc3c7;
-            border-top: 3px solid transparent;
-            border-bottom: 3px solid transparent;
-          }
-        }
-      }
-    }
-
-    .total-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-
-      .stat-item {
-        text-align: center;
-        padding: 0.8rem;
-        background: white;
-        border-radius: 6px;
-
-        .stat-label {
-          display: block;
-          font-size: 0.8rem;
-          color: #7f8c8d;
-          margin-bottom: 0.3rem;
-        }
-
-        .stat-value {
-          display: block;
-          font-size: 1.2rem;
-          font-weight: 600;
-          color: #2c3e50;
-        }
-      }
-    }
-  }
-}
-
-// 动画效果
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(52, 152, 219, 0.8);
-  }
+/* 浅色主题适配 */
+html.light-theme .network-visualization-container {
+  background: #ffffff;
 }
 
 // 响应式设计
-@media (max-width: 1200px) {
-  .main-control-panel {
-    .el-row {
-      flex-direction: column;
-    }
-  }
-
-  .network-visualization-area {
-    .el-row {
-      flex-direction: column;
-    }
-  }
-}
-
 @media (max-width: 768px) {
   .network-visualization-container {
     padding: 1rem;
-  }
-
-  .visualization-header {
-    h2 {
-      font-size: 1.5rem;
-    }
-
-    p {
-      font-size: 1rem;
-    }
-  }
-
-  .network-container {
-    height: 400px !important;
-  }
-
-  .node-details-panel {
-    min-width: 90vw;
-    max-width: 90vw;
-  }
-
-  .sample-images {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .sample-images {
-    grid-template-columns: 1fr !important;
-  }
-
-  .config-item {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 8px;
-  }
-}
-
-// Element Plus 组件样式覆盖
-:deep(.el-card__body) {
-  background: var(--secondary-color, #23272e);
-  color: var(--text-color, #f5f6fa);
-}
-
-:deep(.el-button) {
-  &.el-button--primary {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-    border: none;
-    color: var(--primary-color, #18191a);
-
-    &:hover {
-      background: linear-gradient(135deg, #d1d3d8 0%, var(--accent-color, #b0b3b8) 100%);
-      transform: translateY(-1px);
-    }
-  }
-
-  &.el-button--default {
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    color: var(--text-color, #f5f6fa);
-
-    &:hover {
-      background: var(--primary-hover-color, #cccccc);
-      border-color: var(--accent-color, #b0b3b8);
-    }
-  }
-}
-
-:deep(.el-slider) {
-  .el-slider__runway {
-    background: var(--border-color, #393b40);
-  }
-
-  .el-slider__bar {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-  }
-
-  .el-slider__button {
-    border: 2px solid var(--accent-color, #b0b3b8);
-    background: var(--text-color, #f5f6fa);
-  }
-}
-
-:deep(.el-select) {
-  .el-input__inner {
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    color: var(--text-color, #f5f6fa);
-
-    &:focus {
-      border-color: var(--accent-color, #b0b3b8);
-    }
-  }
-}
-
-:deep(.el-input) {
-  .el-input__inner {
-    background: var(--secondary-color, #23272e);
-    border: 1px solid var(--border-color, #393b40);
-    color: var(--text-color, #f5f6fa);
-
-    &:focus {
-      border-color: var(--accent-color, #b0b3b8);
-    }
-  }
-}
-
-:deep(.el-progress) {
-  .el-progress-bar__outer {
-    background: var(--border-color, #393b40);
-  }
-
-  .el-progress-bar__inner {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-  }
-}
-
-:deep(.el-tag) {
-  background: var(--secondary-color, #23272e);
-  border: 1px solid var(--border-color, #393b40);
-  color: var(--text-color, #f5f6fa);
-
-  &.el-tag--success {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8) 0%, #d1d3d8 100%);
-    border: none;
-    color: var(--primary-color, #18191a);
-  }
-}
-
-// 对话框头部样式
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  .dialog-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--primary-color, #18191a);
-  }
-}
-
-// 深色主题支持
-@media (prefers-color-scheme: dark) {
-  .network-visualization-container {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-
-    .visualization-header {
-      h2 {
-        color: #ecf0f1;
-      }
-
-      p {
-        color: #bdc3c7;
-      }
-    }
-
-    .network-svg {
-      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%) !important;
-    }
-
-    .layer-label {
-      fill: #ecf0f1 !important;
-    }
-  }
-}
-
-// 打印样式
-@media print {
-  .network-visualization-container {
-    background: white !important;
-
-    .main-control-panel,
-    .node-details-panel,
-    .training-log {
-      display: none !important;
-    }
-
-    .network-card {
-      box-shadow: none !important;
-      border: 1px solid #ddd !important;
-    }
   }
 }
 </style>

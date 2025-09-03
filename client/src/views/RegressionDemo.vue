@@ -95,6 +95,8 @@
             <button class="btn" @click="pauseLinearFitAnim" :disabled="!linearAnim || linearPaused">{{ lang==='zh' ? '暂停' : 'Pause' }}</button>
             <button class="btn" @click="resumeLinearFitAnim" :disabled="!linearAnim || !linearPaused">{{ lang==='zh' ? '继续' : 'Resume' }}</button>
             <button class="btn" @click="resetLinearFitAnim">{{ lang==='zh' ? '重置' : 'Reset' }}</button>
+            <button class="btn" @click="prevLinearStep" :disabled="linearStep <= 0 || linearHistory.length === 0">{{ lang==='zh' ? '上一步' : 'Previous' }}</button>
+            <button class="btn" @click="nextLinearStep" :disabled="linearStep >= linearMaxSteps">{{ lang==='zh' ? '下一步' : 'Next' }}</button>
             <span>{{ lang==='zh' ? '拟合步数' : 'Step' }}: {{ linearStep }}/{{ linearMaxSteps }}</span>
           </template>
           <template v-else>
@@ -102,6 +104,8 @@
             <button class="btn" @click="pauseLogisticFitAnim" :disabled="!logisticAnim || logisticPaused">{{ lang==='zh' ? '暂停' : 'Pause' }}</button>
             <button class="btn" @click="resumeLogisticFitAnim" :disabled="!logisticAnim || !logisticPaused">{{ lang==='zh' ? '继续' : 'Resume' }}</button>
             <button class="btn" @click="resetLogisticFitAnim">{{ lang==='zh' ? '重置' : 'Reset' }}</button>
+            <button class="btn" @click="prevLogisticStep" :disabled="logisticStep <= 0 || logisticHistory.length === 0">{{ lang==='zh' ? '上一步' : 'Previous' }}</button>
+            <button class="btn" @click="nextLogisticStep" :disabled="logisticStep >= logisticMaxSteps">{{ lang==='zh' ? '下一步' : 'Next' }}</button>
             <span>{{ lang==='zh' ? '拟合步数' : 'Step' }}: {{ logisticStep }}/{{ logisticMaxSteps }}</span>
           </template>
         </div>
@@ -177,10 +181,13 @@
   const linearAnim = ref(false);
   const linearPaused = ref(false);
   const linearStep = ref(0);
-  const linearMaxSteps = 30;
+  const linearMaxSteps = 60;
   const linearSlope = ref(1);
   const linearIntercept = ref(0);
   let linearTimer = null;
+  
+  // 线性回归参数历史记录
+  const linearHistory = ref([]);
   
   // 控制回归线显示的状态
   const showFitLine = ref(true);
@@ -194,6 +201,10 @@
     linearSlope.value = 1;
     linearIntercept.value = 0;
     showFitLine.value = false;
+    
+    // 初始化历史记录
+    linearHistory.value = [{ slope: 1, intercept: 0 }];
+    
     if (linearTimer) clearTimeout(linearTimer);
     setTimeout(() => {
       showFitLine.value = true;
@@ -203,6 +214,10 @@
   }
   function pauseLinearFitAnim() {
     linearPaused.value = true;
+    if (linearTimer) {
+      clearTimeout(linearTimer);
+      linearTimer = null;
+    }
   }
   function resumeLinearFitAnim() {
     if (!linearAnim.value) return;
@@ -216,6 +231,7 @@
     linearSlope.value = 1;
     linearIntercept.value = 0;
     showFitLine.value = false;
+    linearHistory.value = []; // 清除历史记录
     if (linearTimer) clearTimeout(linearTimer);
   }
   function runLinearAnimStep() {
@@ -224,7 +240,7 @@
     const y = yData.value;
     let w = linearSlope.value;
     let b = linearIntercept.value;
-    const lr = 0.002; // 步长可适当调大
+    const lr = 0.001; // 放慢：降低学习率
     let dw = 0, db = 0;
     for (let i = 0; i < x.length; i++) {
       const pred = w * x[i] + b;
@@ -236,10 +252,109 @@
     linearSlope.value = w;
     linearIntercept.value = b;
     linearStep.value++;
+    
+    // 保存当前参数到历史记录
+    linearHistory.value[linearStep.value] = { slope: w, intercept: b };
+    
     if (linearStep.value < linearMaxSteps) {
-      linearTimer = setTimeout(runLinearAnimStep, 10);
+      linearTimer = setTimeout(runLinearAnimStep, 120); // 放慢：增加每步延时
     } else {
       linearAnim.value = false;
+    }
+  }
+  
+  // 手动初始化线性回归历史记录
+  function initLinearHistory() {
+    if (linearHistory.value.length === 0) {
+      linearHistory.value = [{ slope: 1, intercept: 0 }];
+      linearStep.value = 0;
+      linearSlope.value = 1;
+      linearIntercept.value = 0;
+      showFitLine.value = true;
+      // 强制更新图表
+      nextTick(() => {
+        if (chartRef.value && chartRef.value.chart) {
+          chartRef.value.chart.update();
+        }
+      });
+    }
+  }
+  
+  // 线性回归步进控制
+  function prevLinearStep() {
+    initLinearHistory();
+    // 手动步进时自动暂停并清除定时器，避免动画覆写
+    if (linearAnim.value) {
+      linearPaused.value = true;
+      if (linearTimer) { clearTimeout(linearTimer); linearTimer = null; }
+    }
+    if (linearStep.value > 0) {
+      linearStep.value--;
+      const params = linearHistory.value[linearStep.value];
+      if (params) {
+        linearSlope.value = params.slope;
+        linearIntercept.value = params.intercept;
+        // 强制更新图表
+        nextTick(() => {
+          if (chartRef.value && chartRef.value.chart) {
+            chartRef.value.chart.update();
+          }
+        });
+      }
+    }
+  }
+  
+  function nextLinearStep() {
+    initLinearHistory();
+    // 手动步进时自动暂停并清除定时器，避免动画覆写
+    if (linearAnim.value) {
+      linearPaused.value = true;
+      if (linearTimer) { clearTimeout(linearTimer); linearTimer = null; }
+    }
+    if (linearStep.value < linearMaxSteps) {
+      if (linearHistory.value[linearStep.value + 1]) {
+        // 如果下一步已经计算过，直接跳转
+        linearStep.value++;
+        const params = linearHistory.value[linearStep.value];
+        if (params) {
+          linearSlope.value = params.slope;
+          linearIntercept.value = params.intercept;
+          // 强制更新图表
+          nextTick(() => {
+            if (chartRef.value && chartRef.value.chart) {
+              chartRef.value.chart.update();
+            }
+          });
+        }
+      } else {
+        // 如果下一步还没有计算，手动执行一步
+        const x = xData.value;
+        const y = yData.value;
+        let w = linearSlope.value;
+        let b = linearIntercept.value;
+        const lr = 0.002;
+        let dw = 0, db = 0;
+        for (let i = 0; i < x.length; i++) {
+          const pred = w * x[i] + b;
+          dw += (pred - y[i]) * x[i];
+          db += (pred - y[i]);
+        }
+        w -= lr * dw / x.length;
+        b -= lr * db / x.length;
+        linearSlope.value = w;
+        linearIntercept.value = b;
+        linearStep.value++;
+        
+        // 保存当前参数到历史记录
+        linearHistory.value[linearStep.value] = { slope: w, intercept: b };
+        
+        // 强制更新图表
+        nextTick(() => {
+          if (chartRef.value && chartRef.value.chart) {
+            chartRef.value.chart.update();
+          }
+        });
+      }
     }
   }
   
@@ -247,10 +362,13 @@
   const logisticAnim = ref(false); // 是否正在拟合
   const logisticPaused = ref(false); // 是否暂停
   const logisticStep = ref(0);
-  const logisticMaxSteps = 30; // 动画步数
+  const logisticMaxSteps = 60; // 放慢：增加总步数
   const logisticW = ref(1);
   const logisticB = ref(0);
   let logisticTimer = null;
+  
+  // 逻辑回归参数历史记录
+  const logisticHistory = ref([]);
   
   // 修改逻辑回归动画启动逻辑
   function startLogisticFitAnim() {
@@ -261,6 +379,10 @@
     logisticW.value = 1;
     logisticB.value = 0;
     showFitLine.value = false;
+    
+    // 初始化历史记录
+    logisticHistory.value = [{ w: 1, b: 0 }];
+    
     if (logisticTimer) clearTimeout(logisticTimer);
     setTimeout(() => {
       showFitLine.value = true;
@@ -270,6 +392,10 @@
   }
   function pauseLogisticFitAnim() {
     logisticPaused.value = true;
+    if (logisticTimer) {
+      clearTimeout(logisticTimer);
+      logisticTimer = null;
+    }
   }
   function resumeLogisticFitAnim() {
     if (!logisticAnim.value) return;
@@ -283,15 +409,16 @@
     logisticW.value = 1;
     logisticB.value = 0;
     showFitLine.value = false;
+    logisticHistory.value = []; // 清除历史记录
     if (logisticTimer) clearTimeout(logisticTimer);
   }
-  function runLogisticAnimStep() {
+    function runLogisticAnimStep() {
     if (!logisticAnim.value || logisticPaused.value) return;
     const x = xData.value;
     const y = yData.value;
     let w = logisticW.value;
     let b = logisticB.value;
-    const lr = 0.02; // 步长可适当调大
+    const lr = 0.01; // 放慢：降低学习率
     let dw = 0, db = 0;
     for (let i = 0; i < x.length; i++) {
       const z = w * x[i] + b;
@@ -304,10 +431,110 @@
     logisticW.value = w;
     logisticB.value = b;
     logisticStep.value++;
+    
+    // 保存当前参数到历史记录
+    logisticHistory.value[logisticStep.value] = { w: w, b: b };
+    
     if (logisticStep.value < logisticMaxSteps) {
-      logisticTimer = setTimeout(runLogisticAnimStep, 10);
+      logisticTimer = setTimeout(runLogisticAnimStep, 120); // 放慢：增加每步延时
     } else {
       logisticAnim.value = false;
+    }
+  }
+  
+  // 手动初始化逻辑回归历史记录
+  function initLogisticHistory() {
+    if (logisticHistory.value.length === 0) {
+      logisticHistory.value = [{ w: 1, b: 0 }];
+      logisticStep.value = 0;
+      logisticW.value = 1;
+      logisticB.value = 0;
+      showFitLine.value = true;
+      // 强制更新图表
+      nextTick(() => {
+        if (chartRef.value && chartRef.value.chart) {
+          chartRef.value.chart.update();
+        }
+      });
+    }
+  }
+  
+  // 逻辑回归步进控制
+  function prevLogisticStep() {
+    initLogisticHistory();
+    // 手动步进时自动暂停并清除定时器，避免动画覆写
+    if (logisticAnim.value) {
+      logisticPaused.value = true;
+      if (logisticTimer) { clearTimeout(logisticTimer); logisticTimer = null; }
+    }
+    if (logisticStep.value > 0) {
+      logisticStep.value--;
+      const params = logisticHistory.value[logisticStep.value];
+      if (params) {
+        logisticW.value = params.w;
+        logisticB.value = params.b;
+        // 强制更新图表
+        nextTick(() => {
+          if (chartRef.value && chartRef.value.chart) {
+            chartRef.value.chart.update();
+          }
+        });
+      }
+    }
+  }
+  
+  function nextLogisticStep() {
+    initLogisticHistory();
+    // 手动步进时自动暂停并清除定时器，避免动画覆写
+    if (logisticAnim.value) {
+      logisticPaused.value = true;
+      if (logisticTimer) { clearTimeout(logisticTimer); logisticTimer = null; }
+    }
+    if (logisticStep.value < logisticMaxSteps) {
+      if (logisticHistory.value[logisticStep.value + 1]) {
+        // 如果下一步已经计算过，直接跳转
+        logisticStep.value++;
+        const params = logisticHistory.value[logisticStep.value];
+        if (params) {
+          logisticW.value = params.w;
+          logisticB.value = params.b;
+          // 强制更新图表
+          nextTick(() => {
+            if (chartRef.value && chartRef.value.chart) {
+              chartRef.value.chart.update();
+            }
+          });
+        }
+      } else {
+        // 如果下一步还没有计算，手动执行一步
+        const x = xData.value;
+        const y = yData.value;
+        let w = logisticW.value;
+        let b = logisticB.value;
+        const lr = 0.02;
+        let dw = 0, db = 0;
+        for (let i = 0; i < x.length; i++) {
+          const z = w * x[i] + b;
+          const pred = 1 / (1 + Math.exp(-z));
+          dw += (pred - y[i]) * x[i];
+          db += (pred - y[i]);
+        }
+        w -= lr * dw / x.length;
+        b -= lr * db / x.length;
+        logisticW.value = w;
+        logisticB.value = b;
+        logisticStep.value++;
+        
+        // 保存当前参数到历史记录
+        logisticHistory.value[logisticStep.value] = { w: w, b: b };
+        
+        // 强制更新图表
+        nextTick(() => {
+          if (chartRef.value && chartRef.value.chart) {
+            chartRef.value.chart.update();
+          }
+        });
+      }
     }
   }
   
@@ -382,6 +609,7 @@
     linearStep.value = 0;
     linearSlope.value = 1;
     linearIntercept.value = 0;
+    linearHistory.value = []; // 清除历史记录
     if (linearTimer) clearTimeout(linearTimer);
     // 逻辑回归动画状态
     logisticAnim.value = false;
@@ -389,6 +617,7 @@
     logisticStep.value = 0;
     logisticW.value = 1;
     logisticB.value = 0;
+    logisticHistory.value = []; // 清除历史记录
     if (logisticTimer) clearTimeout(logisticTimer);
   }
   function addRow() {
@@ -603,11 +832,14 @@
   const fitParams = computed(() => {
     if (!is3D.value) {
       if (mode.value === 'linear') {
-        if (linearAnim.value || linearPaused.value) {
+        if (linearAnim.value || linearPaused.value || linearHistory.value.length > 0) {
           return { slope: linearSlope.value, intercept: linearIntercept.value };
         }
         return linearFit(xData.value, yData.value);
       } else {
+        if (logisticAnim.value || logisticPaused.value || logisticHistory.value.length > 0) {
+          return { w: logisticW.value, b: logisticB.value };
+        }
         return logisticFit2D(xData.value, yData.value);
       }
     } else {
