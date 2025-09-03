@@ -3,7 +3,7 @@
     <div class="login-card">
       <div class="login-header">
         <el-avatar class="brand-icon" size="large">
-          <img src="../assets/Nanchang_University_logo.png" alt="logo">
+          <img :src="logoUrl" alt="logo">
         </el-avatar>
         <h2 class="login-title">{{ isLogin ? '用户登录' : '用户注册' }}</h2>
         <p class="login-subtitle">人工智能概论与应用数字化教材平台</p>
@@ -56,7 +56,7 @@
             size="large"
             class="login-btn"
             :loading="loading"
-            @click="handleSubmit"
+            native-type="submit"
           >
             {{ isLogin ? '登录' : '注册' }}
           </el-button>
@@ -75,6 +75,7 @@
 
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
+import logoPng from '@/assets/Nanchang_University_logo.png'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -82,6 +83,7 @@ import { User, Lock } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { login, register } = useAuth()
+const logoUrl = logoPng
 
 // 表单状态
 const isLogin = ref(true)

@@ -714,6 +714,14 @@ html.light-theme .chapter-content {
       border-color: var(--accent-color);
     }
   }
+
+  /* 提升“上一章/下一章”文本可读性 */
+  .btn-label {
+    color: var(--text-secondary-color);
+  }
+  .btn-title {
+    color: var(--text-color);
+  }
 }
 
 @media (max-width: 768px) {
