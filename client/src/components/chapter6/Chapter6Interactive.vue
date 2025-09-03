@@ -262,12 +262,12 @@ const getTabLabel = (tabName) => {
 .chapter6-interactive {
   // 全局选中样式
   ::selection {
-    background: var(--accent-color, #b0b3b8);
+    background: var(--accent-color);
     color: #ffffff;
   }
   
   ::-moz-selection {
-    background: var(--accent-color, #b0b3b8);
+    background: var(--accent-color);
     color: #ffffff;
   }
 }
@@ -276,29 +276,29 @@ const getTabLabel = (tabName) => {
   margin-bottom: 2rem;
   
   .intro-card {
-    background: var(--primary-color, #18191a);
-    border: 1px solid var(--border-color, #393b40);
+    background: var(--intro-card-bg);
+    border: 1px solid var(--intro-card-border);
     
     :deep(.el-card__body) {
-      background: var(--primary-color, #18191a);
+      background: var(--intro-card-bg);
     }
     
     .intro-content {
       text-align: center;
       
       h2 {
-        color: var(--text-color, #f5f6fa);
+        color: var(--text-color);
         margin-bottom: 1rem;
         font-size: 2rem;
         
         .el-icon {
           margin-right: 0.5rem;
-          color: var(--accent-color, #b0b3b8);
+          color: var(--accent-color);
         }
       }
       
       p {
-        color: var(--text-secondary-color, #b0b3b8);
+        color: var(--text-secondary-color);
         font-size: 1.1rem;
         margin-bottom: 2rem;
       }
@@ -313,24 +313,25 @@ const getTabLabel = (tabName) => {
           flex-direction: column;
           align-items: center;
           padding: 1rem;
-          background: var(--secondary-color, #23272e);
+          background: var(--feature-item-bg);
           border-radius: 8px;
-          border: 1px solid var(--border-color, #393b40);
+          border: 1px solid var(--feature-item-border);
           transition: all 0.3s ease;
           
           &:hover {
+            background: var(--feature-item-hover-bg);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(176, 179, 184, 0.2);
+            box-shadow: var(--feature-item-hover-shadow);
           }
           
           .el-icon {
             font-size: 2rem;
-            color: var(--accent-color, #b0b3b8);
+            color: var(--accent-color);
             margin-bottom: 0.5rem;
           }
           
           span {
-            color: var(--text-color, #f5f6fa);
+            color: var(--text-color);
             font-weight: 600;
           }
         }
@@ -343,18 +344,18 @@ const getTabLabel = (tabName) => {
   margin-bottom: 2rem;
   
   .progress-card {
-    background: var(--primary-color, #18191a);
-    border: 1px solid var(--border-color, #393b40);
+    background: var(--progress-card-bg);
+    border: 1px solid var(--progress-card-border);
     
     :deep(.el-card__header) {
-      background: var(--secondary-color, #23272e);
-      border-bottom: 1px solid var(--border-color, #393b40);
-      color: var(--text-color, #f5f6fa);
+      background: var(--progress-card-header-bg);
+      border-bottom: 1px solid var(--progress-card-border);
+      color: var(--text-color);
       font-weight: 600;
     }
     
     :deep(.el-card__body) {
-      background: var(--primary-color, #18191a);
+      background: var(--progress-card-bg);
     }
     
     .progress-content {
@@ -362,7 +363,7 @@ const getTabLabel = (tabName) => {
       
       .progress-text {
         margin-top: 1rem;
-        color: var(--text-secondary-color, #b0b3b8);
+        color: var(--text-secondary-color);
         font-size: 1.1rem;
       }
     }
@@ -370,7 +371,7 @@ const getTabLabel = (tabName) => {
 }
 
 .chapter-navigation {
-  background: rgba(35, 39, 46, 0.95);
+  background: var(--chapter-nav-bg);
   backdrop-filter: blur(10px);
   padding: 0 2rem;
   border-radius: 8px;
@@ -379,21 +380,21 @@ const getTabLabel = (tabName) => {
   .chapter-tabs {
     :deep(.el-tabs__header) {
       margin: 0;
-      border-bottom: 2px solid var(--border-color, #393b40);
+      border-bottom: 2px solid var(--chapter-nav-border);
     }
     
     :deep(.el-tabs__item) {
       font-size: 1rem;
       font-weight: 600;
       padding: 1rem 1.5rem;
-      color: var(--text-secondary-color, #b0b3b8);
+      color: var(--tab-item-color);
       
       &.is-active {
-        color: var(--accent-color, #b0b3b8);
+        color: var(--tab-item-active-color);
       }
       
       &:hover {
-        color: #d1d3d8;
+        color: var(--tab-item-hover-color);
       }
     }
     
@@ -407,11 +408,11 @@ const getTabLabel = (tabName) => {
 
 .chapter-content {
   .content-section {
-    background: var(--secondary-color, #23272e);
+    background: var(--content-section-bg);
     border-radius: 12px;
-    box-shadow: var(--box-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+    box-shadow: var(--box-shadow);
     overflow: hidden;
-    border: 1px solid var(--border-color, #393b40);
+    border: 1px solid var(--content-section-border);
   }
 }
 
@@ -423,9 +424,9 @@ const getTabLabel = (tabName) => {
   animation: slideInRight 0.5s ease-out;
   
   .achievement-card {
-    background: linear-gradient(135deg, var(--accent-color, #b0b3b8), #d1d3d8);
+    background: var(--achievement-card-bg);
     border: none;
-    box-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
+    box-shadow: var(--achievement-card-shadow);
     
     .achievement-content {
       display: flex;
@@ -433,20 +434,20 @@ const getTabLabel = (tabName) => {
       
       .achievement-icon {
         font-size: 2rem;
-        color: var(--primary-color, #18191a);
+        color: var(--primary-color);
         margin-right: 1rem;
       }
       
       .achievement-text {
         h3 {
           margin: 0 0 0.5rem 0;
-          color: var(--primary-color, #18191a);
+          color: var(--primary-color);
           font-weight: 700;
         }
         
         p {
           margin: 0;
-          color: #232526;
+          color: var(--secondary-color);
         }
       }
     }
@@ -472,10 +473,10 @@ const getTabLabel = (tabName) => {
   min-height: 400px;
 
   .redirect-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--redirect-card-bg);
     border: none;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--redirect-card-shadow);
 
     :deep(.el-card__body) {
       background: transparent;
@@ -515,6 +516,133 @@ const getTabLabel = (tabName) => {
   50% {
     transform: scale(1.1);
     opacity: 0.8;
+  }
+}
+
+/* 浅色主题适配 */
+html.light-theme .chapter6-interactive {
+  .interactive-intro {
+    .intro-card {
+      background: var(--intro-card-bg);
+      border: 1px solid var(--intro-card-border);
+      box-shadow: var(--box-shadow);
+    }
+
+    .intro-content {
+      h2 {
+        color: var(--text-color);
+      }
+
+      p {
+        color: var(--text-secondary-color);
+      }
+
+      .features-grid {
+        .feature-item {
+          background: var(--feature-item-bg);
+          border: 1px solid var(--feature-item-border);
+          color: var(--text-color);
+
+          &:hover {
+            background: var(--feature-item-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--feature-item-hover-shadow);
+          }
+        }
+      }
+    }
+  }
+
+  .progress-overview {
+    .progress-card {
+      background: var(--progress-card-bg);
+      border: 1px solid var(--progress-card-border);
+      box-shadow: var(--box-shadow);
+    }
+
+    .progress-content {
+      .progress-text {
+        color: var(--text-secondary-color);
+      }
+    }
+  }
+
+  .chapter-navigation {
+    .chapter-tabs {
+      :deep(.el-tabs__header) {
+        background: var(--intro-card-bg);
+        border-bottom: 1px solid var(--intro-card-border);
+      }
+
+      :deep(.el-tabs__item) {
+        color: var(--tab-item-color);
+        background: var(--feature-item-bg);
+        border: 1px solid var(--feature-item-border);
+
+        &:hover {
+          color: var(--accent-color);
+          background: var(--feature-item-hover-bg);
+        }
+
+        &.is-active {
+          color: var(--accent-color);
+          background: var(--intro-card-bg);
+          border-bottom: 2px solid var(--accent-color);
+        }
+      }
+    }
+  }
+
+  .chapter-content {
+    .content-section {
+      background: var(--content-section-bg);
+      border: 1px solid var(--content-section-border);
+      box-shadow: var(--box-shadow);
+    }
+  }
+
+  .achievement-notification {
+    .achievement-card {
+      background: var(--btn-primary-bg);
+      color: white;
+      box-shadow: var(--box-shadow);
+
+      .achievement-content {
+        .achievement-icon {
+          color: white;
+        }
+
+        .achievement-text {
+          h3 {
+            color: white;
+          }
+
+          p {
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+      }
+    }
+  }
+
+  .network-training-redirect {
+    .redirect-card {
+      background: var(--redirect-card-bg);
+      color: white;
+      box-shadow: var(--redirect-card-shadow);
+
+      .redirect-content {
+        color: white;
+
+        h3 {
+          color: white;
+        }
+
+        p {
+          color: rgba(255, 255, 255, 0.9);
+        }
+      }
+    }
   }
 }
 

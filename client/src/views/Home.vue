@@ -115,6 +115,20 @@ export default {
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Light theme: restore blue hero background */
+  .light-theme & {
+    /* Simpler, calmer blue gradient with better contrast */
+    background: linear-gradient(135deg, #0d6efd 0%, #1e40af 100%);
+    color: #ffffff;
+  }
+  /* Add a subtle dark overlay in light theme to improve text readability */
+  .light-theme &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.22);
+    z-index: 0;
+  }
 }
 .hero::after {
   content: '';
@@ -137,6 +151,7 @@ export default {
   font-weight: 800;
   margin-bottom: 1.2rem;
   letter-spacing: 2px;
+  .light-theme & { color: #ffffff; }
 }
 .hero-subtitle {
   font-size: 1.5rem;
@@ -144,6 +159,8 @@ export default {
   color: var(--accent-color, #3b82f6);
   font-weight: 700;
   letter-spacing: 1px;
+  /* Make subtitle readable on blue background in light theme */
+  .light-theme & { color: #e8f1ff; }
 }
 .hero-description {
   font-size: 1.15rem;
@@ -151,6 +168,11 @@ export default {
   margin-bottom: 2.2rem;
   color: var(--text-secondary-color, #475569);
   opacity: 0.92;
+  /* Light theme: make this sentence white for better contrast */
+  .light-theme & {
+    color: #ffffff;
+    opacity: 1;
+  }
 }
 .hero-actions {
   display: flex;
@@ -184,10 +206,16 @@ export default {
   font-size: 1.1rem;
   padding: 14px 36px;
   transition: all 0.25s;
+  /* Ensure button is visible on blue hero in light theme */
+  .light-theme & {
+    color: #ffffff;
+    border-color: #ffffff;
+  }
 }
 .btn-secondary:hover {
   background: var(--accent-color, #3b82f6);
   color: var(--card-bg, #ffffff);
+  .light-theme & { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
 }
 
 .features {

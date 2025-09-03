@@ -3,7 +3,7 @@
     <div class="login-card">
       <div class="login-header">
         <el-avatar class="brand-icon" size="large">
-          <img src="../assets/Nanchang_University_logo.png" alt="logo">
+          <img :src="logoUrl" alt="logo">
         </el-avatar>
         <h2 class="login-title">{{ isLogin ? '用户登录' : '用户注册' }}</h2>
         <p class="login-subtitle">人工智能概论与应用数字化教材平台</p>
@@ -56,7 +56,7 @@
             size="large"
             class="login-btn"
             :loading="loading"
-            @click="handleSubmit"
+            native-type="submit"
           >
             {{ isLogin ? '登录' : '注册' }}
           </el-button>
@@ -67,10 +67,6 @@
             {{ isLogin ? '没有账号？立即注册' : '已有账号？立即登录' }}
           </el-button>
           
-          <!-- 临时测试按钮 -->
-          <el-button type="text" @click="testProfileNavigation" style="color: red; margin-top: 10px;">
-            🔧 测试跳转个人中心
-          </el-button>
         </div>
       </el-form>
     </div>
@@ -79,13 +75,15 @@
 
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
+import logoPng from '@/assets/Nanchang_University_logo.png'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { login, register } = useAuth()
+const logoUrl = logoPng
 
 // 表单状态
 const isLogin = ref(true)
@@ -139,19 +137,7 @@ const toggleMode = () => {
   })
 }
 
-// 测试跳转功能
-const testProfileNavigation = async () => {
-  console.log('🔧 测试跳转功能开始')
-  console.log('🔧 当前localStorage token:', localStorage.getItem('token') ? 'exists' : 'null')
-  
-  try {
-    console.log('🔧 尝试跳转到 /profile')
-    await router.push('/profile')
-    console.log('🔧 跳转成功')
-  } catch (error) {
-    console.error('🔧 跳转失败:', error)
-  }
-}
+// 
 
 // 提交表单
 const handleSubmit = async () => {
@@ -184,6 +170,8 @@ const handleSubmit = async () => {
           // 如果跳转失败，尝试跳转到首页
           router.push('/')
         }
+      } else {
+        ElMessage.error(result.message || '登录失败，请稍后重试')
       }
     } else {
       // 注册
@@ -202,11 +190,22 @@ const handleSubmit = async () => {
         nextTick(() => {
           formRef.value?.clearValidate()
         })
+      } else {
+        ElMessage.error(result.message || '注册失败，请稍后重试')
       }
     }
   } catch (error) {
     console.error('表单验证失败:', error)
-    console.error('验证错误详情:', error.errors || error.message)
+    console.error('验证错误详情:', error?.errors || error?.message)
+    // 统一格式错误弹窗（中英文）
+    const title = '格式错误 / Format Error'
+    const message = `请检查输入格式：\n
+• 用户名：4-16 位 / Username: 4-16 chars\n
+• 密码：4-16 位 / Password: 4-16 chars\n
+• 注册需两次密码一致 / Confirm password must match`
+    try {
+      await ElMessageBox.alert(message, title, { type: 'warning', confirmButtonText: '知道了 / OK' })
+    } catch (_) {}
   } finally {
     loading.value = false
   }

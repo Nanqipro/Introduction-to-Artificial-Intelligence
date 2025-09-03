@@ -223,7 +223,8 @@ input, textarea, select {
   color: var(--footer-color, #212529);
   padding: 2rem 0 1rem 0;
   margin-top: auto;
-  border-top: 1px solid var(--border-color, #dee2e6);
+  border-top: 1px solid var(--footer-border, #dee2e6);
+  backdrop-filter: blur(20px);
 }
 
 .footer-content {
@@ -236,11 +237,12 @@ input, textarea, select {
 .footer-content p {
   margin: 0.5rem 0;
   font-size: 0.9rem;
-  color: var(--text-secondary-color, #6c757d);
+  color: var(--footer-text-primary, #6c757d);
 }
 
 .footer-tech {
   font-size: 0.8rem !important;
+  color: var(--footer-text-secondary, #6c757d) !important;
   opacity: 0.8;
 }
 

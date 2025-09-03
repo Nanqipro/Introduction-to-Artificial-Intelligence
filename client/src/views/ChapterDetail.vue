@@ -1,776 +1,28 @@
 <template>
   <div class="chapter-detail">
-    <!-- 导航栏 -->
     <nav class="chapter-nav">
       <div class="nav-container">
         <button @click="goBack" class="nav-back">
           ← 返回章节列表
         </button>
         <div class="nav-title" v-if="chapter">
-          {{ chapter.chapterNumber === '0' ? '续章' : `第${chapter.chapterNumber}章` }} - {{ chapter.title }}
+          {{ chapter.chapterNumber === '0' ? '续章' : ('第' + chapter.chapterNumber + '章') }} - {{ chapter.title }}
         </div>
       </div>
     </nav>
 
     <div class="container">
-      <!-- 章节内容 -->
-      <article class="chapter-content" v-if="chapter && !loading">
-        <!-- 章节头部 -->
-        <header class="chapter-header">
-          <div class="chapter-meta">
-            <span class="chapter-badge">
-              {{ chapter.chapterNumber === '0' ? '续章' : `第${chapter.chapterNumber}章` }}
-            </span>
-            <span class="chapter-type">{{ getChapterType(chapter.type) }}</span>
-          </div>
-          <h1 class="chapter-title">{{ chapter.title }}</h1>
-          <p class="chapter-summary">{{ chapter.summary }}</p>
-          <div class="chapter-info">
-            <span class="info-item">
-              <span class="info-label">更新时间:</span>
-              <span class="info-value">{{ formatDate(chapter.updatedAt) }}</span>
-            </span>
-            <span class="info-item">
-              <span class="info-label">状态:</span>
-              <span class="info-value" :class="{ published: chapter.published }">
-                {{ chapter.published ? '已发布' : '未发布' }}
-              </span>
-            </span>
-          </div>
-        </header>
+      <ChapterDetailContent 
+        v-if="chapter && !loading" 
+        :chapter="chapter" 
+        :id="id" 
+      />
 
-        <!-- 章节正文 -->
-        <div class="chapter-body" v-if="isChapter1 && !showChapter1Quiz">
-          <!-- 第一章案例演示 -->
-          <div class="case-study-section">
-            <div class="case-study-header">
-              <h2 class="case-study-title">🎯 第一章案例演示</h2>
-              <p class="case-study-description">通过实际案例学习，掌握人工智能的基本概念和应用</p>
-            </div>
-            
-            <!-- 第一题：雪纺裙图片 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 1：雪纺裙的图片</h3>
-                <p class="question-description">从两张图片中判断哪一张是真实拍摄，哪一张是 AI 生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/A_真实照片.png" alt="A 选项图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(1, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(1, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/A_ai生成.png" alt="B 选项图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(1, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(1, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[1]" class="feedback-card" :class="{ 'correct': questionResults[1].correct, 'incorrect': !questionResults[1].correct }">
-                <div class="feedback-icon">{{ questionResults[1].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[1].message }}</div>
-                <button @click="resetQuestion(1)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第二题：音频对比 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 2：人声女声翻唱和AI女声翻唱《告白气球》</h3>
-                <p class="question-description">请听两段音频，判断哪段是人声翻唱，哪段是AI翻唱。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-content">
-                    <div class="audio-placeholder">
-                      <div class="placeholder-icon">🎵</div>
-                      <div class="placeholder-title">音频片段A</div>
-                      <div class="placeholder-desc">请听音频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://www.bilibili.com/video/BV1ts41117qh/" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(2, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(2, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-content">
-                    <div class="audio-placeholder">
-                      <div class="placeholder-icon">🎵</div>
-                      <div class="placeholder-title">音频片段B</div>
-                      <div class="placeholder-desc">请听音频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://www.bilibili.com/video/BV17t421E7pz/" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(2, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(2, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[2]" class="feedback-card" :class="{ 'correct': questionResults[2].correct, 'incorrect': !questionResults[2].correct }">
-                <div class="feedback-icon">{{ questionResults[2].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[2].message }}</div>
-                <button @click="resetQuestion(2)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第三题：城市街景 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 3：城市街景（阿姆斯特丹）</h3>
-                <p class="question-description">从两张图片中判断哪一张是真实拍摄，哪一张是 AI 生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/B_真实图片.png" alt="A 真实图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(3, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(3, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/B_ai生成.png" alt="B AI 图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(3, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(3, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[3]" class="feedback-card" :class="{ 'correct': questionResults[3].correct, 'incorrect': !questionResults[3].correct }">
-                <div class="feedback-icon">{{ questionResults[3].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[3].message }}</div>
-                <button @click="resetQuestion(3)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第四题：论文语句 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 4：论文语句（AI vs 优秀论文）</h3>
-                <p class="question-description">请阅读两段文字，判断哪段是AI生成，哪段是人类优秀论文。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-text">
-                    <p>在现有的研究体系中，对于不确定性的探讨大多集中在宏观经济不确定性（Jurado et al., 2015）以及经济政策不确定性（Baker et al., 2016），而相较之下，金融市场层面的不确定性议题则明显被边缘化。这种现象在一定程度上反映了传统文献对于宏观经济变量影响力的过度强调，而对金融市场内生波动性的关注不足。</p>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(4, 'A', 'ai')" class="btn btn-primary">
-                      这是 AI
-                    </button>
-                    <button @click="answerQuestion(4, 'A', 'human')" class="btn btn-secondary">
-                      这是真实
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-text">
-                    <p>目前，关于不确定性的研究主要集中在宏观经济不确定性(Jurado et al.，2015) 和经济政策不确定性(Baker et al., 2016) ，关于金融市场的不确定性关注较少。因为在传统文献中，金融市场主要受到宏观经济影响。</p>
-                    <div class="text-source">引自：黄卓,邱晗,沈艳 & 童晨.(2018).测量中国的金融不确定性——基于大数据的方法.金融研究,(11),30-46.</div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(4, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(4, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[4]" class="feedback-card" :class="{ 'correct': questionResults[4].correct, 'incorrect': !questionResults[4].correct }">
-                <div class="feedback-icon">{{ questionResults[4].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[4].message }}</div>
-                <button @click="resetQuestion(4)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第五题：猫咪视频 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 5：小猫咪玩耍的视频</h3>
-                <p class="question-description">请观看两段视频，判断哪段是真实拍摄，哪段是AI生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-content">
-                    <div class="video-placeholder">
-                      <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">视频片段A</div>
-                      <div class="placeholder-desc">请观看视频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://www.bilibili.com/video/BV1n83tzdEsK" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(5, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(5, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-content">
-                    <div class="video-placeholder">
-                      <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">视频片段B</div>
-                      <div class="placeholder-desc">请观看视频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://jcni7655zeyq.feishu.cn/file/D1u0bKaTwoBRASxxJaicBsi9nid" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(5, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(5, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[5]" class="feedback-card" :class="{ 'correct': questionResults[5].correct, 'incorrect': !questionResults[5].correct }">
-                <div class="feedback-icon">{{ questionResults[5].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[5].message }}</div>
-                <button @click="resetQuestion(5)" class="btn btn-outline">
-                  再试一次
-                </button>
-                          </div>
-
-            <!-- 第六题：麻辣烫店铺 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 6：麻辣烫店铺</h3>
-                <p class="question-description">从两张图片中判断哪一张是真实拍摄，哪一张是 AI 生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/C_真实图片.png" alt="A 真实图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(6, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(6, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/C_ai生成.png" alt="B AI 图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(6, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(6, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[6]" class="feedback-card" :class="{ 'correct': questionResults[6].correct, 'incorrect': !questionResults[6].correct }">
-                <div class="feedback-icon">{{ questionResults[6].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[6].message }}</div>
-                <button @click="resetQuestion(6)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第七题：沸腾火锅 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 7：沸腾的火锅</h3>
-                <p class="question-description">从两张图片中判断哪一张是真实拍摄，哪一张是 AI 生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/D_真实图片.png" alt="A 真实图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(7, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(7, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/D_ai生成.png" alt="B AI 图片" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(7, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(7, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[7]" class="feedback-card" :class="{ 'correct': questionResults[7].correct, 'incorrect': !questionResults[7].correct }">
-                <div class="feedback-icon">{{ questionResults[7].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[7].message }}</div>
-                <button @click="resetQuestion(7)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第八题：哲学语句 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 8：人类哲学家（黑格尔）vs AI 哲学家</h3>
-                <p class="question-description">请阅读两段哲学语句，判断哪段是黑格尔原句，哪段是AI生成。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-text">
-                    <p>精神不是一个存在在外的东西，而是自我认识、自我实现的过程。</p>
-                    <div class="text-source">黑格尔. (1979). 精神现象学 (贺麟 译). 商务印书馆. (原著发表于 1807)</div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(8, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(8, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-text">
-                    <p>意识不是孤立的旁观者，而是不断映照自身的镜子，通过反思获得存在的意义。</p>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(8, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(8, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[8]" class="feedback-card" :class="{ 'correct': questionResults[8].correct, 'incorrect': !questionResults[8].correct }">
-                <div class="feedback-icon">{{ questionResults[8].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[8].message }}</div>
-                <button @click="resetQuestion(8)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第九题：古典画作 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 9：古典画作 vs AI 画作</h3>
-                <p class="question-description">以1665年荷兰画家约翰内斯·维米尔《戴珍珠耳环的少女》为例。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/E_真实图片.png" alt="A 真实画作" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(9, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(9, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-image">
-                    <img src="/images/chapter1/E_ai生成.png" alt="B 选项画作" />
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(9, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(9, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[9]" class="feedback-card" :class="{ 'correct': questionResults[9].correct, 'incorrect': !questionResults[9].correct }">
-                <div class="feedback-icon">{{ questionResults[9].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[9].message }}</div>
-                <button @click="resetQuestion(9)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-
-            <!-- 第十题：广告视频 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">题目 10：真实广告 vs AI 广告</h3>
-                <p class="question-description">以下为可口可乐公司发布的两则广告，一个为真实拍摄，一个为AI制作。</p>
-              </div>
-              
-              <div class="case-study-options">
-                <!-- A选项 -->
-                <div class="option-card option-a">
-                  <h4 class="option-label">A</h4>
-                  <div class="option-content">
-                    <div class="video-placeholder">
-                      <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">广告视频A</div>
-                      <div class="placeholder-desc">请观看视频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://www.youtube.com/watch?v=6wtxogfPieA" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(10, 'A', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(10, 'A', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- B选项 -->
-                <div class="option-card option-b">
-                  <h4 class="option-label">B</h4>
-                  <div class="option-content">
-                    <div class="video-placeholder">
-                      <div class="placeholder-icon">🎬</div>
-                      <div class="placeholder-title">广告视频B</div>
-                      <div class="placeholder-desc">请观看视频判断</div>
-                      <div class="placeholder-link">
-                        <a href="https://www.youtube.com/watch?v=4RSTupbfGog" target="_blank" class="link-btn">观看原视频</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="option-actions">
-                    <button @click="answerQuestion(10, 'B', 'human')" class="btn btn-primary">
-                      这是真实
-                    </button>
-                    <button @click="answerQuestion(10, 'B', 'ai')" class="btn btn-secondary">
-                      这是 AI
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 答题反馈 -->
-              <div v-if="questionResults[10]" class="feedback-card" :class="{ 'correct': questionResults[10].correct, 'incorrect': !questionResults[10].correct }">
-                <div class="feedback-icon">{{ questionResults[10].correct ? '🎉' : '💡' }}</div>
-                <div class="feedback-message">{{ questionResults[10].message }}</div>
-                <button @click="resetQuestion(10)" class="btn btn-outline">
-                  再试一次
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 题目概览 -->
-          <div class="case-study-overview">
-              <h3 class="overview-title">📚 第一章完整练习概览</h3>
-              <p class="overview-description">总共 10 道题目，涵盖图片、音频、视频和文本等多种类型</p>
-              
-              <div class="overview-list">
-                <h4>题目列表：</h4>
-                <ul>
-                  <li>题目 1：雪纺裙的图片</li>
-                  <li>题目 2：音频对比</li>
-                  <li>题目 3：城市街景</li>
-                  <li>题目 4：智慧农业</li>
-                  <li>题目 5：猫咪视频</li>
-                  <li>题目 6：麻辣烫店铺</li>
-                  <li>题目 7：沸腾火锅</li>
-                  <li>题目 8：哲学语句</li>
-                  <li>题目 9：古典画作</li>
-                  <li>题目 10：广告视频</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 第一章测验模式 -->
-          <div v-if="isChapter1 && showChapter1Quiz" class="case-study-section">
-            <div class="case-study-header">
-              <h2 class="case-study-title">🎯 第一章测验模式</h2>
-              <p class="case-study-description">测验模式：所有题目同时显示，可以自由答题和查看结果</p>
-              <button @click="showChapter1Quiz = false" class="btn btn-outline">
-                ← 返回案例演示模式
-              </button>
-            </div>
-            
-            <!-- 测验模式下的所有题目 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">🎯 测验说明</h3>
-                <p class="question-description">请仔细阅读每个题目，选择你认为正确的答案。答题后可以查看结果和解释。</p>
-              </div>
-            </div>
-            
-            <!-- 这里可以添加测验模式下的题目显示逻辑 -->
-            <div class="case-study-card">
-              <div class="case-study-question">
-                <h3 class="question-title">📊 测验进度</h3>
-                <p class="question-description">已完成题目：{{ Object.keys(questionResults).filter(id => questionResults[id]).length }}/10</p>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: (Object.keys(questionResults).filter(id => questionResults[id]).length / 10 * 100) + '%' }"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 第六章特殊处理：显示交互式内容 -->
-          <div v-if="isChapter6" class="interactive-chapter">
-            <Chapter6Interactive />
-          </div>
-          <!-- 其他章节显示普通内容 -->
-          <div v-else class="content-text" v-html="formatContent(chapter.content)"></div>
-        </div>
-
-        <!-- 第二章案例学习 -->
-        <div v-if="isChapter2" class="case-study-section">
-          <Chapter2CaseStudy 
-            :chapter-id="id" 
-            @case-completed="onCaseCompleted"
-            @all-cases-completed="onAllCasesCompleted"
-          />
-        </div>
-
-        <!-- 第三章案例学习 -->
-        <div v-if="isChapter3" class="case-study-section">
-          <Chapter3CaseStudy 
-            :chapter-id="id" 
-            @case-completed="onCaseCompleted"
-            @all-cases-completed="onAllCasesCompleted"
-          />
-        </div>
-
-        <!-- 第四章案例学习 -->
-        <div v-if="isChapter4" class="case-study-section">
-          <Chapter4CaseStudy 
-            :chapter-id="id" 
-            @case-completed="onCaseCompleted"
-            @all-cases-completed="onAllCasesCompleted"
-          />
-        </div>
-
-        <!-- 第七章案例学习 -->
-        <div v-if="isChapter7" class="case-study-section">
-          <Chapter7CaseStudy 
-            :chapter-id="id" 
-            @case-completed="onCaseCompleted"
-            @all-cases-completed="onAllCasesCompleted"
-          />
-        </div>
-
-        <!-- 答题系统入口 -->
-        <div class="quiz-section">
-          <div class="quiz-header">
-            <h3 class="quiz-title">📚 知识测验</h3>
-            <p class="quiz-description">
-              {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
-            </p>
-          </div>
-          <div class="quiz-actions">
-            <button 
-              @click="startQuiz" 
-              class="btn btn-quiz"
-              :disabled="(isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted"
-              :class="{ disabled: (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted }"
-            >
-              <span class="btn-icon">🎯</span>
-              <span class="btn-text">
-                {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
-              </span>
-            </button>
-            <div class="quiz-info">
-              <span class="info-item">
-                <span class="info-icon">⏱️</span>
-                <span class="info-text">预计用时: 10-15分钟</span>
-              </span>
-              <span class="info-item">
-                <span class="info-icon">🏆</span>
-                <span class="info-text">可获得奖励和成就</span>
-              </span>
-              <span v-if="isChapter2" class="info-item">
-                <span class="info-icon">✅</span>
-                <span class="info-text">案例完成进度: {{ completedCasesCount }}/2</span>
-              </span>
-              <span v-if="isChapter3" class="info-item">
-                <span class="info-icon">✅</span>
-                <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
-              </span>
-              <span v-if="isChapter4" class="info-item">
-                <span class="info-icon">✅</span>
-                <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 章节导航 -->
-        <nav class="chapter-pagination">
-          <button 
-            v-if="prevChapter" 
-            @click="goToChapter(prevChapter.id)"
-            class="pagination-btn prev"
-          >
-            <span class="btn-label">上一章</span>
-            <span class="btn-title">{{ prevChapter.title }}</span>
-          </button>
-          <button 
-            v-if="nextChapter" 
-            @click="goToChapter(nextChapter.id)"
-            class="pagination-btn next"
-          >
-            <span class="btn-label">下一章</span>
-            <span class="btn-title">{{ nextChapter.title }}</span>
-          </button>
-        </nav>
-      </article>
-
-      <!-- 加载状态 -->
       <div v-if="loading" class="loading-container">
         <div class="loading-spinner"></div>
         <p>正在加载章节内容...</p>
       </div>
 
-      <!-- 错误状态 -->
       <div v-if="error" class="error-container">
         <div class="error-icon">⚠️</div>
         <h3>加载失败</h3>
@@ -783,22 +35,12 @@
 
 <script>
 import { chapterApi } from '../services/api'
-import Chapter1Demo from '../components/chapter1/Chapter1Demo.vue'
-import Chapter6Interactive from '../components/chapter6/Chapter6Interactive.vue'
-import Chapter2CaseStudy from '../components/chapter2/Chapter2CaseStudy.vue'
-import Chapter3CaseStudy from '../components/chapter3/Chapter3CaseStudy.vue'
-import Chapter4CaseStudy from '../components/chapter4/Chapter4CaseStudy.vue'
-import Chapter7CaseStudy from '../components/chapter7/Chapter7CaseStudy.vue'
+import ChapterDetailContent from '../components/ChapterDetailContent.vue'
 
 export default {
   name: 'ChapterDetail',
   components: {
-    Chapter1Demo,
-    Chapter6Interactive,
-    Chapter2CaseStudy,
-    Chapter3CaseStudy,
-    Chapter4CaseStudy,
-    Chapter7CaseStudy
+    ChapterDetailContent
   },
   props: {
     id: {
@@ -809,104 +51,17 @@ export default {
   data() {
     return {
       chapter: null,
-      allChapters: [],
       loading: true,
-      error: null,
-      completedCasesCount: 0,
-      allCasesCompleted: false,
-      showChapter1Quiz: false, // 控制第一章测验显示状态，默认显示案例演示
-      questionResults: {},
-      questionAnswers: {
-        1: { A: 'human', B: 'ai' },
-        2: { A: 'human', B: 'ai' },
-        3: { A: 'human', B: 'ai' },
-        4: { A: 'ai', B: 'human' },
-        5: { A: 'human', B: 'ai' },
-        6: { A: 'human', B: 'ai' },
-        7: { A: 'human', B: 'ai' },
-        8: { A: 'human', B: 'ai' },
-        9: { A: 'human', B: 'ai' },
-        10: { A: 'human', B: 'ai' }
-      }
-    }
-  },
-  computed: {
-    isChapter6() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '6' ||
-        this.chapter.title.includes('第一个人工智能项目') ||
-        this.id === '6'
-      )
-    },
-    isChapter2() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '2' ||
-        this.chapter.title.includes('机器学习基础') ||
-        this.id === '2'
-      )
-    },
-    isChapter1() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '1' ||
-        this.chapter.title.includes('人工智能概论') ||
-        this.id === '1'
-      )
-    },
-    isChapter3() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '3' ||
-        this.chapter.title.includes('图像识别') ||
-        this.chapter.title.includes('计算机视觉') ||
-        this.id === '3'
-      )
-    },
-    isChapter4() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '4' ||
-        this.chapter.title.includes('人工智能应用') ||
-        this.chapter.title.includes('智慧生活') ||
-        this.chapter.title.includes('智慧驾驶') ||
-        this.chapter.title.includes('智慧医疗') ||
-        this.id === '4'
-      )
-    },
-    isChapter7() {
-      return this.chapter && (
-        this.chapter.chapterNumber === '7' ||
-        this.chapter.title.includes('人工智能的思考') ||
-        this.chapter.title.includes('伦理') ||
-        this.chapter.title.includes('算法歧视') ||
-        this.id === '7'
-      )
-    },
-    prevChapter() {
-      if (!this.chapter || !this.allChapters.length) return null
-      const currentIndex = this.allChapters.findIndex(ch => ch.id === this.chapter.id)
-      return currentIndex > 0 ? this.allChapters[currentIndex - 1] : null
-    },
-    nextChapter() {
-      if (!this.chapter || !this.allChapters.length) return null
-      const currentIndex = this.allChapters.findIndex(ch => ch.id === this.chapter.id)
-      return currentIndex < this.allChapters.length - 1 ? this.allChapters[currentIndex + 1] : null
+      error: null
     }
   },
   async mounted() {
     await this.loadChapter()
-    await this.loadAllChapters()
-    
-    // 确保第一章默认显示案例演示模式
-    if (this.isChapter1) {
-      this.showChapter1Quiz = false
-    }
   },
   watch: {
     id: {
       handler() {
         this.loadChapter()
-        // 路由变化时重置第一章测验状态
-        if (this.isChapter1) {
-          this.showChapter1Quiz = false
-        }
       }
     }
   },
@@ -930,467 +85,24 @@ export default {
         this.loading = false
       }
     },
-    async loadAllChapters() {
-      try {
-        const response = await chapterApi.getChapterOverview()
-        this.allChapters = response.data || []
-      } catch (error) {
-        console.error('加载章节列表失败:', error)
-      }
-    },
     goBack() {
       this.$router.push('/chapters')
-    },
-    goToChapter(id) {
-      this.$router.push(`/chapters/${id}`)
-    },
-    startQuiz() {
-      // 第一章特殊处理：在当前页面显示测验，不跳转
-      if (this.isChapter1) {
-        this.showChapter1Quiz = true
-        this.$message({
-          message: '🎯 第一章测验已开始！请完成所有题目。',
-          type: 'success',
-          duration: 3000
-        })
-        return
-      }
-      
-      // 其他章节：检查案例完成情况
-      if ((this.isChapter2 || this.isChapter3 || this.isChapter4) && !this.allCasesCompleted) {
-        this.$message({
-          message: '请先完成所有案例学习后再开始测验',
-          type: 'warning',
-          duration: 3000
-        })
-        return
-      }
-      
-      // 跳转到答题页面
-      this.$router.push(`/quiz/${this.id}`)
-    },
-    
-    // 第一章案例演示答题方法
-          answerQuestion(questionId, option, guess) {
-        const correctAnswer = this.questionAnswers[questionId][option]
-        const isCorrect = guess === correctAnswer
-        
-        // Vue 3 兼容性：直接赋值即可，无需 $set
-        this.questionResults[questionId] = {
-          correct: isCorrect,
-          message: isCorrect 
-            ? '🎉 恭喜你，答对了，很厉害哦！' 
-            : `💡 不好意思，答错了。标准答案：A 为 ${this.questionAnswers[questionId].A === 'human' ? '真实' : 'AI'}，B 为 ${this.questionAnswers[questionId].B === 'human' ? '真实' : 'AI'}。`
-        }
-      },
-      
-      resetQuestion(questionId) {
-        // Vue 3 兼容性：直接赋值即可，无需 $set
-        this.questionResults[questionId] = null
-      },
-    
-    onCaseCompleted(caseId) {
-      this.completedCasesCount++
-      this.$message({
-        message: `案例 ${caseId} 完成！`,
-        type: 'success',
-        duration: 2000
-      })
-    },
-    
-    onAllCasesCompleted() {
-      this.allCasesCompleted = true
-      this.$message({
-        message: '🎉 恭喜！所有案例学习已完成，现在可以开始测验了！',
-        type: 'success',
-        duration: 3000
-      })
-    },
-    getChapterType(type) {
-      const typeMap = {
-        'prologue': '序章',
-        'chapter': '正章',
-        'appendix': '附录'
-      }
-      return typeMap[type] || '章节'
-    },
-    formatDate(dateString) {
-      if (!dateString) return ''
-      return new Date(dateString).toLocaleDateString('zh-CN')
-    },
-    formatContent(content) {
-      if (!content) return ''
-      // 简单的文本格式化，将换行转换为段落
-      return content
-        .split('\n\n')
-        .map(paragraph => `<p>${paragraph.trim()}</p>`)
-        .join('')
-    },
-    
-
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-
-/* 第一章案例演示样式 */
-.case-study-section {
-  margin: var(--spacing-lg, 2rem) 0;
-}
-
-.case-study-header {
-  text-align: center;
-  margin-bottom: var(--spacing-lg, 2rem);
-  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
-  color: var(--text-color, #f5f6fa);
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-}
-
-.case-study-title {
-  font-size: var(--font-size-3xl, 1.875rem);
-  font-weight: 700;
-  margin-bottom: var(--spacing-md, 1.5rem);
-  color: var(--text-color, #f5f6fa);
-}
-
-.case-study-description {
-  font-size: var(--font-size-lg, 1.125rem);
-  opacity: 0.9;
-  color: var(--text-secondary-color, #b0b3b8);
-}
-
-.case-study-card {
-  background: var(--card-bg, #292c33);
-  margin-bottom: var(--spacing-lg, 2rem);
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  transition: all var(--transition-normal, 0.3s) ease;
-}
-
-.case-study-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.2));
-}
-
-.case-study-question {
-  text-align: center;
-  margin-bottom: var(--spacing-lg, 2rem);
-}
-
-.question-title {
-  font-size: var(--font-size-2xl, 1.5rem);
-  font-weight: 600;
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.question-description {
-  color: var(--text-secondary-color, #b0b3b8);
-  font-size: var(--font-size-lg, 1.125rem);
-}
-
-.case-study-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-lg, 2rem);
-  margin-bottom: var(--spacing-lg, 2rem);
-}
-
-.option-card {
-  background: var(--secondary-color, #23272e);
-  padding: var(--spacing-md, 1.5rem);
-  border: 2px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  transition: all var(--transition-normal, 0.3s) ease;
-}
-
-.option-card:hover {
-  border-color: var(--accent-color, #b0b3b8);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
-}
-
-.option-a {
-  border-left: 4px solid var(--success-color, #4caf50);
-}
-
-.option-b {
-  border-left: 4px solid var(--error-color, #f44336);
-}
-
-.option-label {
-  font-size: var(--font-size-lg, 1.125rem);
-  font-weight: 600;
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: var(--spacing-md, 1.5rem);
-  text-align: center;
-}
-
-.option-image {
-  margin-bottom: var(--spacing-md, 1.5rem);
-  text-align: center;
-}
-
-.option-image img {
-  max-width: 100%;
-  height: auto;
-  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.option-content {
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.option-text {
-  background: var(--card-bg, #292c33);
-  padding: var(--spacing-md, 1.5rem);
-  border-radius: var(--form-radius, 10px);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.option-text p {
-  color: var(--text-color, #f5f6fa);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.text-source {
-  font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary-color, #b0b3b8);
-  font-style: italic;
-  margin-top: var(--spacing-sm, 1rem);
-  padding-top: var(--spacing-sm, 1rem);
-  border-top: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-}
-
-.audio-placeholder, .video-placeholder {
-  background: var(--secondary-color, #23272e);
-  border: 2px dashed var(--accent-color, #b0b3b8);
-  padding: var(--spacing-lg, 2rem) var(--spacing-md, 1.5rem);
-  text-align: center;
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.placeholder-icon {
-  font-size: var(--font-size-3xl, 1.875rem);
-  margin-bottom: var(--spacing-sm, 1rem);
-}
-
-.placeholder-title {
-  font-weight: 600;
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: var(--spacing-sm, 1rem);
-}
-
-.placeholder-desc {
-  color: var(--text-secondary-color, #b0b3b8);
-  font-size: var(--font-size-base, 1rem);
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.placeholder-link {
-  margin-top: auto;
-}
-
-.link-btn {
-  display: inline-block;
-  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
-  color: var(--text-color, #f5f6fa);
-  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
-  border-radius: var(--btn-radius, 12px);
-  text-decoration: none;
-  font-size: var(--font-size-base, 1rem);
-  transition: all var(--transition-normal, 0.3s) ease;
-  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
-}
-
-.link-btn:hover {
-  background: var(--primary-hover-color, #cccccc);
-  color: var(--text-color, #f5f6fa);
-  text-decoration: none;
-  transform: translateY(-1px);
-}
-
-.option-actions {
-  display: flex;
-  gap: var(--spacing-sm, 1rem);
-  justify-content: center;
-}
-
-.btn {
-  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
-  border: none;
-  border-radius: var(--btn-radius, 12px);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-normal, 0.3s) ease;
-  font-size: var(--font-size-base, 1rem);
-  box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
-}
-
-.btn-primary {
-  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
-  color: var(--text-color, #f5f6fa);
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover-color, #cccccc);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
-}
-
-.btn-secondary {
-  background: var(--btn-secondary-bg, #393b40);
-  color: var(--text-color, #f5f6fa);
-}
-
-.btn-secondary:hover {
-  background: var(--btn-secondary-hover, #4a4a4a);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.15));
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--accent-color, #b0b3b8);
-  border: 1px solid var(--accent-color, #b0b3b8);
-}
-
-.btn-outline:hover {
-  background: var(--accent-color, #b0b3b8);
-  color: var(--text-color, #f5f6fa);
-  transform: translateY(-1px);
-}
-
-.feedback-card {
-  text-align: center;
-  padding: var(--spacing-md, 1.5rem);
-  margin-top: var(--spacing-md, 1.5rem);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-}
-
-.feedback-card.correct {
-  background: rgba(var(--success-color, #4caf50), 0.1);
-  color: var(--success-color, #4caf50);
-  border-color: var(--success-color, #4caf50);
-}
-
-.feedback-card.incorrect {
-  background: rgba(var(--error-color, #f44336), 0.1);
-  color: var(--error-color, #f44336);
-  border-color: var(--error-color, #f44336);
-}
-
-.feedback-icon {
-  font-size: var(--font-size-3xl, 1.875rem);
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.feedback-message {
-  font-size: var(--font-size-lg, 1.125rem);
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.case-study-overview {
-  background: var(--secondary-color, #23272e);
-  border-radius: var(--card-radius, 10px);
-  padding: var(--spacing-lg, 2rem);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-}
-
-.overview-title {
-  font-size: var(--font-size-2xl, 1.5rem);
-  font-weight: 600;
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: var(--spacing-md, 1.5rem);
-  text-align: center;
-}
-
-.overview-description {
-  color: var(--text-secondary-color, #b0b3b8);
-  text-align: center;
-  margin-bottom: var(--spacing-md, 1.5rem);
-}
-
-.overview-list {
-  background: var(--card-bg, #292c33);
-  padding: var(--spacing-md, 1.5rem);
-  border-radius: var(--form-radius, 10px);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-}
-
-.overview-list h4 {
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: var(--spacing-md, 1.5rem);
-  font-weight: 600;
-}
-
-.overview-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.overview-list li {
-  padding: var(--spacing-sm, 1rem) 0;
-  border-bottom: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  color: var(--text-secondary-color, #b0b3b8);
-  font-size: var(--font-size-base, 1rem);
-  transition: all var(--transition-normal, 0.3s) ease;
-}
-
-.overview-list li:last-child {
-  border-bottom: none;
-}
-
-.overview-list li:hover {
-  color: var(--text-color, #f5f6fa);
-  background: var(--list-item-hover-bg, #31343b);
-  padding-left: var(--spacing-sm, 1rem);
-  border-radius: var(--form-radius, 10px);
-}
-
-@media (max-width: 768px) {
-  .case-study-options {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .case-study-header {
-    padding: 1.5rem;
-  }
-  
-  .case-study-title {
-    font-size: 1.5rem;
-  }
-  
-  .case-study-card {
-    padding: 1.5rem;
-  }
-}
-
+<style scoped>
 .chapter-detail {
-  background: var(--secondary-color, #23272e);
+  background: var(--body-bg);
   min-height: 100vh;
-  padding: 2rem 0;
+  padding: 0;
 }
 
 .chapter-nav {
-  background: var(--nav-bg, rgba(41, 44, 51, 0.92));
-  border-bottom: 1px solid var(--nav-border, rgba(57, 59, 64, 0.18));
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--nav-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-  backdrop-filter: blur(4px);
+  background: transparent;
+  border-bottom: none;
+  padding: 0.5rem 0 0 0;
 }
 
 .nav-container {
@@ -1414,11 +126,11 @@ export default {
   letter-spacing: 0.5px;
   border-radius: 25px;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
   
-  &:hover {
+.nav-back:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-  }
 }
 
 .nav-title {
@@ -1435,312 +147,12 @@ export default {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  background: var(--card-bg, #292c33);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  padding: 3rem 2.5rem;
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  backdrop-filter: blur(10px);
-}
-
-.chapter-content {
-  color: var(--text-color, #f5f6fa);
-  font-size: 1.08rem;
-  line-height: 1.8;
-  margin-bottom: 2.5rem;
-}
-
-.chapter-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.05));
-  border-radius: 16px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.chapter-meta {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.chapter-badge {
-  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  letter-spacing: 1px;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.75rem 1rem 2rem 1rem;
   border: none;
-}
-
-.chapter-type {
-  color: var(--text-color, #f5f6fa);
-  background: var(--secondary-color, #23272e);
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
-}
-
-.chapter-title {
-  font-size: 2.5rem;
-  color: var(--text-color, #f5f6fa);
-  font-weight: 900;
-  letter-spacing: 1px;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-
-.chapter-summary {
-  color: var(--text-secondary-color, #b0b3b8);
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  line-height: 1.7;
-  padding: 1.5rem;
-  background: var(--secondary-color, #23272e);
-  border-radius: 12px;
-  border-left: 4px solid var(--accent-color, #3b82f6);
-}
-
-.chapter-info {
-  display: flex;
-  gap: 2rem;
-  font-size: 0.95rem;
-  flex-wrap: wrap;
-}
-
-.info-item {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--secondary-color, #23272e);
-  border-radius: 12px;
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
-}
-
-.info-label {
-  color: var(--accent-color, #3b82f6);
-  font-weight: 600;
-}
-
-.info-value {
-  color: var(--text-color, #f5f6fa);
-  font-weight: 600;
-  
-  &.published {
-    color: var(--success-color, #4caf50);
-  }
-}
-
-.chapter-body {
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background: var(--secondary-color, #23272e);
-  border-radius: 16px;
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
-}
-
-.content-text {
-  font-size: 1.15rem;
-  line-height: 1.8;
-  color: var(--text-color, #f5f6fa);
-  
-  :deep(p) {
-    margin-bottom: 1.8rem;
-    text-align: justify;
-  }
-  
-  :deep(h2) {
-    font-size: 1.8rem;
-    color: var(--accent-color, #3b82f6);
-    margin: 2.5rem 0 1.5rem 0;
-    font-weight: 700;
-    border-bottom: 2px solid var(--accent-color, #3b82f6);
-    padding-bottom: 0.5rem;
-  }
-  
-  :deep(h3) {
-    font-size: 1.5rem;
-    color: var(--text-color, #f5f6fa);
-    margin: 2rem 0 1rem 0;
-    font-weight: 600;
-  }
-  
-  :deep(ul), :deep(ol) {
-    margin: 1.5rem 0;
-    padding-left: 2rem;
-  }
-  
-  :deep(li) {
-    margin-bottom: 0.8rem;
-  }
-  
-  :deep(blockquote) {
-    border-left: 4px solid var(--accent-color, #3b82f6);
-    padding: 1rem 1.5rem;
-    margin: 2rem 0;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: 0 12px 12px 0;
-    font-style: italic;
-  }
-}
-
-.chapter-pagination {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 2rem;
-  background: var(--secondary-color, #23272e);
-  border-radius: 16px;
-  border: 1px solid var(--border-color, rgba(57, 59, 64, 0.18));
-  margin-top: 2rem;
-}
-
-.quiz-section {
-  background: linear-gradient(135deg, var(--secondary-color, #23272e), rgba(59, 130, 246, 0.1));
-  border-radius: 20px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  backdrop-filter: blur(10px);
-}
-
-.quiz-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.quiz-title {
-  font-size: 1.8rem;
-  color: var(--text-color, #f5f6fa);
-  margin-bottom: 1rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--accent-color, #3b82f6), #60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.quiz-description {
-  color: var(--text-secondary-color, #b0b3b8);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.quiz-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.btn-quiz {
-  background: var(--btn-primary-bg, linear-gradient(135deg, #4a90e2, #357abd));
-  color: var(--text-color, #f5f6fa);
-  border: none;
-  border-radius: var(--btn-radius, 12px);
-  padding: 1rem 2rem;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  
-  &:hover:not(.disabled) {
-    transform: translateY(-2px);
-    box-shadow: var(--btn-shadow, 0 4px 16px rgba(74, 144, 226, 0.3));
-  }
-  
-  &.disabled {
-    background: #666;
-    color: #999;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-}
-
-.btn-icon {
-  font-size: 1.2rem;
-}
-
-.btn-text {
-  font-weight: 600;
-}
-
-.quiz-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.quiz-info .info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--accent-color, #b0b3b8);
-  font-size: 0.9rem;
-}
-
-.info-icon {
-  font-size: 1rem;
-}
-
-.pagination-btn {
-  background: var(--chapter-pagination-bg, #23272e);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  border-radius: var(--btn-radius, 12px);
-  padding: 1rem;
-  cursor: pointer;
-  transition: box-shadow 0.18s, background 0.18s, border 0.18s;
-  flex: 1;
-  max-width: 300px;
-  color: var(--accent-color, #b0b3b8);
-  font-weight: 600;
-  font-size: 1rem;
-  
-  &:hover {
-    background: var(--chapter-pagination-hover, #31343b);
-    border-color: var(--chapter-pagination-hover, #31343b)-border;
-    box-shadow: var(--chapter-pagination-hover, #31343b)-shadow;
-    color: var(--text-color, #f5f6fa);
-  }
-  
-  &.prev {
-    text-align: left;
-  }
-  
-  &.next {
-    text-align: right;
-    margin-left: auto;
-  }
-}
-
-.btn-label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--accent-color, #b0b3b8);
-  margin-bottom: 0.25rem;
-}
-
-.btn-title {
-  display: block;
-  font-weight: 700;
-  color: var(--text-color, #f5f6fa);
+  backdrop-filter: none;
 }
 
 .loading-container, .error-container {
@@ -1764,7 +176,7 @@ export default {
 }
 
 .error-icon {
-  font-size: var(--error-icon-size, 4rem);
+  font-size: 4rem;
   margin-bottom: 1rem;
 }
 
@@ -1781,31 +193,65 @@ export default {
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: var(--btn-radius, 12px);
+  border-radius: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: var(--primary-color, #18191a);
-  color: var(--text-color, #f5f6fa);
+  background: var(--btn-primary-bg);
+  color: white;
   border: none;
+}
   
-  &:hover {
-    background: var(--primary-hover-color, #cccccc);
-    color: var(--text-secondary-color, #b0b3b8);
-    border-color: var(--primary-hover-color, #cccccc);
+.btn-primary:hover {
+    background: var(--btn-hover-bg);
+    color: white;
     transform: translateY(-1px);
-  }
 }
 
-.back-link {
-  color: var(--accent-color, #b0b3b8);
-  font-size: 1rem;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-right: 1.5rem;
+/* 浅色主题优化 */
+html.light-theme .chapter-detail {
+  .nav-back {
+    background: var(--btn-primary-bg);
+    box-shadow: var(--box-shadow-light);
+    
+    &:hover {
+      background: var(--btn-hover-bg);
+      box-shadow: var(--box-shadow);
+    }
+  }
+
+  .nav-title {
+    background: var(--btn-primary-bg);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-primary {
+    background: var(--accent-color);
+    color: white;
+    
+    &:hover {
+      background: var(--accent-light-color);
+      color: white;
+    }
+  }
+
+  .loading-spinner {
+    border-color: var(--border-color);
+    border-top-color: var(--accent-color);
+  }
+
+  .error-container h3 {
+    color: var(--text-color);
+  }
+
+  .error-container p {
+    color: var(--text-secondary-color);
+  }
 }
 
 @media (max-width: 768px) {
@@ -1815,77 +261,8 @@ export default {
     gap: 0.5rem;
   }
   
-  .chapter-title {
-    font-size: 1.3rem;
-  }
-  
-  .chapter-info {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .chapter-pagination {
-    flex-direction: column;
-  }
-  
-  .pagination-btn {
-    max-width: none;
-    text-align: center;
-  }
-  
   .container {
     padding: 1.2rem 0.5rem;
   }
-  
-  /* 第一章案例演示响应式样式 */
-  .case-study-options {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md, 1.5rem);
-  }
-  
-  .case-study-header {
-    padding: var(--spacing-md, 1.5rem);
-  }
-  
-  .case-study-title {
-    font-size: var(--font-size-xl, 1.25rem);
-  }
-  
-  .case-study-card {
-    padding: var(--spacing-md, 1.5rem);
-  }
-  
-  .question-title {
-    font-size: var(--font-size-lg, 1.125rem);
-  }
-  
-  .option-actions {
-    flex-direction: column;
-    gap: var(--spacing-sm, 1rem);
-  }
-  
-  .btn {
-    width: 100%;
-    padding: var(--spacing-md, 1.5rem);
-  }
-}
-
-/* 进度条样式 */
-.progress-bar {
-  width: 100%;
-  height: 12px;
-  background: var(--secondary-color, #23272e);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: var(--spacing-md, 1.5rem);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--success-color, #4caf50), #66bb6a);
-  border-radius: 6px;
-  transition: width var(--transition-normal, 0.3s) ease;
-  box-shadow: 0 2px 8px rgba(var(--success-color, #4caf50), 0.3);
 }
 </style>

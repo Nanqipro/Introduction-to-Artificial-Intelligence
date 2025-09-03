@@ -525,19 +525,19 @@ export default {
 }
 
 .btn-report:hover:not(:disabled) {
-    background: #1976D2;
-    transform: translateY(-2px);
-  }
+  background: #1976D2;
+  transform: translateY(-2px);
+}
 
-  .btn-advanced {
-    background: #9C27B0;
-    color: white;
-  }
+.btn-advanced {
+  background: #9C27B0;
+  color: white;
+}
 
-  .btn-advanced:hover:not(:disabled) {
-    background: #7B1FA2;
-    transform: translateY(-2px);
-  }
+.btn-advanced:hover:not(:disabled) {
+  background: #7B1FA2;
+  transform: translateY(-2px);
+}
 
 .test-status {
   padding: 12px 16px;
@@ -731,6 +731,47 @@ export default {
     background: var(--primary-hover-color, #cccccc);
     border-color: var(--primary-hover-color, #cccccc);
     transform: translateY(-1px);
+  }
+}
+
+/* 浅色主题优化 */
+html.light-theme .chapter-list {
+  .chapter-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+    
+    &:hover {
+      background: var(--list-item-hover-bg);
+      box-shadow: var(--list-item-hover-shadow);
+      border-color: var(--list-item-hover-border);
+      transform: translateY(-2px);
+    }
+  }
+
+  .chapter-badge {
+    background: var(--chapter-badge-bg);
+    color: white;
+    box-shadow: var(--chapter-badge-shadow);
+  }
+
+  .chapter-type {
+    background: var(--chapter-type-bg);
+    color: var(--accent-color);
+  }
+
+  .status-dot {
+    &.published {
+      background: var(--status-dot-published);
+    }
+    
+    &:not(.published) {
+      background: var(--status-dot-unpublished);
+    }
+  }
+
+  .read-more {
+    color: var(--accent-color);
   }
 }
 

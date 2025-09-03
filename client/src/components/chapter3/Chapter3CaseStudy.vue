@@ -1345,6 +1345,157 @@ export default {
   letter-spacing: 0.025em;
 }
 
+/* 浅色主题适配：统一使用 @theme.css 变量，提升对比度与层次感 */
+html.light-theme .chapter3-case-study {
+  .case-header {
+    background: var(--chapter-header-bg);
+    border: 1px solid var(--chapter-header-border);
+    color: var(--text-color);
+    box-shadow: var(--box-shadow);
+    .case-title { color: var(--text-color); }
+    .case-description { color: var(--text-secondary-color); }
+  }
+
+  .progress-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+    .progress-info {
+      h4 { color: var(--text-color); }
+      p { color: var(--text-secondary-color); }
+    }
+    &.completed {
+      background: var(--stat-card-hover-bg);
+      border-color: var(--stat-card-border);
+      box-shadow: var(--stat-card-hover-shadow);
+    }
+  }
+
+  .case-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+  }
+
+  .section-header {
+    .section-title {
+      .title-text {
+        background: none;
+        -webkit-text-fill-color: unset;
+        color: var(--text-color);
+      }
+      .title-decoration {
+        background: var(--accent-color);
+      }
+    }
+    .section-subtitle { color: var(--text-secondary-color); }
+  }
+
+  .image-interaction-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+    &::before { background: var(--accent-color); animation: none; opacity: 0.25; }
+  }
+
+  .card-header {
+    background: var(--card-header-bg);
+    border-bottom: 1px solid var(--card-header-border);
+    .logo-text {
+      h4 { color: var(--text-color); }
+      .logo-subtitle { color: var(--text-secondary-color); }
+    }
+  }
+
+  .interaction-status .status-indicator {
+    background: var(--stat-card-bg);
+    border: 1px solid var(--stat-card-border);
+    .status-text { color: var(--text-secondary-color); }
+    &.active {
+      background: var(--achievement-item-hover-bg);
+      border-color: var(--achievement-item-border);
+      .status-text { color: var(--success-dark-color); }
+    }
+  }
+
+  .image-display-area { background: var(--card-content-bg); }
+
+  .interaction-guide {
+    h5 { color: var(--text-color); }
+    p { color: var(--text-secondary-color); }
+  }
+
+  .explanation-item {
+    background: var(--card-content-bg);
+    border: 1px solid var(--border-color);
+    &.human.active {
+      border-color: var(--info-color);
+      background: rgba(0, 191, 255, 0.08);
+    }
+    &.computer.active {
+      border-color: var(--success-color);
+      background: rgba(0, 255, 127, 0.08);
+    }
+    .explanation-content {
+      h6 { color: var(--text-color); }
+      p { color: var(--text-secondary-color); }
+    }
+  }
+
+  .hover-indicator {
+    background: var(--accent-color);
+    color: #fff;
+    &.active { background: var(--success-color); }
+  }
+
+  .interaction-stats {
+    background: var(--card-content-bg);
+    border-top: 1px solid var(--border-color);
+  }
+  .stat-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    .stat-value { color: var(--text-color); }
+    .stat-label { color: var(--text-secondary-color); }
+  }
+
+  .case-summary {
+    background: var(--chapter-summary-bg);
+    border: 1px solid var(--chapter-header-border);
+    color: var(--text-color);
+    .summary-item h4 { color: var(--text-color); }
+  }
+
+  .next-step {
+    color: var(--text-color);
+    &:not(.completed) {
+      background: var(--quiz-section-bg);
+      border: 1px solid var(--quiz-section-border);
+      box-shadow: var(--box-shadow-light);
+    }
+    &.completed {
+      background: var(--stat-card-hover-bg);
+      border: 1px solid var(--stat-card-border);
+    }
+  }
+
+  .case-navigation {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+  }
+  .nav-btn {
+    background: var(--card-content-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    &.active {
+      background: linear-gradient(135deg, var(--accent-color), var(--accent-dark-color));
+      color: #fff;
+      border-color: var(--accent-color);
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .chapter3-case-study {
     padding: 1rem;
