@@ -4,7 +4,7 @@
     <header class="chapter-header">
       <div class="chapter-meta">
         <span class="chapter-badge">
-          {{ chapter.chapterNumber === '0' ? '续章' : ('第' + chapter.chapterNumber + '章') }}
+          {{ chapter.chapterNumber === '0' ? '序章' : ('第' + chapter.chapterNumber + '章') }}
         </span>
         <span class="chapter-type">{{ getChapterType(chapter.type) }}</span>
       </div>
@@ -26,7 +26,7 @@
 
     <!-- 章节正文 -->
     <div class="chapter-body">
-      <!-- 续章（序章）案例演示：播放预热视频 -->
+      <!-- 序章案例演示：播放预热视频 -->
       <div v-if="isPrologue" class="case-study-section">
         <PrologueCase poster-url="/images/cover_prologue.jpg" />
       </div>

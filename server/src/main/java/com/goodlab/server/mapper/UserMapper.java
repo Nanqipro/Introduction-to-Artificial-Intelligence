@@ -26,4 +26,10 @@ public interface UserMapper {
 
     @Update("update user set password = #{md5String}, update_time = now() where id = #{id}")
     void updatePwd(String md5String, Integer id);
+
+    @Select("select * from user where id = #{id}")
+    User findById(Integer id);
+
+    @Select("select * from user order by level desc, experience desc")
+    java.util.List<User> findAllUsers();
 }

@@ -66,10 +66,10 @@ public class UsersController {
     @GetMapping("/userInfo")
     public ApiResponse<User> userInfo() {
 
-        // 根据用户名查询用户信息
+        // 根据用户ID查询用户信息（避免用户名修改后JWT token中的用户名过期问题）
         Map<String, Object> claims = ThreadLocalUtil.get();
-        String username = (String) claims.get("username");
-        User user = userService.findByUserName(username);
+        Integer userId = (Integer) claims.get("id");
+        User user = userService.findById(userId);
         return ApiResponse.success(user);
     }
 

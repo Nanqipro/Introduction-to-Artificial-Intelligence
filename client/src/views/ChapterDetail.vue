@@ -6,7 +6,7 @@
           ← 返回章节列表
         </button>
         <div class="nav-title" v-if="chapter">
-          {{ chapter.chapterNumber === '0' ? '续章' : ('第' + chapter.chapterNumber + '章') }} - {{ chapter.title }}
+          {{ chapter.chapterNumber === '0' ? '序章' : ('第' + chapter.chapterNumber + '章') }} - {{ chapter.title }}
         </div>
       </div>
     </nav>
