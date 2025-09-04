@@ -20,6 +20,8 @@ public interface UserService {
 
     void update(User user);
 
+    boolean isUsernameAvailable(String username, Integer excludeId);
+
     void updateUserPic(String userPic);
 
     void updatePwd(String newPwd);

@@ -45,6 +45,13 @@ public class UserServiceImpl implements UserService {
         userMapper.update(user);
     }
 
+    // 检查用户名是否可用（排除指定ID的用户）
+    @Override
+    public boolean isUsernameAvailable(String username, Integer excludeId) {
+        int count = userMapper.countByUsernameExcludingId(username, excludeId);
+        return count == 0;
+    }
+
     // 更新用户头像
     @Override
     public void updateUserPic(String userPic) {

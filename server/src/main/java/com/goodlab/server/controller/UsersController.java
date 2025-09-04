@@ -76,6 +76,20 @@ public class UsersController {
     // 更新用户信息
     @PutMapping("/update")
     public ApiResponse<Void> update(@RequestBody @Validated User user) {  // @Validated用于验证参数
+        // 获取当前登录用户的ID
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer currentUserId = (Integer) claims.get("id");
+        
+        // 设置用户ID（确保只能更新当前登录用户的信息）
+        user.setId(currentUserId);
+        
+        // 检查用户名是否已被其他用户使用
+        if (user.getUsername() != null && !user.getUsername().trim().isEmpty()) {
+            if (!userService.isUsernameAvailable(user.getUsername(), currentUserId)) {
+                return ApiResponse.error("用户名已存在");
+            }
+        }
+        
         userService.update(user);
         return ApiResponse.success(null);
     }
