@@ -1,8 +1,19 @@
 import axios from 'axios'
 
+// 动态获取后端服务地址
+const getBaseURL = () => {
+  // 如果是生产环境或外网访问
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // 使用相对路径，通过前端服务代理到后端
+    return '/api'
+  }
+  // 本地开发环境使用localhost
+  return 'http://localhost:8082'
+}
+
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://localhost:8082', // 指向后端服务地址
+  baseURL: getBaseURL(), // 动态指向后端服务地址
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -103,37 +114,37 @@ api.interceptors.response.use(
 export const chapterApi = {
   // 获取章节概览列表
   getChapterOverview() {
-    return api.get('/api/chapters')
+    return api.get('/chapters')
   },
 
   // 获取所有章节
   getAllChapters() {
-    return api.get('/api/chapters/all')
+    return api.get('/chapters/all')
   },
 
   // 根据ID获取章节详情
   getChapterById(id) {
-    return api.get(`/api/chapters/${id}`)
+    return api.get(`/chapters/${id}`)
   },
 
   // 创建章节
   createChapter(chapter) {
-    return api.post('/api/chapters', chapter)
+    return api.post('/chapters', chapter)
   },
 
   // 更新章节
   updateChapter(id, chapter) {
-    return api.put(`/api/chapters/${id}`, chapter)
+    return api.put(`/chapters/${id}`, chapter)
   },
 
   // 删除章节
   deleteChapter(id) {
-    return api.delete(`/api/chapters/${id}`)
+    return api.delete(`/chapters/${id}`)
   },
 
   // 健康检查
   healthCheck() {
-    return api.get('/api/chapters/health')
+    return api.get('/chapters/health')
   }
 }
 
@@ -141,7 +152,7 @@ export const chapterApi = {
 export const quizApi = {
   // 根据章节获取题目
   getQuestionsByChapter(chapterId) {
-    return api.get(`/api/quiz/questions/${chapterId}`)
+    return api.get(`/quiz/questions/${chapterId}`)
   },
 
   // 获取题目（兼容性方法）
@@ -152,17 +163,17 @@ export const quizApi = {
   // 从数据库获取章节题目
   getQuestionsFromDB(chapterId) {
     // 调整为通用可用的后端接口，避免 404
-    return api.get(`/api/quiz/questions/${chapterId}`)
+    return api.get(`/quiz/questions/${chapterId}`)
   },
 
   // 保存答题结果
   saveQuizResult(result) {
-    return api.post('/api/quiz/results', result)
+    return api.post('/quiz/results', result)
   },
 
   // 获取用户答题历史
   getUserQuizHistory() {
-    return api.get('/api/quiz/history')
+    return api.get('/quiz/history')
   },
 
   // 获取用户历史（兼容性方法）
@@ -172,17 +183,17 @@ export const quizApi = {
 
   // 获取用户统计信息
   getUserStats() {
-    return api.get('/api/quiz/stats')
+    return api.get('/quiz/stats')
   },
 
   // 获取排行榜
   getLeaderboard() {
-    return api.get('/api/quiz/leaderboard')
+    return api.get('/quiz/leaderboard')
   },
 
   // 获取题目统计信息
   getQuestionStats() {
-    return api.get('/api/quiz/question-stats')
+    return api.get('/quiz/question-stats')
   }
 }
 
@@ -190,34 +201,34 @@ export const quizApi = {
 export const adminApi = {
   // 获取所有题目
   getAllQuestions() {
-    return api.get('/api/admin/questions')
+    return api.get('/admin/questions')
   },
 
   // 根据ID获取题目
   getQuestionById(id) {
-    return api.get(`/api/admin/questions/${id}`)
+    return api.get(`/admin/questions/${id}`)
   },
 
   // 创建题目
   createQuestion(question) {
-    return api.post('/api/admin/questions', question)
+    return api.post('/admin/questions', question)
   },
 
   // 更新题目
   updateQuestion(id, question) {
-    return api.put(`/api/admin/questions/${id}`, question)
+    return api.put(`/admin/questions/${id}`, question)
   },
 
   // 删除题目
   deleteQuestion(id) {
-    return api.delete(`/api/admin/questions/${id}`)
+    return api.delete(`/admin/questions/${id}`)
   },
 
   // 导入Excel文件
   importQuestions(file) {
     const formData = new FormData()
     formData.append('file', file)
-    return api.post('/api/admin/questions/import', formData, {
+    return api.post('/admin/questions/import', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -226,17 +237,17 @@ export const adminApi = {
 
   // 获取题目统计
   getQuestionStats() {
-    return api.get('/api/admin/questions/stats')
+    return api.get('/admin/questions/stats')
   },
 
   // 根据章节获取题目
   getQuestionsByChapter(chapterId) {
-    return api.get(`/api/admin/questions/chapter/${chapterId}`)
+    return api.get(`/admin/questions/chapter/${chapterId}`)
   },
 
   // 健康检查
   healthCheck() {
-    return api.get('/api/admin/health')
+    return api.get('/admin/health')
   }
 }
 
@@ -248,7 +259,7 @@ export const userApi = {
     formData.append('username', userData.username)
     formData.append('password', userData.password)
 
-    return api.post('/api/user/register', formData, {
+    return api.post('/user/register', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -261,7 +272,7 @@ export const userApi = {
     formData.append('username', userData.username)
     formData.append('password', userData.password)
 
-    return api.post('/api/user/login', formData, {
+    return api.post('/user/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -270,7 +281,7 @@ export const userApi = {
 
   // 获取用户信息
   getUserInfo() {
-    return api.get('/api/user/userInfo')
+    return api.get('/user/userInfo')
   },
 
   // 获取当前用户（兼容性方法）
@@ -280,7 +291,7 @@ export const userApi = {
 
   // 更新用户基本信息
   updateUserInfo(userInfo) {
-    return api.put('/api/user/update', userInfo)
+    return api.put('/user/update', userInfo)
   },
 
   // 更新用户头像
@@ -288,12 +299,12 @@ export const userApi = {
     const params = new URLSearchParams()
     params.append('avatarUrl', avatarUrl)
 
-    return api.patch(`/api/user/updateAvatar?${params.toString()}`)
+    return api.patch(`/user/updateAvatar?${params.toString()}`)
   },
 
   // 更新用户密码
   updatePassword(passwordData) {
-    return api.patch('/api/user/updatePwd', passwordData)
+    return api.patch('/user/updatePwd', passwordData)
   }
 }
 
@@ -301,32 +312,32 @@ export const userApi = {
 export const levelApi = {
   // 添加经验值
   addExperience(experienceData) {
-    return api.post('/api/level/addExperience', experienceData)
+    return api.post('/level/addExperience', experienceData)
   },
 
   // 获取用户统计信息
   getUserStats() {
-    return api.get('/api/level/stats')
+    return api.get('/level/stats')
   },
 
   // 获取用户成就
   getUserAchievements() {
-    return api.get('/api/level/achievements')
+    return api.get('/level/achievements')
   },
 
   // 获取学习记录
   getLearningRecords() {
-    return api.get('/api/level/records')
+    return api.get('/level/records')
   },
 
   // 获取排行榜
   getLeaderboard(limit = 10) {
-    return api.get(`/api/level/leaderboard?limit=${limit}`)
+    return api.get(`/level/leaderboard?limit=${limit}`)
   },
 
   // 计算等级
   calculateLevel(experience) {
-    return api.get(`/api/level/calculateLevel?experience=${experience}`)
+    return api.get(`/level/calculateLevel?experience=${experience}`)
   }
 }
 
@@ -334,62 +345,62 @@ export const levelApi = {
 export const questionApi = {
   // 创建题目
   createQuestion(question) {
-    return api.post('/api/questions', question)
+    return api.post('/questions', question)
   },
 
   // 更新题目
   updateQuestion(id, question) {
-    return api.put(`/api/questions/${id}`, question)
+    return api.put(`/questions/${id}`, question)
   },
 
   // 删除题目
   deleteQuestion(id) {
-    return api.delete(`/api/questions/${id}`)
+    return api.delete(`/questions/${id}`)
   },
 
   // 根据ID获取题目
   getQuestionById(id) {
-    return api.get(`/api/questions/${id}`)
+    return api.get(`/questions/${id}`)
   },
 
   // 获取所有题目（分页）
   getAllQuestions(page = 1, size = 10) {
-    return api.get(`/api/questions?page=${page}&size=${size}`)
+    return api.get(`/questions?page=${page}&size=${size}`)
   },
 
   // 根据章节ID获取题目
   getQuestionsByChapterId(chapterId) {
-    return api.get(`/api/questions/chapter/${chapterId}`)
+    return api.get(`/questions/chapter/${chapterId}`)
   },
 
   // 根据类型获取题目
   getQuestionsByType(type) {
-    return api.get(`/api/questions/type/${type}`)
+    return api.get(`/questions/type/${type}`)
   },
 
   // 根据难度获取题目
   getQuestionsByDifficulty(difficulty) {
-    return api.get(`/api/questions/difficulty/${difficulty}`)
+    return api.get(`/questions/difficulty/${difficulty}`)
   },
 
   // 搜索题目
   searchQuestions(keyword) {
-    return api.get(`/api/questions/search?keyword=${encodeURIComponent(keyword)}`)
+    return api.get(`/questions/search?keyword=${encodeURIComponent(keyword)}`)
   },
 
   // 批量导入题目
   importQuestions(questions) {
-    return api.post('/api/questions/import', questions)
+    return api.post('/questions/import', questions)
   },
 
   // 导出题目
   exportQuestions() {
-    return api.get('/api/questions/export')
+    return api.get('/questions/export')
   },
 
   // 获取题目统计信息
   getStats() {
-    return api.get('/api/questions/stats')
+    return api.get('/questions/stats')
   }
 }
 

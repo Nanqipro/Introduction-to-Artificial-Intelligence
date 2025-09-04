@@ -23,7 +23,7 @@
         >
           <div class="chapter-header">
             <div class="chapter-badge">
-              {{ chapter.chapterNumber === '0' ? '续章' : `第${chapter.chapterNumber}章` }}
+              {{ chapter.chapterNumber === '0' ? '序章' : `第${chapter.chapterNumber}章` }}
             </div>
             <div class="chapter-type">{{ getChapterType(chapter.type) }}</div>
           </div>

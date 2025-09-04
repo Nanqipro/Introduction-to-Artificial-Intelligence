@@ -64,22 +64,26 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import ProfileHero from '@/components/profile/ProfileHero.vue'
 import StudyStats from '@/components/profile/StudyStats.vue'
 import UserInfo from '@/components/profile/UserInfo.vue'
 import UserAchievements from '@/components/profile/UserAchievements.vue'
+import { useAuth } from '@/composables/useAuth'
+
+// 使用认证状态
+const { currentUser, fetchUserInfo, updateUserInfo, updateAvatar } = useAuth()
 
 // 响应式数据
 const showAvatarDialog = ref(false)
 const editMode = ref(false)
 const imageUrl = ref('')
 
-// 用户信息
+// 用户信息 - 从认证状态获取
 const userInfo = reactive({
-  username: '张三',
+  username: '',
   role: '学生',
   avatar: ''
 })
@@ -124,21 +128,56 @@ const userAchievements = ref([
   }
 ])
 
-// 表单数据
+// 表单数据 - 从认证状态获取
 const formData = reactive({
-  username: '张三',
-  nickname: '小张',
-  email: 'zhangsan@example.com',
-  phone: '13800138000',
-  school: '清华大学',
-  major: '计算机科学与技术'
+  username: '',
+  nickname: '',
+  email: '',
+  phone: '',
+  school: '',
+  major: ''
 })
 
+// 同步用户信息到本地状态
+const syncUserInfo = () => {
+  if (currentUser.value) {
+    // 更新用户基本信息
+    userInfo.username = currentUser.value.username || ''
+    userInfo.role = currentUser.value.role || '学生'
+    userInfo.avatar = currentUser.value.userPic || ''
+    
+    // 更新表单数据
+    formData.username = currentUser.value.username || ''
+    formData.nickname = currentUser.value.nickname || ''
+    formData.email = currentUser.value.email || ''
+    formData.phone = currentUser.value.phone || ''
+    formData.school = currentUser.value.school || ''
+    formData.major = currentUser.value.major || ''
+  }
+}
+
+// 监听用户信息变化
+watch(currentUser, () => {
+  syncUserInfo()
+}, { immediate: true, deep: true })
+
 // 方法
-const handleSaveInfo = (data) => {
-  console.log('保存个人信息:', data)
-  ElMessage.success('个人信息保存成功')
-  editMode.value = false
+const handleSaveInfo = async (data) => {
+  try {
+    const result = await updateUserInfo(data)
+    if (result.success) {
+      ElMessage.success('个人信息保存成功')
+      editMode.value = false
+      // 重新同步用户信息
+      syncUserInfo()
+    } else {
+      // 处理具体的错误信息
+      ElMessage.error(result.message || '保存失败，请重试')
+    }
+  } catch (error) {
+    console.error('保存个人信息失败:', error)
+    ElMessage.error('保存失败，请重试')
+  }
 }
 
 const handleCancelEdit = () => {
@@ -146,9 +185,22 @@ const handleCancelEdit = () => {
   ElMessage.info('已取消编辑')
 }
 
-const handleAvatarSuccess = (response, file) => {
-  imageUrl.value = URL.createObjectURL(file.raw)
-  ElMessage.success('头像上传成功')
+const handleAvatarSuccess = async (response, file) => {
+  try {
+    // 这里应该是上传到服务器后返回的图片URL
+    const avatarUrl = URL.createObjectURL(file.raw) // 临时使用本地URL，实际应该是服务器返回的URL
+    imageUrl.value = avatarUrl
+    
+    // 调用API更新头像
+    const result = await updateAvatar(avatarUrl)
+    if (result.success) {
+      ElMessage.success('头像上传成功')
+      showAvatarDialog.value = false
+    }
+  } catch (error) {
+    console.error('头像上传失败:', error)
+    ElMessage.error('头像上传失败，请重试')
+  }
 }
 
 const beforeAvatarUpload = (file) => {
@@ -168,9 +220,22 @@ const beforeAvatarUpload = (file) => {
 }
 
 // 生命周期
-onMounted(() => {
-  // 这里可以加载用户数据
+onMounted(async () => {
   console.log('个人中心页面加载完成')
+  
+  // 如果没有用户信息，尝试获取
+  if (!currentUser.value) {
+    try {
+      await fetchUserInfo()
+      console.log('用户信息获取成功')
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      ElMessage.error('获取用户信息失败')
+    }
+  } else {
+    // 如果已有用户信息，直接同步
+    syncUserInfo()
+  }
 })
 </script>
 

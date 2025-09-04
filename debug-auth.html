@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Auth Status</title>
+</head>
+<body>
+    <h1>Authentication Debug</h1>
+    <div id="debug-info"></div>
+    
+    <script>
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            const debugInfo = document.getElementById('debug-info');
+            debugInfo.innerHTML = `
+                <h2>Local Storage Status:</h2>
+                <p><strong>Token:</strong> ${token ? token.substring(0, 30) + '...' : 'null'}</p>
+                <p><strong>User Info:</strong> ${userInfo ? userInfo : 'null'}</p>
+                <p><strong>Token Length:</strong> ${token ? token.length : 0}</p>
+                <p><strong>Is Logged In:</strong> ${!!token}</p>
+                
+                <h2>Test API Call:</h2>
+                <button onclick="testUserInfoAPI()">Test Get User Info</button>
+                <div id="api-result"></div>
+            `;
+        }
+        
+        async function testUserInfoAPI() {
+            const token = localStorage.getItem('token');
+            const resultDiv = document.getElementById('api-result');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<p style="color: red;">No token found!</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8082/user/info', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Response:</strong> ${JSON.stringify(data, null, 2)}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        // 页面加载时检查状态
+        window.onload = checkAuthStatus;
+    </script>
+</body>
+</html>

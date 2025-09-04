@@ -1,8 +1,8 @@
 package com.goodlab.server.service.impl;
 
-import com.goodlab.server.dao.UserDao;
 import com.goodlab.server.dao.UserAchievementDao;
 import com.goodlab.server.dao.UserLearningRecordDao;
+import com.goodlab.server.mapper.UserMapper;
 import com.goodlab.server.pojo.User;
 import com.goodlab.server.pojo.UserAchievement;
 import com.goodlab.server.pojo.UserLearningRecord;
@@ -23,7 +23,7 @@ public class LevelServiceImpl implements LevelService {
     private UserService userService;
     
     @Autowired
-    private UserDao userDao;
+    private UserMapper userMapper;
     
     @Autowired
     private UserAchievementDao userAchievementDao;
@@ -188,7 +188,7 @@ public class LevelServiceImpl implements LevelService {
     
     @Override
     public List<Map<String, Object>> getLeaderboard(int limit) {
-        return userDao.getAllUsers().stream()
+        return userMapper.findAllUsers().stream()
             .sorted((a, b) -> {
                 // 先按等级排序，再按经验值排序
                 int levelCompare = Integer.compare(b.getLevel(), a.getLevel());

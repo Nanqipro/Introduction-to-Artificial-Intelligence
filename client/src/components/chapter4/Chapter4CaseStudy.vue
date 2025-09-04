@@ -505,7 +505,7 @@
             >
               <div class="card-header">
                 <div class="platform-icon">
-                  <i :class="getEntertainmentIcon(entertainment.id)"></i>
+                  <img :src="getEntertainmentIcon(entertainment.id)" :alt="entertainment.name + ' 图标'" class="platform-icon-img" />
                 </div>
                 <div class="card-title">
                   <h4>{{ entertainment.name }}</h4>
@@ -953,6 +953,14 @@
  * - 用户交互统计和学习进度跟踪
  */
 import { ref, reactive, onMounted, computed, nextTick } from 'vue'
+
+// 导入SVG图标
+import douyinIcon from '@/assets/icons/抖音.svg'
+import netflixIcon from '@/assets/icons/netflix.svg'
+import spotifyIcon from '@/assets/icons/spotify.svg'
+import youtubeIcon from '@/assets/icons/youtube.svg'
+import xiaohongshuIcon from '@/assets/icons/小红书.svg'
+import gameIcon from '@/assets/icons/game.svg'
 
 // 组件属性
 const props = defineProps({
@@ -1724,14 +1732,14 @@ const handleEntertainmentClick = (entertainment) => {
 
 const getEntertainmentIcon = (id) => {
   const icons = {
-    douyin: 'fas fa-video',
-    netflix: 'fas fa-film', 
-    spotify: 'fas fa-music',
-    youtube: 'fab fa-youtube',
-    xiaohongshu: 'fas fa-camera',
-    gameai: 'fas fa-gamepad'
+    douyin: douyinIcon,
+    netflix: netflixIcon, 
+    spotify: spotifyIcon,
+    youtube: youtubeIcon,
+    xiaohongshu: xiaohongshuIcon,
+    gameai: gameIcon
   }
-  return icons[id] || 'fas fa-play'
+  return icons[id] || gameIcon
 }
 
 const getMetricName = (key) => {
@@ -3141,9 +3149,24 @@ onMounted(async () => {
   z-index: 3;
 }
 
+.platform-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 3;
+  filter: brightness(0) invert(1);
+}
+
 .entertainment-card:hover .platform-icon i {
   transform: scale(1.1);
   text-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+.entertainment-card:hover .platform-icon img {
+  transform: scale(1.1);
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.8));
 }
 
 .card-title h3 {

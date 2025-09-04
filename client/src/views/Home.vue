@@ -56,7 +56,7 @@
             class="chapter-card"
             @click="goToChapter(chapter.id)"
           >
-            <div class="chapter-number">{{ chapter.chapterNumber === '0' ? '续章' : `第${chapter.chapterNumber}章` }}</div>
+            <div class="chapter-number">{{ chapter.chapterNumber === '0' ? '序章' : `第${chapter.chapterNumber}章` }}</div>
             <h3 class="chapter-title">{{ chapter.title }}</h3>
             <p class="chapter-summary">{{ chapter.summary }}</p>
           </div>

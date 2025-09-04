@@ -25,9 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Integer id) {
-        // 由于UserMapper没有findById方法，我们需要通过用户名来查找
-        // 这里暂时返回null，或者可以通过其他方式实现
-        return null;
+        return userMapper.findById(id);
     }
 
     @Override
@@ -43,6 +41,13 @@ public class UserServiceImpl implements UserService {
     public void update(User user) {
         user.setUpdateTime(LocalDateTime.now());
         userMapper.update(user);
+    }
+
+    // 检查用户名是否可用（排除指定ID的用户）
+    @Override
+    public boolean isUsernameAvailable(String username, Integer excludeId) {
+        int count = userMapper.countByUsernameExcludingId(username, excludeId);
+        return count == 0;
     }
 
     // 更新用户头像

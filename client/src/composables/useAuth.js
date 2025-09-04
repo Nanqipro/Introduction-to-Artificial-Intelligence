@@ -175,20 +175,23 @@ export function useAuth() {
   const updateUserInfo = async (updateData) => {
     try {
       const response = await userApi.updateUserInfo(updateData)
+      console.log('更新用户信息响应:', response)
 
-      if (response.code === 200) {
+      if (response.code === 0) {
         // 更新成功后重新获取用户信息
         await fetchUserInfo()
         ElMessage.success('更新成功')
         return { success: true }
       } else {
-        ElMessage.error(response.message || '更新失败')
-        return { success: false, message: response.message }
+        const errorMsg = response.message || '更新失败'
+        ElMessage.error(errorMsg)
+        return { success: false, message: errorMsg }
       }
     } catch (error) {
       console.error('更新用户信息错误:', error)
-      ElMessage.error(error.message || '更新失败')
-      return { success: false, message: error.message }
+      const errorMsg = error.response?.data?.message || error.message || '更新失败'
+      ElMessage.error(errorMsg)
+      return { success: false, message: errorMsg }
     }
   }
 
