@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>章节完成功能测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+        .test-section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+        .info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+        .login-section {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+        }
+        .login-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .login-form input {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .status-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+        }
+        .chapter-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .chapter-item {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+        }
+        .chapter-item h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+        .chapter-item p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 章节完成功能测试</h1>
+        
+        <!-- 登录状态 -->
+        <div class="test-section login-section">
+            <h2>🔐 登录状态</h2>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="用户名" value="testuser">
+                <input type="password" id="password" placeholder="密码" value="123456">
+                <button class="test-button" onclick="login()">登录</button>
+                <button class="test-button" onclick="logout()">登出</button>
+                <button class="test-button" onclick="checkLoginStatus()">检查登录状态</button>
+            </div>
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 当前状态显示 -->
+        <div class="status-display">
+            <h3>📊 当前状态</h3>
+            <div id="currentStatus">点击"检查登录状态"查看当前状态</div>
+        </div>
+
+        <!-- 序章视频完成测试 -->
+        <div class="test-section">
+            <h2>🎬 序章视频完成测试</h2>
+            <p>测试序章视频观看完成后的章节完成逻辑</p>
+            <button class="test-button" onclick="testPrologueCompletion()">模拟序章视频完成</button>
+            <button class="test-button" onclick="checkPrologueStatus()">检查序章完成状态</button>
+            <div id="prologueResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 测验完成测试 -->
+        <div class="test-section">
+            <h2>📝 测验完成测试</h2>
+            <p>测试各章节测验完成后的章节完成逻辑</p>
+            <div>
+                <label>选择章节: </label>
+                <select id="chapterSelect">
+                    <option value="1">第1章</option>
+                    <option value="2">第2章</option>
+                    <option value="3">第3章</option>
+                    <option value="4">第4章</option>
+                    <option value="5">第5章</option>
+                    <option value="6">第6章</option>
+                    <option value="7">第7章</option>
+                </select>
+                <input type="number" id="quizScore" placeholder="测验分数" value="85" min="0" max="100">
+                <button class="test-button" onclick="testQuizCompletion()">模拟测验完成</button>
+            </div>
+            <div id="quizResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 章节完成状态查询 -->
+        <div class="test-section">
+            <h2>📋 章节完成状态查询</h2>
+            <button class="test-button" onclick="getUserStats()">获取用户统计</button>
+            <button class="test-button" onclick="getLearningRecords()">获取学习记录</button>
+            <div id="statsResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 经验值验证 -->
+        <div class="test-section">
+            <h2>⭐ 经验值验证</h2>
+            <button class="test-button" onclick="checkExperienceRewards()">检查经验值奖励</button>
+            <div id="experienceResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+        let currentToken = localStorage.getItem('token');
+
+        // 通用API调用函数
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (currentToken) {
+                options.headers.Authorization = currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API调用失败:', error);
+                return { code: 500, message: '网络错误: ' + error.message };
+            }
+        }
+
+        // 显示结果
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+
+        // 登录
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const result = await apiCall('/user/login', 'POST', { username, password });
+            
+            if (result.code === 200) {
+                currentToken = result.data.token;
+                localStorage.setItem('token', currentToken);
+                showResult('loginResult', `登录成功！Token: ${currentToken.substring(0, 20)}...`, 'success');
+                checkLoginStatus();
+            } else {
+                showResult('loginResult', `登录失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 登出
+        function logout() {
+            currentToken = null;
+            localStorage.removeItem('token');
+            showResult('loginResult', '已登出', 'info');
+            document.getElementById('currentStatus').textContent = '未登录';
+        }
+
+        // 检查登录状态
+        async function checkLoginStatus() {
+            if (!currentToken) {
+                document.getElementById('currentStatus').textContent = '未登录';
+                return;
+            }
+
+            const result = await apiCall('/user/userInfo');
+            if (result.code === 200) {
+                const user = result.data;
+                document.getElementById('currentStatus').innerHTML = `
+                    <strong>已登录用户:</strong> ${user.username}<br>
+                    <strong>等级:</strong> ${user.level}<br>
+                    <strong>经验值:</strong> ${user.experience}<br>
+                    <strong>学习时长:</strong> ${user.studyTime || 0} 分钟
+                `;
+            } else {
+                document.getElementById('currentStatus').textContent = '登录状态异常: ' + result.message;
+            }
+        }
+
+        // 测试序章完成
+        async function testPrologueCompletion() {
+            if (!currentToken) {
+                showResult('prologueResult', '请先登录', 'error');
+                return;
+            }
+
+            const result = await apiCall('/api/level/completeChapter', 'POST', {
+                chapterId: 0,
+                completionType: 'video',
+                score: 100
+            });
+
+            if (result.code === 200) {
+                showResult('prologueResult', `序章完成成功！获得经验值: ${JSON.stringify(result.data)}`, 'success');
+                checkLoginStatus(); // 刷新状态
+            } else {
+                showResult('prologueResult', `序章完成失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 检查序章状态
+        async function checkPrologueStatus() {
+            if (!currentToken) {
+                showResult('prologueResult', '请先登录', 'error');
+                return;
+            }
+
+            const result = await apiCall('/api/level/records');
+            if (result.code === 200) {
+                const prologueRecords = result.data.filter(record => 
+                    record.chapterId === 0 && record.activityType === 'chapter'
+                );
+                showResult('prologueResult', 
+                    `序章完成记录: ${prologueRecords.length > 0 ? '已完成' : '未完成'} (${prologueRecords.length}条记录)`, 
+                    prologueRecords.length > 0 ? 'success' : 'info'
+                );
+            } else {
+                showResult('prologueResult', `查询失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 测试测验完成
+        async function testQuizCompletion() {
+            if (!currentToken) {
+                showResult('quizResult', '请先登录', 'error');
+                return;
+            }
+
+            const chapterId = parseInt(document.getElementById('chapterSelect').value);
+            const score = parseInt(document.getElementById('quizScore').value);
+
+            const result = await apiCall('/api/level/completeChapter', 'POST', {
+                chapterId,
+                completionType: 'quiz',
+                score
+            });
+
+            if (result.code === 200) {
+                showResult('quizResult', `第${chapterId}章测验完成成功！获得经验值: ${JSON.stringify(result.data)}`, 'success');
+                checkLoginStatus(); // 刷新状态
+            } else {
+                showResult('quizResult', `第${chapterId}章测验完成失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 获取用户统计
+        async function getUserStats() {
+            if (!currentToken) {
+                showResult('statsResult', '请先登录', 'error');
+                return;
+            }
+
+            const result = await apiCall('/api/level/stats');
+            if (result.code === 200) {
+                const stats = result.data;
+                showResult('statsResult', `
+                    用户统计信息:
+                    等级: ${stats.level}
+                    经验值: ${stats.experience}
+                    已完成章节: ${stats.completedChapters}
+                    学习时长: ${stats.studyTime} 分钟
+                    总学习次数: ${stats.totalLearningCount}
+                `, 'success');
+            } else {
+                showResult('statsResult', `获取统计失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 获取学习记录
+        async function getLearningRecords() {
+            if (!currentToken) {
+                showResult('statsResult', '请先登录', 'error');
+                return;
+            }
+
+            const result = await apiCall('/api/level/records');
+            if (result.code === 200) {
+                const records = result.data;
+                const chapterRecords = records.filter(r => r.activityType === 'chapter');
+                const recordsByChapter = {};
+                
+                chapterRecords.forEach(record => {
+                    if (!recordsByChapter[record.chapterId]) {
+                        recordsByChapter[record.chapterId] = [];
+                    }
+                    recordsByChapter[record.chapterId].push(record);
+                });
+
+                let message = `学习记录 (共${records.length}条，章节完成${chapterRecords.length}条):\n`;
+                Object.keys(recordsByChapter).forEach(chapterId => {
+                    const chapterName = chapterId === '0' ? '序章' : `第${chapterId}章`;
+                    message += `${chapterName}: ${recordsByChapter[chapterId].length}次完成\n`;
+                });
+
+                showResult('statsResult', message, 'success');
+            } else {
+                showResult('statsResult', `获取学习记录失败: ${result.message}`, 'error');
+            }
+        }
+
+        // 检查经验值奖励
+        async function checkExperienceRewards() {
+            if (!currentToken) {
+                showResult('experienceResult', '请先登录', 'error');
+                return;
+            }
+
+            // 获取当前经验值
+            const beforeResult = await apiCall('/user/userInfo');
+            if (beforeResult.code !== 200) {
+                showResult('experienceResult', '获取用户信息失败', 'error');
+                return;
+            }
+
+            const beforeExp = beforeResult.data.experience;
+
+            // 模拟完成一个章节
+            const completeResult = await apiCall('/api/level/completeChapter', 'POST', {
+                chapterId: 1,
+                completionType: 'quiz',
+                score: 90
+            });
+
+            if (completeResult.code === 200) {
+                // 再次获取经验值
+                const afterResult = await apiCall('/user/userInfo');
+                if (afterResult.code === 200) {
+                    const afterExp = afterResult.data.experience;
+                    const gained = afterExp - beforeExp;
+                    showResult('experienceResult', 
+                        `经验值验证成功！\n完成前: ${beforeExp}\n完成后: ${afterExp}\n获得: ${gained}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('experienceResult', '获取完成后经验值失败', 'error');
+                }
+            } else {
+                showResult('experienceResult', `章节完成失败: ${completeResult.message}`, 'error');
+            }
+        }
+
+        // 页面加载时检查登录状态
+        window.onload = function() {
+            checkLoginStatus();
+        };
+    </script>
+</body>
+</html>

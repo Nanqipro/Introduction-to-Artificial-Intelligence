@@ -304,11 +304,10 @@
     <div class="next-step">
       <div class="next-step-content">
         <div class="completion-celebration">
-          <h3>🎯 准备开始答题</h3>
+          <h3>🎉 恭喜完成第二章案例学习！</h3>
           <p>
-            你已经了解了第二章的核心概念，包括线性回归、逻辑回归和深度学习核心层。现在可以参加知识测验来检验学习成果！
+            你已经了解了第二章的核心概念，包括线性回归、逻辑回归和深度学习核心层。现在可以滚动到"知识测试"部分参加测验来检验学习成果！
           </p>
-          <button @click="startQuiz" class="btn btn-quiz">🚀 开始答题</button>
         </div>
       </div>
     </div>

@@ -92,20 +92,16 @@
         <div class="quiz-header">
           <h3 class="quiz-title">📚 知识测验</h3>
           <p class="quiz-description">
-            {{ isChapter3 ? '滚动到页面底部查看完整内容后，可以参加知识测验来检验学习成果' : (isChapter2 || isChapter4 || isChapter7) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
+            参加知识测验来检验学习成果，测试你对本章节内容的理解程度
           </p>
         </div>
         <div class="quiz-actions">
           <button 
             @click="startQuiz" 
             class="btn btn-quiz"
-            :disabled="(isChapter3 && !hasScrolledToBottom) || ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted)"
-            :class="{ disabled: (isChapter3 && !hasScrolledToBottom) || ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted) }"
           >
             <span class="btn-icon">🎯</span>
-            <span class="btn-text">
-              {{ isChapter3 && !hasScrolledToBottom ? '请先滚动到页面底部' : ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted) ? '请先完成案例学习' : '开始测验' }}
-            </span>
+            <span class="btn-text">开始测验</span>
           </button>
           <div class="quiz-info">
             <span class="info-item">
@@ -115,18 +111,6 @@
             <span class="info-item">
               <span class="info-icon">🏆</span>
               <span class="info-text">可获得奖励和成就</span>
-            </span>
-            <span v-if="isChapter2" class="info-item">
-              <span class="info-icon">✅</span>
-              <span class="info-text">案例完成进度: {{ completedCasesCount }}/2</span>
-            </span>
-            <span v-if="isChapter3" class="info-item">
-              <span class="info-icon">✅</span>
-              <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
-            </span>
-            <span v-if="isChapter4" class="info-item">
-              <span class="info-icon">✅</span>
-              <span class="info-text">案例完成进度: {{ allCasesCompleted ? '1/1' : '0/1' }}</span>
             </span>
           </div>
         </div>
@@ -289,27 +273,7 @@ export default {
       this.$router.push(`/chapters/${id}`)
     },
     startQuiz() {
-      // 第三章：检查是否滚动到底部
-      if (this.isChapter3 && !this.hasScrolledToBottom) {
-        this.$message({
-          message: '请先滚动到页面底部查看完整内容后再开始测验',
-          type: 'warning',
-          duration: 3000
-        })
-        return
-      }
-      
-      // 其他章节：检查案例完成情况
-      if ((this.isChapter2 || this.isChapter4) && !this.allCasesCompleted) {
-        this.$message({
-          message: '请先完成所有案例学习后再开始测验',
-          type: 'warning',
-          duration: 3000
-        })
-        return
-      }
-      
-      // 跳转到答题页面
+      // 直接跳转到答题页面，移除所有限制条件
       this.$router.push(`/quiz/${this.id}`)
     },
     addScrollListener() {
@@ -340,11 +304,14 @@ export default {
     },
     onCaseCompleted(caseId) {
       this.completedCasesCount++
-      this.$message({
-        message: `案例 ${caseId} 完成！`,
-        type: 'success',
-        duration: 2000
-      })
+      // 跳过 deepLearning 案例的完成消息
+      if (caseId !== 'deepLearning') {
+        this.$message({
+          message: `案例 ${caseId} 完成！`,
+          type: 'success',
+          duration: 2000
+        })
+      }
     },
     async onAllCasesCompleted() {
       this.allCasesCompleted = true

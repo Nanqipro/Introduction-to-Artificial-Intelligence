@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经验值同步修复验证工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .test-button.warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .test-button.danger {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .result {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            border-color: #4CAF50;
+            background-color: #f1f8e9;
+        }
+
+        .result.error {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .result.warning {
+            border-color: #ff9800;
+            background-color: #fff3e0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background-color: #4CAF50; }
+        .status-error { background-color: #f44336; }
+        .status-warning { background-color: #ff9800; }
+        .status-info { background-color: #2196F3; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .comparison-table .changed {
+            background-color: #e8f5e8;
+            font-weight: bold;
+        }
+
+        .fix-status {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .fix-status h2 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 经验值同步修复验证</h1>
+            <p>验证UserMapper SQL修复后的经验值同步功能</p>
+        </div>
+
+        <div class="content">
+            <div class="fix-status">
+                <h2>🛠️ 修复内容</h2>
+                <p>已修复UserMapper中的update方法SQL语句，添加了经验值相关字段的更新</p>
+                <p>修复字段：level, experience, total_score, completed_chapters, quiz_count, correct_answers</p>
+            </div>
+
+            <div class="test-section">
+                <h3>📊 1. 基础状态检查</h3>
+                <div class="button-group">
+                    <button class="test-button" onclick="checkLoginStatus()">检查登录状态</button>
+                    <button class="test-button" onclick="getCurrentData()">获取当前数据</button>
+                    <button class="test-button" onclick="resetTestData()">重置测试数据</button>
+                </div>
+                <div id="status-result" class="result" style="display:none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>🧪 2. 修复验证测试</h3>
+                <div class="button-group">
+                    <button class="test-button warning" onclick="testExperienceSync()">完整同步测试</button>
+                    <button class="test-button" onclick="testQuizExperience()">测验经验值测试</button>
+                    <button class="test-button" onclick="testChapterExperience()">章节经验值测试</button>
+                </div>
+                <div id="test-result" class="result" style="display:none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>🔄 3. 事件系统验证</h3>
+                <div class="button-group">
+                    <button class="test-button" onclick="testEventSystem()">测试事件触发</button>
+                    <button class="test-button" onclick="testProfileRefresh()">测试个人中心刷新</button>
+                </div>
+                <div id="event-result" class="result" style="display:none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>📈 4. 数据对比验证</h3>
+                <div class="button-group">
+                    <button class="test-button" onclick="compareBeforeAfter()">前后数据对比</button>
+                    <button class="test-button danger" onclick="clearAllData()">清除测试数据</button>
+                </div>
+                <div id="compare-result" class="result" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+        let testData = {
+            before: null,
+            after: null,
+            events: []
+        };
+
+        // 获取认证头
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        // 显示结果
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+
+        // 检查登录状态
+        async function checkLoginStatus() {
+            let message = '=== 登录状态检查 ===\n';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                message += '❌ 未找到登录令牌\n';
+                showResult('status-result', message, 'error');
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/userInfo`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    message += '✅ 登录状态正常\n';
+                    message += `用户ID: ${data.data.id}\n`;
+                    message += `用户名: ${data.data.username}\n`;
+                    message += `角色: ${data.data.role}\n`;
+                    showResult('status-result', message, 'success');
+                    return true;
+                } else {
+                    message += `❌ 登录验证失败: ${data.message}\n`;
+                    showResult('status-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += `❌ 请求失败: ${error.message}\n`;
+                showResult('status-result', message, 'error');
+                return false;
+            }
+        }
+
+        // 获取当前数据
+        async function getCurrentData() {
+            if (!await checkLoginStatus()) return;
+            
+            let message = '=== 当前用户数据 ===\n';
+            
+            try {
+                // 获取用户统计数据
+                const statsResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const statsData = await statsResponse.json();
+                
+                if (statsData.code === 200) {
+                    const stats = statsData.data;
+                    message += `等级: ${stats.level}\n`;
+                    message += `经验值: ${stats.experience}\n`;
+                    message += `总分: ${stats.totalScore}\n`;
+                    message += `完成章节: ${stats.completedChapters}\n`;
+                    message += `测验次数: ${stats.quizCount}\n`;
+                    message += `正确答案: ${stats.correctAnswers}\n`;
+                    message += `准确率: ${stats.accuracy}%\n`;
+                    
+                    testData.before = { ...stats, timestamp: new Date().toISOString() };
+                    showResult('status-result', message, 'success');
+                } else {
+                    message += `❌ 获取数据失败: ${statsData.message}\n`;
+                    showResult('status-result', message, 'error');
+                }
+            } catch (error) {
+                message += `❌ 请求失败: ${error.message}\n`;
+                showResult('status-result', message, 'error');
+            }
+        }
+
+        // 完整同步测试
+        async function testExperienceSync() {
+            let message = '=== 完整经验值同步测试 ===\n';
+            
+            // 获取测试前数据
+            await getCurrentData();
+            const beforeData = { ...testData.before };
+            
+            message += `\n📊 测试前数据:\n`;
+            message += `- 等级: ${beforeData.level}\n`;
+            message += `- 经验值: ${beforeData.experience}\n`;
+            message += `- 总分: ${beforeData.totalScore}\n`;
+            
+            try {
+                // 添加经验值
+                const requestData = {
+                    experience: 50,
+                    activityType: 'quiz_completion',
+                    chapterId: 1,
+                    score: 85
+                };
+                
+                message += `\n🎯 添加经验值: ${requestData.experience}\n`;
+                message += `活动类型: ${requestData.activityType}\n`;
+                message += `得分: ${requestData.score}\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.code === 200) {
+                    message += `\n✅ API调用成功\n`;
+                    message += `返回数据: ${JSON.stringify(responseData.data, null, 2)}\n`;
+                    
+                    // 等待一下，然后获取最新数据
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // 重新获取数据验证
+                    const verifyResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const verifyData = await verifyResponse.json();
+                    
+                    if (verifyData.code === 200) {
+                        const afterData = verifyData.data;
+                        testData.after = { ...afterData, timestamp: new Date().toISOString() };
+                        
+                        message += `\n📈 验证后数据:\n`;
+                        message += `- 等级: ${afterData.level} (变化: ${afterData.level - beforeData.level})\n`;
+                        message += `- 经验值: ${afterData.experience} (变化: ${afterData.experience - beforeData.experience})\n`;
+                        message += `- 总分: ${afterData.totalScore} (变化: ${afterData.totalScore - beforeData.totalScore})\n`;
+                        message += `- 测验次数: ${afterData.quizCount} (变化: ${afterData.quizCount - beforeData.quizCount})\n`;
+                        
+                        // 验证数据是否正确更新
+                        const expDiff = afterData.experience - beforeData.experience;
+                        const scoreDiff = afterData.totalScore - beforeData.totalScore;
+                        const quizDiff = afterData.quizCount - beforeData.quizCount;
+                        
+                        if (expDiff === 50 && scoreDiff === 85 && quizDiff === 1) {
+                            message += `\n🎉 修复验证成功！\n`;
+                            message += `✅ 经验值正确增加: ${expDiff}\n`;
+                            message += `✅ 总分正确增加: ${scoreDiff}\n`;
+                            message += `✅ 测验次数正确增加: ${quizDiff}\n`;
+                            message += `\n🔧 UserMapper SQL修复生效！\n`;
+                            showResult('test-result', message, 'success');
+                        } else {
+                            message += `\n⚠️ 数据更新异常:\n`;
+                            message += `期望经验值增加: 50, 实际: ${expDiff}\n`;
+                            message += `期望总分增加: 85, 实际: ${scoreDiff}\n`;
+                            message += `期望测验次数增加: 1, 实际: ${quizDiff}\n`;
+                            showResult('test-result', message, 'warning');
+                        }
+                    } else {
+                        message += `\n❌ 验证数据获取失败: ${verifyData.message}\n`;
+                        showResult('test-result', message, 'error');
+                    }
+                } else {
+                    message += `\n❌ API调用失败: ${responseData.message}\n`;
+                    showResult('test-result', message, 'error');
+                }
+            } catch (error) {
+                message += `\n❌ 测试失败: ${error.message}\n`;
+                showResult('test-result', message, 'error');
+            }
+        }
+
+        // 测试测验经验值
+        async function testQuizExperience() {
+            let message = '=== 测验经验值测试 ===\n';
+            
+            try {
+                const requestData = {
+                    experience: 25,
+                    activityType: 'quiz',
+                    chapterId: 2,
+                    score: 90
+                };
+                
+                message += `添加测验经验值: ${requestData.experience}\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.code === 200) {
+                    message += `✅ 测验经验值添加成功\n`;
+                    message += `结果: ${JSON.stringify(data.data, null, 2)}\n`;
+                    showResult('test-result', message, 'success');
+                } else {
+                    message += `❌ 测验经验值添加失败: ${data.message}\n`;
+                    showResult('test-result', message, 'error');
+                }
+            } catch (error) {
+                message += `❌ 请求失败: ${error.message}\n`;
+                showResult('test-result', message, 'error');
+            }
+        }
+
+        // 测试章节经验值
+        async function testChapterExperience() {
+            let message = '=== 章节经验值测试 ===\n';
+            
+            try {
+                const requestData = {
+                    experience: 100,
+                    activityType: 'chapter',
+                    chapterId: 3,
+                    score: 100
+                };
+                
+                message += `添加章节经验值: ${requestData.experience}\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.code === 200) {
+                    message += `✅ 章节经验值添加成功\n`;
+                    message += `结果: ${JSON.stringify(data.data, null, 2)}\n`;
+                    showResult('test-result', message, 'success');
+                } else {
+                    message += `❌ 章节经验值添加失败: ${data.message}\n`;
+                    showResult('test-result', message, 'error');
+                }
+            } catch (error) {
+                message += `❌ 请求失败: ${error.message}\n`;
+                showResult('test-result', message, 'error');
+            }
+        }
+
+        // 测试事件系统
+        function testEventSystem() {
+            let message = '=== 事件系统测试 ===\n';
+            
+            // 监听经验值更新事件
+            const eventListener = (event) => {
+                message += `\n🎯 收到experienceUpdated事件:\n`;
+                message += `事件数据: ${JSON.stringify(event.detail, null, 2)}\n`;
+                testData.events.push({
+                    type: 'experienceUpdated',
+                    data: event.detail,
+                    timestamp: new Date().toISOString()
+                });
+                showResult('event-result', message, 'success');
+            };
+            
+            window.addEventListener('experienceUpdated', eventListener);
+            
+            // 触发测试事件
+            const testEventData = {
+                experienceGained: 30,
+                newExperience: 130,
+                newLevel: 2,
+                leveledUp: true
+            };
+            
+            message += `触发测试事件...\n`;
+            message += `事件数据: ${JSON.stringify(testEventData, null, 2)}\n`;
+            
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: testEventData
+            }));
+            
+            // 5秒后移除监听器
+            setTimeout(() => {
+                window.removeEventListener('experienceUpdated', eventListener);
+                message += `\n✅ 事件监听器已移除\n`;
+                showResult('event-result', message, 'success');
+            }, 5000);
+        }
+
+        // 测试个人中心刷新
+        function testProfileRefresh() {
+            let message = '=== 个人中心刷新测试 ===\n';
+            
+            // 模拟个人中心的事件监听
+            const profileListener = (event) => {
+                message += `\n📱 个人中心收到事件:\n`;
+                message += `事件详情: ${JSON.stringify(event.detail, null, 2)}\n`;
+                message += `\n🔄 模拟个人中心数据刷新...\n`;
+                
+                // 模拟延迟刷新
+                setTimeout(() => {
+                    message += `✅ 个人中心数据刷新完成\n`;
+                    showResult('event-result', message, 'success');
+                }, 500);
+            };
+            
+            window.addEventListener('experienceUpdated', profileListener);
+            
+            message += `开始个人中心刷新测试...\n`;
+            
+            // 触发经验值更新事件
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: {
+                    experienceGained: 40,
+                    newExperience: 170,
+                    newLevel: 2,
+                    leveledUp: false
+                }
+            }));
+            
+            // 3秒后移除监听器
+            setTimeout(() => {
+                window.removeEventListener('experienceUpdated', profileListener);
+            }, 3000);
+        }
+
+        // 前后数据对比
+        function compareBeforeAfter() {
+            let message = '=== 数据对比分析 ===\n';
+            
+            if (!testData.before || !testData.after) {
+                message += '❌ 缺少对比数据，请先运行完整同步测试\n';
+                showResult('compare-result', message, 'warning');
+                return;
+            }
+            
+            const before = testData.before;
+            const after = testData.after;
+            
+            message += `测试时间范围: ${before.timestamp} 到 ${after.timestamp}\n\n`;
+            
+            // 创建对比表格
+            const fields = ['level', 'experience', 'totalScore', 'completedChapters', 'quizCount', 'correctAnswers'];
+            const fieldNames = {
+                level: '等级',
+                experience: '经验值',
+                totalScore: '总分',
+                completedChapters: '完成章节',
+                quizCount: '测验次数',
+                correctAnswers: '正确答案'
+            };
+            
+            message += '字段\t\t测试前\t测试后\t变化\n';
+            message += '----------------------------------------\n';
+            
+            let hasChanges = false;
+            fields.forEach(field => {
+                const beforeVal = before[field] || 0;
+                const afterVal = after[field] || 0;
+                const change = afterVal - beforeVal;
+                
+                if (change !== 0) {
+                    hasChanges = true;
+                }
+                
+                message += `${fieldNames[field]}\t\t${beforeVal}\t${afterVal}\t${change > 0 ? '+' : ''}${change}\n`;
+            });
+            
+            message += '\n';
+            
+            if (hasChanges) {
+                message += '✅ 检测到数据变化，修复生效！\n';
+                message += '\n🎉 UserMapper SQL修复验证成功！\n';
+                message += '经验值同步问题已解决。\n';
+                showResult('compare-result', message, 'success');
+            } else {
+                message += '⚠️ 未检测到数据变化\n';
+                message += '请检查是否正确执行了测试步骤。\n';
+                showResult('compare-result', message, 'warning');
+            }
+        }
+
+        // 重置测试数据
+        function resetTestData() {
+            testData = {
+                before: null,
+                after: null,
+                events: []
+            };
+            
+            showResult('status-result', '✅ 测试数据已重置', 'success');
+        }
+
+        // 清除所有数据
+        function clearAllData() {
+            resetTestData();
+            
+            // 清除所有结果显示
+            ['status-result', 'test-result', 'event-result', 'compare-result'].forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = 'none';
+            });
+            
+            showResult('status-result', '✅ 所有数据和显示已清除', 'success');
+        }
+
+        // 页面加载时自动检查登录状态
+        window.addEventListener('load', () => {
+            setTimeout(checkLoginStatus, 500);
+        });
+    </script>
+</body>
+</html>

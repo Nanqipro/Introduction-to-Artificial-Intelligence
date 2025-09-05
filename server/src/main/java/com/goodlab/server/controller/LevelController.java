@@ -113,6 +113,37 @@ public class LevelController {
     }
     
     /**
+     * 标记章节完成
+     */
+    @PostMapping("/completeChapter")
+    public ApiResponse<Map<String, Object>> completeChapter(@RequestBody Map<String, Object> params) {
+        try {
+            Map<String, Object> claims = ThreadLocalUtil.get();
+            Integer userId = (Integer) claims.get("id");
+            
+            Integer chapterId = convertToIntegerOrNull(params.get("chapterId"));
+            String completionType = (String) params.get("completionType"); // "video" 或 "quiz"
+            Integer score = convertToIntegerOrNull(params.get("score"));
+            
+            if (chapterId == null) {
+                return ApiResponse.error("章节ID不能为空");
+            }
+            
+            // 计算经验值奖励
+            int experienceGained = 50; // 基础章节完成奖励
+            if ("quiz".equals(completionType) && score != null) {
+                experienceGained += score; // 测验分数额外奖励
+            }
+            
+            Map<String, Object> result = levelService.addExperience(userId, experienceGained, "chapter", chapterId, score);
+            
+            return ApiResponse.success(result);
+        } catch (Exception e) {
+            return ApiResponse.error("标记章节完成失败: " + e.getMessage());
+        }
+    }
+    
+    /**
      * 获取排行榜
      */
     @GetMapping("/leaderboard")

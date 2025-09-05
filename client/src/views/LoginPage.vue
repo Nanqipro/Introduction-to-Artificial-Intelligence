@@ -66,7 +66,6 @@
           <el-button type="text" @click="toggleMode">
             {{ isLogin ? '没有账号？立即注册' : '已有账号？立即登录' }}
           </el-button>
-          
         </div>
       </el-form>
     </div>

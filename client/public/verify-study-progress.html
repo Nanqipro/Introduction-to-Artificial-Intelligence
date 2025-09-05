@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习进度验证工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .test-button.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .test-button.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .result {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            border-left: 5px solid #27ae60;
+            background: #f8fff8;
+        }
+
+        .result.error {
+            border-left: 5px solid #e74c3c;
+            background: #fff8f8;
+        }
+
+        .result.warning {
+            border-left: 5px solid #f39c12;
+            background: #fffbf0;
+        }
+
+        .result.info {
+            border-left: 5px solid #3498db;
+            background: #f8fbff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 学习进度验证工具</h1>
+        
+        <div class="test-section">
+            <h3>1. 当前学习统计</h3>
+            <div class="button-group">
+                <button class="test-button" onclick="loadCurrentStats()">获取当前统计</button>
+                <button class="test-button" onclick="refreshStats()">刷新数据</button>
+            </div>
+            <div id="current-stats" class="stats-grid" style="display:none;"></div>
+            <div id="stats-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. 测试学习时长更新</h3>
+            <div class="button-group">
+                <button class="test-button" onclick="testQuizStudyTime()">测试测验学习时长(+15分钟)</button>
+                <button class="test-button" onclick="testChapterStudyTime()">测试章节学习时长(+30分钟)</button>
+                <button class="test-button" onclick="testExperimentStudyTime()">测试实验学习时长(+45分钟)</button>
+            </div>
+            <div id="study-time-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 测试已完成章节更新</h3>
+            <div class="button-group">
+                <button class="test-button" onclick="testChapterCompletion()">模拟完成章节</button>
+                <button class="test-button" onclick="checkChapterProgress()">检查章节进度</button>
+            </div>
+            <div id="chapter-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. 综合测试</h3>
+            <div class="button-group">
+                <button class="test-button success" onclick="runFullTest()">运行完整测试</button>
+                <button class="test-button warning" onclick="resetTestData()">重置测试数据</button>
+            </div>
+            <div id="full-test-result" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        let currentStats = null;
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+
+        function createStatsCard(label, value, unit = '') {
+            return `
+                <div class="stat-card">
+                    <div class="stat-value">${value}${unit}</div>
+                    <div class="stat-label">${label}</div>
+                </div>
+            `;
+        }
+
+        async function loadCurrentStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    currentStats = data.data;
+                    
+                    const statsContainer = document.getElementById('current-stats');
+                    statsContainer.innerHTML = `
+                        ${createStatsCard('当前等级', currentStats.level)}
+                        ${createStatsCard('经验值', currentStats.experience)}
+                        ${createStatsCard('学习时长', Math.floor(currentStats.studyTime / 60), 'h')} 
+                        ${createStatsCard('学习时长', currentStats.studyTime % 60, 'm')}
+                        ${createStatsCard('已完成章节', currentStats.completedChapters)}
+                        ${createStatsCard('总得分', currentStats.totalScore)}
+                    `;
+                    statsContainer.style.display = 'grid';
+                    
+                    let message = '=== 当前学习统计 ===\n';
+                    message += `等级: ${currentStats.level} (${currentStats.title})\n`;
+                    message += `经验值: ${currentStats.experience}\n`;
+                    message += `学习时长: ${Math.floor(currentStats.studyTime / 60)}小时${currentStats.studyTime % 60}分钟 (${currentStats.studyTime}分钟)\n`;
+                    message += `已完成章节: ${currentStats.completedChapters}\n`;
+                    message += `总得分: ${currentStats.totalScore}\n`;
+                    message += `测验次数: ${currentStats.quizCount}\n`;
+                    message += `正确答案数: ${currentStats.correctAnswers}`;
+                    
+                    showResult('stats-result', message, 'success');
+                } else {
+                    showResult('stats-result', `获取统计数据失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult('stats-result', `获取统计数据异常: ${error.message}`, 'error');
+            }
+        }
+
+        async function refreshStats() {
+            await loadCurrentStats();
+        }
+
+        async function testStudyTimeUpdate(activityType, expectedMinutes, description) {
+            try {
+                // 获取更新前的数据
+                const beforeResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const beforeData = beforeResponse.ok ? (await beforeResponse.json()).data : null;
+                
+                // 模拟学习活动
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        experience: 10,
+                        activityType: activityType,
+                        chapterId: 1,
+                        score: 85
+                    })
+                });
+                
+                if (response.ok) {
+                    // 获取更新后的数据
+                    const afterResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                        headers: getAuthHeaders()
+                    });
+                    const afterData = afterResponse.ok ? (await afterResponse.json()).data : null;
+                    
+                    const studyTimeDiff = afterData.studyTime - beforeData.studyTime;
+                    
+                    let message = `=== ${description} ===\n`;
+                    message += `更新前学习时长: ${beforeData.studyTime}分钟\n`;
+                    message += `更新后学习时长: ${afterData.studyTime}分钟\n`;
+                    message += `增加时长: ${studyTimeDiff}分钟\n`;
+                    message += `预期增加: ${expectedMinutes}分钟\n`;
+                    
+                    if (studyTimeDiff === expectedMinutes) {
+                        message += `\n✅ 学习时长更新正确！`;
+                        showResult('study-time-result', message, 'success');
+                    } else {
+                        message += `\n❌ 学习时长更新异常，预期${expectedMinutes}分钟，实际${studyTimeDiff}分钟`;
+                        showResult('study-time-result', message, 'error');
+                    }
+                } else {
+                    showResult('study-time-result', `${description}失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult('study-time-result', `${description}异常: ${error.message}`, 'error');
+            }
+        }
+
+        async function testQuizStudyTime() {
+            await testStudyTimeUpdate('quiz_completion', 15, '测验学习时长测试');
+        }
+
+        async function testChapterStudyTime() {
+            await testStudyTimeUpdate('chapter', 30, '章节学习时长测试');
+        }
+
+        async function testExperimentStudyTime() {
+            await testStudyTimeUpdate('experiment', 45, '实验学习时长测试');
+        }
+
+        async function testChapterCompletion() {
+            try {
+                // 获取更新前的数据
+                const beforeResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const beforeData = beforeResponse.ok ? (await beforeResponse.json()).data : null;
+                
+                // 模拟章节完成
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        experience: 50,
+                        activityType: 'chapter',
+                        chapterId: 2,
+                        score: 100
+                    })
+                });
+                
+                if (response.ok) {
+                    // 获取更新后的数据
+                    const afterResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                        headers: getAuthHeaders()
+                    });
+                    const afterData = afterResponse.ok ? (await afterResponse.json()).data : null;
+                    
+                    const chapterDiff = afterData.completedChapters - beforeData.completedChapters;
+                    const studyTimeDiff = afterData.studyTime - beforeData.studyTime;
+                    
+                    let message = '=== 章节完成测试 ===\n';
+                    message += `更新前已完成章节: ${beforeData.completedChapters}\n`;
+                    message += `更新后已完成章节: ${afterData.completedChapters}\n`;
+                    message += `增加章节数: ${chapterDiff}\n`;
+                    message += `增加学习时长: ${studyTimeDiff}分钟\n`;
+                    
+                    if (chapterDiff === 1 && studyTimeDiff === 30) {
+                        message += `\n✅ 章节完成更新正确！`;
+                        showResult('chapter-result', message, 'success');
+                    } else {
+                        message += `\n❌ 章节完成更新异常`;
+                        if (chapterDiff !== 1) message += `\n- 章节数应增加1，实际增加${chapterDiff}`;
+                        if (studyTimeDiff !== 30) message += `\n- 学习时长应增加30分钟，实际增加${studyTimeDiff}分钟`;
+                        showResult('chapter-result', message, 'error');
+                    }
+                } else {
+                    showResult('chapter-result', `章节完成测试失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult('chapter-result', `章节完成测试异常: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkChapterProgress() {
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const stats = data.data;
+                    
+                    let message = '=== 章节进度检查 ===\n';
+                    message += `已完成章节: ${stats.completedChapters}\n`;
+                    message += `总学习时长: ${Math.floor(stats.studyTime / 60)}小时${stats.studyTime % 60}分钟\n`;
+                    message += `平均每章节学习时长: ${stats.completedChapters > 0 ? Math.round(stats.studyTime / stats.completedChapters) : 0}分钟\n`;
+                    message += `总经验值: ${stats.experience}\n`;
+                    message += `当前等级: ${stats.level} (${stats.title})`;
+                    
+                    showResult('chapter-result', message, 'info');
+                } else {
+                    showResult('chapter-result', `获取章节进度失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult('chapter-result', `获取章节进度异常: ${error.message}`, 'error');
+            }
+        }
+
+        async function runFullTest() {
+            let message = '=== 🚀 开始完整测试 ===\n\n';
+            showResult('full-test-result', message, 'info');
+            
+            try {
+                // 1. 获取初始数据
+                message += '1️⃣ 获取初始数据...\n';
+                const initialResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const initialData = initialResponse.ok ? (await initialResponse.json()).data : null;
+                message += `   初始学习时长: ${initialData.studyTime}分钟\n`;
+                message += `   初始完成章节: ${initialData.completedChapters}\n\n`;
+                showResult('full-test-result', message, 'info');
+                
+                // 2. 测试测验
+                message += '2️⃣ 测试测验学习时长...\n';
+                await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        experience: 20,
+                        activityType: 'quiz_completion',
+                        chapterId: 1,
+                        score: 90
+                    })
+                });
+                
+                const afterQuizResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const afterQuizData = afterQuizResponse.ok ? (await afterQuizResponse.json()).data : null;
+                const quizTimeDiff = afterQuizData.studyTime - initialData.studyTime;
+                message += `   测验后学习时长增加: ${quizTimeDiff}分钟 ${quizTimeDiff === 15 ? '✅' : '❌'}\n\n`;
+                showResult('full-test-result', message, 'info');
+                
+                // 3. 测试章节完成
+                message += '3️⃣ 测试章节完成...\n';
+                await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        experience: 50,
+                        activityType: 'chapter',
+                        chapterId: 3,
+                        score: 100
+                    })
+                });
+                
+                const finalResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const finalData = finalResponse.ok ? (await finalResponse.json()).data : null;
+                const chapterTimeDiff = finalData.studyTime - afterQuizData.studyTime;
+                const chapterCountDiff = finalData.completedChapters - initialData.completedChapters;
+                
+                message += `   章节完成后学习时长增加: ${chapterTimeDiff}分钟 ${chapterTimeDiff === 30 ? '✅' : '❌'}\n`;
+                message += `   完成章节数增加: ${chapterCountDiff} ${chapterCountDiff === 1 ? '✅' : '❌'}\n\n`;
+                
+                // 4. 总结
+                message += '📊 测试总结:\n';
+                message += `   总学习时长增加: ${finalData.studyTime - initialData.studyTime}分钟\n`;
+                message += `   总章节数增加: ${finalData.completedChapters - initialData.completedChapters}\n`;
+                message += `   当前等级: ${finalData.level} (${finalData.title})\n`;
+                
+                const allTestsPassed = quizTimeDiff === 15 && chapterTimeDiff === 30 && chapterCountDiff === 1;
+                if (allTestsPassed) {
+                    message += '\n🎉 所有测试通过！学习进度功能正常工作！';
+                    showResult('full-test-result', message, 'success');
+                } else {
+                    message += '\n⚠️ 部分测试未通过，请检查相关功能';
+                    showResult('full-test-result', message, 'warning');
+                }
+                
+            } catch (error) {
+                message += `\n❌ 测试过程中发生异常: ${error.message}`;
+                showResult('full-test-result', message, 'error');
+            }
+        }
+
+        async function resetTestData() {
+            const confirmed = confirm('确定要重置测试数据吗？这将清空当前用户的学习进度。');
+            if (!confirmed) return;
+            
+            showResult('full-test-result', '⚠️ 重置功能需要后端支持，当前仅为演示', 'warning');
+        }
+
+        // 页面加载时自动获取当前统计
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                loadCurrentStats();
+            } else {
+                showResult('stats-result', '❌ 未登录，请先登录后再使用此工具', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -337,10 +337,7 @@
       <div class="next-step-content">
         <div v-if="allCasesCompleted" class="completion-celebration">
           <h3>🎉 恭喜！所有案例学习已完成</h3>
-          <p>你已经深入理解了计算机视觉的基础概念：像素数据处理和特征提取。现在可以参加知识测验来检验学习成果！</p>
-          <button @click="startQuiz" class="btn btn-quiz btn-enabled">
-            🚀 开始答题
-          </button>
+          <p>你已经深入理解了计算机视觉的基础概念：像素数据处理和特征提取。现在可以滚动到"知识测试"部分参加测验来检验学习成果！</p>
         </div>
         
         <div v-else class="completion-guide">
