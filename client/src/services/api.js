@@ -2,406 +2,237 @@ import axios from 'axios'
 
 // 动态获取后端服务地址
 const getBaseURL = () => {
-  // 如果是生产环境或外网访问
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    // 使用相对路径，通过前端服务代理到后端
     return '/api'
   }
-  // 本地开发环境使用localhost
   return 'http://localhost:8082'
 }
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: getBaseURL(), // 动态指向后端服务地址
+  baseURL: getBaseURL(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
+// 定义公开API路径（不需要认证）
+const PUBLIC_PATHS = [
+  '/api/chapters',
+  '/user/register',
+  '/user/login'
+]
+
+// 检查是否为公开API
+const isPublicAPI = (url) => {
+  return PUBLIC_PATHS.some(path => {
+    if (path === '/api/chapters') {
+      return url.startsWith('/api/chapters')
+    }
+    return url.startsWith(path)
+  })
+}
+
 // 请求拦截器
 api.interceptors.request.use(
   config => {
-    console.log('🚀 发送请求:', config.method?.toUpperCase(), config.url)
-
-    // 添加JWT token到请求头
     const token = localStorage.getItem('token')
-    console.log('📝 本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
-
-    if (token) {
-      // 确保token格式正确（不重复添加Bearer前缀）
-      const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
-      config.headers.Authorization = formattedToken
-      console.log('✅ 已添加Authorization头部:', formattedToken.substring(0, 20) + '...')
-    } else {
-      console.warn('⚠️ 警告: 没有找到token，该请求可能会被拒绝')
-      console.log('🔍 当前请求URL:', config.url)
-      console.log('🔍 请求类型:', config.method)
-    }
-
-    // 添加详细的请求日志
-    console.log('📋 完整请求头部:', {
-      'Content-Type': config.headers['Content-Type'],
-      'Authorization': config.headers.Authorization ? config.headers.Authorization.substring(0, 30) + '...' : 'none'
+    const isPublic = isPublicAPI(config.url)
+    
+    // 调试日志
+    console.log('🔍 API拦截器 - 请求详情:', {
+      url: config.url,
+      isPublic: isPublic,
+      hasToken: !!token,
+      tokenValue: token ? token.substring(0, 20) + '...' : 'null',
+      tokenLength: token ? token.length : 0
     })
-
+    
+    // 为需要认证的API添加token
+    if (!isPublic) {
+      if (token && token.trim() !== '' && token !== 'null' && token !== 'undefined') {
+        const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`
+        config.headers.Authorization = authHeader
+        console.log('✅ API拦截器 - 已添加Authorization头:', authHeader.substring(0, 30) + '...')
+      } else {
+        console.error('❌ API拦截器 - 强制拒绝无效token请求:', {
+          url: config.url,
+          token: token,
+          tokenType: typeof token,
+          headers: config.headers
+        })
+        // 强制抛出错误，阻止请求发送
+        throw new Error('Token无效，请先登录')
+      }
+    }
+    
+    // 处理FormData
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type']
+    }
+    
     return config
   },
-  error => {
-    console.error('❌ 请求拦截器错误:', error)
-    return Promise.reject(error)
-  }
+  error => Promise.reject(error)
 )
 
 // 响应拦截器
 api.interceptors.response.use(
   response => {
-    console.log('收到响应:', response.status, response.data)
-    // 处理后端统一响应格式
-    if (response.data && typeof response.data === 'object') {
-      // 后端成功响应的code是200
-      if (response.data.code === 200) {
-        return response.data
-      }
-      // 后端错误响应（code不是200时）
-      if (response.data.code !== 200 && response.data.message) {
-        console.log('后端返回错误:', response.data.code, response.data.message)
-        throw new Error(response.data.message)
-      }
+    // 处理统一响应格式
+    if (response.data?.code === 200) {
+      return response.data
+    }
+    if (response.data?.code && response.data?.message) {
+      throw new Error(response.data.message)
     }
     return response.data
   },
   error => {
-    console.error('响应错误:', error.response?.status, error.response?.data || error.message)
-
-    // 处理401未授权错误
+    // 处理401未授权
     if (error.response?.status === 401) {
-      console.log('🔒 收到401未授权响应，检查是否需要清除token')
-
-      // 只有在确实有token的情况下才清除，避免误清除
-      const currentToken = localStorage.getItem('token')
-      if (currentToken) {
-        console.log('🔒 清除已失效的token')
-        localStorage.removeItem('token')
-        localStorage.removeItem('userInfo')
-        // 不要强制跳转，让Vue Router处理
-        console.log('🔒 token已清除，让Vue Router处理跳转')
-        return Promise.reject(new Error('登录已过期，请重新登录'))
-      } else {
-        console.log('🔒 没有token，可能是首次请求，不进行跳转')
-        return Promise.reject(new Error('需要登录'))
+      const url = error.config?.url
+      if (url?.includes('/user/login')) {
+        return Promise.reject(new Error('用户名或密码错误'))
       }
+      return Promise.reject(new Error('登录已过期，请重新登录'))
     }
-
-    // 处理后端错误响应
-    if (error.response?.data?.message) {
-      const errorMessage = error.response.data.message
-      console.error('后端错误信息:', errorMessage)
-      return Promise.reject(new Error(errorMessage))
-    }
-
-    // 处理网络错误
-    if (!error.response) {
-      return Promise.reject(new Error('网络连接失败，请检查网络设置'))
-    }
-
-    return Promise.reject(error)
+    
+    // 处理其他错误
+    const message = error.response?.data?.message || 
+                   (error.response ? '服务器错误' : '网络连接失败')
+    return Promise.reject(new Error(message))
   }
 )
 
 // 章节相关API
 export const chapterApi = {
-  // 获取章节概览列表
-  getChapterOverview() {
-    return api.get('/chapters')
-  },
-
-  // 获取所有章节
-  getAllChapters() {
-    return api.get('/chapters/all')
-  },
-
-  // 根据ID获取章节详情
-  getChapterById(id) {
-    return api.get(`/chapters/${id}`)
-  },
-
-  // 创建章节
-  createChapter(chapter) {
-    return api.post('/chapters', chapter)
-  },
-
-  // 更新章节
-  updateChapter(id, chapter) {
-    return api.put(`/chapters/${id}`, chapter)
-  },
-
-  // 删除章节
-  deleteChapter(id) {
-    return api.delete(`/chapters/${id}`)
-  },
-
-  // 健康检查
-  healthCheck() {
-    return api.get('/chapters/health')
-  }
+  getChapterOverview: () => api.get('/api/chapters'),
+  getAllChapters: () => api.get('/api/chapters/all'),
+  getChapterById: (id) => api.get(`/api/chapters/${id}`),
+  createChapter: (chapter) => api.post('/api/chapters', chapter),
+  updateChapter: (id, chapter) => api.put(`/api/chapters/${id}`, chapter),
+  deleteChapter: (id) => api.delete(`/api/chapters/${id}`),
+  healthCheck: () => api.get('/api/chapters/health')
 }
 
 // 答题系统相关API
 export const quizApi = {
-  // 根据章节获取题目
-  getQuestionsByChapter(chapterId) {
-    return api.get(`/quiz/questions/${chapterId}`)
-  },
-
-  // 获取题目（兼容性方法）
-  getQuestions(chapterId) {
-    return this.getQuestionsByChapter(chapterId)
-  },
-
-  // 从数据库获取章节题目
-  getQuestionsFromDB(chapterId) {
-    // 调整为通用可用的后端接口，避免 404
-    return api.get(`/quiz/questions/${chapterId}`)
-  },
-
-  // 保存答题结果
-  saveQuizResult(result) {
-    return api.post('/quiz/results', result)
-  },
-
-  // 获取用户答题历史
-  getUserQuizHistory() {
-    return api.get('/quiz/history')
-  },
-
-  // 获取用户历史（兼容性方法）
-  getUserHistory() {
-    return this.getUserQuizHistory()
-  },
-
-  // 获取用户统计信息
-  getUserStats() {
-    return api.get('/quiz/stats')
-  },
-
-  // 获取排行榜
-  getLeaderboard() {
-    return api.get('/quiz/leaderboard')
-  },
-
-  // 获取题目统计信息
-  getQuestionStats() {
-    return api.get('/quiz/question-stats')
-  }
-}
-
-// 管理员相关API
-export const adminApi = {
-  // 获取所有题目
-  getAllQuestions() {
-    return api.get('/admin/questions')
-  },
-
-  // 根据ID获取题目
-  getQuestionById(id) {
-    return api.get(`/admin/questions/${id}`)
-  },
-
-  // 创建题目
-  createQuestion(question) {
-    return api.post('/admin/questions', question)
-  },
-
-  // 更新题目
-  updateQuestion(id, question) {
-    return api.put(`/admin/questions/${id}`, question)
-  },
-
-  // 删除题目
-  deleteQuestion(id) {
-    return api.delete(`/admin/questions/${id}`)
-  },
-
-  // 导入Excel文件
-  importQuestions(file) {
-    const formData = new FormData()
-    formData.append('file', file)
-    return api.post('/admin/questions/import', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-  },
-
-  // 获取题目统计
-  getQuestionStats() {
-    return api.get('/admin/questions/stats')
-  },
-
-  // 根据章节获取题目
-  getQuestionsByChapter(chapterId) {
-    return api.get(`/admin/questions/chapter/${chapterId}`)
-  },
-
-  // 健康检查
-  healthCheck() {
-    return api.get('/admin/health')
-  }
+  getQuestionsByChapter: (chapterId) => api.get(`/api/quiz/questions/${chapterId}`),
+  saveQuizResult: (result) => api.post('/api/quiz/results', result),
+  getUserHistory: () => api.get('/api/quiz/history'),
+  getUserStats: () => api.get('/api/quiz/stats'),
+  getLeaderboard: () => api.get('/api/quiz/leaderboard'),
+  getQuestionStats: () => api.get('/api/quiz/question-stats')
 }
 
 // 用户相关API
 export const userApi = {
-  // 用户注册
-  register(userData) {
+  register: (userData) => {
     const formData = new URLSearchParams()
     formData.append('username', userData.username)
     formData.append('password', userData.password)
-
     return api.post('/user/register', formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   },
-
-  // 用户登录
-  login(userData) {
+  
+  login: (userData) => {
     const formData = new URLSearchParams()
     formData.append('username', userData.username)
     formData.append('password', userData.password)
-
     return api.post('/user/login', formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   },
-
-  // 获取用户信息
-  getUserInfo() {
+  
+  getUserInfo: () => {
+    // 检查token是否存在
+    const token = localStorage.getItem('token')
+    console.log('🔍 userApi.getUserInfo - Token检查:', {
+      hasToken: !!token,
+      tokenValue: token ? token.substring(0, 20) + '...' : 'null',
+      tokenLength: token ? token.length : 0
+    })
+    if (!token || token.trim() === '' || token === 'null') {
+      console.log('🚫 userApi.getUserInfo - 没有有效token，拒绝请求')
+      return Promise.reject(new Error('Token不存在或无效'))
+    }
     return api.get('/user/userInfo')
   },
-
-  // 获取当前用户（兼容性方法）
-  getCurrentUser() {
-    return this.getUserInfo()
+  updateUserInfo: (userInfo) => api.put('/user/update', userInfo),
+  updateAvatar: (avatarUrl) => {
+    const params = new URLSearchParams({ avatarUrl })
+    return api.patch(`/user/updateAvatar?${params}`)
   },
-
-  // 更新用户基本信息
-  updateUserInfo(userInfo) {
-    return api.put('/user/update', userInfo)
+  
+  uploadAvatar: (formData) => {
+    return api.post('/api/upload/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
   },
-
-  // 更新用户头像
-  updateAvatar(avatarUrl) {
-    const params = new URLSearchParams()
-    params.append('avatarUrl', avatarUrl)
-
-    return api.patch(`/user/updateAvatar?${params.toString()}`)
-  },
-
-  // 更新用户密码
-  updatePassword(passwordData) {
-    return api.patch('/user/updatePwd', passwordData)
+  updatePassword: (passwordData) => {
+    // 转换参数名以匹配后端API期望的格式
+    const requestData = {
+      oldPwd: passwordData.currentPassword,
+      newPwd: passwordData.newPassword,
+      confirmPwd: passwordData.newPassword // 前端已经验证过确认密码，这里直接使用新密码
+    }
+    return api.patch('/user/updatePwd', requestData)
   }
 }
 
 // 等级系统相关API
 export const levelApi = {
-  // 添加经验值
-  addExperience(experienceData) {
-    return api.post('/level/addExperience', experienceData)
+  addExperience: (experienceData) => {
+    return api.post('/api/level/addExperience', experienceData)
   },
-
-  // 获取用户统计信息
-  getUserStats() {
-    return api.get('/level/stats')
+  getUserStats: () => {
+    // 检查token是否存在
+    const token = localStorage.getItem('token')
+    if (!token || token.trim() === '' || token === 'null') {
+      console.log('🚫 levelApi.getUserStats - 没有有效token，拒绝请求')
+      return Promise.reject(new Error('Token不存在或无效'))
+    }
+    return api.get('/api/level/stats')
   },
-
-  // 获取用户成就
-  getUserAchievements() {
-    return api.get('/level/achievements')
+  getUserAchievements: () => {
+    // 检查token是否存在
+    const token = localStorage.getItem('token')
+    if (!token || token.trim() === '' || token === 'null') {
+      console.log('🚫 levelApi.getUserAchievements - 没有有效token，拒绝请求')
+      return Promise.reject(new Error('Token不存在或无效'))
+    }
+    return api.get('/api/level/achievements')
   },
-
-  // 获取学习记录
-  getLearningRecords() {
-    return api.get('/level/records')
+  getLearningRecords: () => {
+    return api.get('/api/level/records')
   },
-
-  // 获取排行榜
-  getLeaderboard(limit = 10) {
-    return api.get(`/level/leaderboard?limit=${limit}`)
-  },
-
-  // 计算等级
-  calculateLevel(experience) {
-    return api.get(`/level/calculateLevel?experience=${experience}`)
-  }
+  getLeaderboard: (limit = 10) => api.get(`/api/level/leaderboard?limit=${limit}`),
+  calculateLevel: (experience) => api.get(`/api/level/calculateLevel?experience=${experience}`)
 }
 
-// 题目管理相关API
-export const questionApi = {
-  // 创建题目
-  createQuestion(question) {
-    return api.post('/questions', question)
+// 管理员相关API
+export const adminApi = {
+  // 题目管理
+  getAllQuestions: () => api.get('/api/admin/questions'),
+  getQuestionById: (id) => api.get(`/api/admin/questions/${id}`),
+  createQuestion: (question) => api.post('/api/admin/questions', question),
+  updateQuestion: (id, question) => api.put(`/api/admin/questions/${id}`, question),
+  deleteQuestion: (id) => api.delete(`/api/admin/questions/${id}`),
+  getQuestionsByChapter: (chapterId) => api.get(`/api/admin/questions/chapter/${chapterId}`),
+  
+  // 文件导入
+  importQuestions: (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return api.post('/api/admin/questions/import', formData)
   },
-
-  // 更新题目
-  updateQuestion(id, question) {
-    return api.put(`/questions/${id}`, question)
-  },
-
-  // 删除题目
-  deleteQuestion(id) {
-    return api.delete(`/questions/${id}`)
-  },
-
-  // 根据ID获取题目
-  getQuestionById(id) {
-    return api.get(`/questions/${id}`)
-  },
-
-  // 获取所有题目（分页）
-  getAllQuestions(page = 1, size = 10) {
-    return api.get(`/questions?page=${page}&size=${size}`)
-  },
-
-  // 根据章节ID获取题目
-  getQuestionsByChapterId(chapterId) {
-    return api.get(`/questions/chapter/${chapterId}`)
-  },
-
-  // 根据类型获取题目
-  getQuestionsByType(type) {
-    return api.get(`/questions/type/${type}`)
-  },
-
-  // 根据难度获取题目
-  getQuestionsByDifficulty(difficulty) {
-    return api.get(`/questions/difficulty/${difficulty}`)
-  },
-
-  // 搜索题目
-  searchQuestions(keyword) {
-    return api.get(`/questions/search?keyword=${encodeURIComponent(keyword)}`)
-  },
-
-  // 批量导入题目
-  importQuestions(questions) {
-    return api.post('/questions/import', questions)
-  },
-
-  // 导出题目
-  exportQuestions() {
-    return api.get('/questions/export')
-  },
-
-  // 获取题目统计信息
-  getStats() {
-    return api.get('/questions/stats')
-  }
+  
+  // 统计信息
+  getQuestionStats: () => api.get('/api/admin/questions/stats'),
+  healthCheck: () => api.get('/api/admin/health')
 }
 
 export default api

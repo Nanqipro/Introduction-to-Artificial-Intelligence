@@ -23,6 +23,8 @@ public interface UserService {
     boolean isUsernameAvailable(String username, Integer excludeId);
 
     void updateUserPic(String userPic);
+    
+    void updateUserPicById(Integer userId, String userPic);
 
     void updatePwd(String newPwd);
 }

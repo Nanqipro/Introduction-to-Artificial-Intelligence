@@ -25,8 +25,8 @@
             <el-icon v-else><Lock /></el-icon>
           </div>
           <div class="achievement-info">
-            <h4>{{ achievement.title }}</h4>
-            <p>{{ achievement.description }}</p>
+            <h4>{{ achievement.achievementName }}</h4>
+            <p>{{ achievement.achievementDesc }}</p>
             <div class="achievement-progress" v-if="achievement.progress">
               <el-progress 
                 :percentage="achievement.progress" 

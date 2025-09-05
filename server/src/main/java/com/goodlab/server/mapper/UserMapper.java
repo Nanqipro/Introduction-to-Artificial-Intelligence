@@ -15,7 +15,7 @@ public interface UserMapper {
     @Insert("insert into user(username, password, nickname, email, phone, gender, birthday, location, bio, role, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time) values(#{username}, #{md5String}, #{username}, CONCAT(#{username}, '@example.com'), '', '', null, '', '', '学生', 1, 0, 0, 0, 0, 0, now(), now())")
     void add(String username, String md5String);
 
-    @Update("update user set username = #{username}, nickname = #{nickname}, email = #{email}, phone = #{phone}, gender = #{gender}, birthday = #{birthday}, location = #{location}, bio = #{bio}, role = #{role}, update_time = now() where id = #{id}")
+    @Update("update user set nickname = #{nickname}, email = #{email}, phone = #{phone}, gender = #{gender}, birthday = #{birthday}, location = #{location}, bio = #{bio}, school = #{school}, major = #{major}, role = #{role}, update_time = now() where id = #{id}")
     void update(User user);
 
     @Select("select count(*) from user where username = #{username} and id != #{id}")

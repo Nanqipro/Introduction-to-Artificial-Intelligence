@@ -16,13 +16,32 @@ import java.util.Map;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 添加调试日志
+        // 添加详细调试日志
         String requestURI = request.getRequestURI();
-        System.out.println("LoginInterceptor: 拦截请求 " + requestURI);
+        String method = request.getMethod();
+        
+        // 跳过OPTIONS预检请求的认证检查
+        if ("OPTIONS".equals(method)) {
+            System.out.println("LoginInterceptor: 跳过OPTIONS预检请求 - " + requestURI);
+            return true;
+        }
+        
+        String userAgent = request.getHeader("User-Agent");
+        String referer = request.getHeader("Referer");
+        String origin = request.getHeader("Origin");
+        String remoteAddr = request.getRemoteAddr();
+        
+        System.out.println("=== LoginInterceptor 详细请求信息 ===");
+        System.out.println("请求URI: " + requestURI);
+        System.out.println("请求方法: " + method);
+        System.out.println("User-Agent: " + (userAgent != null ? userAgent : "null"));
+        System.out.println("Referer: " + (referer != null ? referer : "null"));
+        System.out.println("Origin: " + (origin != null ? origin : "null"));
+        System.out.println("Remote Address: " + remoteAddr);
         
         // 令牌验证
         String token = request.getHeader("Authorization");
-        System.out.println("LoginInterceptor: 收到的原始token = " + (token != null ? token.substring(0, Math.min(token.length(), 30)) + "..." : "null"));
+        System.out.println("Authorization Header: " + (token != null ? token.substring(0, Math.min(token.length(), 30)) + "..." : "null"));
         
         // 验证token
         try {

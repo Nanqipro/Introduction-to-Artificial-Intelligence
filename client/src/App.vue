@@ -75,7 +75,10 @@ export default {
 
     // 应用启动时检查认证状态
     onMounted(() => {
-      checkAuthStatus()
+      // 只有在有token的情况下才检查认证状态
+      if (localStorage.getItem('token')) {
+        checkAuthStatus()
+      }
     })
 
     return {

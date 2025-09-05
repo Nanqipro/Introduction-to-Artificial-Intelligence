@@ -1,0 +1,3 @@
+-- 添加学校和专业字段到用户表
+ALTER TABLE user ADD COLUMN school VARCHAR(255) DEFAULT '' COMMENT '学校';
+ALTER TABLE user ADD COLUMN major VARCHAR(255) DEFAULT '' COMMENT '专业';

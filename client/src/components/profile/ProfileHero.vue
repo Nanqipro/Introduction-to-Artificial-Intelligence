@@ -27,14 +27,6 @@
             <span class="stat-number">{{ userStats.experience || 0 }}</span>
             <span class="stat-label">经验值</span>
           </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ userStats.completedChapters || 0 }}</span>
-            <span class="stat-label">已完成章节</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ userAchievements.length || 0 }}</span>
-            <span class="stat-label">获得成就</span>
-          </div>
         </div>
         
         <!-- 等级进度条 -->

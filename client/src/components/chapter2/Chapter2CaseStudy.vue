@@ -399,12 +399,14 @@ export default {
       return this.interactionCounts.regressionGenerate >= 3;
     },
     deepLearningCaseCompleted() {
-      // 简化后，只要用户访问过这个页面就认为完成了
-      return true;
+      // 需要用户进行一定的交互才能完成深度学习案例
+      return this.interactionCounts.convolutionDemo >= 1 || 
+             this.interactionCounts.poolingDemo >= 1 || 
+             this.interactionCounts.fcDemo >= 1;
     },
     allCasesCompleted() {
-      // 简化后，只要用户访问过这个页面就认为可以答题
-      return true;
+      // 需要完成回归案例和深度学习案例
+      return this.regressionCaseCompleted && this.deepLearningCaseCompleted;
     },
 
     // 卷积层计算属性

@@ -219,90 +219,90 @@
   .page-header { text-align: center; margin-bottom: 3rem; }
   .page-title { 
     font-size: 2.5rem; 
-    color: var(--text-color, #f5f6fa); 
+    color: var(--about-page-title-color); 
     margin-bottom: 1rem; 
     font-weight: 900; 
     letter-spacing: 1.5px; 
   }
   .page-description { 
     font-size: 1.1rem; 
-    color: var(--text-secondary-color, #b0b3b8); 
+    color: var(--about-page-description-color); 
     max-width: 600px; 
     margin: 0 auto; 
     line-height: 1.6; 
   }
   .book-description { 
     margin-top: 1.5rem; 
-    color: var(--text-secondary-color, #b0b3b8); 
+    color: var(--about-page-description-color); 
     line-height: 1.6; 
   }
   .contact-icon { 
     font-size: 2rem; 
     margin-bottom: 0.5rem; 
-    color: var(--accent-color, #b0b3b8); 
+    color: var(--about-contact-icon-color); 
   }
   
-  /* Element Plus 卡片和描述组件深色主题适配 */
+  /* Element Plus 卡片和描述组件主题适配 */
   .el-card {
-    background: var(--card-bg, #292c33) !important;
-    color: var(--text-color, #f5f6fa) !important;
-    border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18)) !important;
-    box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
-    border-radius: var(--card-radius, 10px);
+    background: var(--about-card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--about-card-border) !important;
+    box-shadow: var(--about-card-shadow);
+    border-radius: var(--about-card-radius);
   }
   .el-card__header {
     background: transparent !important;
-    color: var(--text-color, #f5f6fa) !important;
+    color: var(--text-color) !important;
     font-weight: 700;
     font-size: 1.1rem;
-    border-bottom: 1px solid var(--card-header-border, rgba(57, 59, 64, 0.18));
+    border-bottom: 1px solid var(--about-card-header-border);
   }
   .el-descriptions__title {
-    color: var(--text-color, #f5f6fa) !important;
+    color: var(--text-color) !important;
     font-weight: 700;
   }
   .el-descriptions__label {
-    color: var(--accent-color, #b0b3b8) !important;
+    color: var(--accent-color) !important;
     font-weight: 600;
   }
   .el-descriptions__cell {
-    color: var(--text-color, #f5f6fa) !important;
+    color: var(--text-color) !important;
   }
   .el-tag {
-    background: var(--tag-bg, #4a90e2) !important;
-    color: var(--tag-color, #ffffff) !important;
+    background: var(--about-tag-bg) !important;
+    color: var(--about-tag-color) !important;
     border: none;
     font-weight: 600;
     border-radius: 8px;
   }
   .el-divider {
-    background: var(--divider-bg, rgba(57, 59, 64, 0.18)) !important;
+    background: var(--about-divider-bg) !important;
   }
   .el-card h3, .el-card h4 {
-    color: var(--text-color, #f5f6fa);
+    color: var(--text-color);
     font-weight: 700;
   }
   .el-card p {
-    color: var(--text-secondary-color, #b0b3b8);
+    color: var(--text-secondary-color);
   }
   .about {
     min-height: 100vh;
-    background: var(--secondary-color, #23272e);
+    background: var(--about-page-bg);
     padding: 2rem 0;
   }
   .about .el-descriptions,
   .about .el-descriptions__body,
   .about .el-descriptions__table {
-    background: var(--descriptions-bg, #292c33) !important;
+    background: var(--about-descriptions-bg) !important;
   }
   .about .el-descriptions__cell,
   .about .el-descriptions__label {
-    background: var(--descriptions-cell-bg, #23272e) !important;
-    color: var(--text-color, #f5f6fa) !important;
-    border-color: var(--descriptions-border, rgba(57, 59, 64, 0.18)) !important;
+    background: var(--about-descriptions-cell-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--about-descriptions-border) !important;
   }
   .about .el-descriptions__label {
-    color: var(--accent-color, #b0b3b8) !important;
+    color: var(--accent-color) !important;
     font-weight: 600;
   }
   .tech-tags {
@@ -313,12 +313,12 @@
     margin-bottom: 0.5rem;
   }
   .github-link {
-    color: var(--link-color, #667eea) !important;
+    color: var(--about-link-color) !important;
     text-decoration: none;
     transition: color 0.3s ease;
     
     &:hover {
-      color: var(--link-hover-color, #5a67d8) !important;
+      color: var(--about-link-hover-color) !important;
       text-decoration: underline;
     }
   }
@@ -331,38 +331,38 @@
   .purchase-info {
     text-align: center;
     padding: 1.5rem;
-    background: var(--purchase-bg, rgba(0, 191, 255, 0.05));
+    background: var(--about-purchase-bg);
     border-radius: 12px;
-    border: 1px solid var(--purchase-border, rgba(0, 191, 255, 0.2));
+    border: 1px solid var(--about-purchase-border);
     
     h4 {
-      color: var(--text-color, #f5f6fa) !important;
+      color: var(--text-color) !important;
       font-size: 1.2rem;
       margin-bottom: 0.8rem;
       font-weight: 700;
     }
     
     p {
-      color: var(--text-secondary-color, #b0b3b8) !important;
+      color: var(--text-secondary-color) !important;
       margin-bottom: 1.5rem;
       line-height: 1.6;
     }
   }
   
   .purchase-btn {
-    background: linear-gradient(135deg, #00bfff, #00a6e6) !important;
+    background: var(--about-purchase-btn-bg) !important;
     border: none !important;
     border-radius: 25px !important;
     padding: 12px 30px !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
-    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3) !important;
+    box-shadow: var(--about-purchase-btn-shadow) !important;
     transition: all 0.3s ease !important;
     
     &:hover {
       transform: translateY(-2px) !important;
-      box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4) !important;
-      background: linear-gradient(135deg, #00a6e6, #0099cc) !important;
+      box-shadow: var(--about-purchase-btn-hover-shadow) !important;
+      background: var(--about-purchase-btn-hover-bg) !important;
     }
     
     &:active {
@@ -376,7 +376,7 @@
    }
    
    .team-title {
-     color: var(--text-color, #f5f6fa) !important;
+     color: var(--text-color) !important;
      font-size: 1.3rem;
      font-weight: 700;
      margin-bottom: 0.8rem;
@@ -386,7 +386,7 @@
    }
    
    .team-description {
-     color: var(--text-secondary-color, #b0b3b8) !important;
+     color: var(--text-secondary-color) !important;
      line-height: 1.6;
      margin-bottom: 1.5rem;
    }
@@ -396,8 +396,8 @@
    }
    
    .member-card {
-     background: var(--member-card-bg, rgba(0, 191, 255, 0.05));
-     border: 1px solid var(--member-card-border, rgba(0, 191, 255, 0.15));
+     background: var(--about-member-card-bg);
+     border: 1px solid var(--about-member-card-border);
      border-radius: 12px;
      padding: 1.5rem;
      text-align: center;
@@ -406,22 +406,22 @@
      
      &:hover {
        transform: translateY(-3px);
-       box-shadow: 0 8px 25px rgba(0, 191, 255, 0.15);
-       border-color: var(--member-card-hover-border, rgba(0, 191, 255, 0.3));
+       box-shadow: var(--about-member-card-hover-shadow);
+       border-color: var(--about-member-card-hover-border);
      }
    }
    
    .member-role {
-     color: var(--accent-color, #00bfff);
+     color: var(--accent-color);
      font-weight: 700;
      font-size: 1rem;
      margin-bottom: 1rem;
      padding-bottom: 0.5rem;
-     border-bottom: 2px solid var(--member-role-border, rgba(0, 191, 255, 0.2));
+     border-bottom: 2px solid var(--about-member-role-border);
    }
    
    .member-name {
-     color: var(--text-color, #f5f6fa);
+     color: var(--text-color);
      font-size: 0.95rem;
      font-weight: 600;
      margin-bottom: 0.3rem;
