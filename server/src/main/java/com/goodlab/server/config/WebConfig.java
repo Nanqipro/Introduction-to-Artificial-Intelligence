@@ -29,7 +29,8 @@ public class WebConfig implements WebMvcConfigurer {
                                 .allowedOrigins("http://localhost:5173", "http://localhost:5174",
                                                 "http://localhost:3000",
                                                 "http://127.0.0.1:5173", "http://127.0.0.1:5174",
-                                                "https://102qldp675617.vicp.fun")
+                                                "https://102qldp675617.vicp.fun",
+                                                "https://102qldp675617.vicp.fun:8082")
                                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                                 .allowedHeaders("*")
                                 .allowCredentials(true);
@@ -41,11 +42,11 @@ public class WebConfig implements WebMvcConfigurer {
                 // 放行登录接口 和注册接口
                 registry.addInterceptor(loginInterceptor)
                                 .addPathPatterns("/**")
-                                .excludePathPatterns("/user/login", "/user/register", "/api/chapters/**",
+                                .excludePathPatterns("/api/user/login", "/api/user/register", "/api/chapters/**",
                                                 "/api/quiz/**", "/api/admin/**", "/error", "/uploads/**", "/api/upload/**");
 
                 System.out.println(
-                                "拦截器配置完成 - 放行路径: /user/login, /user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /error, /uploads/**, /api/upload/**");
+                                "拦截器配置完成 - 放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /error, /uploads/**, /api/upload/**");
                 System.out.println(
                                 "注意: /api/level/** 需要认证访问");
         }
