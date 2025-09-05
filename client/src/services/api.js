@@ -3,6 +3,7 @@ import axios from 'axios'
 // 动态获取后端服务地址
 const getBaseURL = () => {
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // 花生壳外网访问时，使用代理路径
     return '/api'
   }
   return 'http://localhost:8082'
