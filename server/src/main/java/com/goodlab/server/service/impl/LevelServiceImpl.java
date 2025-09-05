@@ -92,7 +92,8 @@ public class LevelServiceImpl implements LevelService {
             user.setTotalScore(user.getTotalScore() + score);
         }
         
-        // 更新活动统计
+        // 更新活动统计和学习时长
+        int studyTimeToAdd = 0;
         switch (activityType) {
             case "quiz":
             case "quiz_completion":
@@ -100,11 +101,25 @@ public class LevelServiceImpl implements LevelService {
                 if (score != null && score > 0) {
                     user.setCorrectAnswers(user.getCorrectAnswers() + 1);
                 }
+                studyTimeToAdd = 15; // 测验平均用时15分钟
                 break;
             case "chapter":
-                user.setCompletedChapters(user.getCompletedChapters() + 1);
+                // 检查该章节是否已经完成过，避免重复计算
+                if (chapterId != null && !isChapterAlreadyCompleted(userId, chapterId)) {
+                    user.setCompletedChapters(user.getCompletedChapters() + 1);
+                }
+                studyTimeToAdd = 30; // 章节学习平均用时30分钟
+                break;
+            case "experiment":
+                studyTimeToAdd = 45; // 实验平均用时45分钟
+                break;
+            default:
+                studyTimeToAdd = 10; // 其他活动默认10分钟
                 break;
         }
+        
+        // 更新学习时长
+        user.setStudyTime(user.getStudyTime() + studyTimeToAdd);
         
         // 计算新等级
         int newLevel = calculateLevel(user.getExperience());
@@ -151,7 +166,11 @@ public class LevelServiceImpl implements LevelService {
         stats.put("experience", user.getExperience());
         stats.put("title", getLevelTitle(user.getLevel()));
         stats.put("totalScore", user.getTotalScore());
-        stats.put("completedChapters", user.getCompletedChapters());
+        
+        // 从数据库查询实际完成的章节数
+        int actualCompletedChapters = userLearningRecordDao.getCompletedChapterCount(userId);
+        stats.put("completedChapters", actualCompletedChapters);
+        
         stats.put("quizCount", user.getQuizCount());
         stats.put("correctAnswers", user.getCorrectAnswers());
         
@@ -174,11 +193,14 @@ public class LevelServiceImpl implements LevelService {
         List<UserAchievement> achievements = getUserAchievements(userId);
         stats.put("achievementCount", achievements.size());
         
-        // 添加前端期望的其他字段
-        stats.put("studyTime", 0); // 暂时设为0，后续可根据实际需求计算
-        stats.put("networkProgress", 0); // 暂时设为0，后续可根据实际需求计算
-        stats.put("protocolProgress", 0); // 暂时设为0，后续可根据实际需求计算
-        stats.put("practiceProgress", 0); // 暂时设为0，后续可根据实际需求计算
+        // 计算实际学习时长（基于学习记录）
+        int totalStudyTimeMinutes = calculateActualStudyTime(userId);
+        stats.put("studyTime", Math.round(totalStudyTimeMinutes / 60.0)); // 转换为小时
+        
+        // 计算各类进度
+        stats.put("networkProgress", calculateNetworkProgress(actualCompletedChapters));
+        stats.put("protocolProgress", calculateProtocolProgress(actualCompletedChapters));
+        stats.put("practiceProgress", calculatePracticeProgress(actualCompletedChapters));
         
         return stats;
     }
@@ -294,12 +316,12 @@ public class LevelServiceImpl implements LevelService {
             }
         }
         
-        // 检查基于总完成章节数的成就
-        int completedChapters = user.getCompletedChapters();
-        if (completedChapters >= 5 && !earnedTypes.contains("chapters_5")) {
+        // 检查基于总完成章节数的成就（使用数据库查询的实际数据）
+        int actualCompletedChapters = userLearningRecordDao.getCompletedChapterCount(userId);
+        if (actualCompletedChapters >= 5 && !earnedTypes.contains("chapters_5")) {
             grantAchievement(userId, "chapters_5", "勤奋学习者", "完成5个章节");
         }
-        if (completedChapters >= 10 && !earnedTypes.contains("chapters_10")) {
+        if (actualCompletedChapters >= 10 && !earnedTypes.contains("chapters_10")) {
             grantAchievement(userId, "chapters_10", "知识探索者", "完成10个章节");
         }
     }
@@ -318,16 +340,11 @@ public class LevelServiceImpl implements LevelService {
     }
     
     private String getChapterAchievementDesc(Integer chapterId) {
-        switch (chapterId) {
-            case 1: return "完成第一章节";
-            case 2: return "完成第二章节";
-            case 3: return "完成第三章节";
-            case 4: return "完成第四章节";
-            case 5: return "完成第五章节";
-            case 6: return "完成第六章节";
-            case 7: return "完成第七章节";
-            default: return "完成第" + chapterId + "章节";
+        String[] chapterNumbers = {"", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+        if (chapterId != null && chapterId > 0 && chapterId < chapterNumbers.length) {
+            return "完成第" + chapterNumbers[chapterId] + "个章节";
         }
+        return "完成第" + chapterId + "个章节";
     }
     
     private void checkScoreAchievements(Integer userId, User user, Set<String> earnedTypes) {
@@ -346,5 +363,69 @@ public class LevelServiceImpl implements LevelService {
     
     private void grantAchievement(Integer userId, String type, String name, String description) {
         userAchievementDao.addAchievement(userId, type, name, description, LocalDateTime.now());
+    }
+    
+    /**
+     * 计算用户实际学习时长（基于学习记录）
+     */
+    private int calculateActualStudyTime(Integer userId) {
+        List<UserLearningRecord> records = userLearningRecordDao.getUserLearningRecords(userId, 1000);
+        int totalMinutes = 0;
+        
+        for (UserLearningRecord record : records) {
+            switch (record.getActivityType()) {
+                case "quiz":
+                case "quiz_completion":
+                    totalMinutes += 15; // 测验平均用时15分钟
+                    break;
+                case "chapter":
+                    totalMinutes += 30; // 章节学习平均用时30分钟
+                    break;
+                case "experiment":
+                    totalMinutes += 45; // 实验平均用时45分钟
+                    break;
+                default:
+                    totalMinutes += 10; // 其他活动默认10分钟
+                    break;
+            }
+        }
+        
+        return totalMinutes;
+    }
+    
+    /**
+     * 计算网络基础进度
+     */
+    private int calculateNetworkProgress(int completedChapters) {
+        // 假设第1-3章为网络基础相关
+        int networkChapters = Math.min(completedChapters, 3);
+        return Math.round((float) networkChapters / 3 * 100);
+    }
+    
+    /**
+     * 计算协议学习进度
+     */
+    private int calculateProtocolProgress(int completedChapters) {
+        // 假设第4-5章为协议学习相关
+        int protocolChapters = Math.max(0, Math.min(completedChapters - 3, 2));
+        return Math.round((float) protocolChapters / 2 * 100);
+    }
+    
+    /**
+     * 计算实践训练进度
+     */
+    private int calculatePracticeProgress(int completedChapters) {
+        // 假设第6-7章为实践训练相关
+        int practiceChapters = Math.max(0, Math.min(completedChapters - 5, 2));
+        return Math.round((float) practiceChapters / 2 * 100);
+    }
+    
+    /**
+     * 检查用户是否已经完成过指定章节
+     */
+    private boolean isChapterAlreadyCompleted(Integer userId, Integer chapterId) {
+        List<UserLearningRecord> chapterRecords = userLearningRecordDao.getUserChapterRecords(userId, chapterId);
+        return chapterRecords.stream()
+                .anyMatch(record -> "chapter".equals(record.getActivityType()));
     }
 }

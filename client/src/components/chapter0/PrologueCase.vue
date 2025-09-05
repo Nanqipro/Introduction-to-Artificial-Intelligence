@@ -3,22 +3,33 @@
     <header class="case-header">
       <h2 class="case-title">🎬 序章案例演示</h2>
       <p class="case-desc">观看序章预热视频，快速了解本课程的学习内容与形式</p>
+      <div v-if="videoCompleted" class="completion-indicator">
+        <span class="completion-badge">✅ 视频观看完成</span>
+      </div>
     </header>
 
     <div class="video-card">
       <video
+        ref="videoPlayer"
         class="video-player"
         controls
         controlsList="nodownload"
         preload="metadata"
         :poster="posterUrl"
+        @ended="onVideoEnded"
+        @timeupdate="onTimeUpdate"
       >
         <source src="/videos/prologue/preVideo.mp4" type="video/mp4" />
         您的浏览器不支持视频播放，请下载观看。
       </video>
       <div class="video-meta">
-        <button class="btn btn-primary" @click="restart">⏮ 重新播放</button>
-        <a class="btn btn-outline" href="/videos/prologue/preVideo.mp4" download>⬇️ 下载视频</a>
+        <div class="video-buttons">
+          <button class="btn btn-primary" @click="restart">⏮ 重新播放</button>
+          <a class="btn btn-outline" href="/videos/prologue/preVideo.mp4" download>⬇️ 下载视频</a>
+        </div>
+        <div class="watch-progress">
+          <span class="progress-text">观看进度: {{ Math.round(watchProgress) }}%</span>
+        </div>
       </div>
     </div>
   </section>
@@ -33,12 +44,102 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      videoCompleted: false,
+      watchProgress: 0,
+      hasWatchedMostOfVideo: false // 观看超过80%即可认为完成
+    }
+  },
   methods: {
     restart() {
-      const video = this.$el.querySelector('.video-player')
+      const video = this.$refs.videoPlayer
       if (video) {
         video.currentTime = 0
         video.play()
+      }
+    },
+    onTimeUpdate() {
+      const video = this.$refs.videoPlayer
+      if (video && video.duration) {
+        this.watchProgress = (video.currentTime / video.duration) * 100
+        
+        // 当观看进度超过80%时，认为已完成观看
+        if (this.watchProgress >= 80 && !this.hasWatchedMostOfVideo) {
+          this.hasWatchedMostOfVideo = true
+          this.markVideoCompleted()
+        }
+      }
+    },
+    onVideoEnded() {
+      // 视频播放完成
+      if (!this.videoCompleted) {
+        this.markVideoCompleted()
+      }
+    },
+    markVideoCompleted() {
+      this.videoCompleted = true
+      this.watchProgress = 100
+      
+      // 显示完成提示
+      this.$message.success('🎉 序章视频观看完成！')
+      
+      // 触发序章完成事件
+      this.$emit('video-completed')
+      
+      // 调用章节完成逻辑
+      this.addChapterExperience()
+    },
+    async addChapterExperience() {
+      // 检查用户是否登录
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.log('⚠️ 用户未登录，跳过经验值添加')
+        return
+      }
+      
+      try {
+        const { levelApi } = await import('../../services/api')
+        
+        // 调用章节完成接口（序章通过视频完成）
+        const response = await levelApi.completeChapter({
+          chapterId: 0, // 序章ID为0
+          completionType: 'video',
+          score: 100
+        })
+        
+        if (response && response.code === 200) {
+          const result = response.data
+          console.log('✅ 序章完成标记成功:', result)
+          
+          // 显示完成提示
+          this.$message.success('🎉 序章完成！获得经验值奖励！')
+          
+          // 发送全局事件通知经验值更新
+          window.dispatchEvent(new CustomEvent('experienceUpdated', {
+            detail: {
+              experienceGained: result.experienceGained || 50,
+              newExperience: result.experience,
+              newLevel: result.newLevel,
+              leveledUp: result.levelUp,
+              activityType: 'chapter',
+              chapterId: 0
+            }
+          }))
+          
+          // 检查是否升级
+          if (result.levelUp) {
+            this.$notify({
+              title: '🎉 恭喜升级！',
+              message: result.levelUpMessage || `恭喜升级到 ${result.newLevel} 级！`,
+              type: 'success',
+              duration: 5000
+            })
+          }
+        }
+      } catch (error) {
+        console.error('序章完成标记失败:', error)
+        this.$message.error('序章完成标记失败，请稍后重试')
       }
     }
   }
@@ -72,6 +173,22 @@ export default {
   color: var(--text-secondary-color, #b0b3b8);
 }
 
+.completion-indicator {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.completion-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
 .video-card {
   background: var(--card-bg, #292c33);
   border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
@@ -91,9 +208,26 @@ export default {
 
 .video-meta {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.video-buttons {
+  display: flex;
   gap: 0.75rem;
   justify-content: center;
-  margin-top: 0.75rem;
+}
+
+.watch-progress {
+  margin-top: 0.5rem;
+}
+
+.progress-text {
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .btn {

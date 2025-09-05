@@ -1244,6 +1244,25 @@ export default {
           // 获取最新的用户成就
           await this.checkNewAchievements()
           
+          // 标记章节完成（除序章外）
+          if (this.chapterId && this.chapterId !== 0) {
+            try {
+              console.log(`📚 标记章节 ${this.chapterId} 完成...`)
+              const chapterResponse = await levelApi.completeChapter({
+                chapterId: this.chapterId,
+                completionType: 'quiz',
+                score: this.finalScore
+              })
+              
+              if (chapterResponse && chapterResponse.code === 200) {
+                console.log('✅ 章节完成标记成功:', chapterResponse.data)
+                ElMessage.success('恭喜完成本章节！')
+              }
+            } catch (error) {
+              console.error('❌ 标记章节完成失败:', error)
+            }
+          }
+          
         } else {
           console.error('❌ 添加经验值失败:', response)
         }

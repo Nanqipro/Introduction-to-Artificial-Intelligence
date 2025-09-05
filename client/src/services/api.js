@@ -21,7 +21,9 @@ const api = axios.create({
 const PUBLIC_PATHS = [
   '/api/chapters',
   '/user/register',
-  '/user/login'
+  '/user/login',
+  '/api/password-reset',
+  '/api/email-verification'
 ]
 
 // 检查是否为公开API
@@ -180,6 +182,28 @@ export const userApi = {
       confirmPwd: passwordData.newPassword // 前端已经验证过确认密码，这里直接使用新密码
     }
     return api.patch('/user/updatePwd', requestData)
+  },
+  
+  // 密码重置相关API
+  sendPasswordResetEmail: (email) => {
+    return api.post('/api/password-reset/send-email', { email })
+  },
+  
+  validatePasswordResetToken: (token) => {
+    return api.post('/api/password-reset/validate-token', { token })
+  },
+  
+  resetPassword: (resetData) => {
+    return api.post('/api/password-reset/reset', resetData)
+  },
+  
+  // 邮箱验证相关API
+  sendEmailVerificationCode: (email) => {
+    return api.post('/api/email-verification/send-code', { email })
+  },
+  
+  verifyEmailCode: (verificationData) => {
+    return api.post('/api/email-verification/verify', verificationData)
   }
 }
 
@@ -210,7 +234,10 @@ export const levelApi = {
     return api.get('/api/level/records')
   },
   getLeaderboard: (limit = 10) => api.get(`/api/level/leaderboard?limit=${limit}`),
-  calculateLevel: (experience) => api.get(`/api/level/calculateLevel?experience=${experience}`)
+  calculateLevel: (experience) => api.get(`/api/level/calculateLevel?experience=${experience}`),
+  completeChapter: (chapterData) => {
+    return api.post('/api/level/completeChapter', chapterData)
+  }
 }
 
 // 管理员相关API

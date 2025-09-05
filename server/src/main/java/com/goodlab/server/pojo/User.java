@@ -38,6 +38,8 @@ public class User {
     private Integer quizCount = 0;// 答题次数
     @Column(name = "correct_answers")
     private Integer correctAnswers = 0;// 正确答案数
+    @Column(name = "study_time")
+    private Integer studyTime = 0;// 学习时长(分钟)
 
     // 新增字段
     private String phone;// 手机号码
@@ -48,6 +50,14 @@ public class User {
     private String school;// 学校
     private String major;// 专业
     private String role = "学生";// 用户角色
+    
+    // 密码重置相关字段
+    @Column(name = "reset_token")
+    private String resetToken;// 密码重置令牌
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;// 重置令牌过期时间
+    @Column(name = "email_verified")
+    private Boolean emailVerified = false;// 邮箱是否已验证
 
     @Column(name = "create_time")
     private LocalDateTime createTime;// 创建时间

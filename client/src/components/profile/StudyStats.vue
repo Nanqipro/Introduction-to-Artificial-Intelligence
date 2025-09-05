@@ -39,7 +39,7 @@
             <el-icon><Timer /></el-icon>
           </div>
           <div class="stat-info">
-            <h4>{{ userStats.studyTime }}h</h4>
+            <h4>{{ formatStudyTime(userStats.studyTime) }}</h4>
             <p>学习时长</p>
           </div>
         </div>
@@ -94,6 +94,22 @@ defineProps({
     default: () => ({})
   }
 })
+
+// 格式化学习时长显示
+const formatStudyTime = (minutes) => {
+  if (!minutes || minutes === 0) return '0分钟'
+  
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  
+  if (hours === 0) {
+    return `${remainingMinutes}分钟`
+  } else if (remainingMinutes === 0) {
+    return `${hours}小时`
+  } else {
+    return `${hours}小时${remainingMinutes}分钟`
+  }
+}
 </script>
 
 <style scoped lang="scss">

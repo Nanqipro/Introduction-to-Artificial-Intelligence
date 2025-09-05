@@ -12,6 +12,7 @@ import UserProfile from '../views/UserProfile.vue'
 import SystemTestPage from '../views/SystemTestPage.vue'
 
 
+
 const routes = [
   {
     path: '/',
@@ -123,6 +124,7 @@ const routes = [
       description: '系统功能测试和诊断工具'
     }
   },
+
 
 ]
 

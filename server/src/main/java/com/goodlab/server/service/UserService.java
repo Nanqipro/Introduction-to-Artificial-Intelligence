@@ -27,4 +27,22 @@ public interface UserService {
     void updateUserPicById(Integer userId, String userPic);
 
     void updatePwd(String newPwd);
+    
+    // 通过邮箱查询用户
+    User findByEmail(String email);
+    
+    // 生成密码重置令牌
+    String generatePasswordResetToken(String email);
+    
+    // 验证密码重置令牌
+    boolean validatePasswordResetToken(String token);
+    
+    // 通过重置令牌重置密码
+    boolean resetPasswordByToken(String token, String newPassword);
+    
+    // 生成邮箱验证码
+    String generateEmailVerificationCode(String email);
+    
+    // 验证邮箱验证码
+    boolean verifyEmailCode(String email, String code);
 }
