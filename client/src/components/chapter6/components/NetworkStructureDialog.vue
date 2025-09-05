@@ -8,6 +8,7 @@
     :modal="true"
     :lock-scroll="true"
     :append-to-body="true"
+    :show-close="false"
   >
     <template #header>
       <div class="dialog-header">

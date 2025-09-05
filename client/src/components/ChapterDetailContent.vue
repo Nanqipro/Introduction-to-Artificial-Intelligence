@@ -92,19 +92,19 @@
         <div class="quiz-header">
           <h3 class="quiz-title">📚 知识测验</h3>
           <p class="quiz-description">
-            {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
+            {{ isChapter3 ? '滚动到页面底部查看完整内容后，可以参加知识测验来检验学习成果' : (isChapter2 || isChapter4 || isChapter7) ? '完成上述案例学习后，可以参加知识测验来检验学习成果' : '完成本章节的学习后，可以参加知识测验来检验学习成果' }}
           </p>
         </div>
         <div class="quiz-actions">
           <button 
             @click="startQuiz" 
             class="btn btn-quiz"
-            :disabled="(isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted"
-            :class="{ disabled: (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted }"
+            :disabled="(isChapter3 && !hasScrolledToBottom) || ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted)"
+            :class="{ disabled: (isChapter3 && !hasScrolledToBottom) || ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted) }"
           >
             <span class="btn-icon">🎯</span>
             <span class="btn-text">
-              {{ (isChapter2 || isChapter3 || isChapter4 || isChapter7) && !allCasesCompleted ? '请先完成案例学习' : '开始测验' }}
+              {{ isChapter3 && !hasScrolledToBottom ? '请先滚动到页面底部' : ((isChapter2 || isChapter4 || isChapter7) && !allCasesCompleted) ? '请先完成案例学习' : '开始测验' }}
             </span>
           </button>
           <div class="quiz-info">
@@ -189,7 +189,8 @@ export default {
     return {
       allChapters: [],
       completedCasesCount: 0,
-      allCasesCompleted: false
+      allCasesCompleted: false,
+      hasScrolledToBottom: false
     }
   },
   computed: {
@@ -263,6 +264,16 @@ export default {
   },
   async mounted() {
     await this.loadAllChapters()
+    // 为第三章添加滚动监听
+    if (this.isChapter3) {
+      this.addScrollListener()
+    }
+  },
+  beforeUnmount() {
+    // 清理滚动监听器
+    if (this.isChapter3) {
+      this.removeScrollListener()
+    }
   },
   methods: {
     async loadAllChapters() {
@@ -278,8 +289,18 @@ export default {
       this.$router.push(`/chapters/${id}`)
     },
     startQuiz() {
+      // 第三章：检查是否滚动到底部
+      if (this.isChapter3 && !this.hasScrolledToBottom) {
+        this.$message({
+          message: '请先滚动到页面底部查看完整内容后再开始测验',
+          type: 'warning',
+          duration: 3000
+        })
+        return
+      }
+      
       // 其他章节：检查案例完成情况
-      if ((this.isChapter2 || this.isChapter3 || this.isChapter4) && !this.allCasesCompleted) {
+      if ((this.isChapter2 || this.isChapter4) && !this.allCasesCompleted) {
         this.$message({
           message: '请先完成所有案例学习后再开始测验',
           type: 'warning',
@@ -291,8 +312,32 @@ export default {
       // 跳转到答题页面
       this.$router.push(`/quiz/${this.id}`)
     },
-
-
+    addScrollListener() {
+      this.handleScroll = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+        const windowHeight = window.innerHeight
+        const documentHeight = document.documentElement.scrollHeight
+        
+        // 检查是否滚动到底部（允许50px的误差）
+        if (scrollTop + windowHeight >= documentHeight - 50) {
+          this.hasScrolledToBottom = true
+          this.$message({
+             message: '✅ 已查看完整内容，现在可以开始测验了！',
+             type: 'success',
+             duration: 1000
+           })
+          // 移除监听器，避免重复提示
+          this.removeScrollListener()
+        }
+      }
+      window.addEventListener('scroll', this.handleScroll)
+    },
+    removeScrollListener() {
+      if (this.handleScroll) {
+        window.removeEventListener('scroll', this.handleScroll)
+        this.handleScroll = null
+      }
+    },
     onCaseCompleted(caseId) {
       this.completedCasesCount++
       this.$message({
