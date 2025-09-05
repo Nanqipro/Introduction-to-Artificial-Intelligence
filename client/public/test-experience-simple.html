@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 经验值更新简单测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success { background: #f0fff4; border: 1px solid #9ae6b4; color: #22543d; }
+        .error { background: #fed7d7; border: 1px solid #fc8181; color: #742a2a; }
+        .info { background: #ebf8ff; border: 1px solid #90cdf4; color: #2a4365; }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .stats-table th, .stats-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: left;
+        }
+        .stats-table th {
+            background: #edf2f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 经验值更新简单测试</h1>
+        
+        <div class="test-section">
+            <h3>当前状态</h3>
+            <button class="button" onclick="checkStatus()">检查登录状态</button>
+            <button class="button" onclick="getCurrentStats()">获取当前统计</button>
+            <div id="status-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>经验值测试</h3>
+            <button class="button" onclick="addExperience(20, 'quiz_completion', 1, 85)">测验完成 (+20)</button>
+            <button class="button" onclick="addExperience(50, 'chapter', 2, 100)">章节完成 (+50)</button>
+            <button class="button" onclick="addExperience(10, 'custom', null, null)">自定义 (+10)</button>
+            <div id="experience-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>数据对比</h3>
+            <button class="button" onclick="saveCurrentAsBaseline()">保存当前数据为基准</button>
+            <button class="button" onclick="compareWithBaseline()">与基准对比</button>
+            <div id="compare-result" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+        let baselineStats = null;
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.innerHTML = message;
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        async function checkStatus() {
+            const token = localStorage.getItem('token');
+            let message = '=== 登录状态检查 ===\n';
+            
+            if (!token || token === 'null' || token.trim() === '') {
+                message += '❌ 未登录或token无效\n请先登录系统';
+                showResult('status-result', message, 'error');
+                return false;
+            }
+            
+            message += '✅ Token存在\n';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/users/userInfo`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    message += '✅ Token验证成功\n';
+                    message += `用户: ${data.data.username} (ID: ${data.data.id})\n`;
+                    message += `等级: ${data.data.level}, 经验值: ${data.data.experience}\n`;
+                    message += `完成章节: ${data.data.completedChapters}, 总分: ${data.data.totalScore}`;
+                    showResult('status-result', message, 'success');
+                    return true;
+                } else {
+                    message += '❌ Token验证失败\n状态码: ' + response.status;
+                    showResult('status-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += '❌ 网络请求失败\n错误: ' + error.message;
+                showResult('status-result', message, 'error');
+                return false;
+            }
+        }
+
+        async function getCurrentStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    let message = '=== 当前统计数据 ===\n';
+                    const stats = data.data;
+                    message += `等级: ${stats.level}\n`;
+                    message += `经验值: ${stats.experience}\n`;
+                    message += `总分: ${stats.totalScore}\n`;
+                    message += `完成章节: ${stats.completedChapters}\n`;
+                    message += `测验次数: ${stats.quizCount}\n`;
+                    message += `正确答案: ${stats.correctAnswers}\n`;
+                    message += `成就数量: ${stats.achievementCount}`;
+                    showResult('status-result', message, 'success');
+                    return stats;
+                } else {
+                    showResult('status-result', `获取统计数据失败: ${response.status}`, 'error');
+                    return null;
+                }
+            } catch (error) {
+                showResult('status-result', `获取统计数据异常: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function addExperience(experience, activityType, chapterId, score) {
+            try {
+                // 获取更新前的数据
+                const beforeStats = await getCurrentStats();
+                
+                let message = `=== 添加经验值测试 ===\n`;
+                message += `添加经验值: ${experience}\n`;
+                message += `活动类型: ${activityType}\n`;
+                message += `章节ID: ${chapterId || 'N/A'}\n`;
+                message += `得分: ${score || 'N/A'}\n\n`;
+                
+                const requestData = {
+                    experience: experience,
+                    activityType: activityType,
+                    chapterId: chapterId,
+                    score: score
+                };
+                
+                message += `请求数据: ${JSON.stringify(requestData, null, 2)}\n\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const responseData = await response.json();
+                message += `响应状态: ${response.status}\n`;
+                message += `响应数据: ${JSON.stringify(responseData, null, 2)}\n\n`;
+                
+                if (response.ok && responseData.code === 200) {
+                    message += '✅ 经验值添加成功!\n\n';
+                    
+                    // 等待1秒后获取更新后的数据
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const afterStats = await getCurrentStats();
+                    
+                    if (beforeStats && afterStats) {
+                        message += '=== 数据变化对比 ===\n';
+                        message += `等级: ${beforeStats.level} → ${afterStats.level}\n`;
+                        message += `经验值: ${beforeStats.experience} → ${afterStats.experience} (${afterStats.experience - beforeStats.experience > 0 ? '+' : ''}${afterStats.experience - beforeStats.experience})\n`;
+                        message += `总分: ${beforeStats.totalScore} → ${afterStats.totalScore} (${afterStats.totalScore - beforeStats.totalScore > 0 ? '+' : ''}${afterStats.totalScore - beforeStats.totalScore})\n`;
+                        message += `完成章节: ${beforeStats.completedChapters} → ${afterStats.completedChapters}\n`;
+                        message += `成就数量: ${beforeStats.achievementCount} → ${afterStats.achievementCount}`;
+                    }
+                    
+                    showResult('experience-result', message, 'success');
+                } else {
+                    message += '❌ 经验值添加失败!\n';
+                    message += `错误信息: ${responseData.message || '未知错误'}`;
+                    showResult('experience-result', message, 'error');
+                }
+                
+            } catch (error) {
+                showResult('experience-result', `添加经验值异常: ${error.message}`, 'error');
+            }
+        }
+
+        async function saveCurrentAsBaseline() {
+            const stats = await getCurrentStats();
+            if (stats) {
+                baselineStats = stats;
+                showResult('compare-result', '✅ 已保存当前数据为基准', 'info');
+            } else {
+                showResult('compare-result', '❌ 获取当前数据失败，无法保存基准', 'error');
+            }
+        }
+
+        async function compareWithBaseline() {
+            if (!baselineStats) {
+                showResult('compare-result', '❌ 请先保存基准数据', 'error');
+                return;
+            }
+            
+            const currentStats = await getCurrentStats();
+            if (!currentStats) {
+                showResult('compare-result', '❌ 获取当前数据失败', 'error');
+                return;
+            }
+            
+            let message = '=== 与基准数据对比 ===\n\n';
+            
+            const fields = [
+                { key: 'level', name: '等级' },
+                { key: 'experience', name: '经验值' },
+                { key: 'totalScore', name: '总分' },
+                { key: 'completedChapters', name: '完成章节' },
+                { key: 'quizCount', name: '测验次数' },
+                { key: 'correctAnswers', name: '正确答案' },
+                { key: 'achievementCount', name: '成就数量' }
+            ];
+            
+            fields.forEach(field => {
+                const before = baselineStats[field.key] || 0;
+                const after = currentStats[field.key] || 0;
+                const diff = after - before;
+                const symbol = diff > 0 ? '📈' : (diff < 0 ? '📉' : '➖');
+                
+                message += `${symbol} ${field.name}: ${before} → ${after}`;
+                if (diff !== 0) {
+                    message += ` (${diff > 0 ? '+' : ''}${diff})`;
+                }
+                message += '\n';
+            });
+            
+            showResult('compare-result', message, 'success');
+        }
+
+        // 页面加载时自动检查状态
+        window.onload = function() {
+            checkStatus();
+        };
+    </script>
+</body>
+</html>

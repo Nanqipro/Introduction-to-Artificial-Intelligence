@@ -19,6 +19,30 @@ public class LevelController {
     private LevelService levelService;
     
     /**
+     * 安全地将Object转换为Integer
+     */
+    private int convertToInteger(Object value) {
+        if (value instanceof Integer) {
+            return (Integer) value;
+        } else if (value instanceof String) {
+            return Integer.parseInt((String) value);
+        } else if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        throw new IllegalArgumentException("无法将 " + value + " 转换为Integer");
+    }
+    
+    /**
+     * 安全地将Object转换为Integer，允许null
+     */
+    private Integer convertToIntegerOrNull(Object value) {
+        if (value == null) {
+            return null;
+        }
+        return convertToInteger(value);
+    }
+    
+    /**
      * 添加经验值
      */
     @PostMapping("/addExperience")
@@ -27,10 +51,11 @@ public class LevelController {
             Map<String, Object> claims = ThreadLocalUtil.get();
             Integer userId = (Integer) claims.get("id");
             
-            int experience = (Integer) params.get("experience");
+            // 安全地转换参数类型
+            int experience = convertToInteger(params.get("experience"));
             String activityType = (String) params.get("activityType");
-            Integer chapterId = (Integer) params.get("chapterId");
-            Integer score = (Integer) params.get("score");
+            Integer chapterId = convertToIntegerOrNull(params.get("chapterId"));
+            Integer score = convertToIntegerOrNull(params.get("score"));
             
             Map<String, Object> result = levelService.addExperience(userId, experience, activityType, chapterId, score);
             return ApiResponse.success(result);

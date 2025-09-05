@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUserPic(userPic, id);
 
     }
+    
+    @Override
+    public void updateUserPicById(Integer userId, String userPic) {
+        userMapper.updateUserPic(userPic, userId);
+    }
 
     @Override
     public void updatePwd(String newPwd) {

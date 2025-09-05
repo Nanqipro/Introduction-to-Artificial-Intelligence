@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经验值更新测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-step {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 经验值更新测试工具</h1>
+    
+    <div class="test-step">
+        <h3>测试步骤：</h3>
+        <ol>
+            <li>检查登录状态</li>
+            <li>获取当前经验值</li>
+            <li>模拟经验值更新事件</li>
+            <li>验证个人资料页面数据刷新</li>
+            <li>检查API调用</li>
+        </ol>
+    </div>
+
+    <div>
+        <button onclick="checkLoginStatus()">1. 检查登录状态</button>
+        <button onclick="getCurrentStats()">2. 获取当前统计</button>
+        <button onclick="simulateExperienceUpdate()">3. 模拟经验值更新</button>
+        <button onclick="testAPICall()">4. 测试API调用</button>
+        <button onclick="clearLog()">清空日志</button>
+    </div>
+
+    <div id="log"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logDiv.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function checkLoginStatus() {
+            log('=== 检查登录状态 ===');
+            const token = localStorage.getItem('token');
+            if (!token || token === 'null' || token.trim() === '') {
+                log('未登录或token无效', 'error');
+                log('请先登录系统', 'warning');
+                return false;
+            }
+            log('已登录，token存在', 'success');
+            log(`Token: ${token.substring(0, 20)}...`);
+            return true;
+        }
+
+        async function getCurrentStats() {
+            log('=== 获取当前用户统计 ===');
+            if (!checkLoginStatus()) return;
+
+            try {
+                const response = await fetch('/api/level/stats', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                });
+                const data = await response.json();
+                log('API响应: ' + JSON.stringify(data, null, 2));
+                
+                if (data.code === 200 && data.data) {
+                    log(`当前等级: ${data.data.level}`, 'success');
+                    log(`当前经验值: ${data.data.experience}`, 'success');
+                    log(`完成章节: ${data.data.completedChapters}`, 'success');
+                } else {
+                    log('获取统计数据失败: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('API调用失败: ' + error.message, 'error');
+            }
+        }
+
+        function simulateExperienceUpdate() {
+            log('=== 模拟经验值更新事件 ===');
+            
+            // 监听经验值更新事件
+            const handleExperienceUpdate = (event) => {
+                log('收到经验值更新事件!', 'success');
+                log('事件详情: ' + JSON.stringify(event.detail, null, 2));
+                
+                // 模拟延迟刷新（和UserProfile.vue中一样）
+                setTimeout(() => {
+                    log('延迟500ms后刷新数据...', 'warning');
+                    getCurrentStats();
+                }, 500);
+            };
+            
+            window.addEventListener('experienceUpdated', handleExperienceUpdate);
+            
+            // 发送模拟事件
+            const mockEventData = {
+                experienceGained: 50,
+                newExperience: 150,
+                newLevel: 2,
+                leveledUp: false
+            };
+            
+            log('发送模拟经验值更新事件...');
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: mockEventData
+            }));
+            
+            // 5秒后移除监听器
+            setTimeout(() => {
+                window.removeEventListener('experienceUpdated', handleExperienceUpdate);
+                log('已移除事件监听器');
+            }, 5000);
+        }
+
+        async function testAPICall() {
+            log('=== 测试经验值API调用 ===');
+            if (!checkLoginStatus()) return;
+
+            try {
+                // 模拟添加经验值的API调用
+                const response = await fetch('/api/level/experience', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        experience: 10,
+                        source: 'test'
+                    })
+                });
+                
+                const data = await response.json();
+                log('经验值API响应: ' + JSON.stringify(data, null, 2));
+                
+                if (data.code === 200) {
+                    log('经验值添加成功!', 'success');
+                    // 等待一下再获取最新数据
+                    setTimeout(() => {
+                        getCurrentStats();
+                    }, 1000);
+                } else {
+                    log('经验值添加失败: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('API调用失败: ' + error.message, 'error');
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // 页面加载时自动检查登录状态
+        window.onload = function() {
+            log('🧪 经验值更新测试工具已加载');
+            log('请按顺序执行测试步骤');
+            checkLoginStatus();
+        };
+    </script>
+</body>
+</html>

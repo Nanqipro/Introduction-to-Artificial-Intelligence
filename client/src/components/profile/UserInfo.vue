@@ -10,13 +10,23 @@
           <p>管理您的个人资料</p>
         </div>
       </div>
-      <div class="edit-switch">
-        <el-switch
-          :model-value="editMode"
-          active-text="编辑"
-          inactive-text="查看"
-          @update:model-value="$emit('update:editMode', $event)"
-        />
+      <div class="edit-actions">
+        <el-button
+          v-if="!editMode"
+          type="primary"
+          @click="$emit('update:editMode', true)"
+        >
+          <el-icon><Edit /></el-icon>
+          编辑资料
+        </el-button>
+        <el-button
+          v-else
+          type="info"
+          @click="$emit('update:editMode', false)"
+        >
+          <el-icon><View /></el-icon>
+          取消编辑
+        </el-button>
       </div>
     </div>
     
@@ -32,8 +42,8 @@
           <el-form-item label="用户名" prop="username">
             <el-input
               v-model="formData.username"
-              :disabled="!editMode"
-              placeholder="请输入用户名"
+              disabled
+              placeholder="用户名是唯一标识，不可修改"
             >
               <template #prefix>
                 <el-icon><User /></el-icon>
@@ -102,6 +112,55 @@
           </el-form-item>
         </div>
         
+        <!-- 密码修改区域 -->
+        <div v-if="editMode" class="password-section">
+          <div class="section-header">
+            <h4>修改密码</h4>
+            <p>如需修改密码，请填写以下信息</p>
+          </div>
+          
+          <div class="password-grid">
+            <el-form-item label="当前密码" prop="currentPassword">
+              <el-input
+                v-model="passwordData.currentPassword"
+                type="password"
+                placeholder="请输入当前密码"
+                show-password
+              >
+                <template #prefix>
+                  <el-icon><Lock /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+            
+            <el-form-item label="新密码" prop="newPassword">
+              <el-input
+                v-model="passwordData.newPassword"
+                type="password"
+                placeholder="请输入新密码"
+                show-password
+              >
+                <template #prefix>
+                  <el-icon><Lock /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+            
+            <el-form-item label="确认新密码" prop="confirmPassword">
+              <el-input
+                v-model="passwordData.confirmPassword"
+                type="password"
+                placeholder="请再次输入新密码"
+                show-password
+              >
+                <template #prefix>
+                  <el-icon><Lock /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </div>
+        </div>
+        
         <div class="form-actions" v-if="editMode">
           <el-button type="primary" @click="handleSave">
             <el-icon><Check /></el-icon>
@@ -118,8 +177,8 @@
 </template>
 
 <script setup>
-import { User, UserFilled, Message, Phone, School, Reading, Check, Close } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { User, UserFilled, Message, Phone, School, Reading, Check, Close, Lock, Edit, View } from '@element-plus/icons-vue'
+import { ref, reactive } from 'vue'
 
 const props = defineProps({
   formData: {
@@ -136,30 +195,99 @@ const emit = defineEmits(['update:editMode', 'save', 'cancel'])
 
 const formRef = ref()
 
+// 密码修改数据
+const passwordData = reactive({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: ''
+})
+
+// 重置密码数据
+const resetPasswordData = () => {
+  passwordData.currentPassword = ''
+  passwordData.newPassword = ''
+  passwordData.confirmPassword = ''
+}
+
 const formRules = {
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 2, max: 20, message: '用户名长度在 2 到 20 个字符', trigger: 'blur' }
-  ],
+  // 用户名是唯一标识，不允许修改，因此移除验证规则
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
   ],
   phone: [
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
+  ],
+  currentPassword: [
+    { 
+      validator: (rule, value, callback) => {
+        if (passwordData.newPassword && !value) {
+          callback(new Error('请输入当前密码'))
+        } else {
+          callback()
+        }
+      }, 
+      trigger: 'blur' 
+    }
+  ],
+  newPassword: [
+    { 
+      validator: (rule, value, callback) => {
+        if (passwordData.currentPassword && !value) {
+          callback(new Error('请输入新密码'))
+        } else if (value && value.length < 6) {
+          callback(new Error('新密码长度不能少于6位'))
+        } else {
+          callback()
+        }
+      }, 
+      trigger: 'blur' 
+    }
+  ],
+  confirmPassword: [
+    { 
+      validator: (rule, value, callback) => {
+        if (passwordData.newPassword && !value) {
+          callback(new Error('请确认新密码'))
+        } else if (value && value !== passwordData.newPassword) {
+          callback(new Error('两次输入的密码不一致'))
+        } else {
+          callback()
+        }
+      }, 
+      trigger: 'blur' 
+    }
   ]
 }
 
 const handleSave = async () => {
   try {
     await formRef.value.validate()
-    emit('save', props.formData)
+    
+    // 准备保存数据
+    const saveData = {
+      userInfo: { ...props.formData },
+      passwordChange: null
+    }
+    
+    // 如果有密码修改
+    if (passwordData.currentPassword || passwordData.newPassword || passwordData.confirmPassword) {
+      if (passwordData.currentPassword && passwordData.newPassword && passwordData.confirmPassword) {
+        saveData.passwordChange = {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        }
+      }
+    }
+    
+    emit('save', saveData)
   } catch (error) {
     console.error('表单验证失败:', error)
   }
 }
 
 const handleCancel = () => {
+  resetPasswordData()
   emit('cancel')
 }
 </script>
@@ -222,10 +350,15 @@ const handleCancel = () => {
       }
     }
     
-    .edit-switch {
-      :deep(.el-switch__label) {
-        color: var(--text-secondary-color);
-        font-weight: 500;
+    .edit-actions {
+      display: flex;
+      align-items: center;
+      
+      .el-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
       }
     }
   }
@@ -242,10 +375,51 @@ const handleCancel = () => {
         margin-bottom: 2rem;
       }
       
+      .password-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        
+        .section-header {
+          margin-bottom: 1.5rem;
+          
+          h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            
+            &::before {
+              content: '';
+              width: 4px;
+              height: 16px;
+              background: linear-gradient(135deg, #00bfff, #00ff7f);
+              border-radius: 2px;
+            }
+          }
+          
+          p {
+            font-size: 0.9rem;
+            color: var(--text-secondary-color);
+            margin: 0;
+          }
+        }
+        
+        .password-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+        }
+      }
+      
       .form-actions {
         display: flex;
         gap: 1rem;
         justify-content: flex-end;
+        margin-top: 2rem;
         
         .el-button {
           display: flex;
@@ -288,8 +462,13 @@ html.dark-theme .profile-container {
         box-shadow: 0 4px 16px rgba(0, 191, 255, 0.2);
       }
       
-      .edit-switch :deep(.el-switch__label) {
-        color: rgba(255, 255, 255, 0.7);
+      .edit-actions .el-button {
+        border-color: rgba(0, 191, 255, 0.3);
+        
+        &:hover {
+          border-color: rgba(0, 191, 255, 0.6);
+          background: rgba(0, 191, 255, 0.1);
+        }
       }
     }
     

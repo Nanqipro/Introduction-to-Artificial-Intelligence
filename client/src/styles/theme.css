@@ -59,6 +59,15 @@ html.dark-theme {
     --btn-success-bg: linear-gradient(135deg, #00ff7f 0%, #00cc66 100%);
     --btn-warning-bg: linear-gradient(135deg, #ff4500 0%, #ff6347 100%);
 
+    /* 下拉菜单相关 */
+    --dropdown-bg: rgba(26, 26, 46, 0.95);
+    --dropdown-border: rgba(0, 191, 255, 0.2);
+    --dropdown-item-color: #ffffff;
+    --dropdown-item-hover-bg: rgba(0, 191, 255, 0.15);
+    --dropdown-item-hover-color: #00bfff;
+    --dropdown-divider-bg: rgba(0, 191, 255, 0.1);
+    --dropdown-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 191, 255, 0.1);
+
     /* 表单和模态框 */
     --form-bg: #1a1a2e;
     --modal-bg: #1a1a2e;
@@ -153,6 +162,36 @@ html.dark-theme {
     --redirect-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --redirect-card-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
 
+    /* 关于页面相关 - 深色主题 */
+    --about-page-bg: var(--secondary-color);
+    --about-card-bg: var(--card-bg);
+    --about-card-border: rgba(0, 191, 255, 0.2);
+    --about-card-shadow: 0 4px 24px rgba(24, 25, 26, 0.10);
+    --about-card-radius: 10px;
+    --about-card-header-border: rgba(57, 59, 64, 0.18);
+    --about-page-title-color: var(--text-color);
+    --about-page-description-color: var(--text-secondary-color);
+    --about-contact-icon-color: var(--accent-color);
+    --about-tag-bg: #4a90e2;
+    --about-tag-color: #ffffff;
+    --about-divider-bg: rgba(57, 59, 64, 0.18);
+    --about-descriptions-bg: #292c33;
+    --about-descriptions-cell-bg: #23272e;
+    --about-descriptions-border: rgba(57, 59, 64, 0.18);
+    --about-link-color: #667eea;
+    --about-link-hover-color: #5a67d8;
+    --about-purchase-bg: rgba(0, 191, 255, 0.05);
+    --about-purchase-border: rgba(0, 191, 255, 0.2);
+    --about-purchase-btn-bg: linear-gradient(135deg, #00bfff, #00a6e6);
+    --about-purchase-btn-hover-bg: linear-gradient(135deg, #00a6e6, #0099cc);
+    --about-purchase-btn-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+    --about-purchase-btn-hover-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+    --about-member-card-bg: rgba(0, 191, 255, 0.05);
+    --about-member-card-border: rgba(0, 191, 255, 0.15);
+    --about-member-card-hover-border: rgba(0, 191, 255, 0.3);
+    --about-member-card-hover-shadow: 0 8px 25px rgba(0, 191, 255, 0.15);
+    --about-member-role-border: rgba(0, 191, 255, 0.2);
+
     /* 动画效果 */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
@@ -216,6 +255,15 @@ html.light-theme {
     --btn-hover-bg: linear-gradient(135deg, #00a6e6, #00bfff);
     --btn-success-bg: linear-gradient(135deg, #00ff7f, #00cc66);
     --btn-warning-bg: linear-gradient(135deg, #ff4500, #ff6347);
+
+    /* 下拉菜单相关 */
+    --dropdown-bg: #ffffff;
+    --dropdown-border: rgba(0, 191, 255, 0.2);
+    --dropdown-item-color: #212529;
+    --dropdown-item-hover-bg: rgba(0, 191, 255, 0.1);
+    --dropdown-item-hover-color: #00bfff;
+    --dropdown-divider-bg: #dee2e6;
+    --dropdown-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 191, 255, 0.1);
 
     /* 表单和模态框 */
     --form-bg: #ffffff;
@@ -320,6 +368,36 @@ html.light-theme {
     --achievement-card-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
     --redirect-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --redirect-card-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+
+    /* 关于页面相关 - 浅色主题 */
+    --about-page-bg: var(--body-bg);
+    --about-card-bg: var(--card-bg);
+    --about-card-border: var(--border-color);
+    --about-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --about-card-radius: 10px;
+    --about-card-header-border: #e9ecef;
+    --about-page-title-color: var(--text-color);
+    --about-page-description-color: var(--text-secondary-color);
+    --about-contact-icon-color: var(--accent-color);
+    --about-tag-bg: var(--accent-color);
+    --about-tag-color: #ffffff;
+    --about-divider-bg: #dee2e6;
+    --about-descriptions-bg: var(--card-bg);
+    --about-descriptions-cell-bg: var(--card-bg);
+    --about-descriptions-border: #dee2e6;
+    --about-link-color: #667eea;
+    --about-link-hover-color: #5a67d8;
+    --about-purchase-bg: rgba(0, 191, 255, 0.05);
+    --about-purchase-border: rgba(0, 191, 255, 0.2);
+    --about-purchase-btn-bg: linear-gradient(135deg, #00bfff, #00a6e6);
+    --about-purchase-btn-hover-bg: linear-gradient(135deg, #00a6e6, #0099cc);
+    --about-purchase-btn-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+    --about-purchase-btn-hover-shadow: 0 6px 20px rgba(0, 191, 255, 0.3);
+    --about-member-card-bg: #f8f9fa;
+    --about-member-card-border: #e9ecef;
+    --about-member-card-hover-border: rgba(0, 191, 255, 0.3);
+    --about-member-card-hover-shadow: 0 8px 25px rgba(0, 191, 255, 0.1);
+    --about-member-role-border: rgba(0, 191, 255, 0.2);
 
     /* 动画效果 */
     --transition-fast: 0.2s ease;

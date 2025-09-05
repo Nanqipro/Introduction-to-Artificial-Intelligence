@@ -95,6 +95,7 @@ public class LevelServiceImpl implements LevelService {
         // 更新活动统计
         switch (activityType) {
             case "quiz":
+            case "quiz_completion":
                 user.setQuizCount(user.getQuizCount() + 1);
                 if (score != null && score > 0) {
                     user.setCorrectAnswers(user.getCorrectAnswers() + 1);
@@ -119,7 +120,7 @@ public class LevelServiceImpl implements LevelService {
         boolean levelUp = newLevel > oldLevel;
         
         // 检查并授予成就
-        checkAndGrantAchievements(userId, user);
+        checkAndGrantAchievements(userId, user, chapterId, activityType);
         
         // 返回结果
         Map<String, Object> result = new HashMap<>();
@@ -173,6 +174,12 @@ public class LevelServiceImpl implements LevelService {
         List<UserAchievement> achievements = getUserAchievements(userId);
         stats.put("achievementCount", achievements.size());
         
+        // 添加前端期望的其他字段
+        stats.put("studyTime", 0); // 暂时设为0，后续可根据实际需求计算
+        stats.put("networkProgress", 0); // 暂时设为0，后续可根据实际需求计算
+        stats.put("protocolProgress", 0); // 暂时设为0，后续可根据实际需求计算
+        stats.put("practiceProgress", 0); // 暂时设为0，后续可根据实际需求计算
+        
         return stats;
     }
     
@@ -213,6 +220,10 @@ public class LevelServiceImpl implements LevelService {
     
     @Override
     public void checkAndGrantAchievements(Integer userId, User user) {
+        checkAndGrantAchievements(userId, user, null, null);
+    }
+    
+    public void checkAndGrantAchievements(Integer userId, User user, Integer chapterId, String activityType) {
         List<UserAchievement> currentAchievements = getUserAchievements(userId);
         Set<String> earnedTypes = currentAchievements.stream()
             .map(UserAchievement::getAchievementType)
@@ -221,7 +232,7 @@ public class LevelServiceImpl implements LevelService {
         // 检查各种成就条件
         checkLevelAchievements(userId, user, earnedTypes);
         checkQuizAchievements(userId, user, earnedTypes);
-        checkChapterAchievements(userId, user, earnedTypes);
+        checkChapterAchievements(userId, user, earnedTypes, chapterId, activityType);
         checkScoreAchievements(userId, user, earnedTypes);
     }
     
@@ -269,16 +280,53 @@ public class LevelServiceImpl implements LevelService {
     }
     
     private void checkChapterAchievements(Integer userId, User user, Set<String> earnedTypes) {
-        int completedChapters = user.getCompletedChapters();
+        checkChapterAchievements(userId, user, earnedTypes, null, null);
+    }
+    
+    private void checkChapterAchievements(Integer userId, User user, Set<String> earnedTypes, Integer chapterId, String activityType) {
+        // 如果是章节完成活动，根据具体章节ID触发对应成就
+        if ("chapter".equals(activityType) && chapterId != null) {
+            String chapterAchievementType = "chapter_" + chapterId;
+            if (!earnedTypes.contains(chapterAchievementType)) {
+                String achievementName = getChapterAchievementName(chapterId);
+                String achievementDesc = getChapterAchievementDesc(chapterId);
+                grantAchievement(userId, chapterAchievementType, achievementName, achievementDesc);
+            }
+        }
         
-        if (completedChapters >= 1 && !earnedTypes.contains("chapter_1")) {
-            grantAchievement(userId, "chapter_1", "学习起步", "完成第一个章节");
+        // 检查基于总完成章节数的成就
+        int completedChapters = user.getCompletedChapters();
+        if (completedChapters >= 5 && !earnedTypes.contains("chapters_5")) {
+            grantAchievement(userId, "chapters_5", "勤奋学习者", "完成5个章节");
         }
-        if (completedChapters >= 5 && !earnedTypes.contains("chapter_5")) {
-            grantAchievement(userId, "chapter_5", "勤奋学习者", "完成5个章节");
+        if (completedChapters >= 10 && !earnedTypes.contains("chapters_10")) {
+            grantAchievement(userId, "chapters_10", "知识探索者", "完成10个章节");
         }
-        if (completedChapters >= 10 && !earnedTypes.contains("chapter_10")) {
-            grantAchievement(userId, "chapter_10", "知识探索者", "完成10个章节");
+    }
+    
+    private String getChapterAchievementName(Integer chapterId) {
+        switch (chapterId) {
+            case 1: return "学习起步";
+            case 2: return "深入探索";
+            case 3: return "知识进阶";
+            case 4: return "技能提升";
+            case 5: return "专业发展";
+            case 6: return "实践应用";
+            case 7: return "综合运用";
+            default: return "章节完成";
+        }
+    }
+    
+    private String getChapterAchievementDesc(Integer chapterId) {
+        switch (chapterId) {
+            case 1: return "完成第一章节";
+            case 2: return "完成第二章节";
+            case 3: return "完成第三章节";
+            case 4: return "完成第四章节";
+            case 5: return "完成第五章节";
+            case 6: return "完成第六章节";
+            case 7: return "完成第七章节";
+            default: return "完成第" + chapterId + "章节";
         }
     }
     

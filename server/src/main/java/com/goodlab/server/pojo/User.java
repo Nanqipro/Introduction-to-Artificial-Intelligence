@@ -45,6 +45,8 @@ public class User {
     private LocalDate birthday;// 生日
     private String location;// 所在地区
     private String bio;// 个人简介
+    private String school;// 学校
+    private String major;// 专业
     private String role = "学生";// 用户角色
 
     @Column(name = "create_time")

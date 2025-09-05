@@ -134,6 +134,8 @@ export default {
     }
   },
   async mounted() {
+    // 添加调试日志
+    console.log('📚 ChapterList组件挂载，开始加载章节列表')
     await this.loadChapters()
   },
   methods: {

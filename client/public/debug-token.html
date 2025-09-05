@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token调试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .token-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Token调试页面</h1>
+        
+        <div id="tokenStatus"></div>
+        
+        <div>
+            <button onclick="checkToken()">检查Token</button>
+            <button onclick="testUserInfoAPI()">测试用户信息API</button>
+            <button onclick="clearToken()">清除Token</button>
+            <button onclick="setTestToken()">设置测试Token</button>
+        </div>
+        
+        <div id="apiResult"></div>
+    </div>
+
+    <script>
+        function checkToken() {
+            const token = localStorage.getItem('token');
+            const statusDiv = document.getElementById('tokenStatus');
+            
+            if (!token) {
+                statusDiv.innerHTML = `
+                    <div class="token-info error">
+                        <h3>❌ Token状态: 不存在</h3>
+                        <p>localStorage中没有找到token</p>
+                    </div>
+                `;
+            } else {
+                const isValid = token && token.trim() !== '' && token !== 'null' && token !== 'undefined';
+                statusDiv.innerHTML = `
+                    <div class="token-info ${isValid ? 'success' : 'error'}">
+                        <h3>${isValid ? '✅' : '❌'} Token状态: ${isValid ? '有效' : '无效'}</h3>
+                        <p><strong>Token值:</strong> ${token}</p>
+                        <p><strong>Token长度:</strong> ${token.length}</p>
+                        <p><strong>Token类型:</strong> ${typeof token}</p>
+                        <p><strong>是否以Bearer开头:</strong> ${token.startsWith('Bearer ') ? '是' : '否'}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testUserInfoAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                resultDiv.innerHTML = `
+                    <div class="token-info error">
+                        <h3>❌ API测试失败</h3>
+                        <p>没有token，无法测试API</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8082/user/userInfo', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.text();
+                
+                resultDiv.innerHTML = `
+                    <div class="token-info ${response.ok ? 'success' : 'error'}">
+                        <h3>${response.ok ? '✅' : '❌'} API测试结果</h3>
+                        <p><strong>状态码:</strong> ${response.status}</p>
+                        <p><strong>状态文本:</strong> ${response.statusText}</p>
+                        <p><strong>响应数据:</strong></p>
+                        <pre>${data}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="token-info error">
+                        <h3>❌ API测试错误</h3>
+                        <p><strong>错误信息:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function clearToken() {
+            localStorage.removeItem('token');
+            checkToken();
+            document.getElementById('apiResult').innerHTML = '';
+        }
+        
+        function setTestToken() {
+            const testToken = 'Bearer test-token-123';
+            localStorage.setItem('token', testToken);
+            checkToken();
+            document.getElementById('apiResult').innerHTML = '';
+        }
+        
+        // 页面加载时自动检查token
+        window.onload = function() {
+            checkToken();
+        };
+    </script>
+</body>
+</html>

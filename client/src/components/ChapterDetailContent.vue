@@ -26,19 +26,21 @@
 
     <!-- 章节正文 -->
     <div class="chapter-body">
+      <!-- 第一章特殊处理：案例演示 -->
+      <div v-if="isChapter1" class="chapter1-special-layout">
+        <!-- 第一章案例演示 -->
+        <div class="case-study-section">
+          <Chapter1CaseStudy 
+            :chapter-id="id" 
+            @case-completed="onCaseCompleted"
+            @all-cases-completed="onAllCasesCompleted"
+          />
+        </div>
+      </div>
+
       <!-- 序章案例演示：播放预热视频 -->
       <div v-if="isPrologue" class="case-study-section">
         <PrologueCase poster-url="/images/cover_prologue.jpg" />
-      </div>
-
-      <!-- 第一章案例演示 -->
-      <div v-if="isChapter1 && !showChapter1Quiz" class="case-study-section">
-        <Chapter1CaseStudy />
-      </div>
-
-      <!-- 第一章测验模式 -->
-      <div v-if="isChapter1 && showChapter1Quiz" class="case-study-section">
-        <Chapter1Quiz @back-to-demo="showChapter1Quiz = false" />
       </div>
 
       <!-- 第六章特殊处理：显示交互式内容 -->
@@ -85,8 +87,8 @@
         />
       </div>
 
-      <!-- 答题系统入口 -->
-      <div class="quiz-section">
+      <!-- 答题系统入口 (序章除外) -->
+      <div v-if="!isPrologue" class="quiz-section">
         <div class="quiz-header">
           <h3 class="quiz-title">📚 知识测验</h3>
           <p class="quiz-description">
@@ -156,7 +158,6 @@
 <script>
 import PrologueCase from './chapter0/PrologueCase.vue'
 import Chapter1CaseStudy from './chapter1/Chapter1CaseStudy.vue'
-import Chapter1Quiz from './chapter1/Chapter1Quiz.vue'
 import Chapter6Interactive from './chapter6/Chapter6Interactive.vue'
 import Chapter2CaseStudy from './chapter2/Chapter2CaseStudy.vue'
 import Chapter3CaseStudy from './chapter3/Chapter3CaseStudy.vue'
@@ -168,7 +169,6 @@ export default {
   components: {
     PrologueCase,
     Chapter1CaseStudy,
-    Chapter1Quiz,
     Chapter6Interactive,
     Chapter2CaseStudy,
     Chapter3CaseStudy,
@@ -189,8 +189,7 @@ export default {
     return {
       allChapters: [],
       completedCasesCount: 0,
-      allCasesCompleted: false,
-      showChapter1Quiz: false
+      allCasesCompleted: false
     }
   },
   computed: {
@@ -279,17 +278,6 @@ export default {
       this.$router.push(`/chapters/${id}`)
     },
     startQuiz() {
-      // 第一章特殊处理：在当前页面显示测验，不跳转
-      if (this.isChapter1) {
-        this.showChapter1Quiz = true
-        this.$message({
-          message: '🎯 第一章测验已开始！请完成所有题目。',
-          type: 'success',
-          duration: 3000
-        })
-        return
-      }
-      
       // 其他章节：检查案例完成情况
       if ((this.isChapter2 || this.isChapter3 || this.isChapter4) && !this.allCasesCompleted) {
         this.$message({
@@ -303,6 +291,8 @@ export default {
       // 跳转到答题页面
       this.$router.push(`/quiz/${this.id}`)
     },
+
+
     onCaseCompleted(caseId) {
       this.completedCasesCount++
       this.$message({
@@ -311,13 +301,16 @@ export default {
         duration: 2000
       })
     },
-    onAllCasesCompleted() {
+    async onAllCasesCompleted() {
       this.allCasesCompleted = true
       this.$message({
         message: '🎉 恭喜！所有案例学习已完成，现在可以开始测验了！',
         type: 'success',
         duration: 3000
       })
+      
+      // 章节完成后添加经验值
+      await this.addChapterExperience()
     },
     getChapterType(type) {
       const typeMap = {
@@ -338,6 +331,61 @@ export default {
         .split('\n\n')
         .map(paragraph => `<p>${paragraph.trim()}</p>`)
         .join('')
+    },
+    async addChapterExperience() {
+      // 检查用户是否登录
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.log('⚠️ 用户未登录，跳过经验值添加')
+        return
+      }
+      
+      try {
+        const { levelApi } = await import('../services/api')
+        
+        // 根据章节ID计算经验值奖励
+        const experienceGained = 50 // 章节完成基础经验值
+        
+        const response = await levelApi.addExperience({
+          experience: experienceGained,
+          activityType: 'chapter',
+          chapterId: parseInt(this.id),
+          score: 100 // 章节完成满分
+        })
+        
+        if (response && response.code === 200) {
+          const result = response.data
+          console.log('✅ 章节完成经验值添加成功:', result)
+          
+          // 显示经验值获得提示
+          this.$message.success(`章节完成！获得 ${experienceGained} 经验值！`)
+          
+          // 发送全局事件通知经验值更新
+          window.dispatchEvent(new CustomEvent('experienceUpdated', {
+            detail: {
+              experienceGained: experienceGained,
+              newExperience: result.experience,
+              newLevel: result.newLevel,
+              leveledUp: result.levelUp,
+              activityType: 'chapter',
+              chapterId: this.id
+            }
+          }))
+          
+          // 检查是否升级
+          if (result.levelUp) {
+            this.$notify({
+              title: '🎉 恭喜升级！',
+              message: result.levelUpMessage || `恭喜升级到 ${result.newLevel} 级！`,
+              type: 'success',
+              duration: 5000
+            })
+          }
+        }
+      } catch (error) {
+        console.error('添加章节经验值失败:', error)
+        this.$message.error('添加经验值失败，请稍后重试')
+      }
     }
   }
 }
@@ -654,74 +702,73 @@ export default {
 }
 
 /* 浅色主题优化 */
-html.light-theme .chapter-content {
-  .chapter-header {
-    background: var(--chapter-header-bg);
-    border: 1px solid var(--chapter-header-border);
-  }
+html.light-theme .chapter-content .chapter-header {
+  background: var(--chapter-header-bg);
+  border: 1px solid var(--chapter-header-border);
+}
 
-  .chapter-badge {
-    background: var(--chapter-badge-bg);
-    box-shadow: var(--chapter-badge-shadow);
-  }
+html.light-theme .chapter-content .chapter-badge {
+  background: var(--chapter-badge-bg);
+  box-shadow: var(--chapter-badge-shadow);
+}
 
-  .chapter-type {
-    background: var(--chapter-type-bg);
-    color: var(--accent-color);
-    border: 1px solid var(--chapter-header-border);
-  }
+html.light-theme .chapter-content .chapter-type {
+  background: var(--chapter-type-bg);
+  color: var(--accent-color);
+  border: 1px solid var(--chapter-header-border);
+}
 
-  .chapter-summary {
-    background: var(--chapter-summary-bg);
-    border-left: 4px solid var(--chapter-summary-border);
-  }
+html.light-theme .chapter-content .chapter-summary {
+  background: var(--chapter-summary-bg);
+  border-left: 4px solid var(--chapter-summary-border);
+}
 
-  .info-item {
-    background: var(--info-item-bg);
-    border: 1px solid var(--info-item-border);
-  }
+html.light-theme .chapter-content .info-item {
+  background: var(--info-item-bg);
+  border: 1px solid var(--info-item-border);
+}
 
-  .info-label {
-    color: var(--accent-color);
-  }
+html.light-theme .chapter-content .info-label {
+  color: var(--accent-color);
+}
 
-  .quiz-section {
-    background: var(--quiz-section-bg);
-    border: 1px solid var(--quiz-section-border);
-  }
+html.light-theme .chapter-content .quiz-section {
+  background: var(--quiz-section-bg);
+  border: 1px solid var(--quiz-section-border);
+}
 
-  .quiz-header {
-    background: var(--quiz-header-bg);
-  }
+html.light-theme .chapter-content .quiz-header {
+  background: var(--quiz-header-bg);
+}
 
-  .btn-quiz {
-    background: var(--btn-primary-bg);
-    color: white;
-    
-    &:hover:not(:disabled) {
-      background: var(--btn-hover-bg);
-      transform: translateY(-2px);
-      box-shadow: var(--box-shadow);
-    }
-  }
+html.light-theme .chapter-content .btn-quiz {
+  background: var(--btn-primary-bg);
+  color: white;
+}
 
-  .pagination-btn {
-    background: var(--pagination-btn-bg);
-    border: 1px solid var(--pagination-btn-border);
-    
-    &:hover {
-      background: var(--pagination-btn-hover-bg);
-      border-color: var(--accent-color);
-    }
-  }
+html.light-theme .chapter-content .btn-quiz:hover:not(:disabled) {
+  background: var(--btn-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
+}
 
-  /* 提升“上一章/下一章”文本可读性 */
-  .btn-label {
-    color: var(--text-secondary-color);
-  }
-  .btn-title {
-    color: var(--text-color);
-  }
+html.light-theme .chapter-content .pagination-btn {
+  background: var(--pagination-btn-bg);
+  border: 1px solid var(--pagination-btn-border);
+}
+
+html.light-theme .chapter-content .pagination-btn:hover {
+  background: var(--pagination-btn-hover-bg);
+  border-color: var(--accent-color);
+}
+
+/* 提升"上一章/下一章"文本可读性 */
+html.light-theme .chapter-content .btn-label {
+  color: var(--text-secondary-color);
+}
+
+html.light-theme .chapter-content .btn-title {
+  color: var(--text-color);
 }
 
 @media (max-width: 768px) {

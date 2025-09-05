@@ -117,6 +117,7 @@
 
 <script>
 import { quizApi } from '../../services/api'
+import { useAuth } from '../../composables/useAuth'
 
 export default {
   name: 'UserStats',
@@ -129,7 +130,10 @@ export default {
     }
   },
   async mounted() {
-    await this.loadAllData()
+    const { isLoggedIn } = useAuth()
+    if (isLoggedIn.value) {
+      await this.loadAllData()
+    }
   },
   methods: {
     async loadAllData() {
@@ -419,4 +423,4 @@ export default {
     width: 100%;
   }
 }
-</style> 
+</style>

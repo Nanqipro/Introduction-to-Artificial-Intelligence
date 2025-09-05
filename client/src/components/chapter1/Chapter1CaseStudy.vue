@@ -276,6 +276,13 @@
 <script>
 export default {
   name: 'Chapter1CaseStudy',
+  props: {
+    chapterId: {
+      type: [String, Number],
+      default: 1
+    }
+  },
+  emits: ['case-completed', 'all-cases-completed'],
   data() {
     return {
       questionResults: {},
@@ -287,6 +294,25 @@ export default {
         7: { A: 'human', B: 'ai' },
         8: { A: 'human', B: 'ai' },
         9: { A: 'human', B: 'ai' }
+      },
+      interactionCount: 0,
+      requiredInteractions: 7, // 需要完成7道题目
+      caseCompleted: false
+    }
+  },
+  computed: {
+    completedQuestions() {
+      return Object.keys(this.questionResults).length
+    },
+    allQuestionsCompleted() {
+      return this.completedQuestions >= this.requiredInteractions
+    }
+  },
+  watch: {
+    allQuestionsCompleted(newVal) {
+      if (newVal && !this.caseCompleted) {
+        this.caseCompleted = true
+        this.onCaseCompleted()
       }
     }
   },
@@ -295,6 +321,11 @@ export default {
   },
   methods: {
     selectOption(questionId, option) {
+      // 如果已经回答过这道题，不重复计算
+      if (this.questionResults[questionId]) {
+        return
+      }
+      
       // 用户点击A或B选项，显示A和B分别是什么
       const aType = this.questionAnswers[questionId].A === 'human' ? '真实' : 'AI'
       const bType = this.questionAnswers[questionId].B === 'human' ? '真实' : 'AI'
@@ -303,6 +334,14 @@ export default {
         correct: true,
         message: `🎯 你选择了${option}选项。标准答案：A 为 ${aType}，B 为 ${bType}。`
       }
+      
+      this.interactionCount++
+      this.$emit('case-completed', {
+        questionId,
+        option,
+        correct: true,
+        totalCompleted: this.completedQuestions
+      })
     },
     answerQuestion(questionId, option, guess) {
       // guess 现在就是正确答案，直接判断用户选择的是否正确
@@ -317,6 +356,15 @@ export default {
     },
     resetQuestion(questionId) {
       this.questionResults[questionId] = null
+    },
+    onCaseCompleted() {
+      // 触发案例完成事件
+      this.$emit('all-cases-completed', {
+        chapterId: this.chapterId,
+        completedQuestions: this.completedQuestions,
+        totalQuestions: this.requiredInteractions,
+        interactionCount: this.interactionCount
+      })
     }
   }
 }
@@ -662,165 +710,163 @@ export default {
 }
 
 /* 浅色主题适配 */
-:root.light-theme .case-study-section {
-  .case-study-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    color: #212529;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .case-study-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #212529;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-  .case-study-title {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .case-study-title {
+  color: #212529;
+}
 
-  .case-study-description {
-    color: #495057;
-  }
+:root.light-theme .case-study-section .case-study-description {
+  color: #495057;
+}
 
-  .case-study-card {
-    background: #ffffff;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .case-study-card {
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-  .case-study-card:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  }
+:root.light-theme .case-study-section .case-study-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
 
-  .question-title {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .question-title {
+  color: #212529;
+}
 
-  .question-description {
-    color: #495057;
-  }
+:root.light-theme .case-study-section .question-description {
+  color: #495057;
+}
 
-  .option-card {
-    background: #f8f9fa;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .option-card {
+  background: #f8f9fa;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
 
-  .option-card.clickable:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    border-color: #3b82f6;
-  }
+:root.light-theme .case-study-section .option-card.clickable:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
 
-  .option-label {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .option-label {
+  color: #212529;
+}
 
-  .option-text {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .option-text {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-  .option-text p {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .option-text p {
+  color: #212529;
+}
 
-  .text-source {
-    color: #6c757d;
-    border-top-color: rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .text-source {
+  color: #6c757d;
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
 
-  .audio-placeholder {
-    background: #f8f9fa;
-    border: 2px dashed #3b82f6;
-  }
+:root.light-theme .case-study-section .audio-placeholder {
+  background: #f8f9fa;
+  border: 2px dashed #3b82f6;
+}
 
-  .placeholder-title {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .placeholder-title {
+  color: #212529;
+}
 
-  .placeholder-desc {
-    color: #495057;
-  }
+:root.light-theme .case-study-section .placeholder-desc {
+  color: #495057;
+}
 
-  .link-btn {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .link-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+}
 
-  .link-btn:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .link-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+}
 
-  .btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+}
 
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+}
 
-  .btn-secondary {
-    background: #6c757d;
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .btn-secondary {
+  background: #6c757d;
+  color: #ffffff;
+}
 
-  .btn-secondary:hover {
-    background: #5a6268;
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .btn-secondary:hover {
+  background: #5a6268;
+  color: #ffffff;
+}
 
-  .btn-outline {
-    color: #3b82f6;
-    border-color: #3b82f6;
-  }
+:root.light-theme .case-study-section .btn-outline {
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
 
-  .btn-outline:hover {
-    background: #3b82f6;
-    color: #ffffff;
-  }
+:root.light-theme .case-study-section .btn-outline:hover {
+  background: #3b82f6;
+  color: #ffffff;
+}
 
-  .feedback-card.correct {
-    background: rgba(76, 175, 80, 0.1);
-    color: #2e7d32;
-    border-color: #4caf50;
-  }
+:root.light-theme .case-study-section .feedback-card.correct {
+  background: rgba(76, 175, 80, 0.1);
+  color: #2e7d32;
+  border-color: #4caf50;
+}
 
-  .feedback-card.incorrect {
-    background: rgba(244, 67, 54, 0.1);
-    color: #c62828;
-    border-color: #f44336;
-  }
+:root.light-theme .case-study-section .feedback-card.incorrect {
+  background: rgba(244, 67, 54, 0.1);
+  color: #c62828;
+  border-color: #f44336;
+}
 
-  .case-study-overview {
-    background: #f8f9fa;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  }
+:root.light-theme .case-study-section .case-study-overview {
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
 
-  .overview-title {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .overview-title {
+  color: #212529;
+}
 
-  .overview-description {
-    color: #495057;
-  }
+:root.light-theme .case-study-section .overview-description {
+  color: #495057;
+}
 
-  .overview-list {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .overview-list {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-  .overview-list h4 {
-    color: #212529;
-  }
+:root.light-theme .case-study-section .overview-list h4 {
+  color: #212529;
+}
 
-  .overview-list li {
-    color: #495057;
-    border-bottom-color: rgba(0, 0, 0, 0.1);
-  }
+:root.light-theme .case-study-section .overview-list li {
+  color: #495057;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
 
-  .overview-list li:hover {
-    color: #212529;
-    background: #e9ecef;
-  }
+:root.light-theme .case-study-section .overview-list li:hover {
+  color: #212529;
+  background: #e9ecef;
 }
 
 @media (max-width: 768px) {

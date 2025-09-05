@@ -234,6 +234,7 @@ import {
 } from '@element-plus/icons-vue'
 import { levelApi } from '../../services/api.js'
 import { ElMessage } from 'element-plus'
+import { useAuth } from '../../composables/useAuth'
 
 // 定义事件
 const emit = defineEmits(['progress-update'])
@@ -390,6 +391,13 @@ const expToNextLevel = computed(() => {
 // 从后端获取用户数据
 const fetchUserData = async () => {
   try {
+    // 检查登录状态和token
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.log('🚫 GameifiedLearning - fetchUserData: 未登录，跳过数据获取')
+      return
+    }
+    
     // 获取用户统计信息
     const statsResponse = await levelApi.getUserStats()
     if (statsResponse.code === 200) {
@@ -419,6 +427,13 @@ const fetchUserData = async () => {
 
 // 添加经验值到后端
 const addExperienceToBackend = async (experience, activityType, chapterId = null, score = null) => {
+  // 检查token
+  const token = localStorage.getItem('token')
+  if (!token) {
+    console.log('⚠️ 用户未登录，跳过经验值添加')
+    return
+  }
+  
   try {
     const response = await levelApi.addExperience({
       experience,
@@ -436,7 +451,7 @@ const addExperienceToBackend = async (experience, activityType, chapterId = null
       
       // 更新本地数据
       playerLevel.value = result.newLevel
-      playerExp.value = result.newExperience
+      playerExp.value = result.experience
       
       return result
     }
@@ -560,7 +575,13 @@ const getCurrentChallengeStatus = () => {
 
 // 组件挂载时获取用户数据
 onMounted(() => {
-  fetchUserData()
+  const { isLoggedIn } = useAuth()
+  const token = localStorage.getItem('token')
+  if (isLoggedIn.value && token) {
+    fetchUserData()
+  } else {
+    console.log('🚫 GameifiedLearning - 未登录或无token，跳过数据获取')
+  }
 })
 
 // 监听器

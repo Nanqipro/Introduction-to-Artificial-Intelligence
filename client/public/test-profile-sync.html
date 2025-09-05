@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心数据同步测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.danger {
+            background: #dc3545;
+        }
+        button.danger:hover {
+            background: #c82333;
+        }
+        button.success {
+            background: #28a745;
+        }
+        button.success:hover {
+            background: #218838;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .status.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        .data-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .data-value {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 个人中心数据同步测试</h1>
+    
+    <div class="container">
+        <div class="section">
+            <h3>📊 当前用户数据</h3>
+            <div id="currentData" class="data-display">
+                <div class="data-item">
+                    <span class="data-label">等级:</span>
+                    <span class="data-value" id="currentLevel">-</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">经验值:</span>
+                    <span class="data-value" id="currentExp">-</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">总得分:</span>
+                    <span class="data-value" id="currentScore">-</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">已完成章节:</span>
+                    <span class="data-value" id="currentChapters">-</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">学习时间:</span>
+                    <span class="data-value" id="currentStudyTime">-</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">成就数量:</span>
+                    <span class="data-value" id="currentAchievements">-</span>
+                </div>
+            </div>
+            <button onclick="loadCurrentData()">🔄 刷新当前数据</button>
+        </div>
+
+        <div class="section">
+            <h3>🎯 经验值更新测试</h3>
+            <button onclick="simulateQuizComplete()">📝 模拟测验完成 (+50经验)</button>
+            <button onclick="simulateChapterComplete()">📚 模拟章节完成 (+100经验)</button>
+            <button onclick="simulateCustomExp()">⚡ 自定义经验值更新</button>
+            <button onclick="triggerExperienceEvent()">🔔 手动触发经验值事件</button>
+        </div>
+
+        <div class="section">
+            <h3>👂 事件监听测试</h3>
+            <div id="listenerStatus" class="status info">事件监听器状态: 未知</div>
+            <button onclick="startEventListener()" class="success">▶️ 开始监听经验值事件</button>
+            <button onclick="stopEventListener()" class="danger">⏹️ 停止监听经验值事件</button>
+            <button onclick="testEventSystem()">🧪 测试事件系统</button>
+        </div>
+
+        <div class="section">
+            <h3>🏠 个人中心页面测试</h3>
+            <button onclick="openProfilePage()">🔗 打开个人中心页面</button>
+            <button onclick="testProfileUpdate()">🔄 测试个人中心数据更新</button>
+            <button onclick="checkProfileEventListener()">👂 检查个人中心事件监听</button>
+        </div>
+
+        <div class="section">
+            <h3>🔍 问题诊断</h3>
+            <button onclick="diagnoseIssue()">🩺 诊断同步问题</button>
+            <button onclick="checkAPIEndpoints()">🌐 检查API端点</button>
+            <button onclick="verifyEventSystem()">✅ 验证事件系统</button>
+            <button onclick="clearLogs()" class="danger">🗑️ 清空日志</button>
+        </div>
+
+        <div class="section">
+            <h3>📋 测试日志</h3>
+            <div id="testLog" class="log">等待测试开始...
+</div>
+        </div>
+    </div>
+
+    <script>
+        let eventListener = null;
+        let isListening = false;
+
+        // 日志记录函数
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('testLog');
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[ProfileSyncTest] ${message}`);
+        }
+
+        // 更新监听器状态显示
+        function updateListenerStatus(status, type = 'info') {
+            const statusElement = document.getElementById('listenerStatus');
+            statusElement.textContent = `事件监听器状态: ${status}`;
+            statusElement.className = `status ${type}`;
+        }
+
+        // 加载当前用户数据
+        async function loadCurrentData() {
+            log('开始加载当前用户数据...');
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    log('未找到登录token', 'error');
+                    return;
+                }
+
+                const response = await fetch('/api/level/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.code === 200) {
+                        const data = result.data;
+                        document.getElementById('currentLevel').textContent = data.level || '-';
+                        document.getElementById('currentExp').textContent = data.experience || '-';
+                        document.getElementById('currentScore').textContent = data.totalScore || '-';
+                        document.getElementById('currentChapters').textContent = data.completedChapters || '-';
+                        document.getElementById('currentStudyTime').textContent = data.studyTime || '-';
+                        document.getElementById('currentAchievements').textContent = data.achievementCount || '-';
+                        log('用户数据加载成功', 'success');
+                        log(`数据详情: 等级${data.level}, 经验${data.experience}, 得分${data.totalScore}, 章节${data.completedChapters}`);
+                    } else {
+                        log(`API返回错误: ${result.message}`, 'error');
+                    }
+                } else {
+                    log(`HTTP错误: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`加载用户数据失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 模拟测验完成
+        async function simulateQuizComplete() {
+            log('模拟测验完成，增加50经验值...');
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/level/add-experience', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: 50,
+                        activityType: 'quiz_complete',
+                        chapterId: 1,
+                        score: 85
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    log('测验完成模拟成功', 'success');
+                    log(`返回数据: ${JSON.stringify(result.data)}`);
+                    
+                    // 等待一段时间后检查数据是否更新
+                    setTimeout(() => {
+                        loadCurrentData();
+                        log('已自动刷新数据，请检查个人中心是否同步更新');
+                    }, 1000);
+                } else {
+                    log(`模拟测验失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`模拟测验错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 模拟章节完成
+        async function simulateChapterComplete() {
+            log('模拟章节完成，增加100经验值...');
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/level/add-experience', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: 100,
+                        activityType: 'chapter_complete',
+                        chapterId: 2,
+                        score: 95
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    log('章节完成模拟成功', 'success');
+                    log(`返回数据: ${JSON.stringify(result.data)}`);
+                    
+                    // 等待一段时间后检查数据是否更新
+                    setTimeout(() => {
+                        loadCurrentData();
+                        log('已自动刷新数据，请检查个人中心是否同步更新');
+                    }, 1000);
+                } else {
+                    log(`模拟章节完成失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`模拟章节完成错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 自定义经验值更新
+        function simulateCustomExp() {
+            const exp = prompt('请输入要增加的经验值:', '30');
+            if (exp && !isNaN(exp)) {
+                customExpUpdate(parseInt(exp));
+            }
+        }
+
+        async function customExpUpdate(experience) {
+            log(`自定义经验值更新，增加${experience}经验值...`);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/level/add-experience', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: experience,
+                        activityType: 'custom_test',
+                        chapterId: 0,
+                        score: 0
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    log('自定义经验值更新成功', 'success');
+                    log(`返回数据: ${JSON.stringify(result.data)}`);
+                    
+                    // 等待一段时间后检查数据是否更新
+                    setTimeout(() => {
+                        loadCurrentData();
+                        log('已自动刷新数据，请检查个人中心是否同步更新');
+                    }, 1000);
+                } else {
+                    log(`自定义经验值更新失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`自定义经验值更新错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 手动触发经验值事件
+        function triggerExperienceEvent() {
+            log('手动触发experienceUpdated事件...');
+            const event = new CustomEvent('experienceUpdated', {
+                detail: {
+                    type: 'manual_test',
+                    experience: 25,
+                    newLevel: 2,
+                    timestamp: Date.now()
+                }
+            });
+            window.dispatchEvent(event);
+            log('experienceUpdated事件已触发', 'success');
+        }
+
+        // 开始监听经验值事件
+        function startEventListener() {
+            if (isListening) {
+                log('事件监听器已在运行', 'warning');
+                return;
+            }
+
+            eventListener = function(event) {
+                log(`收到experienceUpdated事件: ${JSON.stringify(event.detail)}`, 'success');
+            };
+
+            window.addEventListener('experienceUpdated', eventListener);
+            isListening = true;
+            updateListenerStatus('正在监听', 'success');
+            log('开始监听experienceUpdated事件', 'success');
+        }
+
+        // 停止监听经验值事件
+        function stopEventListener() {
+            if (!isListening) {
+                log('事件监听器未运行', 'warning');
+                return;
+            }
+
+            window.removeEventListener('experienceUpdated', eventListener);
+            eventListener = null;
+            isListening = false;
+            updateListenerStatus('已停止', 'error');
+            log('停止监听experienceUpdated事件', 'success');
+        }
+
+        // 测试事件系统
+        function testEventSystem() {
+            log('测试事件系统...');
+            
+            // 先开始监听
+            if (!isListening) {
+                startEventListener();
+            }
+            
+            // 触发测试事件
+            setTimeout(() => {
+                triggerExperienceEvent();
+            }, 500);
+            
+            log('事件系统测试完成，请查看是否收到事件');
+        }
+
+        // 打开个人中心页面
+        function openProfilePage() {
+            log('打开个人中心页面...');
+            window.open('/profile', '_blank');
+            log('个人中心页面已在新标签页打开');
+        }
+
+        // 测试个人中心数据更新
+        function testProfileUpdate() {
+            log('测试个人中心数据更新流程...');
+            
+            // 1. 先触发经验值更新
+            simulateQuizComplete();
+            
+            // 2. 等待一段时间后触发事件
+            setTimeout(() => {
+                triggerExperienceEvent();
+                log('已触发经验值事件，请检查个人中心页面是否更新');
+            }, 2000);
+        }
+
+        // 检查个人中心事件监听
+        function checkProfileEventListener() {
+            log('检查个人中心事件监听器...');
+            
+            // 检查是否有个人中心页面在运行
+            const profileWindow = window.open('/profile', 'profileTest');
+            
+            setTimeout(() => {
+                if (profileWindow) {
+                    log('个人中心页面已打开，现在触发测试事件...');
+                    triggerExperienceEvent();
+                    log('测试事件已触发，请检查个人中心页面控制台日志');
+                } else {
+                    log('无法打开个人中心页面', 'error');
+                }
+            }, 1000);
+        }
+
+        // 诊断同步问题
+        async function diagnoseIssue() {
+            log('开始诊断个人中心数据同步问题...');
+            
+            // 1. 检查登录状态
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('❌ 诊断结果: 未登录', 'error');
+                return;
+            }
+            log('✅ 登录状态: 正常');
+            
+            // 2. 检查API可用性
+            try {
+                const response = await fetch('/api/level/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    log('✅ API连接: 正常');
+                } else {
+                    log(`❌ API连接: 错误 (${response.status})`, 'error');
+                    return;
+                }
+            } catch (error) {
+                log(`❌ API连接: 失败 (${error.message})`, 'error');
+                return;
+            }
+            
+            // 3. 测试事件系统
+            log('🧪 测试事件系统...');
+            testEventSystem();
+            
+            // 4. 建议解决方案
+            setTimeout(() => {
+                log('🔍 诊断完成，建议检查以下项目:');
+                log('1. 个人中心页面是否正确监听experienceUpdated事件');
+                log('2. handleExperienceUpdate方法是否正确调用refreshUserStats');
+                log('3. refreshUserStats方法是否正确更新数据');
+                log('4. 网络请求是否成功返回最新数据');
+            }, 2000);
+        }
+
+        // 检查API端点
+        async function checkAPIEndpoints() {
+            log('检查API端点可用性...');
+            const token = localStorage.getItem('token');
+            
+            const endpoints = [
+                { name: '用户统计', url: '/api/level/stats' },
+                { name: '用户成就', url: '/api/level/achievements' },
+                { name: '添加经验', url: '/api/level/add-experience', method: 'POST' }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const options = {
+                        method: endpoint.method || 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    };
+                    
+                    if (endpoint.method === 'POST') {
+                        options.body = JSON.stringify({
+                            experience: 1,
+                            activityType: 'test',
+                            chapterId: 0,
+                            score: 0
+                        });
+                    }
+                    
+                    const response = await fetch(endpoint.url, options);
+                    
+                    if (response.ok) {
+                        log(`✅ ${endpoint.name}: 正常`);
+                    } else {
+                        log(`❌ ${endpoint.name}: 错误 (${response.status})`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ ${endpoint.name}: 失败 (${error.message})`, 'error');
+                }
+            }
+        }
+
+        // 验证事件系统
+        function verifyEventSystem() {
+            log('验证事件系统完整性...');
+            
+            let testsPassed = 0;
+            const totalTests = 3;
+            
+            // 测试1: 事件监听器注册
+            try {
+                const testListener = () => {};
+                window.addEventListener('test', testListener);
+                window.removeEventListener('test', testListener);
+                log('✅ 测试1: 事件监听器注册/移除正常');
+                testsPassed++;
+            } catch (error) {
+                log(`❌ 测试1: 事件监听器注册失败 (${error.message})`, 'error');
+            }
+            
+            // 测试2: 自定义事件创建
+            try {
+                const testEvent = new CustomEvent('testEvent', { detail: { test: true } });
+                log('✅ 测试2: 自定义事件创建正常');
+                testsPassed++;
+            } catch (error) {
+                log(`❌ 测试2: 自定义事件创建失败 (${error.message})`, 'error');
+            }
+            
+            // 测试3: 事件触发和接收
+            try {
+                let eventReceived = false;
+                const testListener = () => { eventReceived = true; };
+                
+                window.addEventListener('verifyTest', testListener);
+                window.dispatchEvent(new CustomEvent('verifyTest'));
+                window.removeEventListener('verifyTest', testListener);
+                
+                if (eventReceived) {
+                    log('✅ 测试3: 事件触发和接收正常');
+                    testsPassed++;
+                } else {
+                    log('❌ 测试3: 事件未正确接收', 'error');
+                }
+            } catch (error) {
+                log(`❌ 测试3: 事件触发测试失败 (${error.message})`, 'error');
+            }
+            
+            // 总结
+            if (testsPassed === totalTests) {
+                log(`✅ 事件系统验证完成: ${testsPassed}/${totalTests} 测试通过`, 'success');
+            } else {
+                log(`⚠️ 事件系统验证完成: ${testsPassed}/${totalTests} 测试通过`, 'warning');
+            }
+        }
+
+        // 清空日志
+        function clearLogs() {
+            document.getElementById('testLog').textContent = '日志已清空...\n';
+            log('日志已清空');
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            log('个人中心数据同步测试页面已加载');
+            log('请先点击"刷新当前数据"查看当前状态');
+            updateListenerStatus('未启动', 'info');
+            
+            // 自动加载当前数据
+            setTimeout(() => {
+                loadCurrentData();
+            }, 500);
+        });
+
+        // 页面卸载时清理
+        window.addEventListener('beforeunload', () => {
+            if (isListening) {
+                stopEventListener();
+            }
+        });
+    </script>
+</body>
+</html>

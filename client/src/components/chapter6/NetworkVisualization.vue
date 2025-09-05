@@ -968,8 +968,8 @@ onUnmounted(() => {
 /* 深色主题优化 - 完全重新设计 */
 html.dark-theme .network-visualization-container {
   background: var(--body-bg);
-  position: relative;
-  overflow: hidden;
+      position: relative;
+      overflow: hidden;
 
   &::before {
     content: '';
@@ -983,13 +983,13 @@ html.dark-theme .network-visualization-container {
       radial-gradient(ellipse 600px 800px at 80% 70%, var(--bg-glow-green) 0%, transparent 60%),
       radial-gradient(ellipse 400px 400px at 50% 20%, var(--bg-glow-orange) 0%, transparent 50%),
       radial-gradient(ellipse 300px 300px at 10% 80%, var(--bg-glow-gold) 0%, transparent 40%);
-    pointer-events: none;
+          pointer-events: none;
     z-index: 0;
   }
 
-  &::after {
-    content: '';
-    position: absolute;
+          &::after {
+            content: '';
+            position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -1004,15 +1004,15 @@ html.dark-theme .network-visualization-container {
   }
 
   @keyframes subtleFlow {
-    0%, 100% { 
+  0%, 100% {
       opacity: 0.2; 
       transform: translateX(0) translateY(0);
     }
     25% { 
       opacity: 0.4; 
       transform: translateX(-10px) translateY(-5px);
-    }
-    50% { 
+  }
+  50% {
       opacity: 0.3; 
       transform: translateX(5px) translateY(-10px);
     }

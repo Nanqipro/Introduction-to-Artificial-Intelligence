@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 经验值更新流程测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .button.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        .button.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { background: #f0fff4; border: 1px solid #9ae6b4; color: #22543d; }
+        .error { background: #fed7d7; border: 1px solid #fc8181; color: #742a2a; }
+        .info { background: #ebf8ff; border: 1px solid #90cdf4; color: #2a4365; }
+        .warning { background: #fef5e7; border: 1px solid #f6ad55; color: #744210; }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #edf2f7;
+            border-radius: 8px;
+        }
+        .step {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+        .step.pending {
+            background: #e2e8f0;
+            color: #718096;
+        }
+        .step.active {
+            background: #667eea;
+            color: white;
+        }
+        .step.completed {
+            background: #48bb78;
+            color: white;
+        }
+        .step.failed {
+            background: #f56565;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 经验值更新流程测试</h1>
+        
+        <div class="step-indicator">
+            <div id="step1" class="step pending">1. 登录检查</div>
+            <div id="step2" class="step pending">2. 获取基准数据</div>
+            <div id="step3" class="step pending">3. 添加经验值</div>
+            <div id="step4" class="step pending">4. 事件触发</div>
+            <div id="step5" class="step pending">5. 数据验证</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚀 自动化测试流程</h3>
+            <button class="button" onclick="runFullTest()">运行完整测试</button>
+            <button class="button warning" onclick="resetTest()">重置测试</button>
+            <div id="full-test-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 手动步骤测试</h3>
+            <button class="button" onclick="step1_checkLogin()">步骤1: 检查登录</button>
+            <button class="button" onclick="step2_getBaseline()">步骤2: 获取基准数据</button>
+            <button class="button" onclick="step3_addExperience()">步骤3: 添加经验值</button>
+            <button class="button" onclick="step4_testEvent()">步骤4: 测试事件</button>
+            <button class="button" onclick="step5_verifyData()">步骤5: 验证数据</button>
+            <div id="manual-test-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 模拟QuizSystem流程</h3>
+            <button class="button success" onclick="simulateQuizCompletion()">模拟测验完成</button>
+            <button class="button success" onclick="simulateChapterCompletion()">模拟章节完成</button>
+            <div id="simulation-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 实时监控</h3>
+            <button class="button" onclick="startEventMonitoring()">开始事件监控</button>
+            <button class="button warning" onclick="stopEventMonitoring()">停止事件监控</button>
+            <div id="monitoring-result" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+        let testState = {
+            loginChecked: false,
+            baselineData: null,
+            experienceAdded: false,
+            eventTriggered: false,
+            dataVerified: false
+        };
+        let eventListener = null;
+        let monitoringActive = false;
+
+        function updateStepIndicator(step, status) {
+            const element = document.getElementById(`step${step}`);
+            element.className = `step ${status}`;
+        }
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.innerHTML = message;
+        }
+
+        function appendResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            if (!element.className.includes('result')) {
+                element.className = `result ${type}`;
+            }
+            element.innerHTML += message;
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        async function step1_checkLogin() {
+            updateStepIndicator(1, 'active');
+            const token = localStorage.getItem('token');
+            let message = '=== 步骤1: 登录检查 ===\n';
+            
+            if (!token || token === 'null' || token.trim() === '') {
+                message += '❌ 未登录或token无效\n';
+                updateStepIndicator(1, 'failed');
+                testState.loginChecked = false;
+                showResult('manual-test-result', message, 'error');
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/users/userInfo`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    message += '✅ 登录状态正常\n';
+                    message += `用户: ${data.data.username} (ID: ${data.data.id})\n`;
+                    updateStepIndicator(1, 'completed');
+                    testState.loginChecked = true;
+                    showResult('manual-test-result', message, 'success');
+                    return true;
+                } else {
+                    message += '❌ Token验证失败\n';
+                    updateStepIndicator(1, 'failed');
+                    testState.loginChecked = false;
+                    showResult('manual-test-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += '❌ 网络请求失败: ' + error.message;
+                updateStepIndicator(1, 'failed');
+                testState.loginChecked = false;
+                showResult('manual-test-result', message, 'error');
+                return false;
+            }
+        }
+
+        async function step2_getBaseline() {
+            if (!testState.loginChecked) {
+                showResult('manual-test-result', '❌ 请先完成登录检查', 'error');
+                return false;
+            }
+            
+            updateStepIndicator(2, 'active');
+            let message = '=== 步骤2: 获取基准数据 ===\n';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    testState.baselineData = data.data;
+                    message += '✅ 基准数据获取成功\n';
+                    message += `等级: ${testState.baselineData.level}\n`;
+                    message += `经验值: ${testState.baselineData.experience}\n`;
+                    message += `总分: ${testState.baselineData.totalScore}\n`;
+                    message += `完成章节: ${testState.baselineData.completedChapters}`;
+                    updateStepIndicator(2, 'completed');
+                    showResult('manual-test-result', message, 'success');
+                    return true;
+                } else {
+                    message += '❌ 获取基准数据失败';
+                    updateStepIndicator(2, 'failed');
+                    showResult('manual-test-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += '❌ 获取基准数据异常: ' + error.message;
+                updateStepIndicator(2, 'failed');
+                showResult('manual-test-result', message, 'error');
+                return false;
+            }
+        }
+
+        async function step3_addExperience() {
+            if (!testState.baselineData) {
+                showResult('manual-test-result', '❌ 请先获取基准数据', 'error');
+                return false;
+            }
+            
+            updateStepIndicator(3, 'active');
+            let message = '=== 步骤3: 添加经验值 ===\n';
+            
+            try {
+                const requestData = {
+                    experience: 25,
+                    activityType: 'test_flow',
+                    chapterId: 1,
+                    score: 90
+                };
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.code === 200) {
+                    message += '✅ 经验值添加成功\n';
+                    message += `API响应: ${JSON.stringify(responseData.data, null, 2)}`;
+                    testState.experienceAdded = true;
+                    updateStepIndicator(3, 'completed');
+                    showResult('manual-test-result', message, 'success');
+                    return true;
+                } else {
+                    message += '❌ 经验值添加失败\n';
+                    message += `错误: ${responseData.message}`;
+                    updateStepIndicator(3, 'failed');
+                    showResult('manual-test-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += '❌ 添加经验值异常: ' + error.message;
+                updateStepIndicator(3, 'failed');
+                showResult('manual-test-result', message, 'error');
+                return false;
+            }
+        }
+
+        function step4_testEvent() {
+            updateStepIndicator(4, 'active');
+            let message = '=== 步骤4: 测试事件触发 ===\n';
+            
+            // 设置事件监听器
+            const handleExperienceUpdate = (event) => {
+                message += '✅ 收到经验值更新事件!\n';
+                message += `事件详情: ${JSON.stringify(event.detail, null, 2)}\n`;
+                testState.eventTriggered = true;
+                updateStepIndicator(4, 'completed');
+                showResult('manual-test-result', message, 'success');
+            };
+            
+            window.addEventListener('experienceUpdated', handleExperienceUpdate);
+            
+            // 发送模拟事件
+            const mockEventData = {
+                experienceGained: 25,
+                newExperience: (testState.baselineData?.experience || 0) + 25,
+                newLevel: testState.baselineData?.level || 1,
+                leveledUp: false
+            };
+            
+            message += '📤 发送模拟经验值更新事件...\n';
+            message += `事件数据: ${JSON.stringify(mockEventData, null, 2)}\n\n`;
+            
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: mockEventData
+            }));
+            
+            // 3秒后移除监听器
+            setTimeout(() => {
+                window.removeEventListener('experienceUpdated', handleExperienceUpdate);
+                if (!testState.eventTriggered) {
+                    message += '❌ 未收到事件响应';
+                    updateStepIndicator(4, 'failed');
+                    showResult('manual-test-result', message, 'error');
+                }
+            }, 3000);
+            
+            showResult('manual-test-result', message, 'info');
+        }
+
+        async function step5_verifyData() {
+            if (!testState.experienceAdded) {
+                showResult('manual-test-result', '❌ 请先完成经验值添加', 'error');
+                return false;
+            }
+            
+            updateStepIndicator(5, 'active');
+            let message = '=== 步骤5: 验证数据更新 ===\n';
+            
+            try {
+                // 等待一下确保数据已更新
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const currentData = data.data;
+                    
+                    message += '✅ 当前数据获取成功\n\n';
+                    message += '=== 数据对比 ===\n';
+                    
+                    const fields = [
+                        { key: 'level', name: '等级' },
+                        { key: 'experience', name: '经验值' },
+                        { key: 'totalScore', name: '总分' },
+                        { key: 'completedChapters', name: '完成章节' }
+                    ];
+                    
+                    let hasChanges = false;
+                    fields.forEach(field => {
+                        const before = testState.baselineData[field.key] || 0;
+                        const after = currentData[field.key] || 0;
+                        const diff = after - before;
+                        
+                        message += `${field.name}: ${before} → ${after}`;
+                        if (diff !== 0) {
+                            message += ` (${diff > 0 ? '+' : ''}${diff})`;
+                            hasChanges = true;
+                        }
+                        message += '\n';
+                    });
+                    
+                    if (hasChanges) {
+                        message += '\n✅ 数据已更新！';
+                        testState.dataVerified = true;
+                        updateStepIndicator(5, 'completed');
+                        showResult('manual-test-result', message, 'success');
+                        return true;
+                    } else {
+                        message += '\n⚠️ 数据未发生变化';
+                        updateStepIndicator(5, 'failed');
+                        showResult('manual-test-result', message, 'warning');
+                        return false;
+                    }
+                } else {
+                    message += '❌ 获取当前数据失败';
+                    updateStepIndicator(5, 'failed');
+                    showResult('manual-test-result', message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                message += '❌ 验证数据异常: ' + error.message;
+                updateStepIndicator(5, 'failed');
+                showResult('manual-test-result', message, 'error');
+                return false;
+            }
+        }
+
+        async function runFullTest() {
+            showResult('full-test-result', '🚀 开始运行完整测试流程...\n\n', 'info');
+            
+            const steps = [
+                { name: '登录检查', func: step1_checkLogin },
+                { name: '获取基准数据', func: step2_getBaseline },
+                { name: '添加经验值', func: step3_addExperience },
+                { name: '验证数据', func: step5_verifyData }
+            ];
+            
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                appendResult('full-test-result', `\n📋 执行步骤: ${step.name}\n`);
+                
+                const success = await step.func();
+                if (!success) {
+                    appendResult('full-test-result', `\n❌ 测试在步骤 "${step.name}" 失败，停止执行\n`, 'error');
+                    return;
+                }
+                
+                appendResult('full-test-result', `✅ 步骤 "${step.name}" 完成\n`);
+                
+                // 步骤间等待
+                if (i < steps.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            
+            appendResult('full-test-result', '\n🎉 所有测试步骤完成！\n', 'success');
+        }
+
+        function resetTest() {
+            testState = {
+                loginChecked: false,
+                baselineData: null,
+                experienceAdded: false,
+                eventTriggered: false,
+                dataVerified: false
+            };
+            
+            for (let i = 1; i <= 5; i++) {
+                updateStepIndicator(i, 'pending');
+            }
+            
+            showResult('full-test-result', '🔄 测试状态已重置', 'info');
+            showResult('manual-test-result', '🔄 测试状态已重置', 'info');
+        }
+
+        async function simulateQuizCompletion() {
+            let message = '=== 模拟测验完成流程 ===\n';
+            
+            try {
+                // 模拟QuizSystem的addExperience调用
+                const requestData = {
+                    experience: 85, // 分数 + 奖励
+                    activityType: 'quiz_completion',
+                    chapterId: 1,
+                    score: 85
+                };
+                
+                message += `📝 模拟测验完成，得分: ${requestData.score}\n`;
+                message += `📈 计算经验值: ${requestData.experience}\n\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.code === 200) {
+                    message += '✅ 经验值添加成功\n';
+                    message += `API响应: ${JSON.stringify(responseData.data, null, 2)}\n\n`;
+                    
+                    // 模拟触发事件
+                    message += '📡 触发经验值更新事件...\n';
+                    window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                        detail: {
+                            experienceGained: requestData.experience,
+                            newExperience: responseData.data.experience,
+                            newLevel: responseData.data.newLevel,
+                            leveledUp: responseData.data.levelUp
+                        }
+                    }));
+                    
+                    message += '✅ 测验完成流程模拟成功！';
+                    showResult('simulation-result', message, 'success');
+                } else {
+                    message += '❌ 经验值添加失败\n';
+                    message += `错误: ${responseData.message}`;
+                    showResult('simulation-result', message, 'error');
+                }
+            } catch (error) {
+                message += '❌ 模拟测验完成异常: ' + error.message;
+                showResult('simulation-result', message, 'error');
+            }
+        }
+
+        async function simulateChapterCompletion() {
+            let message = '=== 模拟章节完成流程 ===\n';
+            
+            try {
+                const requestData = {
+                    experience: 50,
+                    activityType: 'chapter',
+                    chapterId: 2,
+                    score: 100
+                };
+                
+                message += `📚 模拟章节完成，章节ID: ${requestData.chapterId}\n`;
+                message += `📈 获得经验值: ${requestData.experience}\n\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.code === 200) {
+                    message += '✅ 经验值添加成功\n';
+                    message += `API响应: ${JSON.stringify(responseData.data, null, 2)}\n\n`;
+                    
+                    // 模拟触发事件
+                    message += '📡 触发经验值更新事件...\n';
+                    window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                        detail: {
+                            experienceGained: requestData.experience,
+                            newExperience: responseData.data.experience,
+                            newLevel: responseData.data.newLevel,
+                            leveledUp: responseData.data.levelUp
+                        }
+                    }));
+                    
+                    message += '✅ 章节完成流程模拟成功！';
+                    showResult('simulation-result', message, 'success');
+                } else {
+                    message += '❌ 经验值添加失败\n';
+                    message += `错误: ${responseData.message}`;
+                    showResult('simulation-result', message, 'error');
+                }
+            } catch (error) {
+                message += '❌ 模拟章节完成异常: ' + error.message;
+                showResult('simulation-result', message, 'error');
+            }
+        }
+
+        function startEventMonitoring() {
+            if (monitoringActive) {
+                showResult('monitoring-result', '⚠️ 事件监控已在运行中', 'warning');
+                return;
+            }
+            
+            monitoringActive = true;
+            let message = '🔍 开始监控经验值更新事件...\n\n';
+            showResult('monitoring-result', message, 'info');
+            
+            eventListener = (event) => {
+                const timestamp = new Date().toLocaleTimeString();
+                message += `[${timestamp}] 📡 收到经验值更新事件:\n`;
+                message += `${JSON.stringify(event.detail, null, 2)}\n\n`;
+                showResult('monitoring-result', message, 'success');
+            };
+            
+            window.addEventListener('experienceUpdated', eventListener);
+        }
+
+        function stopEventMonitoring() {
+            if (!monitoringActive) {
+                showResult('monitoring-result', '⚠️ 事件监控未在运行', 'warning');
+                return;
+            }
+            
+            monitoringActive = false;
+            if (eventListener) {
+                window.removeEventListener('experienceUpdated', eventListener);
+                eventListener = null;
+            }
+            
+            showResult('monitoring-result', '🛑 事件监控已停止', 'info');
+        }
+
+        // 页面加载时自动检查登录状态
+        window.onload = function() {
+            step1_checkLogin();
+        };
+    </script>
+</body>
+</html>

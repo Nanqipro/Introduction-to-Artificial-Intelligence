@@ -106,13 +106,13 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { House, Notebook, InfoFilled, TrendCharts, Connection, DataAnalysis, Setting, MoreFilled, User, ArrowDown, SwitchButton, QuestionFilled } from '@element-plus/icons-vue'
 import { useAuth } from '@/composables/useAuth'
 
 const route = useRoute()
 const router = useRouter()
-const { isLoggedIn, currentUser, logout, checkAuthStatus } = useAuth()
+const { isLoggedIn, currentUser, logout, checkAuthStatus, forceRefreshAuth } = useAuth()
 
 const activePath = computed(() => route.path)
 
@@ -158,9 +158,57 @@ const handleLogout = () => {
   router.push('/')
 }
 
+// 监听localStorage变化，确保状态同步
+const handleStorageChange = async (event) => {
+  // 只处理token相关的变化，避免过度响应
+  if (event.key === 'token' || event.key === 'userInfo') {
+    console.log('🧭 Navigation: localStorage变化，重新检查认证状态', event.key)
+    // 延迟一下，确保localStorage操作完成
+    setTimeout(async () => {
+      // 只有在有token时才刷新认证状态
+      if (localStorage.getItem('token')) {
+        await forceRefreshAuth()
+      } else {
+        console.log('🧭 Navigation: 无token，跳过认证状态刷新')
+      }
+    }, 100)
+  }
+}
+
 // 初始化时检查认证状态
-onMounted(() => {
-  checkAuthStatus()
+onMounted(async () => {
+  console.log('🧭 Navigation: 组件挂载，开始检查认证状态')
+  
+  // 监听localStorage变化
+  window.addEventListener('storage', handleStorageChange)
+  
+  // 延迟检查认证状态，避免与main.js的初始化冲突
+  setTimeout(async () => {
+    try {
+      // 只有在有token的情况下才进行认证相关操作
+      if (localStorage.getItem('token')) {
+        console.log('🧭 Navigation: 发现token，进行认证状态检查')
+        // 先强制刷新认证状态
+        await forceRefreshAuth()
+        await checkAuthStatus()
+      } else {
+        console.log('🧭 Navigation: 无token，跳过所有认证检查')
+      }
+      
+      console.log('🧭 Navigation: 认证状态检查完成', {
+        isLoggedIn: isLoggedIn.value,
+        hasCurrentUser: !!currentUser.value,
+        hasToken: !!localStorage.getItem('token')
+      })
+    } catch (error) {
+      console.warn('🧭 Navigation: 认证状态检查失败:', error.message)
+    }
+  }, 100) // 延迟100ms避免并发请求
+  
+  // 组件卸载时清理
+  onUnmounted(() => {
+    window.removeEventListener('storage', handleStorageChange)
+  })
 })
 </script>
 
@@ -344,12 +392,10 @@ onMounted(() => {
 
 // 下拉菜单样式 - 现代简洁设计
 :deep(.el-dropdown-menu) {
-  background: var(--card-bg, #292c33) !important;
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18)) !important;
+  background: var(--dropdown-bg, rgba(26, 26, 46, 0.95)) !important;
+  border: 1px solid var(--dropdown-border, rgba(0, 191, 255, 0.2)) !important;
   border-radius: 12px !important;
-  box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: var(--dropdown-shadow, 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1)) !important;
   padding: 0.75rem 0 !important;
   min-width: 140px !important;
   z-index: 2000 !important;
@@ -357,8 +403,45 @@ onMounted(() => {
   position: relative !important;
 }
 
+// 强制覆盖Element Plus默认样式
+.el-dropdown-menu {
+  background: var(--dropdown-bg, rgba(26, 26, 46, 0.95)) !important;
+  border: 1px solid var(--dropdown-border, rgba(0, 191, 255, 0.2)) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--dropdown-shadow, 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1)) !important;
+  padding: 0.75rem 0 !important;
+  min-width: 140px !important;
+  z-index: 2000 !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.el-dropdown-menu__item {
+  color: var(--dropdown-item-color, #f5f6fa) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  padding: 0.75rem 1.25rem !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  margin: 0 0.5rem !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  
+  &:hover {
+    background: var(--dropdown-item-hover-bg, rgba(0, 191, 255, 0.1)) !important;
+    color: var(--dropdown-item-hover-color, #00bfff) !important;
+    transform: translateX(4px) !important;
+  }
+  
+  &:active {
+    transform: translateX(2px) !important;
+    transition: all 0.1s ease !important;
+  }
+}
+
 :deep(.el-dropdown-menu__item) {
-  color: var(--text-color, #f5f6fa) !important;
+  color: var(--dropdown-item-color, #f5f6fa) !important;
   font-size: 0.9rem !important;
   font-weight: 500 !important;
   padding: 0.75rem 1.25rem !important;
@@ -372,12 +455,12 @@ onMounted(() => {
   align-items: center !important;
   
   &:hover {
-    background: rgba(var(--accent-color, #b0b3b8), 0.1) !important;
-    color: #d1d3d8 !important;
+    background: var(--dropdown-item-hover-bg, rgba(0, 191, 255, 0.1)) !important;
+    color: var(--dropdown-item-hover-color, #00bfff) !important;
     transform: translateX(4px) !important;
     
     .el-icon {
-      color: #d1d3d8 !important;
+      color: var(--dropdown-item-hover-color, #00bfff) !important;
       transform: scale(1.05) !important;
     }
   }
@@ -397,7 +480,7 @@ onMounted(() => {
 // 分隔线样式
 .dropdown-divider {
   height: 1px;
-  background: var(--divider-bg, rgba(57, 59, 64, 0.18));
+  background: var(--dropdown-divider-bg, rgba(0, 191, 255, 0.1));
   margin: 0.4rem 1rem;
   border-radius: 1px;
 }
@@ -490,7 +573,7 @@ onMounted(() => {
   
   &:hover {
     background: rgba(var(--accent-color, #b0b3b8), 0.1);
-    color: #d1d3d8;
+    color: var(--accent-color, #00bfff);
     border-color: rgba(var(--accent-color, #b0b3b8), 0.3);
     transform: translateY(-1px);
   }

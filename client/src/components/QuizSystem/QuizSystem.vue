@@ -359,6 +359,32 @@
         </div>
       </div>
 
+      <!-- 经验值奖励 -->
+      <div class="experience-section" v-if="experienceGained > 0">
+        <h3 class="experience-title">📈 经验值奖励</h3>
+        <div class="experience-display">
+          <div class="experience-icon">⭐</div>
+          <div class="experience-info">
+            <span class="experience-value">+{{ experienceGained }}</span>
+            <span class="experience-label">经验值</span>
+          </div>
+        </div>
+        <div class="experience-breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown-label">基础分数:</span>
+            <span class="breakdown-value">+{{ finalScore }}</span>
+          </div>
+          <div class="breakdown-item" v-if="accuracyBonus > 0">
+            <span class="breakdown-label">准确率奖励:</span>
+            <span class="breakdown-value">+{{ accuracyBonus }}</span>
+          </div>
+          <div class="breakdown-item" v-if="perfectBonus > 0">
+            <span class="breakdown-label">完美答题:</span>
+            <span class="breakdown-value">+{{ perfectBonus }}</span>
+          </div>
+        </div>
+      </div>
+
       <!-- 奖励展示 -->
       <div class="rewards-section">
         <h3 class="rewards-title">🎁 获得奖励</h3>
@@ -368,6 +394,20 @@
             <div class="reward-info">
               <span class="reward-name">{{ reward.name }}</span>
               <span class="reward-desc">{{ reward.description }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 成就展示 -->
+      <div class="achievements-section" v-if="newAchievements.length > 0">
+        <h3 class="achievements-title">🏆 新获得成就</h3>
+        <div class="achievements-list">
+          <div class="achievement-item" v-for="achievement in newAchievements" :key="achievement.id">
+            <div class="achievement-icon">🏆</div>
+            <div class="achievement-info">
+              <span class="achievement-name">{{ achievement.achievementName }}</span>
+              <span class="achievement-desc">{{ achievement.achievementDesc }}</span>
             </div>
           </div>
         </div>
@@ -393,8 +433,9 @@
 </template>
 
 <script>
-import { quizApi } from '../../services/api'
+import { quizApi, levelApi } from '@/services/api'
 import QuizGuide from './QuizGuide.vue'
+import { ElMessage, ElNotification } from 'element-plus'
 
 export default {
   components: {
@@ -428,6 +469,14 @@ export default {
       oldLevel: '',
       newLevel: '',
       showHint: false,
+      
+      // 经验值系统
+      experienceGained: 0,
+      accuracyBonus: 0,
+      perfectBonus: 0,
+      
+      // 成就系统
+      newAchievements: [],
       
       // 新增功能数据
       baseTimeLimit: 60, // 基础时间限制（秒），随难度调整
@@ -1050,9 +1099,13 @@ export default {
       this.showAnswer = false
       this.showHint = false
     },
-    completeQuiz() {
+    async completeQuiz() {
       this.quizCompleted = true
       this.calculateRewards()
+      
+      // 添加经验值和检查成就
+      await this.addExperienceAndCheckAchievements()
+      
       this.checkLevelUp()
       this.saveQuizResult()
       
@@ -1107,6 +1160,138 @@ export default {
         this.newLevel = newLevel
       }
     },
+    async addExperienceAndCheckAchievements() {
+      try {
+        // 检查登录状态和token
+        const token = localStorage.getItem('token')
+        if (!token) {
+          console.log('🚫 QuizSystem - 未登录，跳过经验值添加和成就检查')
+          return
+        }
+        
+        console.log('🎯 开始添加经验值和检查成就...')
+        
+        // 计算经验值奖励
+        let experienceGained = this.finalScore // 基础经验值等于分数
+        let accuracyBonus = 0
+        let perfectBonus = 0
+        
+        // 根据正确率给予额外经验值奖励
+        if (this.finalAccuracy >= 90) {
+          accuracyBonus = 50 // 高准确率奖励
+          experienceGained += accuracyBonus
+        } else if (this.finalAccuracy >= 80) {
+          accuracyBonus = 30
+          experienceGained += accuracyBonus
+        } else if (this.finalAccuracy >= 70) {
+          accuracyBonus = 20
+          experienceGained += accuracyBonus
+        }
+        
+        // 完美答题额外奖励
+        if (this.correctCount === this.questions.length) {
+          perfectBonus = 100
+          experienceGained += perfectBonus
+        }
+        
+        // 保存到data中用于显示
+        this.experienceGained = experienceGained
+        this.accuracyBonus = accuracyBonus
+        this.perfectBonus = perfectBonus
+        
+        console.log(`📈 计算得到经验值: ${experienceGained}`)
+        
+        // 调用后端API添加经验值
+        const response = await levelApi.addExperience({
+          experience: experienceGained,
+          activityType: 'quiz_completion',
+          chapterId: this.chapterId,
+          score: this.finalScore
+        })
+        
+        if (response && response.code === 200) {
+          const result = response.data
+          console.log('✅ 经验值添加成功:', result)
+          
+          // 显示经验值获得提示
+          ElMessage.success(`获得 ${experienceGained} 经验值！`)
+          
+          // 发送全局事件通知经验值更新
+          window.dispatchEvent(new CustomEvent('experienceUpdated', {
+            detail: {
+              experienceGained: experienceGained,
+              newExperience: result.experience,
+              newLevel: result.newLevel,
+              leveledUp: result.levelUp
+            }
+          }))
+          
+          // 检查是否升级
+          if (result.levelUp) {
+            this.levelUp = true
+            this.oldLevel = result.oldLevel
+            this.newLevel = result.newLevel
+            
+            // 显示升级通知
+            ElNotification({
+              title: '🎉 恭喜升级！',
+              message: result.levelUpMessage || `恭喜升级到 ${result.newLevel} 级！`,
+              type: 'success',
+              duration: 5000
+            })
+          }
+          
+          // 获取最新的用户成就
+          await this.checkNewAchievements()
+          
+        } else {
+          console.error('❌ 添加经验值失败:', response)
+        }
+        
+      } catch (error) {
+        console.error('❌ 添加经验值和检查成就失败:', error)
+        ElMessage.warning('经验值添加失败，但不影响答题结果')
+      }
+    },
+    
+    async checkNewAchievements() {
+       try {
+         // 检查登录状态和token
+         const token = localStorage.getItem('token')
+         if (!token) {
+           console.log('🚫 QuizSystem - checkNewAchievements: 未登录，跳过成就检查')
+           return
+         }
+         
+         console.log('🏆 检查新获得的成就...')
+         
+         const response = await levelApi.getUserAchievements()
+         if (response && response.code === 200) {
+           const achievements = response.data
+           
+           // 这里可以比较之前的成就和现在的成就，找出新获得的
+           // 为简化实现，我们显示最近的成就
+           if (achievements && achievements.length > 0) {
+             // 获取最近的成就（假设是新获得的）
+             const recentAchievements = achievements.slice(-2) // 获取最近2个成就
+             this.newAchievements = recentAchievements
+             
+             // 同时显示通知
+             recentAchievements.forEach(achievement => {
+               ElNotification({
+                 title: '🏆 获得成就！',
+                 message: `${achievement.achievementName}: ${achievement.achievementDesc}`,
+                 type: 'success',
+                 duration: 4000
+               })
+             })
+           }
+         }
+       } catch (error) {
+         console.error('❌ 检查成就失败:', error)
+       }
+     },
+    
     async saveQuizResult() {
       try {
         await quizApi.saveQuizResult({
@@ -2964,5 +3149,158 @@ export default {
   .option-text {
     font-size: 0.95rem;
   }
+  
+  .experience-section,
+  .achievements-section {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .experience-value {
+    font-size: 1.5rem;
+  }
+  
+  .experience-icon {
+    font-size: 2rem;
+  }
+}
+
+/* 经验值展示样式 */
+.experience-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 15px;
+  color: white;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.experience-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.experience-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.experience-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.experience-info {
+  text-align: center;
+}
+
+.experience-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.experience-label {
+  display: block;
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+.experience-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.breakdown-label {
+  opacity: 0.9;
+}
+
+.breakdown-value {
+  font-weight: bold;
+  color: #ffeb3b;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 成就展示样式 */
+.achievements-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-radius: 15px;
+  color: #333;
+  animation: slideInUp 0.8s ease-out;
+}
+
+.achievements-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #d4822a;
+}
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.achievement-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(212, 130, 42, 0.3);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.achievement-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 130, 42, 0.3);
+}
+
+.achievement-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  animation: celebration 1s ease-out;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-name {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+  color: #d4822a;
+}
+
+.achievement-desc {
+  display: block;
+  opacity: 0.8;
+  font-size: 0.9rem;
+  color: #666;
 }
 </style>

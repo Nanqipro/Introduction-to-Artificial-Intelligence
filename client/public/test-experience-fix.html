@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经验值类型转换修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-step {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .test-case {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 经验值类型转换修复测试</h1>
+    
+    <div class="test-step">
+        <h3>问题描述：</h3>
+        <p>后端API接收到的经验值参数类型不匹配：<code>java.lang.String cannot be cast to java.lang.Integer</code></p>
+        <p>修复方案：添加安全的类型转换方法处理JSON参数</p>
+    </div>
+
+    <div class="test-step">
+        <h3>测试用例：</h3>
+        <div class="test-case">
+            <strong>测试1：</strong>发送数字类型的经验值
+            <button onclick="testNumericExperience()">测试数字类型</button>
+        </div>
+        <div class="test-case">
+            <strong>测试2：</strong>发送字符串类型的经验值
+            <button onclick="testStringExperience()">测试字符串类型</button>
+        </div>
+        <div class="test-case">
+            <strong>测试3：</strong>发送混合类型参数
+            <button onclick="testMixedTypes()">测试混合类型</button>
+        </div>
+        <div class="test-case">
+            <strong>测试4：</strong>模拟QuizSystem的实际调用
+            <button onclick="testQuizSystemCall()">模拟Quiz调用</button>
+        </div>
+    </div>
+
+    <div>
+        <button onclick="checkLoginStatus()">检查登录状态</button>
+        <button onclick="clearLog()">清空日志</button>
+    </div>
+
+    <div id="log"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logDiv.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function checkLoginStatus() {
+            log('=== 检查登录状态 ===');
+            const token = localStorage.getItem('token');
+            if (!token || token === 'null' || token.trim() === '') {
+                log('未登录或token无效', 'error');
+                log('请先登录系统', 'warning');
+                return false;
+            }
+            log('已登录，token存在', 'success');
+            return true;
+        }
+
+        async function callAddExperienceAPI(data, testName) {
+            log(`=== ${testName} ===`);
+            if (!checkLoginStatus()) return;
+
+            try {
+                log('发送数据: ' + JSON.stringify(data, null, 2));
+                
+                const response = await fetch('/api/level/addExperience', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                log('API响应: ' + JSON.stringify(result, null, 2));
+                
+                if (result.code === 200) {
+                    log(`${testName} - 成功!`, 'success');
+                    if (result.data) {
+                        log(`获得经验值，新经验: ${result.data.experience}`, 'success');
+                    }
+                } else {
+                    log(`${testName} - 失败: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                log(`${testName} - 异常: ${error.message}`, 'error');
+            }
+        }
+
+        function testNumericExperience() {
+            const data = {
+                experience: 50,  // 数字类型
+                activityType: 'test_numeric',
+                chapterId: 1,
+                score: 85
+            };
+            callAddExperienceAPI(data, '测试数字类型经验值');
+        }
+
+        function testStringExperience() {
+            const data = {
+                experience: "30",  // 字符串类型
+                activityType: 'test_string',
+                chapterId: "2",
+                score: "75"
+            };
+            callAddExperienceAPI(data, '测试字符串类型经验值');
+        }
+
+        function testMixedTypes() {
+            const data = {
+                experience: "25",  // 字符串
+                activityType: 'test_mixed',
+                chapterId: 3,      // 数字
+                score: "90"        // 字符串
+            };
+            callAddExperienceAPI(data, '测试混合类型参数');
+        }
+
+        function testQuizSystemCall() {
+            // 模拟QuizSystem组件的实际调用
+            const data = {
+                experience: 40,
+                activityType: 'quiz_completion',
+                chapterId: 1,
+                score: 95
+            };
+            callAddExperienceAPI(data, '模拟QuizSystem调用');
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // 页面加载时自动检查登录状态
+        window.onload = function() {
+            log('🔧 经验值类型转换修复测试工具已加载');
+            log('修复内容: 后端添加了安全的类型转换方法');
+            log('测试目标: 验证不同数据类型的经验值参数都能正确处理');
+            checkLoginStatus();
+        };
+    </script>
+</body>
+</html>

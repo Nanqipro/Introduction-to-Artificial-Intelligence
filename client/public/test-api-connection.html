@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success {
+            color: #28a745;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #17a2b8;
+            background: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .data-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .data-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 API连接和数据同步测试</h1>
+        <p>测试前端与后端API的连接状态，以及个人中心数据同步功能</p>
+    </div>
+
+    <div class="container">
+        <div class="test-section">
+            <h3>📊 当前用户状态</h3>
+            <div id="userStatus">检查中...</div>
+            <button onclick="checkUserStatus()">刷新用户状态</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🌐 API连接测试</h3>
+            <button onclick="testApiConnection()">测试API连接</button>
+            <button onclick="testUserStatsAPI()">测试用户统计API</button>
+            <button onclick="testUserAchievementsAPI()">测试用户成就API</button>
+            <div id="apiTestResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>⚡ 经验值更新测试</h3>
+            <button onclick="simulateExperienceUpdate()">模拟经验值更新</button>
+            <button onclick="triggerProfileRefresh()">手动触发个人中心刷新</button>
+            <div id="experienceTestResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 完整流程测试</h3>
+            <button onclick="testCompleteFlow()">测试完整数据同步流程</button>
+            <div id="flowTestResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 测试日志</h3>
+            <button onclick="clearLog()">清空日志</button>
+            <div id="testLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        let testLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            testLog.push(logEntry);
+            
+            const logElement = document.getElementById('testLog');
+            logElement.textContent = testLog.join('\n');
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            console.log(logEntry);
+        }
+
+        function clearLog() {
+            testLog = [];
+            document.getElementById('testLog').textContent = '';
+        }
+
+        function displayResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${content}</div>`;
+        }
+
+        // 检查用户状态
+        async function checkUserStatus() {
+            log('检查用户登录状态...');
+            
+            const token = localStorage.getItem('token');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            let statusHtml = '<div class="data-display">';
+            statusHtml += `<div class="data-item"><strong>Token:</strong> ${token ? '✅ 存在' : '❌ 不存在'}</div>`;
+            
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    statusHtml += `<div class="data-item"><strong>用户ID:</strong> ${user.id}</div>`;
+                    statusHtml += `<div class="data-item"><strong>用户名:</strong> ${user.username}</div>`;
+                    statusHtml += `<div class="data-item"><strong>昵称:</strong> ${user.nickname || '未设置'}</div>`;
+                } catch (e) {
+                    statusHtml += `<div class="data-item"><strong>用户信息:</strong> ❌ 解析失败</div>`;
+                }
+            } else {
+                statusHtml += `<div class="data-item"><strong>用户信息:</strong> ❌ 不存在</div>`;
+            }
+            statusHtml += '</div>';
+            
+            document.getElementById('userStatus').innerHTML = statusHtml;
+            log('用户状态检查完成');
+        }
+
+        // 测试API连接
+        async function testApiConnection() {
+            log('开始测试API连接...');
+            
+            try {
+                // 测试基本连接
+                const response = await fetch('http://localhost:8082/api/level/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log(`API响应状态: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('API连接成功');
+                    displayResult('apiTestResults', '✅ API连接正常', 'success');
+                } else {
+                    log(`API响应错误: ${response.status} ${response.statusText}`);
+                    displayResult('apiTestResults', `❌ API连接失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`API连接异常: ${error.message}`);
+                displayResult('apiTestResults', `❌ API连接异常: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试用户统计API
+        async function testUserStatsAPI() {
+            log('测试用户统计API...');
+            
+            try {
+                const response = await fetch('http://localhost:8082/api/level/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('用户统计API调用成功');
+                    log(`返回数据: ${JSON.stringify(data, null, 2)}`);
+                    
+                    let resultHtml = '<div class="data-display"><h4>用户统计数据:</h4>';
+                    if (data.data) {
+                        const stats = data.data;
+                        resultHtml += `<div class="data-item"><strong>等级:</strong> ${stats.level}</div>`;
+                        resultHtml += `<div class="data-item"><strong>经验值:</strong> ${stats.experience}</div>`;
+                        resultHtml += `<div class="data-item"><strong>总得分:</strong> ${stats.totalScore}</div>`;
+                        resultHtml += `<div class="data-item"><strong>已完成章节:</strong> ${stats.completedChapters}</div>`;
+                        resultHtml += `<div class="data-item"><strong>学习时间:</strong> ${stats.studyTime}分钟</div>`;
+                        resultHtml += `<div class="data-item"><strong>网络进度:</strong> ${stats.networkProgress}%</div>`;
+                        resultHtml += `<div class="data-item"><strong>协议进度:</strong> ${stats.protocolProgress}%</div>`;
+                        resultHtml += `<div class="data-item"><strong>实践进度:</strong> ${stats.practiceProgress}%</div>`;
+                    }
+                    resultHtml += '</div>';
+                    
+                    displayResult('apiTestResults', resultHtml, 'success');
+                } else {
+                    log(`用户统计API错误: ${response.status}`);
+                    displayResult('apiTestResults', `❌ 用户统计API失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`用户统计API异常: ${error.message}`);
+                displayResult('apiTestResults', `❌ 用户统计API异常: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试用户成就API
+        async function testUserAchievementsAPI() {
+            log('测试用户成就API...');
+            
+            try {
+                const response = await fetch('http://localhost:8082/api/level/achievements', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('用户成就API调用成功');
+                    log(`返回数据: ${JSON.stringify(data, null, 2)}`);
+                    
+                    let resultHtml = '<div class="data-display"><h4>用户成就数据:</h4>';
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach((achievement, index) => {
+                            resultHtml += `<div class="data-item">`;
+                            resultHtml += `<strong>成就${index + 1}:</strong> ${achievement.title} - ${achievement.description}`;
+                            resultHtml += `</div>`;
+                        });
+                    } else {
+                        resultHtml += '<div class="data-item">暂无成就数据</div>';
+                    }
+                    resultHtml += '</div>';
+                    
+                    displayResult('apiTestResults', resultHtml, 'success');
+                } else {
+                    log(`用户成就API错误: ${response.status}`);
+                    displayResult('apiTestResults', `❌ 用户成就API失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`用户成就API异常: ${error.message}`);
+                displayResult('apiTestResults', `❌ 用户成就API异常: ${error.message}`, 'error');
+            }
+        }
+
+        // 模拟经验值更新
+        async function simulateExperienceUpdate() {
+            log('模拟经验值更新...');
+            
+            try {
+                // 先获取当前经验值
+                const currentStatsResponse = await fetch('http://localhost:8082/api/level/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!currentStatsResponse.ok) {
+                    throw new Error('无法获取当前统计数据');
+                }
+                
+                const currentStats = await currentStatsResponse.json();
+                const currentExp = currentStats.data.experience;
+                log(`当前经验值: ${currentExp}`);
+                
+                // 添加经验值
+                const addExpResponse = await fetch('http://localhost:8082/api/level/add-experience', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: 10,
+                        source: 'API测试'
+                    })
+                });
+                
+                if (addExpResponse.ok) {
+                    const result = await addExpResponse.json();
+                    log('经验值添加成功');
+                    log(`添加结果: ${JSON.stringify(result, null, 2)}`);
+                    
+                    // 触发experienceUpdated事件
+                    const event = new CustomEvent('experienceUpdated', {
+                        detail: {
+                            experienceGained: 10,
+                            newExperience: currentExp + 10,
+                            newLevel: result.data?.newLevel || currentStats.data.level,
+                            source: 'API测试'
+                        }
+                    });
+                    
+                    window.dispatchEvent(event);
+                    log('已触发experienceUpdated事件');
+                    
+                    displayResult('experienceTestResults', '✅ 经验值更新成功，已触发事件', 'success');
+                } else {
+                    log(`经验值添加失败: ${addExpResponse.status}`);
+                    displayResult('experienceTestResults', `❌ 经验值添加失败: ${addExpResponse.status}`, 'error');
+                }
+            } catch (error) {
+                log(`经验值更新异常: ${error.message}`);
+                displayResult('experienceTestResults', `❌ 经验值更新异常: ${error.message}`, 'error');
+            }
+        }
+
+        // 手动触发个人中心刷新
+        function triggerProfileRefresh() {
+            log('手动触发个人中心刷新...');
+            
+            // 触发自定义刷新事件
+            const event = new CustomEvent('refreshProfile', {
+                detail: {
+                    source: '手动触发',
+                    timestamp: Date.now()
+                }
+            });
+            
+            window.dispatchEvent(event);
+            log('已触发refreshProfile事件');
+            
+            displayResult('experienceTestResults', '✅ 已触发个人中心刷新事件', 'info');
+        }
+
+        // 测试完整流程
+        async function testCompleteFlow() {
+            log('开始测试完整数据同步流程...');
+            
+            try {
+                // 1. 获取初始数据
+                log('步骤1: 获取初始用户数据');
+                const initialResponse = await fetch('http://localhost:8082/api/level/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!initialResponse.ok) {
+                    throw new Error('无法获取初始数据');
+                }
+                
+                const initialData = await initialResponse.json();
+                log(`初始经验值: ${initialData.data.experience}`);
+                
+                // 2. 添加经验值
+                log('步骤2: 添加经验值');
+                const addExpResponse = await fetch('http://localhost:8082/api/level/add-experience', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: 15,
+                        source: '完整流程测试'
+                    })
+                });
+                
+                if (!addExpResponse.ok) {
+                    throw new Error('经验值添加失败');
+                }
+                
+                const addResult = await addExpResponse.json();
+                log('经验值添加成功');
+                
+                // 3. 触发事件
+                log('步骤3: 触发experienceUpdated事件');
+                const event = new CustomEvent('experienceUpdated', {
+                    detail: {
+                        experienceGained: 15,
+                        newExperience: initialData.data.experience + 15,
+                        newLevel: addResult.data?.newLevel || initialData.data.level,
+                        source: '完整流程测试'
+                    }
+                });
+                
+                window.dispatchEvent(event);
+                log('事件触发完成');
+                
+                // 4. 等待一段时间后验证数据
+                log('步骤4: 等待数据同步...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 5. 验证最新数据
+                log('步骤5: 验证最新数据');
+                const finalResponse = await fetch('http://localhost:8082/api/level/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (finalResponse.ok) {
+                    const finalData = await finalResponse.json();
+                    log(`最终经验值: ${finalData.data.experience}`);
+                    
+                    const expectedExp = initialData.data.experience + 15;
+                    const actualExp = finalData.data.experience;
+                    
+                    if (actualExp >= expectedExp) {
+                        log('✅ 完整流程测试成功');
+                        displayResult('flowTestResults', 
+                            `✅ 完整流程测试成功<br>
+                            初始经验值: ${initialData.data.experience}<br>
+                            添加经验值: 15<br>
+                            最终经验值: ${actualExp}`, 
+                            'success'
+                        );
+                    } else {
+                        log('❌ 数据同步可能存在问题');
+                        displayResult('flowTestResults', 
+                            `⚠️ 数据同步可能存在问题<br>
+                            期望经验值: ${expectedExp}<br>
+                            实际经验值: ${actualExp}`, 
+                            'error'
+                        );
+                    }
+                } else {
+                    throw new Error('无法获取最终数据');
+                }
+                
+            } catch (error) {
+                log(`完整流程测试失败: ${error.message}`);
+                displayResult('flowTestResults', `❌ 完整流程测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 监听experienceUpdated事件
+        window.addEventListener('experienceUpdated', function(event) {
+            log(`收到experienceUpdated事件: ${JSON.stringify(event.detail)}`);
+        });
+
+        // 监听refreshProfile事件
+        window.addEventListener('refreshProfile', function(event) {
+            log(`收到refreshProfile事件: ${JSON.stringify(event.detail)}`);
+        });
+
+        // 页面加载时自动检查用户状态
+        window.addEventListener('load', function() {
+            log('页面加载完成，开始初始化检查');
+            checkUserStatus();
+        });
+    </script>
+</body>
+</html>

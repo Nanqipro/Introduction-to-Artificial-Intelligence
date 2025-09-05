@@ -39,27 +39,31 @@ class SystemTester {
   async testApiConnectivity() {
     console.log('📡 测试API连接性...')
     
+    // 检查token状态
+    const token = localStorage.getItem('token')
+    
+    if (!token) {
+      this.addTestResult('API连接', '章节API', '⚠️ 跳过（未登录）')
+      this.addTestResult('API连接', '用户API', '⚠️ 跳过（未登录）')
+      console.log('⚠️ 系统测试跳过API连接测试：用户未登录')
+      return
+    }
+    
     try {
-      // 测试章节API
-      const chapterResponse = await fetch('/api/chapters/health')
-      if (chapterResponse.ok) {
-        this.addTestResult('API连接', '章节API', '✅ 正常')
-      } else {
-        this.addTestResult('API连接', '章节API', '❌ 异常')
-      }
+      // 使用API实例而不是直接fetch，确保通过拦截器
+      const chapterApi = (await import('../services/api')).chapterApi
+      const response = await chapterApi.getChapterOverview()
+      this.addTestResult('API连接', '章节API', '✅ 正常')
     } catch (error) {
       this.addTestResult('API连接', '章节API', '❌ 连接失败')
       this.errors.push(`章节API连接失败: ${error.message}`)
     }
 
     try {
-      // 测试用户API（修正路径前缀）
-      const userResponse = await fetch('/api/user/userInfo')
-      if (userResponse.ok || userResponse.status === 401) {
-        this.addTestResult('API连接', '用户API', '✅ 正常')
-      } else {
-        this.addTestResult('API连接', '用户API', '❌ 异常')
-      }
+      // 使用API实例而不是直接fetch，确保通过拦截器
+      const userApi = (await import('../services/api')).userApi
+      const response = await userApi.getUserInfo()
+      this.addTestResult('API连接', '用户API', '✅ 正常')
     } catch (error) {
       this.addTestResult('API连接', '用户API', '❌ 连接失败')
       this.errors.push(`用户API连接失败: ${error.message}`)

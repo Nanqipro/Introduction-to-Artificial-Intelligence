@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Validated
 public class UsersController {
 
@@ -83,11 +83,9 @@ public class UsersController {
         // 设置用户ID（确保只能更新当前登录用户的信息）
         user.setId(currentUserId);
         
-        // 检查用户名是否已被其他用户使用
-        if (user.getUsername() != null && !user.getUsername().trim().isEmpty()) {
-            if (!userService.isUsernameAvailable(user.getUsername(), currentUserId)) {
-                return ApiResponse.error("用户名已存在");
-            }
+        // 禁止更新用户名 - 用户名是唯一标识，不允许修改
+        if (user.getUsername() != null) {
+            return ApiResponse.error("用户名是唯一标识，不允许修改");
         }
         
         userService.update(user);
