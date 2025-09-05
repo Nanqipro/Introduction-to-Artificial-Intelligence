@@ -20,11 +20,11 @@ const api = axios.create({
 
 // 定义公开API路径（不需要认证）
 const PUBLIC_PATHS = [
-  '/api/chapters',
+  '/chapters',
   '/user/register',
   '/user/login',
-  '/api/password-reset',
-  '/api/email-verification'
+  '/password-reset',
+  '/email-verification'
 ]
 
 // 检查是否为公开API
@@ -111,23 +111,23 @@ api.interceptors.response.use(
 
 // 章节相关API
 export const chapterApi = {
-  getChapterOverview: () => api.get('/api/chapters'),
-  getAllChapters: () => api.get('/api/chapters/all'),
-  getChapterById: (id) => api.get(`/api/chapters/${id}`),
-  createChapter: (chapter) => api.post('/api/chapters', chapter),
-  updateChapter: (id, chapter) => api.put(`/api/chapters/${id}`, chapter),
-  deleteChapter: (id) => api.delete(`/api/chapters/${id}`),
-  healthCheck: () => api.get('/api/chapters/health')
+  getChapterOverview: () => api.get('/chapters'),
+  getAllChapters: () => api.get('/chapters/all'),
+  getChapterById: (id) => api.get(`/chapters/${id}`),
+  createChapter: (chapter) => api.post('/chapters', chapter),
+  updateChapter: (id, chapter) => api.put(`/chapters/${id}`, chapter),
+  deleteChapter: (id) => api.delete(`/chapters/${id}`),
+  healthCheck: () => api.get('/chapters/health')
 }
 
 // 答题系统相关API
 export const quizApi = {
-  getQuestionsByChapter: (chapterId) => api.get(`/api/quiz/questions/${chapterId}`),
-  saveQuizResult: (result) => api.post('/api/quiz/results', result),
-  getUserHistory: () => api.get('/api/quiz/history'),
-  getUserStats: () => api.get('/api/quiz/stats'),
-  getLeaderboard: () => api.get('/api/quiz/leaderboard'),
-  getQuestionStats: () => api.get('/api/quiz/question-stats')
+  getQuestionsByChapter: (chapterId) => api.get(`/quiz/questions/${chapterId}`),
+  saveQuizResult: (result) => api.post('/quiz/results', result),
+  getUserHistory: () => api.get('/quiz/history'),
+  getUserStats: () => api.get('/quiz/stats'),
+  getLeaderboard: () => api.get('/quiz/leaderboard'),
+  getQuestionStats: () => api.get('/quiz/question-stats')
 }
 
 // 用户相关API
@@ -171,7 +171,7 @@ export const userApi = {
   },
   
   uploadAvatar: (formData) => {
-    return api.post('/api/upload/avatar', formData, {
+    return api.post('/upload/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   },
@@ -187,31 +187,31 @@ export const userApi = {
   
   // 密码重置相关API
   sendPasswordResetEmail: (email) => {
-    return api.post('/api/password-reset/send-email', { email })
+    return api.post('/password-reset/send-email', { email })
   },
   
   validatePasswordResetToken: (token) => {
-    return api.post('/api/password-reset/validate-token', { token })
+    return api.post('/password-reset/validate-token', { token })
   },
   
   resetPassword: (resetData) => {
-    return api.post('/api/password-reset/reset', resetData)
+    return api.post('/password-reset/reset', resetData)
   },
   
   // 邮箱验证相关API
   sendEmailVerificationCode: (email) => {
-    return api.post('/api/email-verification/send-code', { email })
+    return api.post('/email-verification/send-code', { email })
   },
   
   verifyEmailCode: (verificationData) => {
-    return api.post('/api/email-verification/verify', verificationData)
+    return api.post('/email-verification/verify', verificationData)
   }
 }
 
 // 等级系统相关API
 export const levelApi = {
   addExperience: (experienceData) => {
-    return api.post('/api/level/addExperience', experienceData)
+    return api.post('/level/addExperience', experienceData)
   },
   getUserStats: () => {
     // 检查token是否存在
@@ -220,7 +220,7 @@ export const levelApi = {
       console.log('🚫 levelApi.getUserStats - 没有有效token，拒绝请求')
       return Promise.reject(new Error('Token不存在或无效'))
     }
-    return api.get('/api/level/stats')
+    return api.get('/level/stats')
   },
   getUserAchievements: () => {
     // 检查token是否存在
@@ -229,38 +229,38 @@ export const levelApi = {
       console.log('🚫 levelApi.getUserAchievements - 没有有效token，拒绝请求')
       return Promise.reject(new Error('Token不存在或无效'))
     }
-    return api.get('/api/level/achievements')
+    return api.get('/level/achievements')
   },
   getLearningRecords: () => {
-    return api.get('/api/level/records')
+    return api.get('/level/records')
   },
-  getLeaderboard: (limit = 10) => api.get(`/api/level/leaderboard?limit=${limit}`),
-  calculateLevel: (experience) => api.get(`/api/level/calculateLevel?experience=${experience}`),
+  getLeaderboard: (limit = 10) => api.get(`/level/leaderboard?limit=${limit}`),
+  calculateLevel: (experience) => api.get(`/level/calculateLevel?experience=${experience}`),
   completeChapter: (chapterData) => {
-    return api.post('/api/level/completeChapter', chapterData)
+    return api.post('/level/completeChapter', chapterData)
   }
 }
 
 // 管理员相关API
 export const adminApi = {
   // 题目管理
-  getAllQuestions: () => api.get('/api/admin/questions'),
-  getQuestionById: (id) => api.get(`/api/admin/questions/${id}`),
-  createQuestion: (question) => api.post('/api/admin/questions', question),
-  updateQuestion: (id, question) => api.put(`/api/admin/questions/${id}`, question),
-  deleteQuestion: (id) => api.delete(`/api/admin/questions/${id}`),
-  getQuestionsByChapter: (chapterId) => api.get(`/api/admin/questions/chapter/${chapterId}`),
+  getAllQuestions: () => api.get('/admin/questions'),
+  getQuestionById: (id) => api.get(`/admin/questions/${id}`),
+  createQuestion: (question) => api.post('/admin/questions', question),
+  updateQuestion: (id, question) => api.put(`/admin/questions/${id}`, question),
+  deleteQuestion: (id) => api.delete(`/admin/questions/${id}`),
+  getQuestionsByChapter: (chapterId) => api.get(`/admin/questions/chapter/${chapterId}`),
   
   // 文件导入
   importQuestions: (file) => {
     const formData = new FormData()
     formData.append('file', file)
-    return api.post('/api/admin/questions/import', formData)
+    return api.post('/admin/questions/import', formData)
   },
   
   // 统计信息
-  getQuestionStats: () => api.get('/api/admin/questions/stats'),
-  healthCheck: () => api.get('/api/admin/health')
+  getQuestionStats: () => api.get('/admin/questions/stats'),
+  healthCheck: () => api.get('/admin/health')
 }
 
 export default api
