@@ -270,7 +270,12 @@ export default {
       }
     },
     goToChapter(id) {
-      this.$router.push(`/chapters/${id}`)
+      this.$router.push(`/chapters/${id}`).then(() => {
+        // 跳转后滚动到页面顶部
+        this.$nextTick(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+      })
     },
     startQuiz() {
       // 直接跳转到答题页面，移除所有限制条件

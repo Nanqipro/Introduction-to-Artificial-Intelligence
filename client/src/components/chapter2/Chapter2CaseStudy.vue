@@ -22,8 +22,11 @@
               >
               <span v-else class="status-pending">⏳ 进行中</span>
             </div>
-          </div>
-        </div>
+       </div>
+       
+       <!-- 图片放大遮罩层 -->
+       <div class="image-overlay" @click="closeEnlargedImage"></div>
+     </div>
 
         <div
           class="progress-item"
@@ -242,42 +245,113 @@
         <p class="section-subtitle">通过动画演示理解深度学习网络的核心组件</p>
       </div>
 
-      <!-- 深度学习展示平台 -->
+      <!-- 深度学习三大核心层展示平台 -->
       <div class="deep-learning-showcase">
-        <div class="showcase-content">
-          <div class="image-section">
-            <div class="image-container">
-              <img
-                src="/images/chapter2/pic2.gif"
-                alt="深度学习核心层动画演示"
-                class="demo-gif"
-              />
-              <div class="image-overlay">
-                <div class="overlay-content">
-                  <span class="overlay-icon">🎬</span>
-                  <span class="overlay-title">深度学习核心层</span>
-                  <span class="overlay-subtitle">动画演示</span>
-                </div>
+        <div class="core-layers-grid">
+          <!-- 卷积层 -->
+          <div class="layer-card">
+            <div class="layer-header">
+              <span class="layer-icon">🔍</span>
+              <h4 class="layer-title">卷积层 (Convolution Layer)</h4>
+            </div>
+            <div class="layer-content">
+              <div class="layer-image">
+                 <img
+                   src="/案例(2)/卷积层.gif"
+                   alt="卷积层动画演示"
+                   class="layer-demo"
+                   @click="enlargeImage($event, 'convolution')"
+                 />
+                 <div class="image-caption">点击放大查看卷积操作过程</div>
+               </div>
+              <div class="layer-description">
+                <p><strong>核心功能：</strong>特征提取与模式识别</p>
+                <ul class="feature-list">
+                  <li>🎯 <strong>参数共享：</strong>同一滤波器扫描整个输入</li>
+                  <li>🔗 <strong>局部连接：</strong>只关注局部区域特征</li>
+                  <li>📊 <strong>特征映射：</strong>提取边缘、纹理等特征</li>
+                </ul>
               </div>
             </div>
           </div>
 
-          <div class="description-section">
-            <h4>🎯 学习要点</h4>
-            <p>
-              通过这个动画演示，你可以直观地理解深度学习网络的三大核心组件：
-            </p>
-            <ul class="learning-points">
-              <li><strong>卷积层：</strong>特征提取，参数共享，局部连接</li>
-              <li><strong>池化层：</strong>降维压缩，特征选择，平移不变性</li>
-              <li><strong>全连接层：</strong>特征组合，非线性变换，分类决策</li>
-            </ul>
-            <div class="learning-note">
-              <span class="note-icon">💡</span>
-              <span class="note-text"
-                >仔细观察动画中每一层的变换过程，理解它们如何协同工作</span
-              >
+          <!-- 池化层 -->
+          <div class="layer-card">
+            <div class="layer-header">
+              <span class="layer-icon">📉</span>
+              <h4 class="layer-title">池化层 (Pooling Layer)</h4>
             </div>
+            <div class="layer-content">
+              <div class="layer-image">
+                 <img
+                   src="/案例(2)/池化层.gif"
+                   alt="池化层动画演示"
+                   class="layer-demo"
+                   @click="enlargeImage($event, 'pooling')"
+                 />
+                 <div class="image-caption">点击放大查看池化降维过程</div>
+               </div>
+              <div class="layer-description">
+                <p><strong>核心功能：</strong>降维压缩与特征选择</p>
+                <ul class="feature-list">
+                  <li>📏 <strong>尺寸缩减：</strong>减少特征图大小</li>
+                  <li>🎯 <strong>特征保留：</strong>保持重要信息不丢失</li>
+                  <li>🔄 <strong>平移不变：</strong>增强模型鲁棒性</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 全连接层 -->
+          <div class="layer-card">
+            <div class="layer-header">
+              <span class="layer-icon">🧠</span>
+              <h4 class="layer-title">全连接层 (Fully Connected Layer)</h4>
+            </div>
+            <div class="layer-content">
+              <div class="layer-image">
+                 <img
+                   src="/案例(2)/全连接层.png"
+                   alt="全连接层结构图"
+                   class="layer-demo"
+                   @click="enlargeImage($event, 'fc')"
+                 />
+                 <div class="image-caption">点击放大查看全连接结构</div>
+               </div>
+              <div class="layer-description">
+                <p><strong>核心功能：</strong>特征整合与最终决策</p>
+                <ul class="feature-list">
+                  <li>🔗 <strong>全局连接：</strong>整合所有特征信息</li>
+                  <li>🎲 <strong>非线性变换：</strong>复杂模式识别</li>
+                  <li>📊 <strong>分类输出：</strong>生成最终预测结果</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 学习要点总结 -->
+        <div class="learning-summary">
+          <h4>🎯 三大核心层协同工作流程</h4>
+          <div class="workflow-steps">
+            <div class="workflow-step">
+              <span class="step-number">1</span>
+              <span class="step-text"><strong>卷积层</strong>提取局部特征</span>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step">
+              <span class="step-number">2</span>
+              <span class="step-text"><strong>池化层</strong>压缩重要信息</span>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step">
+              <span class="step-number">3</span>
+              <span class="step-text"><strong>全连接层</strong>整合并决策</span>
+            </div>
+          </div>
+          <div class="learning-note">
+            <span class="note-icon">💡</span>
+            <span class="note-text">点击各层图片可增加交互次数，完成深度学习案例学习</span>
           </div>
         </div>
       </div>
@@ -385,6 +459,12 @@ export default {
         convolutionDemo: 0,
         poolingDemo: 0,
         fcDemo: 0,
+      },
+      // 图片放大功能
+      enlargedImage: {
+        src: '',
+        type: '',
+        visible: false
       },
     };
   },
@@ -1015,6 +1095,37 @@ export default {
       for (let i = 0; i < this.outputNeurons; i++) {
         this.neuronValues.output.push(Math.random());
       }
+    },
+
+    // 图片放大功能方法
+    enlargeImage(imageSrc, layerType) {
+      this.enlargedImage = {
+        src: imageSrc,
+        type: layerType,
+        visible: true
+      };
+      
+      // 增加对应层的交互次数
+      if (layerType === 'convolution') {
+        this.interactionCounts.convolutionDemo++;
+      } else if (layerType === 'pooling') {
+        this.interactionCounts.poolingDemo++;
+      } else if (layerType === 'fullyConnected') {
+        this.interactionCounts.fcDemo++;
+      }
+      
+      this.checkDeepLearningCaseCompletion();
+    },
+
+    closeEnlargedImage() {
+      this.enlargedImage.visible = false;
+      setTimeout(() => {
+        this.enlargedImage = {
+          src: '',
+          type: '',
+          visible: false
+        };
+      }, 300);
     },
   },
 
@@ -2711,16 +2822,9 @@ export default {
 
   .algorithm-card {
     background: white;
-    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
-    }
 
     &.linear-regression {
       .card-background {
@@ -2801,10 +2905,6 @@ export default {
       }
     }
 
-    &:hover .card-background {
-      opacity: 1;
-    }
-
     .card-content {
       padding: 24px;
       position: relative;
@@ -2833,12 +2933,7 @@ export default {
           height: 80px;
           border-radius: 50%;
           opacity: 0;
-          transition: opacity 0.3s ease;
         }
-      }
-
-      &:hover .algorithm-icon .icon-glow {
-        opacity: 1;
       }
 
       .algorithm-info {
@@ -3131,7 +3226,7 @@ export default {
   }
 }
 
-/* 深度学习展示样式 */
+/* 深度学习三大核心层展示样式 */
 .deep-learning-showcase {
   background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, #232526 100%);
   border-radius: 16px;
@@ -3140,116 +3235,199 @@ export default {
   box-shadow: 0 8px 32px rgba(74, 144, 226, 0.18);
 }
 
-.showcase-content {
+/* 核心层网格布局 */
+.core-layers-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+/* 层级卡片样式 */
+.layer-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* 层级头部 */
+.layer-header {
+  padding: 1.2rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  gap: 2rem;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 0.8rem;
 }
 
-.image-section {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.image-container {
-  position: relative;
-  display: inline-block;
-}
-
-.demo-gif {
-  width: 250px;
-  height: 180px;
-  border-radius: 12px;
-  object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  display: block;
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 12px;
+.layer-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  flex-shrink: 0;
+}
+
+.layer-title {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* 层级内容 */
+.layer-content {
+  padding: 2rem;
+}
+
+/* 层级图片区域 */
+.layer-image {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.layer-demo {
+  width: 100%;
+  max-width: 500px;
+  height: 350px;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.layer-demo.enlarged {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  z-index: 9999;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9998;
+  display: none;
   cursor: pointer;
 }
 
-.image-container:hover .image-overlay {
-  opacity: 1;
-}
-
-.overlay-content {
-  text-align: center;
-  color: white;
-  padding: 1rem;
-}
-
-.overlay-icon {
+.image-overlay.active {
   display: block;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
 }
 
-.overlay-title {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+.image-caption {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-style: italic;
 }
 
-.overlay-subtitle {
-  display: block;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-.description-section {
-  flex: 1;
-  min-width: 300px;
-}
-
-.description-section h4 {
-  color: white;
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
-}
-
-.description-section p {
+/* 层级描述 */
+.layer-description p {
   color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
   margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.learning-points {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1.5rem;
-}
-
-.learning-points li {
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.8rem;
-  padding-left: 1.5rem;
-  position: relative;
   line-height: 1.5;
 }
 
-.learning-points li::before {
-  content: "🎯";
-  position: absolute;
-  left: 0;
-  top: 0;
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
+.feature-list li {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* 学习总结区域 */
+.learning-summary {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.learning-summary h4 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+/* 工作流程步骤 */
+.workflow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.workflow-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  background: rgba(74, 144, 226, 0.8);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.workflow-arrow {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* 学习提示 */
 .learning-note {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -3268,41 +3446,64 @@ export default {
 
 .note-text {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   font-style: italic;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .showcase-content {
+  .core-layers-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .layer-header {
+    padding: 1rem 1.2rem 0.8rem;
+  }
+  
+  .layer-content {
+    padding: 1.2rem;
+  }
+  
+  .layer-demo {
+    max-width: 180px;
+    height: 130px;
+  }
+  
+  .workflow-steps {
     flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .workflow-arrow {
+    transform: rotate(90deg);
+  }
+  
+  .step-text {
+    white-space: normal;
     text-align: center;
   }
+}
 
-  .demo-gif {
-    width: 200px;
-    height: 150px;
+@media (max-width: 480px) {
+  .deep-learning-showcase {
+    padding: 1.5rem;
   }
-
-  .description-section {
-    min-width: auto;
+  
+  .layer-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
   }
-
-  .overlay-content {
-    padding: 0.75rem;
-  }
-
-  .overlay-icon {
-    font-size: 1.5rem;
-  }
-
-  .overlay-title {
+  
+  .layer-title {
     font-size: 1rem;
   }
-
-  .overlay-subtitle {
-    font-size: 0.8rem;
+  
+  .layer-demo {
+    max-width: 160px;
+    height: 120px;
   }
 }
 </style>

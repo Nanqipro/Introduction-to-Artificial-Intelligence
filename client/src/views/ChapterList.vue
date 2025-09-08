@@ -191,8 +191,7 @@ export default {
     getChapterType(type) {
       const typeMap = {
         'prologue': '序章',
-        'chapter': '正章',
-        'appendix': '附录'
+        'chapter': '正章'
       }
       return typeMap[type] || '章节'
     },
