@@ -91,6 +91,23 @@
               计算机视觉技术及应用、人工智能的实际应用案例、
               以及人工智能的发展趋势和伦理挑战。
             </p>
+            
+            <!-- 教材封面展示 -->
+            <div class="book-cover-section">
+              <el-divider />
+              <div class="cover-display">
+                 <h4>📖 纸质版教材</h4>
+                <div class="cover-image-container">
+                  <img 
+                    src="/src/assets/封面.jpg" 
+                    alt="人工智能概论纸质版封面" 
+                    class="book-cover-image"
+                    @error="handleImageError"
+                  />
+                </div>
+              </div>
+            </div>
+            
             <div class="book-purchase-section">
               <el-divider />
               <div class="purchase-info">
@@ -119,7 +136,9 @@
             <!-- 教材编写团队 -->
             <div class="team-section">
               <h3 class="team-title">📚 教材编写团队</h3>
-              <p class="team-description">GoodLab团队负责《人工智能概论与应用》教材的编写工作</p>
+              <p class="team-description">
+                <a href="https://good.ncu.edu.cn/" target="_blank" rel="noopener noreferrer" class="goodlab-link">GoodLab团队</a>负责《人工智能概论与应用》教材的编写工作
+              </p>
             </div>
             
             <el-divider />
@@ -128,6 +147,20 @@
             <div class="team-section">
               <h3 class="team-title">💻 平台开发团队</h3>
               <p class="team-description">数字化平台开发团队负责将教材内容转化为现代化的Web应用</p>
+              
+              <!-- 项目负责人介绍 -->
+              <div class="leader-section">
+                <h4 class="leader-title">🎓 项目负责人</h4>
+                <div class="leader-card">
+                  <div class="leader-info">
+                    <div class="leader-name">徐子晨教授</div>
+                    <div class="leader-position">南昌大学数学与计算机学院副院长</div>
+                    <div class="leader-description">
+                      南昌大学项目组主要负责人之一，高层次引进人才，学科方向带头人，江西省"双千计划"首批入选者。主要从事计算机体系结构、数值计算、系统优化和存储系统等领域的教研工作。其在与本项目申请相关的领域开展了一些前期的研究工作，并取得了一系列站在国际前沿的创新性研究成果，以第一作者发表体系结构、数据库、分布式系统及可持续计算等方向旗舰期刊、会议文章50余篇，是TKDE/TC/TPDS/TCC等期刊的文章审稿人及客座编辑。发表国家授权发明专利10余件。获得20余项国家自然基金、教育部、科技部重点研发计划、省重点研发计划及华为、腾讯、微软、亚马逊、谷歌等国内外纵、横向基金资助。项目负责人在多源数据融合方面具有深厚研究基础，以第一完成人身份完成了"面向时空大数据的智能平台关键技术及应用"创新成果，并获得了2023年江西省科技进步奖一等奖。
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <el-row :gutter="20" class="team-members">
                 <!-- 总主编和设计师 -->
@@ -210,6 +243,13 @@
   // 打开购买链接
   const openPurchaseLink = () => {
     window.open('https://pdc.capub.cn/search.html#/detail?id=igsp3vb7bwrzbuim6zarjxxzdmtsnfayec44vlahrmyqk6iub5vsn3ffgzh3ldffnfaorgyzpzdhe&from=1&type=cip', '_blank')
+  }
+  
+  // 处理图片加载错误
+  const handleImageError = (event) => {
+    console.warn('封面图片加载失败:', event.target.src)
+    // 可以设置一个默认图片或隐藏图片容器
+    event.target.style.display = 'none'
   }
   </script>
   
@@ -323,6 +363,66 @@
     }
   }
   
+  .goodlab-link {
+    color: var(--accent-color) !important;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+    
+    &:hover {
+      color: var(--about-link-hover-color) !important;
+      border-bottom-color: var(--accent-color);
+      text-decoration: none;
+    }
+  }
+  
+  /* 教材封面部分样式 */
+  .book-cover-section {
+    margin-top: 1.5rem;
+  }
+  
+  .cover-display {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--about-purchase-bg);
+    border-radius: 12px;
+    border: 1px solid var(--about-purchase-border);
+    
+    h4 {
+      color: var(--text-color) !important;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+  }
+  
+  .cover-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+  
+  .book-cover-image {
+     max-width: 300px;
+     max-height: 400px;
+     width: auto;
+     height: auto;
+     border-radius: 8px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    @media (max-width: 768px) {
+      max-width: 250px;
+      max-height: 350px;
+    }
+    
+    @media (max-width: 480px) {
+      max-width: 200px;
+      max-height: 280px;
+    }
+  }
+
   /* 购买部分样式 */
   .book-purchase-section {
     margin-top: 1.5rem;
@@ -437,6 +537,62 @@
      gap: 0.3rem;
    }
    
+   /* 项目负责人样式 */
+   .leader-section {
+     margin-bottom: 2rem;
+   }
+   
+   .leader-title {
+     color: var(--text-color) !important;
+     font-size: 1.2rem;
+     font-weight: 700;
+     margin-bottom: 1rem;
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+   }
+   
+   .leader-card {
+     background: var(--about-member-card-bg);
+     border: 2px solid var(--accent-color);
+     border-radius: 16px;
+     padding: 2rem;
+     transition: all 0.3s ease;
+     box-shadow: var(--about-card-shadow);
+     
+     &:hover {
+       transform: translateY(-2px);
+       box-shadow: var(--about-member-card-hover-shadow);
+     }
+   }
+   
+   .leader-info {
+     text-align: left;
+   }
+   
+   .leader-name {
+     color: var(--accent-color);
+     font-size: 1.4rem;
+     font-weight: 700;
+     margin-bottom: 0.5rem;
+   }
+   
+   .leader-position {
+     color: var(--text-color);
+     font-size: 1.1rem;
+     font-weight: 600;
+     margin-bottom: 1rem;
+     padding-bottom: 0.5rem;
+     border-bottom: 1px solid var(--about-member-role-border);
+   }
+   
+   .leader-description {
+     color: var(--text-secondary-color);
+     line-height: 1.8;
+     font-size: 0.95rem;
+     text-align: justify;
+   }
+   
    /* 响应式设计 */
    @media (max-width: 768px) {
      .team-members {
@@ -444,5 +600,17 @@
          margin-bottom: 1rem;
        }
      }
+     
+     .leader-card {
+       padding: 1.5rem;
+     }
+     
+     .leader-name {
+       font-size: 1.2rem;
+     }
+     
+     .leader-position {
+       font-size: 1rem;
+     }
    }
-   </style>
+    </style>

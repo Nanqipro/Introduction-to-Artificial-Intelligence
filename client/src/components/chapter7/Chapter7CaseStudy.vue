@@ -167,138 +167,189 @@
         </div>
       </div>
       
-      <!-- 隐私保护案例 -->
+
+      
+      <!-- 隐私保护技术案例 -->
       <div v-if="currentTopic === 1" class="topic-section privacy-protection">
         <div class="section-header">
           <h3 class="section-title">
-            <span class="title-icon">🔒</span>
-            <span class="title-text">数据隐私保护案例</span>
+            <span class="title-icon">🛡️</span>
+            <span class="title-text">隐私保护技术案例</span>
           </h3>
-          <p class="section-subtitle">了解AI系统中的隐私风险和保护技术</p>
+          <p class="section-subtitle">探索AI系统中的隐私保护技术与实践</p>
         </div>
         
-        <!-- 数据泄露风险演示 -->
-        <div class="case-card privacy-risk-case">
+        <!-- 隐私保护技术卡片 -->
+        <div class="case-card privacy-techniques-case">
           <div class="card-header">
-            <h4>🚨 数据隐私风险演示</h4>
-            <span class="case-badge">交互式体验</span>
+            <h4>🔐 隐私保护技术展示</h4>
+            <span class="case-badge">交互式演示</span>
           </div>
           
           <div class="case-content">
-            <div class="privacy-scenario">
-              <div class="scenario-tabs">
-                <button v-for="scenario in privacyScenarios" :key="scenario.id"
-                        @click="selectPrivacyScenario(scenario.id)"
-                        class="scenario-tab"
-                        :class="{ active: selectedPrivacyScenario === scenario.id }">
-                  {{ scenario.icon }} {{ scenario.title }}
-                </button>
+            <div class="techniques-overview">
+              <div class="techniques-intro">
+                <p>现代AI系统处理大量敏感数据，隐私保护技术确保在提供智能服务的同时保护用户隐私。</p>
               </div>
               
-              <div class="scenario-content" v-if="currentPrivacyScenario">
-                <div class="scenario-description">
-                  <h5>{{ currentPrivacyScenario.title }}</h5>
-                  <p>{{ currentPrivacyScenario.description }}</p>
+              <div class="techniques-grid">
+                <div v-for="technique in privacyTechniques" :key="technique.id"
+                     class="technique-card"
+                     @click="showTechniqueDemo(technique.id)"
+                     :class="{ active: activeTechnique === technique.id }">
+                  <div class="technique-icon">{{ technique.icon }}</div>
+                  <div class="technique-title">{{ technique.title }}</div>
+                  <div class="technique-desc">{{ technique.description }}</div>
+                  <div class="technique-status" v-if="activeTechnique === technique.id">正在演示</div>
                 </div>
-                
-                <!-- 数据流动可视化 -->
-                <div class="data-flow-visualization">
-                  <div class="data-flow-header">
-                    <h6>📊 数据流动过程</h6>
-                    <button @click="startDataFlow" class="flow-button" :disabled="dataFlowRunning">
-                      {{ dataFlowRunning ? '数据传输中...' : '开始演示' }}
-                    </button>
-                  </div>
-                  
-                  <div class="flow-diagram">
-                    <div class="flow-step" v-for="(step, index) in dataFlowSteps" :key="index"
-                         :class="{ active: currentFlowStep >= index, risk: step.risk }">
-                      <div class="step-icon">{{ step.icon }}</div>
-                      <div class="step-content">
-                        <div class="step-title">{{ step.title }}</div>
-                        <div class="step-desc">{{ step.description }}</div>
-                        <div v-if="step.risk" class="risk-indicator">
-                          ⚠️ {{ step.riskDescription }}
+              </div>
+              
+              <div class="technique-demo" v-if="activeTechnique">
+                <div class="demo-content">
+                  <h6>{{ getCurrentTechnique().title }} 演示</h6>
+                  <div class="demo-visualization">
+                    <!-- 差分隐私演示 -->
+                    <div v-if="activeTechnique === 'differential-privacy'" class="differential-privacy-demo">
+                      <div class="privacy-formula">
+                        <h6>差分隐私定义</h6>
+                        <div class="formula-container">
+                          <div class="formula-text">
+                            对于任意相邻数据集 D₁ 和 D₂（仅相差一条记录），算法 M 满足 ε-差分隐私当且仅当：
+                          </div>
+                          <div class="formula-math">
+                            Pr[M(D₁) ∈ S] ≤ e^ε × Pr[M(D₂) ∈ S]
+                          </div>
+                          <div class="formula-explanation">
+                            其中 ε 是隐私预算，ε 越小隐私保护越强
+                          </div>
+                        </div>
+                        <div class="noise-formula">
+                          <div class="formula-text">拉普拉斯机制添加噪声：</div>
+                          <div class="formula-math">
+                            M(D) = f(D) + Lap(Δf/ε)
+                          </div>
+                          <div class="formula-explanation">
+                            Δf 是函数 f 的全局敏感度，Lap 表示拉普拉斯分布
+                          </div>
                         </div>
                       </div>
-                      <div v-if="index < dataFlowSteps.length - 1" class="flow-arrow">→</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- 隐私保护技术展示 -->
-                <div class="protection-techniques">
-                  <h6>🛡️ 隐私保护技术</h6>
-                  <div class="techniques-grid">
-                    <div v-for="technique in privacyTechniques" :key="technique.id"
-                         class="technique-card"
-                         @click="showTechniqueDemo(technique.id)"
-                         :class="{ active: activeTechnique === technique.id }">
-                      <div class="technique-icon">{{ technique.icon }}</div>
-                      <div class="technique-title">{{ technique.title }}</div>
-                      <div class="technique-desc">{{ technique.description }}</div>
-                    </div>
-                  </div>
-                  
-                  <div class="technique-demo" v-if="activeTechnique">
-                    <div class="demo-content">
-                      <h6>{{ getCurrentTechnique().title }} 演示</h6>
-                      <div class="demo-visualization">
-                        <!-- 差分隐私演示 -->
-                        <div v-if="activeTechnique === 'differential-privacy'" class="differential-privacy-demo">
-                          <div class="privacy-controls">
-                            <label>隐私预算 (ε): </label>
-                            <input type="range" v-model="privacyBudget" min="0.1" max="2" step="0.1">
-                            <span class="budget-value">{{ privacyBudget }}</span>
-                          </div>
-                          <div class="privacy-comparison">
-                            <div class="data-column">
-                              <h6>原始数据</h6>
-                              <div class="data-points">
-                                <div v-for="point in originalData" :key="point.id" class="data-point">
-                                  {{ point.value }}
-                                </div>
-                              </div>
-                            </div>
-                            <div class="data-column">
-                              <h6>添加噪声后</h6>
-                              <div class="data-points">
-                                <div v-for="point in noisyData" :key="point.id" class="data-point noisy">
-                                  {{ point.value }}
-                                </div>
-                              </div>
+                      <div class="privacy-controls">
+                        <label>隐私预算 (ε): </label>
+                        <input type="range" v-model="privacyBudget" min="0.1" max="2" step="0.1">
+                        <span class="budget-value">{{ privacyBudget }}</span>
+                      </div>
+                      <div class="privacy-comparison">
+                        <div class="data-column">
+                          <h6>原始数据</h6>
+                          <div class="data-points">
+                            <div v-for="point in originalData" :key="point.id" class="data-point">
+                              {{ point.value }}
                             </div>
                           </div>
-                          <div class="privacy-explanation">
-                            <p>💡 通过添加数学噪声，保护个体隐私的同时保持统计特性</p>
+                        </div>
+                        <div class="data-column">
+                          <h6>添加噪声后</h6>
+                          <div class="data-points">
+                            <div v-for="point in noisyData" :key="point.id" class="data-point noisy">
+                              {{ point.value }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="privacy-explanation">
+                        <p>💡 通过添加数学噪声，保护个体隐私的同时保持统计特性</p>
+                      </div>
+                    </div>
+                    
+                    <!-- 同态加密演示 -->
+                    <div v-if="activeTechnique === 'homomorphic-encryption'" class="homomorphic-encryption-demo">
+                      <div class="encryption-visualization">
+                        <div class="svg-container">
+                          <object data="/案例(7)/homomorphic_encryption.svg" type="image/svg+xml" class="encryption-svg">
+                            您的浏览器不支持SVG
+                          </object>
+                        </div>
+
+
+                      </div>
+                    </div>
+                    
+                    <!-- 联邦学习演示 -->
+                    <div v-if="activeTechnique === 'federated-learning'" class="federated-learning-demo">
+                      <div class="federation-network">
+                        <div class="central-server">
+                          <div class="server-icon">🏢</div>
+                          <div class="server-label">中央服务器</div>
+                          <div class="model-updates">模型聚合</div>
+                        </div>
+                        
+                        <!-- 上传箭头：设备到服务器 -->
+                        <div class="arrow-container upload-arrows" :class="{ active: federatedTraining }">
+                          <div class="arrow-group">
+                            <div class="arrow upload-arrow" style="left: 10%">
+                              <div class="arrow-line"></div>
+                              <div class="arrow-head"></div>
+                              <div class="arrow-label">模型参数</div>
+                            </div>
+                            <div class="arrow upload-arrow" style="left: 33.33%">
+                              <div class="arrow-line"></div>
+                              <div class="arrow-head"></div>
+                              <div class="arrow-label">梯度更新</div>
+                            </div>
+                            <div class="arrow upload-arrow" style="left: 56.67%">
+                              <div class="arrow-line"></div>
+                              <div class="arrow-head"></div>
+                              <div class="arrow-label">本地模型</div>
+                            </div>
+                            <div class="arrow upload-arrow" style="left: 80%">
+                              <div class="arrow-line"></div>
+                              <div class="arrow-head"></div>
+                              <div class="arrow-label">训练结果</div>
+                            </div>
                           </div>
                         </div>
                         
-                        <!-- 联邦学习演示 -->
-                        <div v-if="activeTechnique === 'federated-learning'" class="federated-learning-demo">
-                          <div class="federation-network">
-                            <div class="central-server">
-                              <div class="server-icon">🏢</div>
-                              <div class="server-label">中央服务器</div>
-                              <div class="model-updates">模型聚合</div>
+                        <!-- 下载箭头：服务器到设备 -->
+                        <div class="arrow-container download-arrows" :class="{ active: federatedTraining }">
+                          <div class="arrow-group">
+                            <div class="arrow download-arrow" style="left: 10%">
+                              <div class="arrow-head"></div>
+                              <div class="arrow-line"></div>
+                              <div class="arrow-label">全局模型</div>
                             </div>
-                            <div class="client-devices">
-                              <div v-for="device in federatedDevices" :key="device.id" 
-                                   class="device-node" 
-                                   :class="{ training: device.training }">
-                                <div class="device-icon">{{ device.icon }}</div>
-                                <div class="device-label">{{ device.label }}</div>
-                                <div class="local-data">本地数据</div>
-                              </div>
+                            <div class="arrow download-arrow" style="left: 33.33%">
+                              <div class="arrow-head"></div>
+                              <div class="arrow-line"></div>
+                              <div class="arrow-label">聚合参数</div>
                             </div>
-                          </div>
-                          <button @click="startFederatedTraining" class="training-button" :disabled="federatedTraining">
-                            {{ federatedTraining ? '训练中...' : '开始联邦学习' }}
-                          </button>
-                          <div class="federated-explanation">
-                            <p>💡 数据不离开本地设备，只共享模型参数，保护数据隐私</p>
+                            <div class="arrow download-arrow" style="left: 56.67%">
+                              <div class="arrow-head"></div>
+                              <div class="arrow-line"></div>
+                              <div class="arrow-label">更新模型</div>
+                            </div>
+                            <div class="arrow download-arrow" style="left: 80%">
+                              <div class="arrow-head"></div>
+                              <div class="arrow-line"></div>
+                              <div class="arrow-label">新权重</div>
+                            </div>
                           </div>
                         </div>
+                        
+                        <div class="client-devices">
+                          <div v-for="device in federatedDevices" :key="device.id" 
+                               class="device-node" 
+                               :class="{ training: device.training }">
+                            <div class="device-icon">{{ device.icon }}</div>
+                            <div class="device-label">{{ device.label }}</div>
+                            <div class="local-data">本地数据</div>
+                          </div>
+                        </div>
+                      </div>
+                      <button @click="startFederatedTraining" class="training-button" :disabled="federatedTraining">
+                        {{ federatedTraining ? '训练中...' : '开始联邦学习' }}
+                      </button>
+                      <div class="federated-explanation">
+                        <p>💡 数据不离开本地设备，只共享模型参数，保护数据隐私</p>
                       </div>
                     </div>
                   </div>
@@ -308,7 +359,7 @@
           </div>
         </div>
       </div>
-      
+        
       <!-- 责任与监管案例 -->
       <div v-if="currentTopic === 2" class="topic-section responsibility-governance">
         <div class="section-header">
@@ -987,6 +1038,8 @@ const startFederatedTraining = async () => {
   incrementInteraction()
 }
 
+
+
 const selectResponsibilityEntity = (entityId) => {
   selectedEntity.value = selectedEntity.value === entityId ? null : entityId
   incrementInteraction()
@@ -1043,8 +1096,8 @@ onMounted(async () => {
 .chapter7-case-study {
   position: relative;
   min-height: 100vh;
-  background: var(--secondary-color, #23272e);
-  color: var(--text-color, #f5f6fa);
+  background: var(--ethics-bg);
+  color: var(--text-color);
   overflow-x: hidden;
 }
 
@@ -1131,17 +1184,17 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 15px;
-  background: var(--card-bg, #292c33);
+  background: var(--ethics-card-bg);
   border-radius: 20px;
   padding: 20px 30px;
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--ethics-card-border);
+  box-shadow: var(--ethics-card-shadow);
   transition: all 0.3s ease;
 }
 
 .progress-item.completed {
-  background: rgba(76, 175, 80, 0.2);
-  border-color: rgba(76, 175, 80, 0.5);
+  background: var(--ethics-progress-bg);
+  border-color: var(--ethics-progress-border);
 }
 
 .progress-icon {
@@ -1181,11 +1234,11 @@ onMounted(async () => {
 .nav-buttons {
   display: flex;
   gap: 15px;
-  background: var(--card-bg, #292c33);
+  background: var(--ethics-nav-bg);
   border-radius: 50px;
   padding: 10px;
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--ethics-nav-border);
+  box-shadow: var(--ethics-card-shadow);
 }
 
 .nav-button {
@@ -1195,21 +1248,21 @@ onMounted(async () => {
   padding: 12px 20px;
   border: none;
   border-radius: 25px;
-  background: transparent;
-  color: var(--text-color, #f5f6fa);
+  background: var(--ethics-nav-button-bg);
+  color: var(--text-color);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
 .nav-button:hover {
-  background: var(--chapter-type-bg, #23272e);
+  background: var(--ethics-nav-button-hover-bg);
   transform: translateY(-2px);
 }
 
 .nav-button.active {
-  background: var(--chapter-badge-bg, linear-gradient(135deg, #18191a, #232526));
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  background: var(--ethics-nav-button-active-bg);
+  box-shadow: var(--ethics-card-shadow);
 }
 
 .nav-icon {
@@ -1254,12 +1307,13 @@ onMounted(async () => {
 
 /* 案例卡片 */
 .case-card {
-  background: var(--card-bg, #292c33);
+  background: var(--card-bg);
   border-radius: 20px;
   padding: 30px;
   margin-bottom: 30px;
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
-  box-shadow: var(--card-shadow, 0 4px 24px rgba(24, 25, 26, 0.10));
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  color: var(--text-color);
 }
 
 .card-header {
@@ -1272,15 +1326,16 @@ onMounted(async () => {
 .card-header h4 {
   margin: 0;
   font-size: 1.3rem;
+  color: var(--text-color);
 }
 
 .case-badge {
-  background: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
+  background: var(--accent-color);
+  color: #ffffff;
   padding: 5px 12px;
   border-radius: 15px;
   font-size: 0.8rem;
-  border: 1px solid rgba(255, 193, 7, 0.3);
+  border: 1px solid var(--accent-color);
 }
 
 /* 招聘演示 */
@@ -1323,26 +1378,27 @@ onMounted(async () => {
 }
 
 .resume-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
   border-radius: 15px;
   padding: 20px;
   border: 2px solid transparent;
   transition: all 0.3s ease;
+  color: var(--text-color);
 }
 
 .resume-card.selected {
   border-color: #4caf50;
-  background: rgba(76, 175, 80, 0.1);
+  background: var(--card-hover-bg);
 }
 
 .resume-card.rejected {
   border-color: #f44336;
-  background: rgba(244, 67, 54, 0.1);
+  background: var(--card-hover-bg);
 }
 
 .resume-card.biased {
   border-color: #ff9800;
-  background: rgba(255, 152, 0, 0.1);
+  background: var(--card-hover-bg);
 }
 
 .resume-header {
@@ -1355,6 +1411,7 @@ onMounted(async () => {
 .resume-name {
   font-weight: bold;
   font-size: 1.1rem;
+  color: var(--text-color);
 }
 
 .resume-gender {
@@ -1367,7 +1424,8 @@ onMounted(async () => {
 
 .skill-tag {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--accent-color);
+  color: #ffffff;
   padding: 3px 8px;
   border-radius: 10px;
   font-size: 0.8rem;
@@ -1415,11 +1473,12 @@ onMounted(async () => {
 
 /* 偏见分析 */
 .bias-analysis {
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.3);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
+  color: var(--text-color);
 }
 
 .analysis-stats {
@@ -1432,6 +1491,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--text-color);
 }
 
 .stat-value.male {
@@ -1445,15 +1505,17 @@ onMounted(async () => {
 }
 
 .bias-explanation {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-hover-bg);
   padding: 15px;
   border-radius: 10px;
+  color: var(--text-color);
 }
 
 /* 解决方案 */
 .solution-card {
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .solutions-grid {
@@ -1464,23 +1526,25 @@ onMounted(async () => {
 }
 
 .solution-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
   border-radius: 15px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .solution-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
   transform: translateY(-5px);
+  border-color: var(--accent-color);
 }
 
 .solution-item.active {
   border-color: #4caf50;
-  background: rgba(76, 175, 80, 0.2);
+  background: var(--card-hover-bg);
 }
 
 .solution-icon {
@@ -1492,18 +1556,21 @@ onMounted(async () => {
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 8px;
+  color: var(--text-color);
 }
 
 .solution-desc {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--text-secondary-color);
 }
 
 .solution-detail {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
+  color: var(--text-color);
 }
 
 .detail-examples ul {
@@ -1524,9 +1591,9 @@ onMounted(async () => {
 }
 
 .scenario-tab {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   padding: 10px 20px;
   border-radius: 20px;
   cursor: pointer;
@@ -1535,12 +1602,14 @@ onMounted(async () => {
 }
 
 .scenario-tab:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
+  border-color: var(--accent-color);
 }
 
 .scenario-tab.active {
-  background: rgba(33, 150, 243, 0.3);
-  border: 1px solid rgba(33, 150, 243, 0.5);
+  background: var(--accent-color);
+  color: #ffffff;
+  border-color: var(--accent-color);
 }
 
 /* 数据流动可视化 */
@@ -1553,6 +1622,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  color: var(--text-color);
 }
 
 .flow-button {
@@ -1583,23 +1653,26 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
   border-radius: 15px;
   min-width: 120px;
   opacity: 0.5;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .flow-step.active {
   opacity: 1;
-  background: rgba(33, 150, 243, 0.2);
-  border-color: rgba(33, 150, 243, 0.5);
+  background: var(--card-hover-bg);
+  border-color: var(--accent-color);
+  border-width: 3px;
 }
 
 .flow-step.risk {
-  border-color: rgba(255, 152, 0, 0.5);
-  background: rgba(255, 152, 0, 0.1);
+  border-color: #ff9800;
+  background: var(--card-hover-bg);
+  border-width: 3px;
 }
 
 .step-icon {
@@ -1611,12 +1684,13 @@ onMounted(async () => {
   font-weight: bold;
   margin-bottom: 5px;
   text-align: center;
+  color: var(--text-color);
 }
 
 .step-desc {
   font-size: 0.8rem;
   text-align: center;
-  opacity: 0.8;
+  color: var(--text-secondary-color);
 }
 
 .risk-indicator {
@@ -1633,7 +1707,63 @@ onMounted(async () => {
   margin: 0 10px;
 }
 
-/* 隐私保护技术 */
+/* 隐私保护技术案例卡片 */
+.privacy-techniques-case {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  margin-bottom: 30px;
+  color: var(--text-color);
+}
+
+.privacy-techniques-case .card-header {
+  background: var(--accent-color);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 18px 18px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.privacy-techniques-case .card-header h4 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.techniques-overview {
+  padding: 25px;
+}
+
+.techniques-intro {
+  background: var(--card-hover-bg);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-left: 4px solid var(--accent-color);
+  border: 1px solid var(--border-color);
+}
+
+.techniques-intro p {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.technique-status {
+  background: #4caf50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+/* 原有隐私保护技术样式 */
 .protection-techniques {
   margin-top: 30px;
 }
@@ -1646,23 +1776,25 @@ onMounted(async () => {
 }
 
 .technique-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
   border-radius: 15px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .technique-card:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
   transform: translateY(-3px);
+  border-color: var(--accent-color);
 }
 
 .technique-card.active {
   border-color: #4caf50;
-  background: rgba(76, 175, 80, 0.2);
+  background: var(--card-hover-bg);
 }
 
 .technique-icon {
@@ -1673,19 +1805,22 @@ onMounted(async () => {
 .technique-title {
   font-weight: bold;
   margin-bottom: 8px;
+  color: var(--text-color);
 }
 
 .technique-desc {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--text-secondary-color);
 }
 
 /* 技术演示 */
 .technique-demo {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
+  color: var(--text-color);
 }
 
 .differential-privacy-demo {
@@ -1717,9 +1852,11 @@ onMounted(async () => {
 }
 
 .data-column {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 15px;
+  color: var(--text-color);
 }
 
 .data-points {
@@ -1731,23 +1868,81 @@ onMounted(async () => {
 }
 
 .data-point {
-  background: rgba(33, 150, 243, 0.3);
-  color: #fff;
+  background: var(--accent-color);
+  color: #ffffff;
   padding: 5px 10px;
   border-radius: 15px;
   font-weight: bold;
 }
 
 .data-point.noisy {
-  background: rgba(255, 152, 0, 0.3);
+  background: #ff9800;
+  color: #ffffff;
 }
 
 .privacy-explanation {
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 15px;
   text-align: center;
+  color: var(--text-color);
+}
+
+/* 差分隐私公式样式 */
+.privacy-formula {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.privacy-formula h6 {
+  color: var(--text-color);
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.formula-container {
+  margin-bottom: 15px;
+}
+
+.noise-formula {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+}
+
+.formula-text {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.formula-math {
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a90e2;
+  text-align: center;
+  margin: 10px 0;
+  letter-spacing: 1px;
+}
+
+.formula-explanation {
+  color: var(--text-secondary-color);
+  font-size: 0.8rem;
+  text-align: center;
+  font-style: italic;
+  margin-top: 8px;
 }
 
 /* 联邦学习演示 */
@@ -1856,6 +2051,143 @@ onMounted(async () => {
   padding: 15px;
 }
 
+/* 联邦学习箭头样式 */
+.arrow-container {
+  position: relative;
+  height: 60px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.arrow-group {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.arrow {
+  position: absolute;
+  width: 80px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.arrow-container.active .arrow {
+  opacity: 1;
+  animation: arrowFlow 2s ease-in-out infinite;
+}
+
+.upload-arrow {
+  flex-direction: column;
+}
+
+.download-arrow {
+  flex-direction: column-reverse;
+}
+
+.arrow-line {
+  width: 3px;
+  height: 30px;
+  background: linear-gradient(to bottom, #4caf50, #2196f3);
+  border-radius: 2px;
+  position: relative;
+}
+
+.download-arrow .arrow-line {
+  background: linear-gradient(to top, #4caf50, #2196f3);
+}
+
+.arrow-head {
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.upload-arrow .arrow-head {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid #2196f3;
+  margin-bottom: 2px;
+}
+
+.download-arrow .arrow-head {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #4caf50;
+  margin-top: 2px;
+}
+
+.arrow-label {
+  font-size: 0.7rem;
+  color: #e0e0e0;
+  text-align: center;
+  margin: 5px 0;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.upload-arrow .arrow-label {
+  color: #2196f3;
+}
+
+.download-arrow .arrow-label {
+  color: #4caf50;
+}
+
+@keyframes arrowFlow {
+  0% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+}
+
+
+
+.upload-arrows .arrow-group .arrow:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.upload-arrows .arrow-group .arrow:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.upload-arrows .arrow-group .arrow:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.upload-arrows .arrow-group .arrow:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.download-arrows .arrow-group .arrow:nth-child(1) {
+  animation-delay: 1s;
+}
+
+.download-arrows .arrow-group .arrow:nth-child(2) {
+  animation-delay: 1.2s;
+}
+
+.download-arrows .arrow-group .arrow:nth-child(3) {
+  animation-delay: 1.4s;
+}
+
+.download-arrows .arrow-group .arrow:nth-child(4) {
+  animation-delay: 1.6s;
+}
+
 /* 责任监管样式 */
 .responsibility-chain {
   margin: 20px 0;
@@ -1869,28 +2201,30 @@ onMounted(async () => {
 }
 
 .responsibility-entity {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
   border-radius: 15px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .responsibility-entity:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
   transform: translateY(-3px);
+  border-color: var(--accent-color);
 }
 
 .responsibility-entity.active {
-  border-color: #2196f3;
-  background: rgba(33, 150, 243, 0.2);
+  border-color: var(--accent-color);
+  background: var(--info-item-bg);
 }
 
 .responsibility-entity.liable {
-  border-color: #f44336;
-  background: rgba(244, 67, 54, 0.1);
+  border-color: var(--error-color);
+  background: var(--ethics-resume-rejected-bg);
 }
 
 .entity-icon {
@@ -1901,33 +2235,37 @@ onMounted(async () => {
 .entity-name {
   font-weight: bold;
   margin-bottom: 5px;
+  color: var(--text-color);
 }
 
 .entity-role {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--text-secondary-color);
   margin-bottom: 8px;
 }
 
 .liability-indicator {
-  color: #f44336;
+  color: var(--error-color);
   font-weight: bold;
   font-size: 0.8rem;
 }
 
 .entity-detail {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
+  color: var(--text-color);
 }
 
 .liability-detail {
-  background: rgba(244, 67, 54, 0.1);
-  border: 1px solid rgba(244, 67, 54, 0.3);
+  background: var(--ethics-resume-rejected-bg);
+  border: 1px solid var(--ethics-resume-rejected-border);
   border-radius: 10px;
   padding: 15px;
   margin-top: 10px;
+  color: var(--text-color);
 }
 
 /* 监管框架 */
@@ -1948,9 +2286,9 @@ onMounted(async () => {
 }
 
 .framework-tab {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
@@ -1959,12 +2297,14 @@ onMounted(async () => {
 }
 
 .framework-tab:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
+  border-color: var(--accent-color);
 }
 
 .framework-tab.active {
-  background: var(--chapter-type-bg, #23272e);
-  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  background: var(--accent-color);
+  color: #ffffff;
+  border-color: var(--accent-color);
 }
 
 .framework-overview {
@@ -1989,15 +2329,18 @@ onMounted(async () => {
 }
 
 .principle-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   text-align: center;
   transition: all 0.3s ease;
+  color: var(--text-color);
 }
 
 .principle-card:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover-bg);
+  border-color: var(--accent-color);
   transform: translateY(-3px);
 }
 
@@ -2041,20 +2384,23 @@ onMounted(async () => {
 }
 
 .timeline-content {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 15px;
   flex: 1;
+  color: var(--text-color);
 }
 
 .measure-title {
   font-weight: bold;
   margin-bottom: 5px;
+  color: var(--text-color);
 }
 
 .measure-desc {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--text-secondary-color);
 }
 
 /* 学习总结 */
@@ -2063,11 +2409,12 @@ onMounted(async () => {
   z-index: 2;
   max-width: 800px;
   margin: 40px auto;
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 30px;
   text-align: center;
+  color: var(--text-color);
 }
 
 .summary-header {
@@ -2077,6 +2424,7 @@ onMounted(async () => {
 .summary-header h3 {
   font-size: 2rem;
   margin-bottom: 10px;
+  color: var(--text-color);
 }
 
 .key-insights {
@@ -2089,6 +2437,7 @@ onMounted(async () => {
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
+  color: var(--text-color);
 }
 
 .key-insights ul {
@@ -2097,11 +2446,13 @@ onMounted(async () => {
 }
 
 .key-insights li {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-hover-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 10px;
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid var(--accent-color);
+  color: var(--text-color);
 }
 
 .next-steps {
@@ -2113,6 +2464,7 @@ onMounted(async () => {
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
+  color: var(--text-color);
 }
 
 .learning-resources {
@@ -2124,14 +2476,17 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-hover-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
+  color: var(--text-color);
 }
 
 .resource-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-bg);
+  border-color: var(--accent-color);
   transform: translateX(5px);
 }
 
@@ -2141,6 +2496,7 @@ onMounted(async () => {
 
 .resource-text {
   font-size: 1rem;
+  color: var(--text-color);
 }
 
 /* 响应式设计 */
@@ -2226,6 +2582,145 @@ onMounted(async () => {
   .analysis-stats {
     flex-direction: column;
     gap: 15px;
+  }
+}
+
+/* 同态加密演示样式 */
+.homomorphic-encryption-demo {
+  background: var(--ethics-encryption-demo-bg);
+  border: 1px solid var(--ethics-encryption-demo-border);
+  border-radius: 20px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.encryption-visualization {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.svg-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--ethics-step-bg);
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 400px;
+}
+
+.encryption-svg {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 10px;
+}
+
+
+
+.encryption-explanation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.explanation-steps {
+  background: var(--ethics-step-bg);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: var(--ethics-step-bg);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.step-item:hover {
+  background: var(--ethics-step-hover-bg);
+  transform: translateX(5px);
+}
+
+.step-number {
+  background: var(--ethics-step-number-bg);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-text {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.key-benefits {
+  background: var(--ethics-step-bg);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.key-benefits h6 {
+  color: var(--ethics-benefits-title-color);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.key-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.key-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: var(--ethics-step-bg);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.key-benefits li:hover {
+  background: var(--ethics-step-hover-bg);
+  transform: translateX(3px);
+}
+
+.key-benefits li::before {
+  content: '✓';
+  color: var(--ethics-benefits-check-color);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .encryption-explanation {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .svg-container {
+    min-height: 300px;
+    padding: 15px;
+  }
+  
+  .demo-button {
+    padding: 12px 24px;
+    font-size: 1rem;
   }
 }
 </style>

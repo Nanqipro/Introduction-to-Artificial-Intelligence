@@ -192,6 +192,39 @@ html.dark-theme {
     --about-member-card-hover-shadow: 0 8px 25px rgba(0, 191, 255, 0.15);
     --about-member-role-border: rgba(0, 191, 255, 0.2);
 
+    /* 第7章伦理案例相关 - 深色主题 */
+    --ethics-bg: var(--secondary-color);
+    --ethics-card-bg: var(--card-bg);
+    --ethics-card-border: rgba(0, 191, 255, 0.2);
+    --ethics-card-shadow: var(--box-shadow);
+    --ethics-nav-bg: var(--card-bg);
+    --ethics-nav-border: rgba(0, 191, 255, 0.2);
+    --ethics-nav-button-bg: transparent;
+    --ethics-nav-button-hover-bg: rgba(0, 191, 255, 0.1);
+    --ethics-nav-button-active-bg: var(--btn-primary-bg);
+    --ethics-demo-bg: rgba(0, 191, 255, 0.05);
+    --ethics-demo-border: rgba(0, 191, 255, 0.2);
+    --ethics-resume-bg: rgba(255, 255, 255, 0.05);
+    --ethics-resume-selected-bg: rgba(76, 175, 80, 0.1);
+    --ethics-resume-selected-border: #4caf50;
+    --ethics-resume-rejected-bg: rgba(244, 67, 54, 0.1);
+    --ethics-resume-rejected-border: #f44336;
+    --ethics-resume-biased-bg: rgba(255, 152, 0, 0.1);
+    --ethics-resume-biased-border: #ff9800;
+    --ethics-skill-tag-bg: rgba(255, 255, 255, 0.1);
+    --ethics-progress-bg: rgba(76, 175, 80, 0.2);
+    --ethics-progress-border: rgba(76, 175, 80, 0.5);
+    --ethics-case-badge-bg: rgba(255, 193, 7, 0.2);
+    --ethics-case-badge-color: #ffc107;
+    --ethics-case-badge-border: rgba(255, 193, 7, 0.3);
+    --ethics-encryption-demo-bg: rgba(156, 39, 176, 0.1);
+    --ethics-encryption-demo-border: rgba(156, 39, 176, 0.3);
+    --ethics-step-bg: rgba(255, 255, 255, 0.05);
+    --ethics-step-hover-bg: rgba(255, 255, 255, 0.1);
+    --ethics-step-number-bg: linear-gradient(135deg, #9c27b0, #673ab7);
+    --ethics-benefits-title-color: #9c27b0;
+    --ethics-benefits-check-color: #4caf50;
+
     /* 动画效果 */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
@@ -398,6 +431,39 @@ html.light-theme {
     --about-member-card-hover-border: rgba(0, 191, 255, 0.3);
     --about-member-card-hover-shadow: 0 8px 25px rgba(0, 191, 255, 0.1);
     --about-member-role-border: rgba(0, 191, 255, 0.2);
+
+    /* 第7章伦理案例相关 - 浅色主题 */
+    --ethics-bg: var(--body-bg);
+    --ethics-card-bg: var(--card-bg);
+    --ethics-card-border: var(--border-color);
+    --ethics-card-shadow: var(--box-shadow);
+    --ethics-nav-bg: var(--card-bg);
+    --ethics-nav-border: var(--border-color);
+    --ethics-nav-button-bg: transparent;
+    --ethics-nav-button-hover-bg: var(--card-hover-bg);
+    --ethics-nav-button-active-bg: var(--btn-primary-bg);
+    --ethics-demo-bg: rgba(0, 191, 255, 0.05);
+    --ethics-demo-border: rgba(0, 191, 255, 0.2);
+    --ethics-resume-bg: #f8f9fa;
+    --ethics-resume-selected-bg: rgba(76, 175, 80, 0.1);
+    --ethics-resume-selected-border: #4caf50;
+    --ethics-resume-rejected-bg: rgba(244, 67, 54, 0.1);
+    --ethics-resume-rejected-border: #f44336;
+    --ethics-resume-biased-bg: rgba(255, 152, 0, 0.1);
+    --ethics-resume-biased-border: #ff9800;
+    --ethics-skill-tag-bg: #e9ecef;
+    --ethics-progress-bg: rgba(76, 175, 80, 0.1);
+    --ethics-progress-border: rgba(76, 175, 80, 0.3);
+    --ethics-case-badge-bg: #ffc107;
+    --ethics-case-badge-color: #212529;
+    --ethics-case-badge-border: #ffc107;
+    --ethics-encryption-demo-bg: rgba(156, 39, 176, 0.05);
+    --ethics-encryption-demo-border: rgba(156, 39, 176, 0.2);
+    --ethics-step-bg: #f8f9fa;
+    --ethics-step-hover-bg: #e9ecef;
+    --ethics-step-number-bg: linear-gradient(135deg, #9c27b0, #673ab7);
+    --ethics-benefits-title-color: #7b1fa2;
+    --ethics-benefits-check-color: #388e3c;
 
     /* 动画效果 */
     --transition-fast: 0.2s ease;

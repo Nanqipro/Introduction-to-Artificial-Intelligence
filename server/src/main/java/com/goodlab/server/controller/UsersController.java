@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")  // /api/user
+@RequestMapping("/api/user")
 @Validated
 public class UsersController {
 
