@@ -6,7 +6,7 @@
           <div class="page-header">
             <h1 class="page-title">关于本平台</h1>
             <p class="page-description">
-              了解《人工智能概论与应用》数字化教材平台的开发背景、技术架构和团队信息
+              了解《人工智能概论》数字化教材平台的开发背景、技术架构和团队信息
             </p>
           </div>
   
@@ -17,7 +17,7 @@
               <span class="ml-1"> 项目简介</span>
             </template>
             <p>
-              本项目是基于《人工智能概论与应用》教材开发的数字化网页教材平台，
+              本项目是基于《人工智能概论》教材开发的数字化网页教材平台，
               通过现代化的Web技术将传统纸质教材转化为交互式的在线学习平台。
               项目采用前后端分离的架构，为学生提供更加直观、互动的学习方式，
               帮助学生更好地理解和掌握人工智能的核心概念和应用。
@@ -76,7 +76,7 @@
               <el-icon><Notebook /></el-icon>
               <span class="ml-1"> 原始教材</span>
             </template>
-            <el-descriptions title="《人工智能概论与应用》" :column="1" border>
+            <el-descriptions title="《人工智能概论》" :column="1" border>
               <el-descriptions-item label="编写团队">GoodLab</el-descriptions-item>
               <el-descriptions-item label="出版年份">2024年</el-descriptions-item>
               <el-descriptions-item label="章节数量">8章（含续章）</el-descriptions-item>

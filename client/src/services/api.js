@@ -127,7 +127,11 @@ export const quizApi = {
   getUserHistory: () => api.get('/quiz/history'),
   getUserStats: () => api.get('/quiz/stats'),
   getLeaderboard: () => api.get('/quiz/leaderboard'),
-  getQuestionStats: () => api.get('/quiz/question-stats')
+  getQuestionStats: () => api.get('/quiz/question-stats'),
+  // 第一章案例演示相关接口
+  getChapter1GlobalStats: () => api.get('/api/chapter1-case-study/global-stats'),
+  submitChapter1Answer: (data) => api.post('/api/chapter1-case-study/submit-answer', data),
+  getUserChapter1Answers: () => api.get('/api/chapter1-case-study/user-answers')
 }
 
 // 用户相关API

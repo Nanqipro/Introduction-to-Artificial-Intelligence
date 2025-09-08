@@ -3,10 +3,10 @@
     <!-- 头部横幅 -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">《人工智能概论与应用》</h1>
+        <h1 class="hero-title">《人工智能概论》</h1>
         <p class="hero-subtitle">数字化教材平台</p>
         <p class="hero-description">
-          基于GoodLab团队编写的《人工智能概论与应用》教材，
+          基于GoodLab团队编写的《人工智能概论》教材，
           通过现代化的Web技术为学生提供更加生动、有趣的人工智能学习体验。
         </p>
         <div class="hero-actions">

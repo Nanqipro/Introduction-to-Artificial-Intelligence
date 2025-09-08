@@ -7,8 +7,8 @@
           <img src="../assets/Nanchang_University_logo.png" alt="logo"></img>
         </el-avatar>
         <div class="brand-text">
-          <div class="brand-title">《人工智能概论与应用》数字化教材平台</div>
-          <div class="brand-subtitle">人工智能概论与应用</div>
+          <div class="brand-title">《人工智能概论》数字化教材平台</div>
+          <div class="brand-subtitle">人工智能概论</div>
         </div>
       </router-link>
       
