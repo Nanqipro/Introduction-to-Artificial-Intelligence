@@ -43,10 +43,11 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addInterceptor(loginInterceptor)
                                 .addPathPatterns("/**")
                                 .excludePathPatterns("/api/user/login", "/api/user/register", "/api/chapters/**",
-                                                "/api/quiz/**", "/api/admin/**", "/error", "/uploads/**", "/api/upload/**");
+                                                "/api/quiz/**", "/api/admin/**", "/error", "/uploads/**", "/api/upload/**",
+                                                "/api/chapter1-case-study/**");
 
                 System.out.println(
-                                "拦截器配置完成 - 放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /error, /uploads/**, /api/upload/**");
+                                "拦截器配置完成 - 放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /error, /uploads/**, /api/upload/**, /api/chapter1-case-study/**");
                 System.out.println(
                                 "注意: /api/level/** 需要认证访问");
         }

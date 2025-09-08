@@ -5,7 +5,7 @@
       <div class="page-header">
         <h1 class="page-title">教材章节</h1>
         <p class="page-description">
-          《人工智能概论与应用》完整章节列表，点击章节卡片查看详细内容
+          《人工智能概论》完整章节列表，点击章节卡片查看详细内容
         </p>
         
         <!-- 系统测试工具已移除 -->
