@@ -37,7 +37,11 @@
             <p>支持桌面端、平板和移动端访问，随时随地学习</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔄</div>
+            <div class="feature-icon">
+              <el-icon :size="32" color="#409EFF">
+                <Refresh />
+              </el-icon>
+            </div>
             <h3>实时更新</h3>
             <p>内容可以实时更新和维护，始终保持最新的知识内容</p>
           </div>
@@ -74,9 +78,13 @@
 
 <script>
 import { chapterApi } from '../services/api'
+import { Refresh } from '@element-plus/icons-vue'
 
 export default {
   name: 'Home',
+  components: {
+    Refresh
+  },
   data() {
     return {
       chapters: []

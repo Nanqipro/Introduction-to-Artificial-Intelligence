@@ -4,7 +4,7 @@
       <!-- Logo和标题 -->
       <router-link to="/" class="brand-link">
         <el-avatar class="brand-icon" size="large" style="background: #fff;">
-          <img src="../assets/Nanchang_University_logo.png" alt="logo"></img>
+          <img src="../assets/goodlab.png" alt="GoodLab Logo"></img>
         </el-avatar>
         <div class="brand-text">
           <div class="brand-title">《人工智能概论》数字化教材平台</div>

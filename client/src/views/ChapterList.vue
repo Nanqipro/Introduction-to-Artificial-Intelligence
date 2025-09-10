@@ -145,7 +145,12 @@ export default {
 
       try {
         const response = await chapterApi.getChapterOverview()
-        this.chapters = response.data || []
+        // 过滤掉附录章节
+        this.chapters = (response.data || []).filter(chapter => 
+          chapter.type !== 'appendix' && 
+          !chapter.title.includes('附录') &&
+          !chapter.title.toLowerCase().includes('appendix')
+        )
         console.log('加载章节列表成功:', this.chapters)
       } catch (error) {
         console.error('加载章节失败:', error)
@@ -191,8 +196,7 @@ export default {
     getChapterType(type) {
       const typeMap = {
         'prologue': '序章',
-        'chapter': '正章',
-        'appendix': '附录'
+        'chapter': '正章'
       }
       return typeMap[type] || '章节'
     },
