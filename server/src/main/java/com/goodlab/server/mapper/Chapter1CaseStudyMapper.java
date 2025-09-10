@@ -51,9 +51,9 @@ public interface Chapter1CaseStudyMapper {
     void insertGlobalStats(Chapter1GlobalStats stats);
 
     /**
-     * 统计总参与人数
+     * 统计总参与人数（包括匿名用户）
      */
-    @Select("SELECT COUNT(DISTINCT user_id) FROM chapter1_case_study_answers WHERE chapter_type = 'chapter1_case_study'")
+    @Select("SELECT COUNT(DISTINCT COALESCE(user_id, -1)) FROM chapter1_case_study_answers WHERE chapter_type = 'chapter1_case_study'")
     Integer countTotalParticipants();
 
     /**
