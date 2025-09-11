@@ -169,22 +169,22 @@ const sections = ref([
 const voiceCommands = ref([
   {
     id: 1,
-    text: '小爱同学，打开客厅的灯',
+    text: '小助手，打开客厅的灯',
     response: '好的，已为您打开客厅灯光'
   },
   {
     id: 2,
-    text: '小爱同学，把空调温度调到26度',
+    text: '小助手，把空调温度调到26度',
     response: '已将空调温度调节至26度'
   },
   {
     id: 3,
-    text: '小爱同学，播放轻音乐',
+    text: '小助手，播放轻音乐',
     response: '正在为您播放轻音乐'
   },
   {
     id: 4,
-    text: '小爱同学，明天早上7点叫我起床',
+    text: '小助手，明天早上7点叫我起床',
     response: '好的，已设置明天早上7点的闹钟'
   }
 ])

@@ -286,7 +286,7 @@ const quizQuestions = ref([
   {
     id: 3,
     category: '智慧娱乐',
-    question: '流媒体平台如Netflix使用AI技术主要是为了？',
+    question: '流媒体平台使用AI技术主要是为了？',
     options: [
       '提高视频画质',
       '个性化内容推荐',
@@ -294,7 +294,7 @@ const quizQuestions = ref([
       '增加存储容量'
     ],
     correct: 1,
-    explanation: 'Netflix等流媒体平台主要使用协同过滤、深度学习等AI算法分析用户观看历史和偏好，为每个用户提供个性化的内容推荐，提升用户体验和平台粘性。'
+    explanation: '流媒体平台主要使用协同过滤、深度学习等AI算法分析用户观看历史和偏好，为每个用户提供个性化的内容推荐，提升用户体验和平台粘性。'
   },
   {
     id: 4,
