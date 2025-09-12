@@ -140,8 +140,18 @@
           <el-card class="redirect-card">
             <div class="redirect-content">
               <el-icon class="redirect-icon"><Connection /></el-icon>
-              <h3>正在跳转到神经网络实验室...</h3>
-              <p>请稍候，系统正在为您启动交互式训练环境</p>
+              <h3>神经网络训练实验室</h3>
+              <p>点击下方按钮进入交互式神经网络训练环境</p>
+              <div class="redirect-actions">
+                <el-button 
+                  type="primary" 
+                  size="large" 
+                  @click="goToNetworkTraining"
+                  :icon="Connection"
+                >
+                  进入实验室
+                </el-button>
+              </div>
             </div>
           </el-card>
         </div>
@@ -227,16 +237,19 @@ const handleTabClick = (tab) => {
   // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
   if (tab.name === 'network-training') {
     goToNetworkTraining()
-    // 重置回之前的标签页，避免显示空白内容
-    setTimeout(() => {
-      activeTab.value = 'data-flow'
-    }, 100)
+    return // 直接返回，不执行后续逻辑
   }
 }
 
-const goToNetworkTraining = () => {
-  router.push('/network-training')
-  ElMessage.success('正在启动神经网络训练实验室...')
+const goToNetworkTraining = async () => {
+  try {
+    console.log('正在跳转到神经网络训练实验室...')
+    await router.push('/network-training')
+    ElMessage.success('正在启动神经网络训练实验室...')
+  } catch (error) {
+    console.error('跳转失败:', error)
+    ElMessage.error('跳转失败，请重试')
+  }
 }
 
 const updateProgress = (tabName, progress) => {
@@ -552,7 +565,23 @@ const getTabLabel = (tabName) => {
       p {
         font-size: 1.1rem;
         opacity: 0.9;
-        margin: 0;
+        margin: 0 0 2rem 0;
+      }
+      
+      .redirect-actions {
+        margin-top: 1.5rem;
+        
+        .el-button {
+          padding: 12px 24px;
+          font-size: 1.1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+        }
       }
     }
   }

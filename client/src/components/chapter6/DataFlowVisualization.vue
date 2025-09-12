@@ -62,7 +62,7 @@
     <!-- 数据流程图 -->
     <div class="flow-diagram">
       <el-card class="diagram-card">
-        <div class="flow-steps">
+        <div class="flow-steps" ref="flowStepsContainer">
           <!-- 步骤1: 原始数据 -->
           <div 
             class="flow-step" 
@@ -270,7 +270,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { 
   DataLine, VideoPlay, VideoPause, RefreshRight,
   Folder, Setting, Upload, Cpu, TrendCharts,
@@ -287,6 +287,7 @@ const trainingProgress = ref(0)
 const isAnimating = ref(false)
 const animationSpeed = ref(1)
 const animationTimer = ref(null)
+const flowStepsContainer = ref(null)
 
 // 步骤信息
 const stepInfos = ref([
@@ -454,6 +455,52 @@ const getCurrentStepInfo = () => {
   return stepInfos.value[index] || stepInfos.value[0]
 }
 
+// 自动滚动到当前步骤
+const scrollToCurrentStep = async () => {
+  if (currentStep.value < 0) return
+  
+  await nextTick()
+  
+  const container = flowStepsContainer.value
+  if (!container) return
+  
+  const steps = container.querySelectorAll('.flow-step')
+  if (!steps[currentStep.value]) return
+  
+  const currentStepElement = steps[currentStep.value]
+  
+  // 获取容器和步骤的尺寸信息
+  const containerRect = container.getBoundingClientRect()
+  const stepRect = currentStepElement.getBoundingClientRect()
+  const containerWidth = container.clientWidth
+  const containerScrollWidth = container.scrollWidth
+  
+  // 计算步骤相对于容器的位置
+  const stepLeft = currentStepElement.offsetLeft
+  const stepWidth = currentStepElement.offsetWidth
+  
+  // 计算目标滚动位置，使当前步骤完全居中
+  // 步骤中心位置 - 容器中心位置 = 需要滚动的距离
+  const stepCenterPosition = stepLeft + stepWidth / 2
+  const containerCenterPosition = containerWidth / 2
+  let targetScrollLeft = stepCenterPosition - containerCenterPosition
+  
+  // 确保不会滚动超出边界
+  const maxScrollLeft = Math.max(0, containerScrollWidth - containerWidth)
+  targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft))
+  
+  // 平滑滚动到目标位置
+  container.scrollTo({
+    left: targetScrollLeft,
+    behavior: 'smooth'
+  })
+}
+
+// 监听currentStep变化，自动滚动
+watch(currentStep, () => {
+  scrollToCurrentStep()
+})
+
 // 生命周期
 onMounted(() => {
   // 初始化
@@ -550,30 +597,53 @@ onUnmounted(() => {
     .flow-steps {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       padding: 2rem;
       overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 1rem;
+      
+      // 自定义滚动条样式
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: var(--border-color, #393b40);
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: var(--accent-color, #b0b3b8);
+        border-radius: 4px;
+        
+        &:hover {
+          background: var(--accent-light-color, #d1d3d8);
+        }
+      }
 
       .flow-step {
-        flex: 1;
-        min-width: 200px;
-        text-align: center;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 2px solid var(--border-color, #393b40);
-        background: var(--secondary-color, #23272e);
-        transition: all 0.3s ease;
+          flex: 0 0 auto;
+          min-width: 250px;
+          width: 250px;
+          text-align: center;
+          padding: 1.5rem;
+          border-radius: 12px;
+          border: 2px solid var(--border-color, #393b40);
+          background: var(--secondary-color, #23272e);
+          transition: all 0.3s ease;
 
-        &.active {
-          border-color: var(--accent-color, #b0b3b8);
-          background: rgba(176, 179, 184, 0.1);
-          transform: scale(1.05);
-        }
+          &.active {
+            border-color: var(--accent-color, #b0b3b8);
+            background: rgba(176, 179, 184, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 8px 32px rgba(176, 179, 184, 0.2);
+          }
 
-        &.completed {
-          border-color: #d1d3d8;
-          background: rgba(209, 211, 216, 0.1);
-        }
+          &.completed {
+            border-color: #d1d3d8;
+            background: rgba(209, 211, 216, 0.1);
+          }
         
         .step-icon {
           font-size: 2rem;
@@ -722,10 +792,14 @@ onUnmounted(() => {
       
       .flow-arrow {
         flex: 0 0 auto;
-        margin: 0 1rem;
+        margin: 0;
         font-size: 1.5rem;
         color: #bdc3c7;
         transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
         
         &.active {
           color: #3498db;

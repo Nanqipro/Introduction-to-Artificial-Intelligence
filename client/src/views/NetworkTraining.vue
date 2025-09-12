@@ -31,6 +31,115 @@
       </div>
     </div>
 
+    <!-- 使用指南区域 -->
+    <div class="usage-guide">
+      <el-card class="guide-card">
+        <template #header>
+          <div class="guide-header">
+            <el-icon><Document /></el-icon>
+            <span>神经网络训练实验室使用指南</span>
+          </div>
+        </template>
+        
+        <div class="guide-content">
+          <div class="guide-section">
+            <h4>🎯 实验简介</h4>
+            <p>本实验室提供了一个交互式的神经网络训练环境，您将体验完整的猫狗图像分类模型训练过程。通过可视化的方式，深入理解神经网络的工作原理、数据流动过程以及各种参数对训练效果的影响。</p>
+          </div>
+          
+          <div class="guide-section">
+            <h4>🚀 快速开始</h4>
+            <div class="steps-grid">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h5>启动训练</h5>
+                  <p>点击右侧控制面板的"开始训练"按钮，启动神经网络训练过程</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h5>观察过程</h5>
+                  <p>观察网络结构图中数据的流动，实时查看准确率和损失值的变化</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h5>交互探索</h5>
+                  <p>点击网络节点进行交互，调整训练参数，体验不同设置的效果</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h5>分析结果</h5>
+                  <p>查看训练结果和性能指标，理解神经网络的学习过程</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <h4>💡 核心功能</h4>
+            <div class="features-grid">
+              <div class="feature-item">
+                <el-icon class="feature-icon"><Connection /></el-icon>
+                <div class="feature-text">
+                  <h5>网络可视化</h5>
+                  <p>实时显示神经网络结构和数据流动过程</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <el-icon class="feature-icon"><VideoPlay /></el-icon>
+                <div class="feature-text">
+                  <h5>训练控制</h5>
+                  <p>开始、暂停、重置训练，调整训练速度</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <el-icon class="feature-icon"><Trophy /></el-icon>
+                <div class="feature-text">
+                  <h5>性能监控</h5>
+                  <p>实时监控准确率、损失值等关键指标</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <el-icon class="feature-icon"><Document /></el-icon>
+                <div class="feature-text">
+                  <h5>参数调节</h5>
+                  <p>调整学习率、批次大小等超参数</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <h4>⚠️ 使用提示</h4>
+            <div class="tips-list">
+              <div class="tip-item">
+                <el-icon class="tip-icon"><Trophy /></el-icon>
+                <span>建议首次使用时先观看完整的训练过程，了解基本流程</span>
+              </div>
+              <div class="tip-item">
+                <el-icon class="tip-icon"><Connection /></el-icon>
+                <span>点击网络节点可以启用/禁用该节点，观察对训练效果的影响</span>
+              </div>
+              <div class="tip-item">
+                <el-icon class="tip-icon"><VideoPlay /></el-icon>
+                <span>可以随时调整训练速度，快速查看训练效果或仔细观察细节</span>
+              </div>
+              <div class="tip-item">
+                <el-icon class="tip-icon"><Document /></el-icon>
+                <span>尝试不同的参数组合，体验超参数对模型性能的影响</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-card>
+    </div>
+
     <!-- 快速导航面板 -->
     <div class="quick-nav">
       <el-card class="nav-card">
@@ -354,6 +463,278 @@ onUnmounted(() => {
       radial-gradient(circle at 80% 20%, var(--glow-light) 0%, transparent 50%),
       radial-gradient(circle at 40% 40%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
     pointer-events: none;
+  }
+}
+
+// 使用指南样式
+.usage-guide {
+  margin: 1.5rem 2rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 5;
+  
+  .guide-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light-color);
+    border-radius: 20px;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--glow-color) 0%, var(--glow-light) 100%);
+      opacity: 0.05;
+      pointer-events: none;
+    }
+    
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--accent-color) 100%);
+      border-radius: 20px 20px 0 0;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-light-color);
+      position: relative;
+      z-index: 2;
+      
+      .guide-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        
+        .el-icon {
+          font-size: 1.4rem;
+          filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+      }
+    }
+    
+    :deep(.el-card__body) {
+      padding: 2rem;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+    }
+  }
+  
+  .guide-content {
+    .guide-section {
+      margin-bottom: 2.5rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      h4 {
+        color: var(--text-color);
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      
+      p {
+        color: var(--text-secondary-color);
+        line-height: 1.7;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+    }
+    
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      
+      .step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.2rem;
+        padding: 1.8rem;
+        background: var(--secondary-color);
+        border-radius: 16px;
+        border: 1px solid var(--border-light-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+          transition: left 0.5s;
+        }
+        
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px var(--glow-color);
+          border-color: var(--accent-color);
+          background: var(--card-hover-bg);
+          
+          &::before {
+            left: 100%;
+          }
+        }
+        
+        .step-number {
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--accent-color) 100%);
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 1.1rem;
+          flex-shrink: 0;
+          box-shadow: 0 4px 15px var(--glow-color);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .step-content {
+          h5 {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          }
+          
+          p {
+            color: var(--text-secondary-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+          }
+        }
+      }
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+      
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: var(--secondary-color);
+        border-radius: 12px;
+        border: 1px solid var(--border-light-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+          transition: left 0.5s;
+        }
+        
+        &:hover {
+          background: var(--card-hover-bg);
+          border-color: var(--accent-color);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px var(--glow-color);
+          
+          &::before {
+            left: 100%;
+          }
+        }
+        
+        .feature-icon {
+          font-size: 1.8rem;
+          color: var(--accent-color);
+          flex-shrink: 0;
+          filter: drop-shadow(0 0 8px var(--glow-color));
+        }
+        
+        .feature-text {
+          h5 {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          }
+          
+          p {
+            color: var(--text-secondary-color);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+          }
+        }
+      }
+    }
+    
+    .tips-list {
+      margin-top: 1.5rem;
+      
+      .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-light-color);
+        transition: all 0.3s ease;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        &:hover {
+          padding-left: 0.5rem;
+          
+          .tip-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px var(--glow-color));
+          }
+        }
+        
+        .tip-icon {
+          font-size: 1.2rem;
+          color: var(--accent-color);
+          margin-top: 0.2rem;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+        
+        span {
+          color: var(--text-secondary-color);
+          font-size: 0.95rem;
+          line-height: 1.6;
+        }
+      }
+    }
   }
 }
 
