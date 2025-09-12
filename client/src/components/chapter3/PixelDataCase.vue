@@ -113,11 +113,11 @@
       <div class="interaction-stats">
         <div class="stats-grid">
           <div class="stat-item">
-            <span class="stat-value">{{ pixelInteractionCount }}</span>
+            <span class="stat-value">{{ localInteractionCount }}</span>
             <span class="stat-label">交互次数</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value">{{ pixelTotalHoverTime.toFixed(1) }}s</span>
+            <span class="stat-value">{{ localTotalHoverTime.toFixed(1) }}s</span>
             <span class="stat-label">总体验时长</span>
           </div>
           <div class="stat-item">
@@ -147,13 +147,15 @@ export default {
       default: false
     }
   },
-  emits: ['pixel-mouse-enter', 'pixel-mouse-leave'],
+  emits: ['pixel-mouse-enter', 'pixel-mouse-leave', 'interaction-update', 'case-completed'],
   data() {
     return {
       isPixelHovering: false,
       pixelHoverStartTime: null,
       humanViewImage: '/images/chapter3/human-view.png',
-      computerViewImage: '/images/chapter3/computer-view.png'
+      computerViewImage: '/images/chapter3/computer-view.png',
+      localInteractionCount: 0,
+      localTotalHoverTime: 0
     }
   },
   methods: {
@@ -169,6 +171,17 @@ export default {
       // 计算悬停时间
       if (this.pixelHoverStartTime) {
         const hoverDuration = (Date.now() - this.pixelHoverStartTime) / 1000
+        
+        // 更新本地统计数据
+        this.localInteractionCount += 1
+        this.localTotalHoverTime += hoverDuration
+        
+        // 发送交互更新事件
+        this.$emit('interaction-update', {
+          interactionCount: this.localInteractionCount,
+          totalHoverTime: this.localTotalHoverTime
+        })
+        
         this.$emit('pixel-mouse-leave', hoverDuration)
         this.pixelHoverStartTime = null
       }

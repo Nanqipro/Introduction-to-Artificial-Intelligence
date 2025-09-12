@@ -69,6 +69,17 @@
             </div>
           </div>
           
+          <!-- 图片来源信息 -->
+          <div class="image-source">
+            <div class="source-info">
+              <span class="source-label">图片来源：</span>
+              <button class="source-button" @click="openImageSource">
+                <span class="source-icon">🔗</span>
+                <span class="source-text">查看原始图片</span>
+              </button>
+            </div>
+          </div>
+          
           <!-- 技术说明 -->
           <div class="technical-explanation">
             <div class="explanation-grid">
@@ -127,11 +138,11 @@
       <div class="detection-stats">
         <div class="stats-grid">
           <div class="stat-item">
-            <span class="stat-value">{{ edgeInteractionCount }}</span>
+            <span class="stat-value">{{ localInteractionCount }}</span>
             <span class="stat-label">检测次数</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value">{{ edgeTotalHoverTime.toFixed(1) }}s</span>
+            <span class="stat-value">{{ localTotalHoverTime.toFixed(1) }}s</span>
             <span class="stat-label">观察时长</span>
           </div>
           <div class="stat-item">
@@ -165,13 +176,15 @@ export default {
       default: false
     }
   },
-  emits: ['edge-mouse-enter', 'edge-mouse-leave'],
+  emits: ['edge-mouse-enter', 'edge-mouse-leave', 'interaction-update', 'case-completed'],
   data() {
     return {
       isEdgeHovering: false,
       edgeHoverStartTime: null,
-      originalImage: '/images/chapter3/original-image.png',
-      edgeDetectedImage: '/images/chapter3/edge-detected.png'
+      originalImage: '/images/chapter3/neymar-original.jpg',
+      edgeDetectedImage: '/images/chapter3/neymar-edges.jpg',
+      localInteractionCount: 0,
+      localTotalHoverTime: 0
     }
   },
   methods: {
@@ -187,9 +200,26 @@ export default {
       // 计算悬停时间
       if (this.edgeHoverStartTime) {
         const hoverDuration = (Date.now() - this.edgeHoverStartTime) / 1000
+        
+        // 更新本地统计数据
+        this.localInteractionCount += 1
+        this.localTotalHoverTime += hoverDuration
+        
+        // 发出交互更新事件
+        this.$emit('interaction-update', {
+          interactionCount: this.localInteractionCount,
+          totalHoverTime: this.localTotalHoverTime
+        })
+        
         this.$emit('edge-mouse-leave', hoverDuration)
         this.edgeHoverStartTime = null
       }
+    },
+    
+    openImageSource() {
+      // 打开图片来源链接
+      const sourceUrl = 'https://frenchfootballweekly.com/wp-content/uploads/2023/08/Neymar-the-astronomical-salary-that-awaits-him-in-Saudi-Arabia.jpg'
+      window.open(sourceUrl, '_blank')
     }
   }
 }
@@ -339,7 +369,7 @@ export default {
 
 .image-container {
   position: relative;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto 2rem;
   border-radius: 12px;
   overflow: hidden;
@@ -555,9 +585,64 @@ export default {
     background: rgba(16, 185, 129, 0.05);
     border-color: rgba(16, 185, 129, 0.2);
   }
+}
+
+/* 图片来源样式 */
+.image-source {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.source-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.source-label {
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.source-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
   
-  .detection-stats {
-    background: var(--secondary-color);
+  &:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.source-icon {
+  font-size: 0.9rem;
+}
+
+.source-text {
+  font-size: 0.85rem;
+}
+
+.detection-stats {
+  background: var(--secondary-color);
 }
 </style>

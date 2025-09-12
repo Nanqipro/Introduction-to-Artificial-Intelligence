@@ -131,6 +131,22 @@ export default {
     edgeCaseCompleted: {
       type: Boolean,
       default: false
+    },
+    pixelInteractionCount: {
+      type: Number,
+      default: 0
+    },
+    edgeInteractionCount: {
+      type: Number,
+      default: 0
+    },
+    pixelTotalHoverTime: {
+      type: Number,
+      default: 0
+    },
+    edgeTotalHoverTime: {
+      type: Number,
+      default: 0
     }
   },
   emits: ['start-quiz', 'review-cases'],

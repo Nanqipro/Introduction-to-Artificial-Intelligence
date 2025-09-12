@@ -34,13 +34,19 @@
     <!-- 像素数据案例 -->
     <PixelDataCase 
       v-if="activeCase === 'pixel'"
+      :pixel-interaction-count="pixelInteractionCount"
+      :pixel-total-hover-time="pixelTotalHoverTime"
       @case-completed="handlePixelCaseCompleted"
+      @interaction-update="handlePixelInteractionUpdate"
     />
 
     <!-- 边缘特征提取案例 -->
     <EdgeDetectionCase 
       v-if="activeCase === 'edge'"
+      :edge-interaction-count="edgeInteractionCount"
+      :edge-total-hover-time="edgeTotalHoverTime"
       @case-completed="handleEdgeCaseCompleted"
+      @interaction-update="handleEdgeInteractionUpdate"
     />
 
     <!-- 案例总结 -->
@@ -50,6 +56,8 @@
       :edge-case-completed="edgeCaseCompleted"
       :pixel-interaction-count="pixelInteractionCount"
       :edge-interaction-count="edgeInteractionCount"
+      :pixel-total-hover-time="pixelTotalHoverTime"
+      :edge-total-hover-time="edgeTotalHoverTime"
       @start-quiz="startQuiz"
       @scroll-to-top="scrollToTop"
     />
@@ -84,10 +92,12 @@ export default {
       
       // 像素数据案例相关数据
       pixelInteractionCount: 0,
+      pixelTotalHoverTime: 0,
       pixelCaseCompleted: false,
       
       // 边缘检测案例相关数据
       edgeInteractionCount: 0,
+      edgeTotalHoverTime: 0,
       edgeCaseCompleted: false,
       
       // 案例导航列表
@@ -125,6 +135,18 @@ export default {
       if (data.completed) {
         this.$emit('case-completed', { caseId: 'edge', data })
       }
+    },
+
+    // 处理边缘检测交互更新
+    handleEdgeInteractionUpdate(data) {
+      this.edgeInteractionCount = data.interactionCount
+      this.edgeTotalHoverTime = data.totalHoverTime
+    },
+
+    // 处理像素案例交互更新
+    handlePixelInteractionUpdate(data) {
+      this.pixelInteractionCount = data.interactionCount
+      this.pixelTotalHoverTime = data.totalHoverTime
     },
     
     // 启动测验
