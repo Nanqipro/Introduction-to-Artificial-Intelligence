@@ -240,7 +240,11 @@ const goToNetworkTraining = () => {
 }
 
 const updateProgress = (tabName, progress) => {
-  progressData.value[tabName] = progress
+  // 使用Vue 3推荐的方式更新响应式对象
+  progressData.value = {
+    ...progressData.value,
+    [tabName]: progress
+  }
   
   // 检查是否达成成就
   if (progress === 100) {
