@@ -401,7 +401,10 @@ const getTabLabel = (tabName) => {
     .tab-label {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
+      width: 100%;
+      text-align: center;
     }
   }
 }
@@ -575,20 +578,35 @@ html.light-theme .chapter6-interactive {
       }
 
       :deep(.el-tabs__item) {
-        color: var(--tab-item-color);
-        background: var(--feature-item-bg);
-        border: 1px solid var(--feature-item-border);
+        color: var(--tab-item-color) !important;
+        background: var(--feature-item-bg) !important;
+        border: 1px solid var(--feature-item-border) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 0 !important;
 
         &:hover {
-          color: var(--accent-color);
-          background: var(--feature-item-hover-bg);
+          color: var(--accent-color) !important;
+          background: var(--feature-item-hover-bg) !important;
         }
 
         &.is-active {
-          color: var(--accent-color);
-          background: var(--intro-card-bg);
-          border-bottom: 2px solid var(--accent-color);
+          color: var(--accent-color) !important;
+          background: var(--intro-card-bg) !important;
+          border-bottom: 2px solid var(--accent-color) !important;
         }
+      }
+
+      :deep(.el-tabs__item .tab-label) {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        height: 100% !important;
+        padding: 12px 16px !important;
+        gap: 0.5rem !important;
       }
     }
   }

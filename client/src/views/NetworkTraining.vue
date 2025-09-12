@@ -51,13 +51,7 @@
             </el-button>
           </div>
           
-          <div class="nav-item">
-            <el-icon><Download /></el-icon>
-            <span>导出结果</span>
-            <el-button @click="exportResults" type="success" size="small">
-              导出
-            </el-button>
-          </div>
+
           
           <div class="nav-item">
             <el-icon><Share /></el-icon>
@@ -201,9 +195,16 @@ const goBack = () => {
 }
 
 const quickStart = () => {
-  if (networkVisualizationRef.value) {
-    networkVisualizationRef.value.startTraining()
-    ElMessage.success('训练已开始！')
+  if (networkVisualizationRef.value && typeof networkVisualizationRef.value.startTraining === 'function') {
+    try {
+      networkVisualizationRef.value.startTraining()
+      ElMessage.success('训练已开始！')
+    } catch (error) {
+      console.error('启动训练失败:', error)
+      ElMessage.error('启动训练失败，请稍后重试')
+    }
+  } else {
+    ElMessage.warning('网络组件尚未准备就绪，请稍后重试')
   }
 }
 
@@ -284,9 +285,12 @@ const handleTrainingComplete = (results) => {
   
   showCompletionDialog.value = true
   
+  // 自动导出结果
+  exportResults()
+  
   ElNotification({
     title: '实验完成',
-    message: `恭喜！您的神经网络达到了${finalAccuracy.value}%的准确率`,
+    message: `恭喜！您的神经网络达到了${finalAccuracy.value}%的准确率，结果已自动导出`,
     type: 'success',
     duration: 5000
   })
@@ -294,11 +298,18 @@ const handleTrainingComplete = (results) => {
 
 const resetExperiment = () => {
   showCompletionDialog.value = false
-  if (networkVisualizationRef.value) {
-    networkVisualizationRef.value.resetTraining()
+  if (networkVisualizationRef.value && typeof networkVisualizationRef.value.resetTraining === 'function') {
+    try {
+      networkVisualizationRef.value.resetTraining()
+      ElMessage.info('实验已重置，可以重新开始')
+    } catch (error) {
+      console.error('重置实验失败:', error)
+      ElMessage.error('重置实验失败，请刷新页面重试')
+    }
+  } else {
+    ElMessage.warning('网络组件尚未准备就绪')
   }
   experimentStartTime.value = null
-  ElMessage.info('实验已重置，可以重新开始')
 }
 
 const goToNextChapter = () => {

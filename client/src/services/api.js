@@ -105,6 +105,20 @@ api.interceptors.response.use(
       if (url?.includes('/api/user/register')) {
         return Promise.reject(new Error('注册失败：' + (error.response?.data?.message || '用户名已存在或服务器错误')))
       }
+      
+      // Token过期处理：清理本地存储并跳转登录页
+      console.log('🔒 Token已过期，清理认证状态并跳转登录页')
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
+      localStorage.removeItem('user')
+      
+      // 延迟跳转，避免在某些情况下立即跳转导致的问题
+      setTimeout(() => {
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
+        }
+      }, 100)
+      
       return Promise.reject(new Error('登录已过期，请重新登录'))
     }
     

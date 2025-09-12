@@ -23,7 +23,7 @@
         >
           <div class="chapter-header">
             <div class="chapter-badge">
-              {{ chapter.chapterNumber === '0' ? '序章' : `第${chapter.chapterNumber}章` }}
+              {{ getChapterDisplayNumber(chapter.chapterNumber) }}
             </div>
             <div class="chapter-type">{{ getChapterType(chapter.type) }}</div>
           </div>
@@ -304,6 +304,16 @@ export default {
      // 跳转到高级测试页面
      goToTestPage() {
        this.$router.push('/system-test')
+     },
+
+     getChapterDisplayNumber(chapterNumber) {
+       if (chapterNumber === '0') {
+         return '序章'
+       } else if (chapterNumber === 'appendix') {
+         return '附录'
+       } else {
+         return `第${chapterNumber}章`
+       }
      }
   }
 }

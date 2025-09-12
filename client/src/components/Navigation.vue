@@ -88,11 +88,14 @@
               统计
             </el-dropdown-item>
             <div class="dropdown-divider"></div>
-            <el-dropdown-item @click="goToPage('/admin')">
-              <el-icon style="margin-right: 12px;"><Setting /></el-icon>
-              管理
-            </el-dropdown-item>
-            <div class="dropdown-divider"></div>
+            <!-- 只有管理员才显示管理菜单 -->
+            <template v-if="currentUser?.role === 'admin'">
+              <el-dropdown-item @click="goToPage('/admin')">
+                <el-icon style="margin-right: 12px;"><Setting /></el-icon>
+                管理
+              </el-dropdown-item>
+              <div class="dropdown-divider"></div>
+            </template>
             <el-dropdown-item @click="goToPage('/about')">
               <el-icon style="margin-right: 12px;"><InfoFilled /></el-icon>
               关于
@@ -253,8 +256,16 @@ onMounted(async () => {
   background: #fff;
   box-shadow: 0 2px 8px rgba(var(--text-secondary-color-rgb, 176, 179, 184), 0.10);
   border-radius: 50%;
-  padding: 0.2rem;
+  padding: 0;
   flex-shrink: 0; // 防止图标被压缩
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 .brand-text {

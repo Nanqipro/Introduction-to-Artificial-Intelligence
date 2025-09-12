@@ -343,7 +343,7 @@ export default {
       selectedType: '',
       selectedDifficulty: '',
       searchKeyword: '',
-      chapters: ['1', '2', '3', '4', '5', '6', '7'],
+      chapters: ['1', '2', '3', '4', '6', '7'], // 第五章暂未实现，已移除
       showImportModal: false,
       showCreateModal: false,
       selectedFile: null,
@@ -702,6 +702,13 @@ export default {
     async saveQuestion() {
       this.saving = true
       try {
+        // 验证章节ID（第5章暂未实现）
+        if (this.questionForm.chapterId === 5 || this.questionForm.chapterId === '5') {
+          alert('第5章暂未实现，请选择其他章节')
+          this.saving = false
+          return
+        }
+        
         const questionData = {
           chapterId: this.questionForm.chapterId,
           type: this.questionForm.type,
@@ -1577,4 +1584,4 @@ export default {
     grid-template-columns: 1fr;
   }
 }
-</style> 
+</style>

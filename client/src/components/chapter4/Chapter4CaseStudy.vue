@@ -94,7 +94,7 @@
       </transition>
 
       <!-- 知识测验板块 -->
-      <transition name="slide-down" mode="out-in">
+      <!-- <transition name="slide-down" mode="out-in">
         <QuizSection 
           v-if="currentSection === 4" 
           key="quiz"
@@ -102,7 +102,7 @@
           @quiz-completed="handleQuizCompleted"
           @interaction="handleInteraction"
         />
-      </transition>
+      </transition> -->
     </div>
 
     <!-- 语音助手对话框 -->
@@ -143,7 +143,7 @@ import SmartLifeSection from './SmartLifeSection.vue'
 import SmartDrivingSection from './SmartDrivingSection.vue'
 import EntertainmentSection from './EntertainmentSection.vue'
 import MedicalSection from './MedicalSection.vue'
-import QuizSection from './QuizSection.vue'
+// import QuizSection from './QuizSection.vue'
 
 // 响应式数据
 const showParticles = ref(false)
@@ -161,8 +161,8 @@ const sections = ref([
   { id: 'smart-life', title: '智慧生活', icon: '🏠' },
   { id: 'smart-driving', title: '智慧驾驶', icon: '🚗' },
   { id: 'entertainment', title: '智慧娱乐', icon: '🎮' },
-  { id: 'medical', title: '精准医疗', icon: '🏥' },
-  { id: 'quiz', title: '知识测验', icon: '🧠' }
+  { id: 'medical', title: '精准医疗', icon: '🏥' }
+  // { id: 'quiz', title: '知识测验', icon: '🧠' }
 ])
 
 // 语音指令示例
@@ -211,10 +211,10 @@ const onImageClick = (imageType) => {
   console.log(`点击了图片: ${imageType}`)
 }
 
-const handleQuizCompleted = (result) => {
-  console.log('测验完成:', result)
-  handleInteraction()
-}
+// const handleQuizCompleted = (result) => {
+//   console.log('测验完成:', result)
+//   handleInteraction()
+// }
 
 const toggleVoiceDemo = () => {
   isListening.value = !isListening.value
@@ -765,84 +765,5 @@ onMounted(() => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .case-title {
-  color: var(--text-color);
-}
-
-.light-theme .case-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .progress-item {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .progress-info h4 {
-  color: var(--text-color);
-}
-
-.light-theme .progress-info p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .nav-button {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .nav-button:hover {
-  border-color: var(--accent-color);
-}
-
-.light-theme .nav-text {
-  color: var(--text-color);
-}
-
-.light-theme .voice-dialog-content {
-  background: var(--card-bg);
-}
-
-.light-theme .voice-dialog-header {
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .voice-dialog-header h3 {
-  color: var(--text-color);
-}
-
-.light-theme .close-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .voice-status {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .voice-examples h4 {
-  color: var(--text-color);
-}
-
-.light-theme .command-item {
-  background: var(--secondary-color);
-  border-color: var(--border-color);
-}
-
-.light-theme .command-item:hover {
-  background: var(--border-color);
-}
-
-.light-theme .command-text {
-  color: var(--text-color);
-}
-
-.light-theme .command-response {
-  color: var(--text-secondary-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

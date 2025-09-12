@@ -77,13 +77,22 @@ export default {
           questionCount: 10,
           estimatedTime: 15
         },
+        // 第五章暂未实现，已移除
+        // {
+        //   id: '5',
+        //   title: 'AI发展趋势',
+        //   description: '人工智能的未来发展方向和前沿技术',
+        //   icon: '🚀',
+        //   questionCount: 8,
+        //   estimatedTime: 12
+        // },
         {
-          id: '5',
-          title: 'AI发展趋势',
-          description: '人工智能的未来发展方向和前沿技术',
-          icon: '🚀',
-          questionCount: 8,
-          estimatedTime: 12
+          id: '6',
+          title: '第一个人工智能项目',
+          description: '实践项目：图像分类和手写数字识别',
+          icon: '💻',
+          questionCount: 10,
+          estimatedTime: 18
         },
         {
           id: '6',

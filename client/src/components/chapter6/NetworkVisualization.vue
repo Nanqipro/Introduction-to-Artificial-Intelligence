@@ -930,6 +930,13 @@ onUnmounted(() => {
   }
   isTraining.value = false
 })
+
+// 暴露方法给父组件
+defineExpose({
+  startTraining,
+  pauseTraining,
+  resetTraining
+})
 </script>
 
 <style lang="scss" scoped>

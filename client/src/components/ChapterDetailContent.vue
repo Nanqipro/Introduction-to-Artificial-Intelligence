@@ -4,7 +4,7 @@
     <header class="chapter-header">
       <div class="chapter-meta">
         <span class="chapter-badge">
-          {{ chapter.chapterNumber === '0' ? '序章' : ('第' + chapter.chapterNumber + '章') }}
+          {{ getChapterDisplayNumber(chapter.chapterNumber) }}
         </span>
         <span class="chapter-type">{{ getChapterType(chapter.type) }}</span>
       </div>
@@ -402,6 +402,15 @@ export default {
       } catch (error) {
         console.error('添加章节经验值失败:', error)
         this.$message.error('添加经验值失败，请稍后重试')
+      }
+    },
+    getChapterDisplayNumber(chapterNumber) {
+      if (chapterNumber === '0') {
+        return '序章'
+      } else if (chapterNumber === 'appendix') {
+        return '附录'
+      } else {
+        return `第${chapterNumber}章`
       }
     }
   }

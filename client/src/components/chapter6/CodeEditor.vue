@@ -48,6 +48,14 @@
                     运行代码
                   </el-button>
                   <el-button 
+                    type="info" 
+                    @click="resetCode" 
+                    size="small"
+                  >
+                    <el-icon><RefreshLeft /></el-icon>
+                    重置
+                  </el-button>
+                  <el-button 
                     type="warning" 
                     @click="clearCode" 
                     size="small"
@@ -151,7 +159,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { 
   Edit, CaretRight, Delete, Monitor, 
-  WarningFilled, Check 
+  WarningFilled, Check, RefreshLeft 
 } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 
@@ -327,6 +335,14 @@ const simulateCodeExecution = async () => {
 2  王五  35  广州  15000`
   } else {
     output.value = '代码执行成功！\n输出结果已显示。'
+  }
+}
+
+const resetCode = () => {
+  const example = codeExamples.value.find(ex => ex.id === selectedExample.value)
+  if (example) {
+    code.value = example.code
+    clearOutput()
   }
 }
 

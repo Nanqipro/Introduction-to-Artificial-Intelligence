@@ -5,9 +5,9 @@
       <h3 class="error-title">出现了一些问题</h3>
       <p class="error-message">{{ errorMessage }}</p>
       <div class="error-actions">
-        <button @click="retry" class="btn btn-primary">
-          🔄 重试
-        </button>
+        <el-button @click="retry" type="primary" :icon="RefreshIcon">
+          重试
+        </el-button>
         <button @click="goHome" class="btn btn-secondary">
           🏠 返回首页
         </button>
@@ -27,10 +27,17 @@
 </template>
 
 <script>
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
 export default {
   name: 'ErrorBoundary',
+  components: {
+    ElButton
+  },
   data() {
     return {
+      RefreshIcon: Refresh,
       hasError: false,
       errorMessage: '',
       errorStack: '',
@@ -247,4 +254,4 @@ export default {
     justify-content: center;
   }
 }
-</style> 
+</style>

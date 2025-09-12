@@ -6,7 +6,7 @@
           ← 返回章节列表
         </button>
         <div class="nav-title" v-if="chapter">
-          {{ chapter.chapterNumber === '0' ? '序章' : ('第' + chapter.chapterNumber + '章') }} - {{ chapter.title }}
+          {{ getChapterDisplayNumber(chapter.chapterNumber) }} - {{ chapter.title }}
         </div>
       </div>
     </nav>
@@ -87,6 +87,15 @@ export default {
     },
     goBack() {
       this.$router.push('/chapters')
+    },
+    getChapterDisplayNumber(chapterNumber) {
+      if (chapterNumber === '0') {
+        return '序章'
+      } else if (chapterNumber === 'appendix') {
+        return '附录'
+      } else {
+        return `第${chapterNumber}章`
+      }
     }
   }
 }
@@ -212,46 +221,44 @@ export default {
 }
 
 /* 浅色主题优化 */
-html.light-theme .chapter-detail {
-  .nav-back {
-    background: var(--btn-primary-bg);
-    box-shadow: var(--box-shadow-light);
-    
-    &:hover {
-      background: var(--btn-hover-bg);
-      box-shadow: var(--box-shadow);
-    }
-  }
+html.light-theme .chapter-detail .nav-back {
+  background: var(--btn-primary-bg);
+  box-shadow: var(--box-shadow-light);
+}
 
-  .nav-title {
-    background: var(--btn-primary-bg);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+html.light-theme .chapter-detail .nav-back:hover {
+  background: var(--btn-hover-bg);
+  box-shadow: var(--box-shadow);
+}
 
-  .btn-primary {
-    background: var(--accent-color);
-    color: white;
-    
-    &:hover {
-      background: var(--accent-light-color);
-      color: white;
-    }
-  }
+html.light-theme .chapter-detail .nav-title {
+  background: var(--btn-primary-bg);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .loading-spinner {
-    border-color: var(--border-color);
-    border-top-color: var(--accent-color);
-  }
+html.light-theme .chapter-detail .btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
 
-  .error-container h3 {
-    color: var(--text-color);
-  }
+html.light-theme .chapter-detail .btn-primary:hover {
+  background: var(--accent-light-color);
+  color: white;
+}
 
-  .error-container p {
-    color: var(--text-secondary-color);
-  }
+html.light-theme .chapter-detail .loading-spinner {
+  border-color: var(--border-color);
+  border-top-color: var(--accent-color);
+}
+
+html.light-theme .chapter-detail .error-container h3 {
+  color: var(--text-color);
+}
+
+html.light-theme .chapter-detail .error-container p {
+  color: var(--text-secondary-color);
 }
 
 @media (max-width: 768px) {

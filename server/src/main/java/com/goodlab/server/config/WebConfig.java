@@ -1,6 +1,7 @@
 package com.goodlab.server.config;
 
 import com.goodlab.server.interceptor.LoginInterceptor;
+import com.goodlab.server.interceptor.AdminInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,9 @@ public class WebConfig implements WebMvcConfigurer {
         @Autowired
         private LoginInterceptor loginInterceptor;
         
+        @Autowired
+        private AdminInterceptor adminInterceptor;
+        
         @Value("${file.upload.path:uploads/}")
         private String uploadPath;
 
@@ -36,20 +40,26 @@ public class WebConfig implements WebMvcConfigurer {
                                 .allowCredentials(true);
         }
 
-        // 放行登录接口 和注册接口
+        // 配置拦截器
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-                // 放行登录接口 和注册接口
+                // 登录认证拦截器 - 放行登录接口、注册接口等公共接口
                 registry.addInterceptor(loginInterceptor)
                                 .addPathPatterns("/**")
                                 .excludePathPatterns("/api/user/login", "/api/user/register", "/api/chapters/**",
-                                                "/api/quiz/**", "/api/admin/**", "/error", "/uploads/**", "/api/upload/**",
+                                                "/api/quiz/**", "/error", "/uploads/**", "/api/upload/**",
                                                 "/api/chapter1-case-study/**");
+                
+                // 管理员权限拦截器 - 只拦截管理员相关接口
+                registry.addInterceptor(adminInterceptor)
+                                .addPathPatterns("/api/admin/**");
 
                 System.out.println(
-                                "拦截器配置完成 - 放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /api/admin/**, /error, /uploads/**, /api/upload/**, /api/chapter1-case-study/**");
+                                "拦截器配置完成 - 登录拦截器放行路径: /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /error, /uploads/**, /api/upload/**, /api/chapter1-case-study/**");
                 System.out.println(
-                                "注意: /api/level/** 需要认证访问");
+                                "管理员拦截器拦截路径: /api/admin/**");
+                System.out.println(
+                                "注意: /api/level/** 和其他需要认证的接口需要登录访问，/api/admin/** 需要管理员权限");
         }
         
         // 配置静态资源访问

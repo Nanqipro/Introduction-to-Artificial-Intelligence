@@ -49,7 +49,7 @@ public class User {
     private String bio;// 个人简介
     private String school;// 学校
     private String major;// 专业
-    private String role = "学生";// 用户角色
+    private String role = "user";// 用户角色(admin/user)
     
     // 密码重置相关字段
     @Column(name = "reset_token")

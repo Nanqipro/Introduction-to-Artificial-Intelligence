@@ -310,10 +310,16 @@
       </div>
       
       <div class="stats-footer">
-        <button @click="loadGlobalStats" class="btn btn-secondary">
-          <span class="refresh-icon">🔄</span>
+        <el-button 
+          @click="loadGlobalStats" 
+          :loading="loadingStats"
+          type="primary"
+          class="refresh-btn"
+          :icon="RefreshIcon"
+          size="default"
+        >
           刷新数据
-        </button>
+        </el-button>
       </div>
     </div>
 
@@ -321,8 +327,14 @@
 </template>
 
 <script>
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
 export default {
   name: 'Chapter1CaseStudy',
+  components: {
+    ElButton
+  },
   props: {
     chapterId: {
       type: [String, Number],
@@ -332,6 +344,7 @@ export default {
   emits: ['case-completed', 'all-cases-completed'],
   data() {
     return {
+      RefreshIcon: Refresh,
       questionResults: {},
       questionAnswers: {
         1: { A: 'human', B: 'ai' },
@@ -1068,12 +1081,57 @@ export default {
 
 .stats-footer {
   text-align: center;
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
 }
 
-.refresh-icon {
-  margin-right: 0.5rem;
+.refresh-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+  color: #ffffff !important;
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.refresh-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.refresh-btn.is-loading {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Element Plus 按钮图标样式优化 */
+.refresh-btn .el-icon {
+  margin-right: 8px !important;
+  font-size: 16px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.refresh-btn:hover .el-icon {
+  transform: rotate(180deg) !important;
+}
+
+.refresh-btn.is-loading .el-icon {
+  animation: refresh-spin 1s linear infinite !important;
+}
+
+@keyframes refresh-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* 亮色主题适配 */
@@ -1118,6 +1176,25 @@ export default {
 
 :root.light-theme .stats-footer {
   border-color: #e2e8f0;
+}
+
+/* 亮色主题下的刷新按钮样式 */
+:root.light-theme .refresh-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25) !important;
+}
+
+:root.light-theme .refresh-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35) !important;
+}
+
+:root.light-theme .refresh-btn:active {
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25) !important;
+}
+
+:root.light-theme .refresh-btn.is-loading {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
 }
 
 :root.light-theme .stats-loading {

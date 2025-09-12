@@ -15,15 +15,14 @@
       <!-- 用户头像和基本信息 -->
       <ProfileHero 
         :user-info="userInfo"
-        :user-stats="userStats"
+        
         :user-achievements="userAchievements"
         @show-avatar-dialog="showAvatarDialog = true"
       />
       
       <!-- 主要内容区域 -->
       <div class="profile-content">
-        <!-- 学习统计 -->
-        <StudyStats :user-stats="userStats" />
+
         
         <!-- 个人信息 -->
         <UserInfo 
@@ -71,7 +70,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import ProfileHero from '@/components/profile/ProfileHero.vue'
-import StudyStats from '@/components/profile/StudyStats.vue'
+
 import UserInfo from '@/components/profile/UserInfo.vue'
 import UserAchievements from '@/components/profile/UserAchievements.vue'
 import { useAuth } from '@/composables/useAuth'
@@ -110,18 +109,7 @@ const customUploadRequest = async (options) => {
   }
 }
 
-// 用户统计数据（初始为空，挂载后从后端拉取）
-const userStats = reactive({
-  level: 0,
-  experience: 0,
-  completedChapters: 0,
-  totalScore: 0,
-  studyTime: 0,
-  achievements: 0,
-  networkProgress: 0,
-  protocolProgress: 0,
-  practiceProgress: 0
-})
+
 
 // 用户成就（从后端拉取）
 const userAchievements = ref([])
@@ -138,94 +126,13 @@ const formData = reactive({
 
 
 
-// 刷新用户统计数据的方法
-const refreshUserStats = async () => {
-  console.log('🔄 手动刷新用户统计数据...')
-  await fetchUserStatsWithRetry()
+// 刷新用户成就数据的方法
+const refreshUserAchievements = async () => {
+  console.log('🔄 手动刷新用户成就数据...')
   await fetchUserAchievementsWithRetry()
 }
 
-// 带重试机制的获取用户统计
-const fetchUserStatsWithRetry = async (maxRetries = 3) => {
-  // 检查登录状态和token
-  const token = localStorage.getItem('token')
-  if (!token || token.trim() === '' || token === 'null') {
-    console.log('🚫 UserProfile - 未登录，跳过用户统计获取')
-    // 设置默认统计数据
-    userStats.level = 1
-    userStats.experience = 0
-    userStats.completedChapters = 0
-    userStats.totalScore = 0
-    userStats.studyTime = 0
-    userStats.achievements = 0
-    userStats.networkProgress = 0
-    userStats.protocolProgress = 0
-    userStats.practiceProgress = 0
-    console.log('📊 已设置默认用户统计数据（未登录）')
-    return
-  }
-  
-  console.log('📊 开始拉取用户统计...')
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`📊 尝试获取用户统计 (${attempt}/${maxRetries})`)
-      const statsResp = await levelApi.getUserStats()
-      console.log('📊 用户统计响应:', statsResp)
-      
-      if (statsResp && statsResp.code === 200 && statsResp.data) {
-        const s = statsResp.data
-        userStats.level = s.level !== undefined ? s.level : userStats.level
-        userStats.experience = s.experience !== undefined ? s.experience : userStats.experience
-        userStats.completedChapters = s.completedChapters !== undefined ? s.completedChapters : userStats.completedChapters
-        userStats.totalScore = s.totalScore !== undefined ? s.totalScore : userStats.totalScore
-        userStats.studyTime = s.studyTime !== undefined ? s.studyTime : userStats.studyTime
-        userStats.achievements = s.achievementCount !== undefined ? s.achievementCount : userStats.achievements
-        userStats.networkProgress = s.networkProgress !== undefined ? s.networkProgress : userStats.networkProgress
-        userStats.protocolProgress = s.protocolProgress !== undefined ? s.protocolProgress : userStats.protocolProgress
-        userStats.practiceProgress = s.practiceProgress !== undefined ? s.practiceProgress : userStats.practiceProgress
-        console.log('✅ 用户统计同步完成:', userStats)
-        return // 成功获取，退出重试循环
-      }
-    } catch (error) {
-      console.error(`❌ 获取用户统计失败 (尝试 ${attempt}/${maxRetries}):`, error)
-      
-      // 检查是否是认证错误
-      if (error.message && error.message.includes('需要登录')) {
-        console.log('🚫 认证失败，设置默认数据')
-        userStats.level = 1
-        userStats.experience = 0
-        userStats.completedChapters = 0
-        userStats.totalScore = 0
-        userStats.studyTime = 0
-        userStats.achievements = 0
-        userStats.networkProgress = 0
-        userStats.protocolProgress = 0
-        userStats.practiceProgress = 0
-        console.log('📊 已设置默认用户统计数据（认证失败）')
-        return
-      }
-      
-      if (attempt === maxRetries) {
-        console.log('⚠️ 用户统计获取失败，使用默认数据')
-        // 设置默认统计数据
-        userStats.level = 1
-        userStats.experience = 0
-        userStats.completedChapters = 0
-        userStats.totalScore = 0
-        userStats.studyTime = 0
-        userStats.achievements = 0
-        userStats.networkProgress = 0
-        userStats.protocolProgress = 0
-        userStats.practiceProgress = 0
-        console.log('📊 已设置默认用户统计数据')
-      } else {
-        // 等待一段时间后重试
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
-      }
-    }
-  }
-}
+
 
 // 带重试机制的获取用户成就
 const fetchUserAchievementsWithRetry = async (maxRetries = 3) => {
@@ -316,7 +223,7 @@ watch(currentUser, () => {
 const handleVisibilityChange = () => {
   if (!document.hidden && isInitialized.value) {
     console.log('📱 页面重新可见，刷新用户数据...')
-    refreshUserStats()
+    refreshUserAchievements()
   }
 }
 
@@ -324,7 +231,7 @@ const handleVisibilityChange = () => {
 const handleFocus = () => {
     if (isInitialized.value) {
       console.log('🔍 窗口获得焦点，刷新用户数据')
-      refreshUserStats()
+      refreshUserAchievements()
     }
   }
 
@@ -333,7 +240,7 @@ const handleFocus = () => {
     console.log('🎯 收到经验值更新事件:', event.detail)
     // 延迟一点时间再刷新，确保后端数据已更新
     setTimeout(() => {
-      refreshUserStats()
+      refreshUserAchievements()
     }, 500)
   }
 
@@ -506,10 +413,9 @@ onMounted(async () => {
   // 再次检查认证状态，确保有有效的用户信息后才拉取统计数据
   if (currentUser.value && token.value) {
     console.log('✅ 认证状态有效，开始拉取统计数据')
-    // 拉取用户统计与成就（带重试机制和降级处理）
+    // 拉取用户成就（带重试机制和降级处理）
     try {
       await Promise.allSettled([
-        fetchUserStatsWithRetry(),
         fetchUserAchievementsWithRetry()
       ])
       console.log('✅ 数据获取完成（部分可能失败但不影响基本功能）')
@@ -517,17 +423,8 @@ onMounted(async () => {
       console.log('⚠️ 数据获取过程中出现错误，但基本功能仍可使用:', error)
     }
   } else {
-    console.log('🚫 认证状态无效，跳过统计数据获取')
+    console.log('🚫 认证状态无效，跳过数据获取')
     // 设置默认数据
-    userStats.level = 1
-    userStats.experience = 0
-    userStats.completedChapters = 0
-    userStats.totalScore = 0
-    userStats.studyTime = 0
-    userStats.achievements = 0
-    userStats.networkProgress = 0
-    userStats.protocolProgress = 0
-    userStats.practiceProgress = 0
     userAchievements.value = []
   }
   

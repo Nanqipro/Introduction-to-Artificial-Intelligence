@@ -165,10 +165,9 @@
               <span class="btn-icon">📋</span>
               查看答案解析
             </button>
-            <button class="retry-quiz-btn" @click="retryQuiz">
-              <span class="btn-icon">🔄</span>
+            <el-button class="retry-quiz-btn" @click="retryQuiz" type="primary" :icon="RefreshIcon">
               重新测验
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
@@ -231,6 +230,11 @@
 
 <script setup>
 import { ref, computed, defineEmits } from 'vue'
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
+// 图标引用
+const RefreshIcon = Refresh
 
 // Props
 const props = defineProps({
@@ -1239,158 +1243,5 @@ const getFeedbackMessage = () => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .section-title {
-  color: var(--text-color);
-}
-
-.light-theme .section-subtitle {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .intro-content {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .intro-content h4 {
-  color: var(--text-color);
-}
-
-.light-theme .intro-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .stat-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-active {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .quiz-progress {
-  background: var(--secondary-color);
-}
-
-.light-theme .progress-text {
-  color: var(--text-color);
-}
-
-.light-theme .question-text {
-  color: var(--text-color);
-}
-
-.light-theme .option-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .option-item:hover {
-  background: var(--border-color);
-}
-
-.light-theme .option-text {
-  color: var(--text-color);
-}
-
-.light-theme .question-explanation {
-  background: var(--secondary-color);
-}
-
-.light-theme .question-explanation h5 {
-  color: var(--text-color);
-}
-
-.light-theme .question-explanation p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-results {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .results-header h4 {
-  color: var(--text-color);
-}
-
-.light-theme .final-score {
-  color: var(--text-color);
-}
-
-.light-theme .score-total {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .results-analysis {
-  background: var(--secondary-color);
-}
-
-.light-theme .analysis-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .results-feedback {
-  background: var(--secondary-color);
-}
-
-.light-theme .results-feedback h5 {
-  color: var(--text-color);
-}
-
-.light-theme .results-feedback p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-review {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .review-header {
-  background: var(--card-bg);
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .review-header h4 {
-  color: var(--text-color);
-}
-
-.light-theme .close-review-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-review-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .review-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .review-question-text {
-  color: var(--text-color);
-}
-
-.light-theme .review-option {
-  background: var(--card-bg);
-}
-
-.light-theme .review-option-text {
-  color: var(--text-color);
-}
-
-.light-theme .review-explanation {
-  background: var(--card-bg);
-}
-
-.light-theme .review-explanation h6 {
-  color: var(--text-color);
-}
-
-.light-theme .review-explanation p {
-  color: var(--text-secondary-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

@@ -93,7 +93,8 @@ const routes = [
     meta: {
       title: '管理员控制台',
       description: '题目管理和Excel导入功能',
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -136,9 +137,18 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem('token')
+  const userInfo = localStorage.getItem('userInfo')
+  let currentUser = null
+  
+  try {
+    currentUser = userInfo ? JSON.parse(userInfo) : null
+  } catch (e) {
+    console.error('解析用户信息失败:', e)
+  }
 
   console.log(`🛣️ 路由守卫: ${from.path} -> ${to.path}`)
   console.log(`🔑 Token状态: ${token ? 'exists' : 'null'}`)
+  console.log(`👤 用户角色: ${currentUser?.role || 'unknown'}`)
 
   // 如果用户已登录且访问登录页，跳转到首页
   if (to.name === 'LoginPage' && token) {
@@ -158,6 +168,15 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth && !token) {
     console.log(`🔒 需要认证但未登录，跳转到登录页: ${to.path}`)
     next('/login')
+    return
+  }
+  
+  // 如果路由需要管理员权限但用户不是管理员，显示权限不足
+  if (to.meta.requiresAdmin && currentUser?.role !== 'admin') {
+    console.log(`🚫 需要管理员权限但用户角色不符: ${currentUser?.role || 'unknown'}`)
+    // 可以跳转到一个权限不足的页面，或者显示提示
+    alert('访问被拒绝：只有管理员才能访问此功能\n\n管理员账号：goodlabAdmin\n管理员密码：goodlabPwd')
+    next('/')
     return
   }
 

@@ -4,9 +4,15 @@
     <div class="stats-card">
       <div class="stats-header">
         <h3 class="stats-title">📊 学习统计</h3>
-        <div class="stats-refresh" @click="loadStats">
-          <span class="refresh-icon">🔄</span>
-        </div>
+        <el-button 
+          @click="loadStats" 
+          :loading="loadingStats"
+          type="primary"
+          class="refresh-btn"
+          :icon="RefreshIcon"
+          size="small"
+          circle
+        />
       </div>
       
       <div class="stats-grid" v-if="stats">
@@ -53,9 +59,15 @@
     <div class="leaderboard-card">
       <div class="leaderboard-header">
         <h3 class="leaderboard-title">🏅 排行榜</h3>
-        <div class="leaderboard-refresh" @click="loadLeaderboard">
-          <span class="refresh-icon">🔄</span>
-        </div>
+        <el-button 
+          @click="loadLeaderboard" 
+          :loading="loadingLeaderboard"
+          type="primary"
+          class="refresh-btn"
+          :icon="RefreshIcon"
+          size="small"
+          circle
+        />
       </div>
       
       <div class="leaderboard-list" v-if="leaderboard.length > 0">
@@ -116,17 +128,25 @@
 </template>
 
 <script>
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
 import { quizApi } from '../../services/api'
 import { useAuth } from '../../composables/useAuth'
 
 export default {
   name: 'UserStats',
+  components: {
+    ElButton
+  },
   data() {
     return {
+      RefreshIcon: Refresh,
       stats: null,
       leaderboard: [],
       history: [],
-      loading: false
+      loading: false,
+      loadingStats: false,
+      loadingLeaderboard: false
     }
   },
   async mounted() {
@@ -144,17 +164,23 @@ export default {
       ])
     },
     async loadStats() {
+      this.loadingStats = true
       try {
         this.stats = await quizApi.getUserStats()
       } catch (error) {
         console.error('加载统计信息失败:', error)
+      } finally {
+        this.loadingStats = false
       }
     },
     async loadLeaderboard() {
+      this.loadingLeaderboard = true
       try {
         this.leaderboard = await quizApi.getLeaderboard()
       } catch (error) {
         console.error('加载排行榜失败:', error)
+      } finally {
+        this.loadingLeaderboard = false
       }
     },
     async loadHistory() {
@@ -216,20 +242,39 @@ export default {
   margin: 0;
 }
 
-.stats-refresh, .leaderboard-refresh {
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: background 0.2s ease;
+.refresh-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+  transition: all 0.3s ease !important;
   
   &:hover {
-    background: rgba(143, 161, 179, 0.1);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+  }
+  
+  &:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4) !important;
+  }
+  
+  &.is-loading {
+    background: linear-gradient(135deg, #a0a0a0 0%, #808080 100%) !important;
+    
+    .el-icon {
+      animation: rotate 1s linear infinite;
+    }
   }
 }
 
-.refresh-icon {
-  font-size: 1rem;
-  color: #8fa1b3;
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .stats-grid {
@@ -401,6 +446,29 @@ export default {
 .empty-icon {
   font-size: 3rem;
   opacity: 0.5;
+}
+
+/* 亮色主题适配 */
+:root[data-theme="light"] {
+  .refresh-btn {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%) !important;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3) !important;
+    
+    &:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5) !important;
+      background: linear-gradient(135deg, #357abd 0%, #4a90e2 100%) !important;
+    }
+    
+    &:active {
+      transform: translateY(0) !important;
+      box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3) !important;
+    }
+    
+    &.is-loading {
+      background: linear-gradient(135deg, #b0b0b0 0%, #909090 100%) !important;
+    }
+  }
 }
 
 @media (max-width: 768px) {
