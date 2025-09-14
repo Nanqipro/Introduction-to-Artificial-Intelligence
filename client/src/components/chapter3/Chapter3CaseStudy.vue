@@ -12,6 +12,12 @@
         :edge-case-completed="edgeCaseCompleted"
         :pixel-interaction-count="pixelInteractionCount"
         :edge-interaction-count="edgeInteractionCount"
+        :detection-case-completed="detectionCaseCompleted"
+        :detection-interaction-count="detectionInteractionCount"
+        :segmentation-case-completed="segmentationCaseCompleted"
+        :segmentation-interaction-count="segmentationInteractionCount"
+        :tracking-case-completed="trackingCaseCompleted"
+        :tracking-interaction-count="trackingInteractionCount"
       />
     </div>
 
@@ -49,15 +55,51 @@
       @interaction-update="handleEdgeInteractionUpdate"
     />
 
+    <!-- 目标检测案例 -->
+    <ObjectDetectionCase 
+      v-if="activeCase === 'object-detection'"
+      :detection-interaction-count="detectionInteractionCount"
+      :detection-total-hover-time="detectionTotalHoverTime"
+      @case-completed="handleDetectionCaseCompleted"
+      @interaction-update="handleDetectionInteractionUpdate"
+    />
+
+    <!-- 图像分割案例 -->
+    <ImageSegmentationCase 
+      v-if="activeCase === 'image-segmentation'"
+      :segmentation-interaction-count="segmentationInteractionCount"
+      :segmentation-total-hover-time="segmentationTotalHoverTime"
+      @case-completed="handleSegmentationCaseCompleted"
+      @interaction-update="handleSegmentationInteractionUpdate"
+    />
+
+    <!-- 目标跟踪案例 -->
+    <ObjectTrackingCase 
+      v-if="activeCase === 'object-tracking'"
+      :tracking-interaction-count="trackingInteractionCount"
+      :tracking-total-watch-time="trackingTotalWatchTime"
+      @case-completed="handleTrackingCaseCompleted"
+      @interaction-update="handleTrackingInteractionUpdate"
+    />
+
     <!-- 案例总结 -->
     <CaseSummary 
       :all-cases-completed="allCasesCompleted"
       :pixel-case-completed="pixelCaseCompleted"
       :edge-case-completed="edgeCaseCompleted"
+      :detection-case-completed="detectionCaseCompleted"
+      :segmentation-case-completed="segmentationCaseCompleted"
+      :tracking-case-completed="trackingCaseCompleted"
       :pixel-interaction-count="pixelInteractionCount"
       :edge-interaction-count="edgeInteractionCount"
+      :detection-interaction-count="detectionInteractionCount"
+      :segmentation-interaction-count="segmentationInteractionCount"
+      :tracking-interaction-count="trackingInteractionCount"
       :pixel-total-hover-time="pixelTotalHoverTime"
       :edge-total-hover-time="edgeTotalHoverTime"
+      :detection-total-hover-time="detectionTotalHoverTime"
+      :segmentation-total-hover-time="segmentationTotalHoverTime"
+      :tracking-total-watch-time="trackingTotalWatchTime"
       @start-quiz="startQuiz"
       @scroll-to-top="scrollToTop"
     />
@@ -69,6 +111,9 @@ import ProgressIndicator from './ProgressIndicator.vue'
 import PixelDataCase from './PixelDataCase.vue'
 import EdgeDetectionCase from './EdgeDetectionCase.vue'
 import CaseSummary from './CaseSummary.vue'
+import ObjectDetectionCase from './ObjectDetectionCase.vue'
+import ImageSegmentationCase from './ImageSegmentationCase.vue'
+import ObjectTrackingCase from './ObjectTrackingCase.vue'
 
 export default {
   name: 'Chapter3CaseStudy',
@@ -76,7 +121,10 @@ export default {
     ProgressIndicator,
     PixelDataCase,
     EdgeDetectionCase,
-    CaseSummary
+    CaseSummary,
+    ObjectDetectionCase,
+    ImageSegmentationCase,
+    ObjectTrackingCase
   },
   props: {
     chapterId: {
@@ -100,10 +148,28 @@ export default {
       edgeTotalHoverTime: 0,
       edgeCaseCompleted: false,
       
+      // 目标检测案例相关数据
+      detectionInteractionCount: 0,
+      detectionTotalHoverTime: 0,
+      detectionCaseCompleted: false,
+      
+      // 图像分割案例相关数据
+      segmentationInteractionCount: 0,
+      segmentationTotalHoverTime: 0,
+      segmentationCaseCompleted: false,
+      
+      // 目标跟踪案例相关数据
+      trackingInteractionCount: 0,
+      trackingTotalWatchTime: 0,
+      trackingCaseCompleted: false,
+      
       // 案例导航列表
       caseList: [
         { id: 'pixel', icon: '🖼️', title: '像素数据案例' },
-        { id: 'edge', icon: '🔍', title: '边缘特征案例' }
+        { id: 'edge', icon: '🔍', title: '边缘特征案例' },
+        { id: 'object-detection', icon: '🎯', title: '目标检测案例' },
+        { id: 'image-segmentation', icon: '🎨', title: '图像分割案例' },
+        { id: 'object-tracking', icon: '🎬', title: '目标跟踪案例' }
       ]
     }
   },
@@ -111,6 +177,16 @@ export default {
     // 计算所有案例是否完成
     allCasesCompleted() {
       return this.pixelCaseCompleted && this.edgeCaseCompleted
+    }
+  },
+  computed: {
+    // 检查所有案例是否完成
+    allCasesCompleted() {
+      return this.pixelCaseCompleted && 
+             this.edgeCaseCompleted && 
+             this.detectionCaseCompleted && 
+             this.segmentationCaseCompleted && 
+             this.trackingCaseCompleted
     }
   },
   methods: {
@@ -147,6 +223,75 @@ export default {
     handlePixelInteractionUpdate(data) {
       this.pixelInteractionCount = data.interactionCount
       this.pixelTotalHoverTime = data.totalHoverTime
+    },
+    
+    // 目标检测案例完成处理
+    handleDetectionCaseCompleted(data) {
+      this.detectionCaseCompleted = data.completed
+      this.detectionInteractionCount = data.interactionCount
+      this.detectionTotalHoverTime = data.totalHoverTime
+      
+      // 发送案例完成事件给父组件
+      this.$emit('case-completed', {
+        caseId: 'object-detection',
+        completed: data.completed,
+        stats: {
+          interactionCount: data.interactionCount,
+          totalHoverTime: data.totalHoverTime
+        }
+      })
+    },
+    
+    // 目标检测交互更新处理
+    handleDetectionInteractionUpdate(data) {
+      this.detectionInteractionCount = data.interactionCount
+      this.detectionTotalHoverTime = data.totalHoverTime
+    },
+    
+    // 图像分割案例完成处理
+    handleSegmentationCaseCompleted(data) {
+      this.segmentationCaseCompleted = data.completed
+      this.segmentationInteractionCount = data.interactionCount
+      this.segmentationTotalHoverTime = data.totalHoverTime
+      
+      // 发送案例完成事件给父组件
+      this.$emit('case-completed', {
+        caseId: 'image-segmentation',
+        completed: data.completed,
+        stats: {
+          interactionCount: data.interactionCount,
+          totalHoverTime: data.totalHoverTime
+        }
+      })
+    },
+    
+    // 图像分割交互更新处理
+    handleSegmentationInteractionUpdate(data) {
+      this.segmentationInteractionCount = data.interactionCount
+      this.segmentationTotalHoverTime = data.totalHoverTime
+    },
+    
+    // 目标跟踪案例完成处理
+    handleTrackingCaseCompleted(data) {
+      this.trackingCaseCompleted = data.completed
+      this.trackingInteractionCount = data.interactionCount
+      this.trackingTotalWatchTime = data.totalWatchTime
+      
+      // 发送案例完成事件给父组件
+      this.$emit('case-completed', {
+        caseId: 'object-tracking',
+        completed: data.completed,
+        stats: {
+          interactionCount: data.interactionCount,
+          totalWatchTime: data.totalWatchTime
+        }
+      })
+    },
+    
+    // 目标跟踪交互更新处理
+    handleTrackingInteractionUpdate(data) {
+      this.trackingInteractionCount = data.interactionCount
+      this.trackingTotalWatchTime = data.totalWatchTime
     },
     
     // 启动测验

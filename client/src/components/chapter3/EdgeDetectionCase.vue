@@ -211,6 +211,15 @@ export default {
           totalHoverTime: this.localTotalHoverTime
         })
         
+        // 检查是否完成案例（交互次数达到3次或总时长达到5秒）
+        if (this.localInteractionCount >= 3 || this.localTotalHoverTime >= 5) {
+          this.$emit('case-completed', {
+            completed: true,
+            interactionCount: this.localInteractionCount,
+            totalHoverTime: this.localTotalHoverTime
+          })
+        }
+        
         this.$emit('edge-mouse-leave', hoverDuration)
         this.edgeHoverStartTime = null
       }

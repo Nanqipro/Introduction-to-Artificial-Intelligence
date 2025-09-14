@@ -23,6 +23,42 @@
         </div>
       </div>
     </div>
+    
+    <div class="progress-item" :class="{ completed: detectionCaseCompleted }">
+      <div class="progress-icon">🎯</div>
+      <div class="progress-info">
+        <h4>目标检测案例</h4>
+        <p>体验次数: {{ detectionInteractionCount }}/5 次</p>
+        <div class="progress-status">
+          <span v-if="detectionCaseCompleted" class="status-completed">✅ 已完成</span>
+          <span v-else class="status-pending">⏳ 进行中</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="progress-item" :class="{ completed: segmentationCaseCompleted }">
+      <div class="progress-icon">✂️</div>
+      <div class="progress-info">
+        <h4>图像分割案例</h4>
+        <p>体验次数: {{ segmentationInteractionCount }}/5 次</p>
+        <div class="progress-status">
+          <span v-if="segmentationCaseCompleted" class="status-completed">✅ 已完成</span>
+          <span v-else class="status-pending">⏳ 进行中</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="progress-item" :class="{ completed: trackingCaseCompleted }">
+      <div class="progress-icon">📹</div>
+      <div class="progress-info">
+        <h4>目标跟踪案例</h4>
+        <p>观看次数: {{ trackingInteractionCount }}/3 次</p>
+        <div class="progress-status">
+          <span v-if="trackingCaseCompleted" class="status-completed">✅ 已完成</span>
+          <span v-else class="status-pending">⏳ 进行中</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,6 +79,30 @@ export default {
       default: false
     },
     edgeInteractionCount: {
+      type: Number,
+      default: 0
+    },
+    detectionCaseCompleted: {
+      type: Boolean,
+      default: false
+    },
+    detectionInteractionCount: {
+      type: Number,
+      default: 0
+    },
+    segmentationCaseCompleted: {
+      type: Boolean,
+      default: false
+    },
+    segmentationInteractionCount: {
+      type: Number,
+      default: 0
+    },
+    trackingCaseCompleted: {
+      type: Boolean,
+      default: false
+    },
+    trackingInteractionCount: {
       type: Number,
       default: 0
     }
