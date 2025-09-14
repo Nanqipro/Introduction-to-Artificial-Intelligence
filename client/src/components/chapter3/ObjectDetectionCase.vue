@@ -64,6 +64,17 @@
             </div>
           </div>
           
+          <!-- 图片来源信息 -->
+          <div class="image-source">
+            <div class="source-info">
+              <span class="source-label">技术来源：</span>
+              <button class="source-button" @click="openTechSource">
+                <span class="source-icon">🔗</span>
+                <span class="source-text">Ultralytics YOLO</span>
+              </button>
+            </div>
+          </div>
+          
           <!-- 视图说明 -->
           <div class="view-explanations">
             <div class="explanation-grid">
@@ -192,6 +203,12 @@ export default {
         interactionCount: this.localInteractionCount,
         totalHoverTime: this.localTotalHoverTime
       })
+    },
+    
+    openTechSource() {
+      // 打开Ultralytics YOLO链接
+      const sourceUrl = 'https://www.ultralytics.com/yolo'
+      window.open(sourceUrl, '_blank')
     }
   }
 }
@@ -495,6 +512,63 @@ export default {
 .stat-label {
   font-size: 0.9rem;
   color: #4b5563;
+}
+
+.dataset-source {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--chapter3-source-bg, #f8fafc);
+  border-radius: 8px;
+  border: 1px solid var(--chapter3-source-border, rgba(0, 0, 0, 0.1));
+}
+
+.source-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.source-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+  font-weight: 500;
+}
+
+.source-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--chapter3-source-btn-bg, #ffffff);
+  border: 1px solid var(--chapter3-source-btn-border, #d1d5db);
+  border-radius: 6px;
+  color: var(--chapter3-source-btn-color, #374151);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--chapter3-source-btn-hover-bg, #f3f4f6);
+    border-color: var(--chapter3-source-btn-hover-border, #9ca3af);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.source-icon {
+  font-size: 0.9rem;
+}
+
+.source-text {
+  font-weight: 500;
 }
 
 // 响应式设计
