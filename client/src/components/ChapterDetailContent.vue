@@ -242,6 +242,8 @@ export default {
     },
     nextChapter() {
       if (!this.chapter || !this.allChapters.length) return null
+      // 如果是第7章，不显示下一章按钮
+      if (this.isChapter7) return null
       const currentIndex = this.allChapters.findIndex(ch => ch.id === this.chapter.id)
       return currentIndex < this.allChapters.length - 1 ? this.allChapters[currentIndex + 1] : null
     }

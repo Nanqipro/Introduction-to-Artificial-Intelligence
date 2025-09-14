@@ -269,16 +269,7 @@
           </div>
         </div>
 
-        <!-- 提示区域 -->
-        <div class="hint-section" v-if="showHint && !showAnswer">
-          <div class="hint-content">
-            <div class="hint-icon">💡</div>
-            <div class="hint-text">
-              <h4>学习提示</h4>
-              <p>{{ getHintForQuestion(currentQuestion) }}</p>
-            </div>
-          </div>
-        </div>
+        <!-- 提示区域已移除 -->
 
         <!-- 答题按钮 -->
         <div class="question-actions">
@@ -1382,15 +1373,8 @@ export default {
     },
     
     getHintForQuestion(question) {
-      if (!question) return '请仔细阅读题目内容'
-      
-      const hints = {
-        'choice': '仔细分析每个选项，排除明显错误的答案，选择最符合题意的选项。',
-        'true-false': '仔细阅读题目陈述，判断其是否符合事实或逻辑。',
-        'fill': '根据题目上下文和关键词，填写最合适的答案。'
-      }
-      
-      return hints[question.type] || '仔细阅读题目，注意关键词和细节。'
+      // 学习提示已被移除
+      return ''
     },
     
     // 新增方法
