@@ -309,7 +309,7 @@ const quickStart = () => {
       networkVisualizationRef.value.startTraining()
       ElMessage.success('训练已开始！')
     } catch (error) {
-      console.error('启动训练失败:', error)
+      // 启动训练失败
       ElMessage.error('启动训练失败，请稍后重试')
     }
   } else {
@@ -370,7 +370,7 @@ const startExperiment = () => {
 
 const handleProgressUpdate = (type, progress) => {
   // 处理进度更新
-  console.log('Progress update:', type, progress)
+  // Progress update
 }
 
 const handleTrainingComplete = (results) => {
@@ -412,7 +412,7 @@ const resetExperiment = () => {
       networkVisualizationRef.value.resetTraining()
       ElMessage.info('实验已重置，可以重新开始')
     } catch (error) {
-      console.error('重置实验失败:', error)
+      // 重置实验失败
       ElMessage.error('重置实验失败，请刷新页面重试')
     }
   } else {

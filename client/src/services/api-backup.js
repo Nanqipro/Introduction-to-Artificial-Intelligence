@@ -32,34 +32,27 @@ const api = axios.create({
 // 请求拦截器
 api.interceptors.request.use(
   config => {
-    console.log('🚀 发送请求:', config.method?.toUpperCase(), config.url)
-    console.log('🌐 请求地址:', config.baseURL + config.url)
+    // 发送请求
 
     // 添加JWT token到请求头
     const token = localStorage.getItem('token')
-    console.log('📝 本地存储的token:', token ? token.substring(0, 20) + '...' : 'null')
+    // 本地存储的token
 
     if (token) {
       // 确保token格式正确（不重复添加Bearer前缀）
       const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
       config.headers.Authorization = formattedToken
-      console.log('✅ 已添加Authorization头部:', formattedToken.substring(0, 20) + '...')
+      // 已添加Authorization头部
     } else {
-      console.warn('⚠️ 警告: 没有找到token，该请求可能会被拒绝')
-      console.log('🔍 当前请求URL:', config.url)
-      console.log('🔍 请求类型:', config.method)
+      // 警告: 没有找到token，该请求可能会被拒绝
     }
 
-    // 添加详细的请求日志
-    console.log('📋 完整请求头部:', {
-      'Content-Type': config.headers['Content-Type'],
-      'Authorization': config.headers.Authorization ? config.headers.Authorization.substring(0, 30) + '...' : 'none'
-    })
+    // 完整请求头部
 
     return config
   },
   error => {
-    console.error('❌ 请求拦截器错误:', error)
+    // 请求拦截器错误
     return Promise.reject(error)
   }
 )
@@ -67,7 +60,7 @@ api.interceptors.request.use(
 // 响应拦截器
 api.interceptors.response.use(
   response => {
-    console.log('收到响应:', response.status, response.data)
+    // 收到响应
     // 处理后端统一响应格式
     if (response.data && typeof response.data === 'object') {
       if (response.data.code !== undefined) {
@@ -82,7 +75,7 @@ api.interceptors.response.use(
     return response.data
   },
   error => {
-    console.error('❌ 响应错误:', error)
+    // 响应错误
     
     if (error.response) {
       // 服务器返回了错误状态码
@@ -102,7 +95,7 @@ api.interceptors.response.use(
       }
     } else if (error.request) {
       // 网络错误
-      console.error('网络错误:', error.request)
+      // 网络错误
       return Promise.reject(new Error('网络连接失败，请检查网络设置'))
     }
     

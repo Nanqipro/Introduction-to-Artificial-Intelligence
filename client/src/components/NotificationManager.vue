@@ -116,7 +116,7 @@ export default {
     
     handleNotificationShow(notification) {
       // 可以在这里添加通知显示的逻辑，比如记录到日志
-      console.log('通知已显示:', notification)
+      // 通知已显示
     }
   }
 }

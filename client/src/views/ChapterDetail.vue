@@ -73,9 +73,9 @@ export default {
       try {
         const response = await chapterApi.getChapterById(this.id)
         this.chapter = response.data
-        console.log('加载章节详情成功:', this.chapter)
+        // 加载章节详情成功
       } catch (error) {
-        console.error('加载章节详情失败:', error)
+        // 加载章节详情失败
         if (error.message && error.message.includes('章节不存在')) {
           this.error = '章节不存在'
         } else {

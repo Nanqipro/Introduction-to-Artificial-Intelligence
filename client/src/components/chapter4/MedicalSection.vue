@@ -408,7 +408,7 @@ const handleDiagnosisLeave = () => {
 }
 
 const handleGeneProjectClick = (project) => {
-  console.log(`点击了基因检测项目: ${project.name}`)
+  // 点击了基因检测项目
   selectedGeneProject.value = project
   showGeneDetail.value = true
   emit('interaction')
@@ -420,7 +420,7 @@ const closeGeneDetail = () => {
 }
 
 const handleMarkerClick = (marker) => {
-  console.log(`点击了病变标记物: ${marker.name}`)
+  // 点击了病变标记物
   selectedMarker.value = marker
   showMarkerDetail.value = true
   emit('interaction')
@@ -434,7 +434,7 @@ const closeMarkerDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 
 const getRiskText = (riskLevel) => {

@@ -268,7 +268,7 @@ export default {
         const response = await chapterApi.getChapterOverview()
         this.allChapters = response.data || []
       } catch (error) {
-        console.error('加载章节列表失败:', error)
+        // 加载章节列表失败
       }
     },
     goToChapter(id) {
@@ -355,7 +355,7 @@ export default {
       // 检查用户是否登录
       const token = localStorage.getItem('token')
       if (!token) {
-        console.log('⚠️ 用户未登录，跳过经验值添加')
+        // 用户未登录，跳过经验值添加
         return
       }
       
@@ -374,7 +374,7 @@ export default {
         
         if (response && response.code === 200) {
           const result = response.data
-          console.log('✅ 章节完成经验值添加成功:', result)
+          // 章节完成经验值添加成功
           
           // 显示经验值获得提示
           this.$message.success(`章节完成！获得 ${experienceGained} 经验值！`)
@@ -402,7 +402,7 @@ export default {
           }
         }
       } catch (error) {
-        console.error('添加章节经验值失败:', error)
+        // 添加章节经验值失败
         this.$message.error('添加经验值失败，请稍后重试')
       }
     },

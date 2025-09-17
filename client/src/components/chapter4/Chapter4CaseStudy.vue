@@ -198,21 +198,21 @@ const caseCompleted = computed(() => {
 const switchSection = (index) => {
   currentSection.value = index
   handleInteraction()
-  console.log(`切换到板块: ${sections.value[index].title}`)
+  // 切换到板块
 }
 
 const handleInteraction = () => {
   totalInteractions.value++
-  console.log(`交互次数: ${totalInteractions.value}`)
+  // 交互次数统计
 }
 
 const onImageClick = (imageType) => {
   handleInteraction()
-  console.log(`点击了图片: ${imageType}`)
+  // 点击了图片
 }
 
 // const handleQuizCompleted = (result) => {
-//   console.log('测验完成:', result)
+// 测验完成
 //   handleInteraction()
 // }
 

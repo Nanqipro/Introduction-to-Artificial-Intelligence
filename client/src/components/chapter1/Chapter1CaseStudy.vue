@@ -448,7 +448,7 @@ export default {
         const response = await this.fetchGlobalStats()
         this.globalStats = response
       } catch (error) {
-        console.error('加载全局统计数据失败:', error)
+        // 加载全局统计数据失败
         this.statsError = '加载统计数据失败，请稍后重试'
         // 设置默认数据以防API失败
         this.globalStats = {
@@ -469,7 +469,7 @@ export default {
         const response = await quizApi.getChapter1GlobalStats()
         return response.data
       } catch (error) {
-        console.error('获取全局统计数据失败:', error)
+        // 获取全局统计数据失败
         // 如果API调用失败，返回模拟数据
         return {
           totalUsers: 1247,
@@ -513,7 +513,7 @@ export default {
           this.loadGlobalStats()
         }, 500)
       } catch (error) {
-        console.error('提交答题数据失败:', error)
+        // 提交答题数据失败
       }
     },
     

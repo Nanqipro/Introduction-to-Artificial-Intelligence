@@ -232,8 +232,6 @@ const isModuleCompleted = (moduleName) => {
 
 // 方法
 const handleTabClick = (tab) => {
-  console.log('切换到标签页:', tab.name)
-
   // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
   if (tab.name === 'network-training') {
     goToNetworkTraining()
@@ -243,11 +241,9 @@ const handleTabClick = (tab) => {
 
 const goToNetworkTraining = async () => {
   try {
-    console.log('正在跳转到神经网络训练实验室...')
     await router.push('/network-training')
     ElMessage.success('正在启动神经网络训练实验室...')
   } catch (error) {
-    console.error('跳转失败:', error)
     ElMessage.error('跳转失败，请重试')
   }
 }

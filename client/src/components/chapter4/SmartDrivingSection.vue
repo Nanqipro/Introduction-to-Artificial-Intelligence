@@ -256,7 +256,7 @@ const handleDrivingLeave = () => {
 }
 
 const handleIndicatorClick = (indicator) => {
-  console.log(`点击了驾驶指标: ${indicator.name} - ${indicator.value}`)
+  // 点击了驾驶指标
   selectedIndicator.value = indicator
   showIndicatorDetail.value = true
   emit('interaction')
@@ -270,7 +270,7 @@ const closeIndicatorDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 
 const getIndicatorStatusText = (status) => {

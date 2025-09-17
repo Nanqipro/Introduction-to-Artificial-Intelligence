@@ -238,7 +238,7 @@ const handleSmartHomeLeave = () => {
 }
 
 const handleSmartDeviceClick = (device) => {
-  console.log(`点击了智能设备: ${device.name} - ${device.brand}`)
+  // 点击了智能设备
   selectedDeviceDetail.value = device
   showDeviceDetail.value = true
   emit('interaction')
@@ -252,7 +252,7 @@ const closeDeviceDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 </script>
 

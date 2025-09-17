@@ -397,7 +397,7 @@ const startQuiz = () => {
   finalScore.value = 0
   showAnswer.value = false
   emit('interaction')
-  console.log('开始测验')
+  // 开始测验
 }
 
 const selectAnswer = (index) => {
@@ -417,7 +417,7 @@ const submitAnswer = () => {
     }
     
     emit('interaction')
-    console.log(`提交答案: ${selectedAnswer.value}, 正确答案: ${currentQuestion.value.correct}`)
+    // 提交答案
   }
 }
 
@@ -438,7 +438,7 @@ const finishQuiz = () => {
     answers: userAnswers.value
   })
   emit('interaction')
-  console.log(`测验完成，得分: ${finalScore.value}/${quizQuestions.value.length}`)
+  // 测验完成
 }
 
 const retryQuiz = () => {
@@ -451,13 +451,13 @@ const retryQuiz = () => {
   finalScore.value = 0
   showAnswer.value = false
   emit('interaction')
-  console.log('重新开始测验')
+  // 重新开始测验
 }
 
 const reviewAnswers = () => {
   showReview.value = true
   emit('interaction')
-  console.log('查看答案解析')
+  // 查看答案解析
 }
 
 const closeReview = () => {

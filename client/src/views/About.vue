@@ -247,7 +247,7 @@
   
   // 处理图片加载错误
   const handleImageError = (event) => {
-    console.warn('封面图片加载失败:', event.target.src)
+    // 封面图片加载失败
     // 可以设置一个默认图片或隐藏图片容器
     event.target.style.display = 'none'
   }

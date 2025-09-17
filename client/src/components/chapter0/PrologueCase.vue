@@ -94,7 +94,7 @@ export default {
       // 检查用户是否登录
       const token = localStorage.getItem('token')
       if (!token) {
-        console.log('⚠️ 用户未登录，跳过经验值添加')
+        // 用户未登录，跳过经验值添加
         return
       }
       
@@ -110,7 +110,7 @@ export default {
         
         if (response && response.code === 200) {
           const result = response.data
-          console.log('✅ 序章完成标记成功:', result)
+          // 序章完成标记成功
           
           // 显示完成提示
           this.$message.success('🎉 序章完成！获得经验值奖励！')
@@ -138,7 +138,7 @@ export default {
           }
         }
       } catch (error) {
-        console.error('序章完成标记失败:', error)
+        // 序章完成标记失败
         this.$message.error('序章完成标记失败，请稍后重试')
       }
     }

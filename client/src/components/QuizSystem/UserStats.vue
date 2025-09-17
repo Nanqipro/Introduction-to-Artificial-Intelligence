@@ -168,7 +168,7 @@ export default {
       try {
         this.stats = await quizApi.getUserStats()
       } catch (error) {
-        console.error('加载统计信息失败:', error)
+        // 加载统计信息失败
       } finally {
         this.loadingStats = false
       }
@@ -178,7 +178,7 @@ export default {
       try {
         this.leaderboard = await quizApi.getLeaderboard()
       } catch (error) {
-        console.error('加载排行榜失败:', error)
+        // 加载排行榜失败
       } finally {
         this.loadingLeaderboard = false
       }
@@ -187,7 +187,7 @@ export default {
       try {
         this.history = await quizApi.getUserQuizHistory()
       } catch (error) {
-        console.error('加载答题历史失败:', error)
+        // 加载答题历史失败
       }
     },
     getRankClass(index) {

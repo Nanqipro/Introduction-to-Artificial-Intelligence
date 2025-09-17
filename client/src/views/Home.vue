@@ -99,9 +99,9 @@ export default {
         const response = await chapterApi.getChapterOverview()
         // 过滤掉附录章节，只在章节概览中显示正章和序章
         this.chapters = (response.data || []).filter(chapter => chapter.type !== 'appendix')
-        console.log('Home页面加载章节成功:', this.chapters)
+        // Home页面加载章节成功
       } catch (error) {
-        console.error('加载章节失败:', error)
+        // 加载章节失败
         this.chapters = []
       }
     },

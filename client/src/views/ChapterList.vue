@@ -135,7 +135,7 @@ export default {
   },
   async mounted() {
     // 添加调试日志
-    console.log('📚 ChapterList组件挂载，开始加载章节列表')
+    // ChapterList组件挂载，开始加载章节列表
     await this.loadChapters()
   },
   methods: {
@@ -151,9 +151,9 @@ export default {
           !chapter.title.includes('附录') &&
           !chapter.title.toLowerCase().includes('appendix')
         )
-        console.log('加载章节列表成功:', this.chapters)
+        // 加载章节列表成功
       } catch (error) {
-        console.error('加载章节失败:', error)
+        // 加载章节失败
         this.error = error.message || '网络连接失败，请检查后端服务是否启动'
       } finally {
         this.loading = false
@@ -221,7 +221,7 @@ export default {
           ElMessage.warning(`测试完成，发现 ${report.failedTests.length} 个问题需要修复`)
         }
       } catch (error) {
-        console.error('系统测试失败:', error)
+        // 系统测试失败
         this.testStatus = { type: 'error', message: '❌ 测试运行失败' }
         ElMessage.error('系统测试运行失败，请检查控制台错误信息')
       } finally {
@@ -258,7 +258,7 @@ export default {
          this.lastTestReport = null
       } catch (error) {
         if (error !== 'cancel') {
-          console.error('修复失败:', error)
+          // 修复失败
           ElMessage.error('修复过程中出现错误')
         }
       }

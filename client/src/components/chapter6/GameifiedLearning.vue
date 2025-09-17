@@ -394,7 +394,6 @@ const fetchUserData = async () => {
     // 检查登录状态和token
     const token = localStorage.getItem('token')
     if (!token) {
-      console.log('🚫 GameifiedLearning - fetchUserData: 未登录，跳过数据获取')
       return
     }
     
@@ -420,11 +419,10 @@ const fetchUserData = async () => {
       learningRecords.value = recordsResponse.data
     }
   } catch (error) {
-    console.error('获取用户数据失败:', error)
+    // 获取用户数据失败
     
     // 如果是登录过期错误，不显示错误消息，因为会自动跳转登录页
     if (error.message && error.message.includes('登录已过期')) {
-      console.log('🔒 检测到登录过期，等待自动跳转登录页')
       return
     }
     
@@ -438,7 +436,6 @@ const addExperienceToBackend = async (experience, activityType, chapterId = null
   // 检查token
   const token = localStorage.getItem('token')
   if (!token) {
-    console.log('⚠️ 用户未登录，跳过经验值添加')
     return
   }
   
@@ -464,7 +461,7 @@ const addExperienceToBackend = async (experience, activityType, chapterId = null
       return result
     }
   } catch (error) {
-    console.error('添加经验值失败:', error)
+    // 添加经验值失败
     ElMessage.error('添加经验值失败')
   }
 }
@@ -533,7 +530,6 @@ const checkLevelUp = () => {
 
 const showLevelUpAnimation = () => {
   // 升级动画逻辑
-  console.log('恭喜升级！')
 }
 
 const unlockNextChallenge = () => {
@@ -587,8 +583,6 @@ onMounted(() => {
   const token = localStorage.getItem('token')
   if (isLoggedIn.value && token) {
     fetchUserData()
-  } else {
-    console.log('🚫 GameifiedLearning - 未登录或无token，跳过数据获取')
   }
 })
 

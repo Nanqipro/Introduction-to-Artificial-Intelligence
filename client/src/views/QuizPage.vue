@@ -39,7 +39,7 @@ export default {
   async mounted() {
     // 从路由参数获取章节ID
     this.chapterId = this.$route.params.chapterId
-    console.log('📚 QuizPage mounted, chapterId:', this.chapterId)
+    // QuizPage mounted
     await this.loadChapterInfo()
   },
   watch: {
@@ -47,7 +47,7 @@ export default {
       handler(newChapterId) {
         if (newChapterId && newChapterId !== this.chapterId) {
           this.chapterId = newChapterId
-          console.log('🔄 章节ID变化:', newChapterId)
+          // 章节ID变化
           this.loadChapterInfo()
         }
       },
@@ -69,7 +69,7 @@ export default {
         }
         this.chapterTitle = chapterTitles[this.chapterId] || `第${this.chapterId}章`
       } catch (error) {
-        console.error('加载章节信息失败:', error)
+        // 加载章节信息失败
         this.chapterTitle = `第${this.chapterId}章`
       }
     },
@@ -137,4 +137,4 @@ export default {
     gap: 0.5rem;
   }
 }
-</style> 
+</style>

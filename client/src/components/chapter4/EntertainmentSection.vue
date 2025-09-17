@@ -347,7 +347,7 @@ const sortCases = () => {
 }
 
 const handleCaseClick = (case_) => {
-  console.log(`点击了娱乐案例: ${case_.name}`)
+  // 点击了娱乐案例
   selectedCase.value = case_
   showCaseDetail.value = true
   emit('case-click', case_)
