@@ -1,144 +1,145 @@
-/* 深色主题 (默认) - 无紫色版本 */
+/* 深色主题 (默认) - 优化版本 */
 :root,
 html.dark-theme {
-    --primary-color: #0a0a0f;
-    --secondary-color: #1a1a2e;
-    --tertiary-color: #16213e;
-    --text-color: #ffffff;
-    --text-secondary-color: #b0b3b8;
-    --text-muted-color: #8e9297;
-    --border-color: #2d3748;
-    --border-light-color: #4a5568;
-    --card-bg: #1a1a2e;
-    --card-hover-bg: #23272e;
-    --body-bg: #0a0a0f;
+    --primary-color: #0f0f23;
+    --secondary-color: #1e1e3f;
+    --tertiary-color: #2a2a5a;
+    --text-color: #f8f9fa;
+    --text-secondary-color: #d1d5db;
+    --text-muted-color: #9ca3af;
+    --border-color: #374151;
+    --border-light-color: #4b5563;
+    --card-bg: #1f2937;
+    --card-hover-bg: #374151;
+    --body-bg: #111827;
+    --bg-color: linear-gradient(135deg, #1f2937 0%, #1e1e3f 50%, #2563eb 100%);
 
-    /* 主色调 - 天蓝色系 */
-    --accent-color: #00bfff;
-    --accent-light-color: #00a6e6;
-    --accent-dark-color: #0080ff;
+    /* 主色调 - 现代蓝色系 */
+    --accent-color: #3b82f6;
+    --accent-light-color: #60a5fa;
+    --accent-dark-color: #1d4ed8;
 
-    /* 辅助色 - 春绿色系 */
-    --success-color: #00ff7f;
-    --success-light-color: #00e673;
-    --success-dark-color: #00cc66;
+    /* 辅助色 - 现代绿色系 */
+    --success-color: #10b981;
+    --success-light-color: #34d399;
+    --success-dark-color: #059669;
 
-    /* 警告色 - 橙红色系 */
-    --warning-color: #ff4500;
-    --warning-light-color: #ff6347;
-    --warning-dark-color: #e63900;
+    /* 警告色 - 现代橙色系 */
+    --warning-color: #f59e0b;
+    --warning-light-color: #fbbf24;
+    --warning-dark-color: #d97706;
 
-    /* 错误色 - 红色系 */
-    --error-color: #ff4757;
-    --error-light-color: #ff3742;
-    --error-dark-color: #e63946;
+    /* 错误色 - 现代红色系 */
+    --error-color: #ef4444;
+    --error-light-color: #f87171;
+    --error-dark-color: #dc2626;
 
-    /* 信息色 - 蓝色系 */
-    --info-color: #00bfff;
-    --info-light-color: #00a6e6;
-    --info-dark-color: #0080ff;
+    /* 信息色 - 现代青色系 */
+    --info-color: #06b6d4;
+    --info-light-color: #22d3ee;
+    --info-dark-color: #0891b2;
 
-    /* 装饰色 - 金黄色 */
-    --decorative-color: #ffd700;
-    --decorative-light-color: #ffed4e;
-    --decorative-dark-color: #ffb700;
+    /* 装饰色 - 现代紫色系 */
+    --decorative-color: #8b5cf6;
+    --decorative-light-color: #a78bfa;
+    --decorative-dark-color: #7c3aed;
 
     /* 阴影和发光效果 */
-    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --box-shadow-light: 0 4px 16px rgba(0, 0, 0, 0.3);
-    --glow-color: rgba(0, 191, 255, 0.3);
-    --glow-light: rgba(0, 255, 127, 0.2);
-    --glow-warning: rgba(255, 69, 0, 0.2);
-    --glow-decorative: rgba(255, 215, 0, 0.15);
+    --box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    --box-shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --glow-color: rgba(59, 130, 246, 0.4);
+    --glow-light: rgba(16, 185, 129, 0.3);
+    --glow-warning: rgba(245, 158, 11, 0.3);
+    --glow-decorative: rgba(139, 92, 246, 0.25);
 
     /* 导航和按钮 */
-    --nav-bg: rgba(26, 26, 46, 0.95);
-    --btn-primary-bg: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
-    --btn-secondary-bg: #2d3748;
-    --btn-hover-bg: linear-gradient(135deg, #00a6e6 0%, #00bfff 100%);
-    --btn-success-bg: linear-gradient(135deg, #00ff7f 0%, #00cc66 100%);
-    --btn-warning-bg: linear-gradient(135deg, #ff4500 0%, #ff6347 100%);
+    --nav-bg: rgba(31, 41, 55, 0.95);
+    --btn-primary-bg: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --btn-secondary-bg: #374151;
+    --btn-hover-bg: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    --btn-success-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --btn-warning-bg: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 
     /* 下拉菜单相关 */
-    --dropdown-bg: rgba(26, 26, 46, 0.95);
-    --dropdown-border: rgba(0, 191, 255, 0.2);
-    --dropdown-item-color: #ffffff;
-    --dropdown-item-hover-bg: rgba(0, 191, 255, 0.15);
-    --dropdown-item-hover-color: #00bfff;
-    --dropdown-divider-bg: rgba(0, 191, 255, 0.1);
-    --dropdown-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 191, 255, 0.1);
+    --dropdown-bg: rgba(31, 41, 55, 0.95);
+    --dropdown-border: rgba(59, 130, 246, 0.3);
+    --dropdown-item-color: #f8f9fa;
+    --dropdown-item-hover-bg: rgba(59, 130, 246, 0.15);
+    --dropdown-item-hover-color: #60a5fa;
+    --dropdown-divider-bg: rgba(59, 130, 246, 0.1);
+    --dropdown-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
 
     /* 表单和模态框 */
-    --form-bg: #1a1a2e;
-    --modal-bg: #1a1a2e;
-    --input-bg: rgba(26, 26, 46, 0.8);
-    --input-border: rgba(0, 191, 255, 0.3);
-    --input-focus-border: #00bfff;
-    --input-focus-shadow: rgba(0, 191, 255, 0.2);
+    --form-bg: #1f2937;
+    --modal-bg: #1f2937;
+    --input-bg: rgba(31, 41, 55, 0.8);
+    --input-border: rgba(59, 130, 246, 0.3);
+    --input-focus-border: #3b82f6;
+    --input-focus-shadow: rgba(59, 130, 246, 0.25);
 
     /* 滚动条 */
-    --scrollbar-track: #1a1a2e;
-    --scrollbar-thumb: #4a5568;
+    --scrollbar-track: #1f2937;
+    --scrollbar-thumb: #4b5563;
 
-    /* 背景光效 - 重新设计 */
-    --bg-glow-blue: rgba(0, 191, 255, 0.08);
-    --bg-glow-green: rgba(0, 255, 127, 0.06);
-    --bg-glow-orange: rgba(255, 69, 0, 0.05);
-    --bg-glow-gold: rgba(255, 215, 0, 0.03);
+    /* 背景光效 - 现代化设计 */
+    --bg-glow-blue: rgba(59, 130, 246, 0.08);
+    --bg-glow-green: rgba(16, 185, 129, 0.06);
+    --bg-glow-orange: rgba(245, 158, 11, 0.05);
+    --bg-glow-purple: rgba(139, 92, 246, 0.04);
 
     /* 底部组件相关 */
-    --footer-bg: rgba(26, 26, 46, 0.95);
-    --footer-color: rgba(255, 255, 255, 0.8);
-    --footer-border: rgba(0, 191, 255, 0.2);
-    --footer-text-primary: rgba(255, 255, 255, 0.9);
-    --footer-text-secondary: rgba(255, 255, 255, 0.6);
+    --footer-bg: rgba(31, 41, 55, 0.95);
+    --footer-color: rgba(248, 249, 250, 0.8);
+    --footer-border: rgba(59, 130, 246, 0.2);
+    --footer-text-primary: rgba(248, 249, 250, 0.9);
+    --footer-text-secondary: rgba(209, 213, 219, 0.7);
     --footer-max-width: 1200px;
 
     /* 章节细节相关 */
-    --chapter-header-bg: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(0, 166, 230, 0.1));
-    --chapter-header-border: rgba(0, 191, 255, 0.3);
-    --chapter-summary-bg: rgba(0, 191, 255, 0.1);
+    --chapter-header-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1));
+    --chapter-header-border: rgba(59, 130, 246, 0.3);
+    --chapter-summary-bg: rgba(59, 130, 246, 0.1);
     --chapter-summary-border: var(--accent-color);
-    --info-item-bg: rgba(0, 191, 255, 0.1);
-    --info-item-border: rgba(0, 191, 255, 0.3);
-    --quiz-section-bg: rgba(0, 191, 255, 0.1);
-    --quiz-section-border: rgba(0, 191, 255, 0.3);
-    --quiz-header-bg: rgba(0, 191, 255, 0.15);
-    --pagination-btn-bg: rgba(0, 191, 255, 0.1);
-    --pagination-btn-border: rgba(0, 191, 255, 0.3);
-    --pagination-btn-hover-bg: rgba(0, 191, 255, 0.2);
+    --info-item-bg: rgba(59, 130, 246, 0.1);
+    --info-item-border: rgba(59, 130, 246, 0.3);
+    --quiz-section-bg: rgba(59, 130, 246, 0.1);
+    --quiz-section-border: rgba(59, 130, 246, 0.3);
+    --quiz-header-bg: rgba(59, 130, 246, 0.15);
+    --pagination-btn-bg: rgba(59, 130, 246, 0.1);
+    --pagination-btn-border: rgba(59, 130, 246, 0.3);
+    --pagination-btn-hover-bg: rgba(59, 130, 246, 0.2);
 
     /* 个人中心页面相关 - 深色主题优化 */
     --profile-container-bg: var(--body-bg);
-    --profile-hero-bg: linear-gradient(135deg, rgba(0, 191, 255, 0.08), rgba(0, 255, 127, 0.05));
-    --profile-hero-border: rgba(0, 191, 255, 0.2);
-    --avatar-wrapper-bg: rgba(0, 191, 255, 0.05);
-    --avatar-wrapper-border: rgba(0, 191, 255, 0.3);
-    --avatar-overlay-bg: rgba(0, 191, 255, 0.9);
+    --profile-hero-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.05));
+    --profile-hero-border: rgba(59, 130, 246, 0.2);
+    --avatar-wrapper-bg: rgba(59, 130, 246, 0.05);
+    --avatar-wrapper-border: rgba(59, 130, 246, 0.3);
+    --avatar-overlay-bg: rgba(59, 130, 246, 0.9);
     --status-indicator-bg: var(--success-color);
-    --username-color: #ffffff;
-    --user-role-color: rgba(255, 255, 255, 0.7);
-    --stat-item-bg: rgba(0, 191, 255, 0.05);
-    --stat-item-border: rgba(0, 191, 255, 0.2);
-    --stat-number-color: #00bfff;
-    --stat-label-color: rgba(255, 255, 255, 0.6);
-    --level-title-color: #00ff7f;
-    --progress-header-color: rgba(255, 255, 255, 0.8);
-    --card-header-bg: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(0, 255, 127, 0.05));
-    --card-header-border: rgba(0, 191, 255, 0.2);
-    --card-content-bg: rgba(26, 26, 46, 0.8);
-    --card-icon-bg: rgba(0, 191, 255, 0.15);
-    --card-icon-color: #00bfff;
-    --stat-card-bg: rgba(0, 191, 255, 0.05);
-    --stat-card-border: rgba(0, 191, 255, 0.2);
-    --stat-card-hover-bg: rgba(0, 191, 255, 0.1);
-    --stat-card-hover-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
-    --form-bg: rgba(26, 26, 46, 0.8);
-    --form-border: rgba(0, 191, 255, 0.2);
-    --achievement-item-bg: rgba(0, 191, 255, 0.05);
-    --achievement-item-border: rgba(0, 191, 255, 0.2);
-    --achievement-item-hover-bg: rgba(0, 191, 255, 0.1);
-    --floating-shape-bg: rgba(0, 191, 255, 0.05);
+    --username-color: #f8f9fa;
+    --user-role-color: rgba(209, 213, 219, 0.8);
+    --stat-item-bg: rgba(59, 130, 246, 0.05);
+    --stat-item-border: rgba(59, 130, 246, 0.2);
+    --stat-number-color: #60a5fa;
+    --stat-label-color: rgba(209, 213, 219, 0.7);
+    --level-title-color: #34d399;
+    --progress-header-color: rgba(248, 249, 250, 0.8);
+    --card-header-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.05));
+    --card-header-border: rgba(59, 130, 246, 0.2);
+    --card-content-bg: rgba(31, 41, 55, 0.8);
+    --card-icon-bg: rgba(59, 130, 246, 0.15);
+    --card-icon-color: #60a5fa;
+    --stat-card-bg: rgba(59, 130, 246, 0.05);
+    --stat-card-border: rgba(59, 130, 246, 0.2);
+    --stat-card-hover-bg: rgba(59, 130, 246, 0.1);
+    --stat-card-hover-shadow: 0 10px 25px -3px rgba(59, 130, 246, 0.2);
+    --form-bg: rgba(31, 41, 55, 0.8);
+    --form-border: rgba(59, 130, 246, 0.2);
+    --achievement-item-bg: rgba(59, 130, 246, 0.05);
+    --achievement-item-border: rgba(59, 130, 246, 0.2);
+    --achievement-item-hover-bg: rgba(59, 130, 246, 0.1);
+    --floating-shape-bg: rgba(59, 130, 246, 0.05);
 
     /* 第六章交互式页面相关 */
     --intro-card-bg: var(--card-bg);
@@ -150,17 +151,17 @@ html.dark-theme {
     --progress-card-bg: var(--card-bg);
     --progress-card-border: var(--border-color);
     --progress-card-header-bg: var(--secondary-color);
-    --chapter-nav-bg: rgba(35, 39, 46, 0.95);
+    --chapter-nav-bg: rgba(31, 41, 55, 0.95);
     --chapter-nav-border: var(--border-color);
     --tab-item-color: var(--text-secondary-color);
     --tab-item-active-color: var(--accent-color);
-    --tab-item-hover-color: #d1d3d8;
+    --tab-item-hover-color: var(--accent-light-color);
     --content-section-bg: var(--secondary-color);
     --content-section-border: var(--border-color);
-    --achievement-card-bg: linear-gradient(135deg, var(--accent-color), #d1d3d8);
-    --achievement-card-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
-    --redirect-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --redirect-card-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    --achievement-card-bg: linear-gradient(135deg, var(--accent-color), var(--accent-light-color));
+    --achievement-card-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    --redirect-card-bg: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+    --redirect-card-shadow: 0 20px 40px rgba(0, 191, 255, 0.3);
 
     /* 关于页面相关 - 深色主题 */
     --about-page-bg: var(--secondary-color);
@@ -170,7 +171,7 @@ html.dark-theme {
     --about-card-radius: 10px;
     --about-card-header-border: rgba(57, 59, 64, 0.18);
     --about-page-title-color: var(--text-color);
-    --about-page-description-color: var(--text-secondary-color);
+    --about-page-description-color: #555555;
     --about-contact-icon-color: var(--accent-color);
     --about-tag-bg: #4a90e2;
     --about-tag-color: #ffffff;
@@ -178,8 +179,8 @@ html.dark-theme {
     --about-descriptions-bg: #292c33;
     --about-descriptions-cell-bg: #23272e;
     --about-descriptions-border: rgba(57, 59, 64, 0.18);
-    --about-link-color: #667eea;
-    --about-link-hover-color: #5a67d8;
+    --about-link-color: #0066cc;
+    --about-link-hover-color: #004499;
     --about-purchase-bg: rgba(0, 191, 255, 0.05);
     --about-purchase-border: rgba(0, 191, 255, 0.2);
     --about-purchase-btn-bg: linear-gradient(135deg, #00bfff, #00a6e6);
@@ -217,13 +218,60 @@ html.dark-theme {
     --ethics-case-badge-bg: rgba(255, 193, 7, 0.2);
     --ethics-case-badge-color: #ffc107;
     --ethics-case-badge-border: rgba(255, 193, 7, 0.3);
-    --ethics-encryption-demo-bg: rgba(156, 39, 176, 0.1);
-    --ethics-encryption-demo-border: rgba(156, 39, 176, 0.3);
+    --ethics-encryption-demo-bg: rgba(0, 191, 255, 0.1);
+    --ethics-encryption-demo-border: rgba(0, 191, 255, 0.3);
     --ethics-step-bg: rgba(255, 255, 255, 0.05);
     --ethics-step-hover-bg: rgba(255, 255, 255, 0.1);
-    --ethics-step-number-bg: linear-gradient(135deg, #9c27b0, #673ab7);
-    --ethics-benefits-title-color: #9c27b0;
+    --ethics-step-number-bg: linear-gradient(135deg, #00bfff, #0080ff);
+    --ethics-benefits-title-color: #00bfff;
     --ethics-benefits-check-color: #4caf50;
+
+    /* 第二章案例学习相关 - 深色主题优化 */
+    --chapter2-header-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(16, 185, 129, 0.08));
+    --chapter2-header-text: #f8f9fa;
+    --chapter2-header-secondary: rgba(209, 213, 219, 0.8);
+    --chapter2-text-secondary: rgba(156, 163, 175, 0.9);
+    --chapter2-progress-bg: rgba(31, 41, 55, 0.9);
+    --chapter2-progress-border: rgba(59, 130, 246, 0.3);
+    --chapter2-progress-completed-bg: rgba(59, 130, 246, 0.15);
+    --chapter2-progress-completed-border: rgba(59, 130, 246, 0.4);
+    --chapter2-demo-controls-bg: rgba(59, 130, 246, 0.12);
+    --chapter2-demo-controls-border: rgba(59, 130, 246, 0.3);
+    --chapter2-info-card-bg: rgba(59, 130, 246, 0.1);
+    --chapter2-info-card-border: rgba(59, 130, 246, 0.25);
+    --chapter2-layer-demo-bg: rgba(245, 158, 11, 0.12);
+    --chapter2-layer-demo-border: rgba(245, 158, 11, 0.3);
+    --chapter2-matrix-bg: rgba(31, 41, 55, 0.8);
+    --chapter2-matrix-border: rgba(75, 85, 99, 0.6);
+    --chapter2-matrix-cell-border: rgba(107, 114, 128, 0.4);
+    --chapter2-network-bg: rgba(59, 130, 246, 0.1);
+    --chapter2-network-border: rgba(59, 130, 246, 0.25);
+    --chapter2-chart-placeholder-bg: rgba(31, 41, 55, 0.6);
+    --chapter2-chart-placeholder-border: rgba(75, 85, 99, 0.4);
+    --chapter2-chart-placeholder-text: rgba(156, 163, 175, 0.7);
+    --chapter2-summary-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+    --chapter2-summary-text: #f8f9fa;
+
+    /* 第三章案例学习相关 - 深色主题优化 */
+    --chapter3-header-bg: linear-gradient(135deg, var(--accent-color), var(--accent-light-color));
+    --chapter3-header-text: #ffffff;
+    --chapter3-header-secondary: rgba(255, 255, 255, 0.9);
+    --chapter3-card-bg: rgba(15, 23, 42, 0.95);
+    --chapter3-card-border: rgba(59, 130, 246, 0.3);
+    --chapter3-card-hover-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
+    --chapter3-interaction-bg: rgba(15, 23, 42, 0.8);
+    --chapter3-explanation-bg: rgba(15, 23, 42, 0.85);
+    --chapter3-explanation-border: rgba(59, 130, 246, 0.25);
+    --chapter3-human-active-bg: rgba(6, 182, 212, 0.2);
+    --chapter3-human-active-border: var(--info-color);
+    --chapter3-computer-active-bg: rgba(16, 185, 129, 0.2);
+    --chapter3-computer-active-border: var(--success-color);
+    --chapter3-stats-bg: rgba(15, 23, 42, 0.85);
+    --chapter3-stats-border: rgba(59, 130, 246, 0.2);
+    --chapter3-stat-item-bg: rgba(15, 23, 42, 0.9);
+    --chapter3-stat-item-border: rgba(59, 130, 246, 0.25);
+    --chapter3-stat-item-hover-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    --chapter3-shimmer-bg: linear-gradient(90deg, var(--accent-color), var(--success-color), var(--info-color));
 
     /* 动画效果 */
     --transition-fast: 0.2s ease;
@@ -236,22 +284,23 @@ html.dark-theme {
 html.light-theme {
     --primary-color: #ffffff;
     --secondary-color: #f8f9fa;
-    --text-color: #212529;
-    --text-secondary-color: #495057;
+    --text-color: #1a1a1a;
+    --text-secondary-color: #333333;
     --border-color: #dee2e6;
     --card-bg: #ffffff;
     --card-hover-bg: #f1f3f4;
     --body-bg: #ffffff;
+    --bg-color: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
 
     /* 主色调 - 天蓝色系 */
     --accent-color: #00bfff;
     --accent-light-color: #00a6e6;
     --accent-dark-color: #0080ff;
 
-    /* 辅助色 - 春绿色系 */
-    --success-color: #00ff7f;
-    --success-light-color: #00e673;
-    --success-dark-color: #00cc66;
+    /* 辅助色 - 绿色系 */
+    --success-color: #28a745;
+    --success-light-color: #34ce57;
+    --success-dark-color: #1e7e34;
 
     /* 警告色 - 橙红色系 */
     --warning-color: #ff4500;
@@ -286,7 +335,7 @@ html.light-theme {
     --btn-primary-bg: linear-gradient(135deg, #00bfff, #0080ff);
     --btn-secondary-bg: #6c757d;
     --btn-hover-bg: linear-gradient(135deg, #00a6e6, #00bfff);
-    --btn-success-bg: linear-gradient(135deg, #00ff7f, #00cc66);
+    --btn-success-bg: linear-gradient(135deg, #28a745, #1e7e34);
     --btn-warning-bg: linear-gradient(135deg, #ff4500, #ff6347);
 
     /* 下拉菜单相关 */
@@ -349,11 +398,11 @@ html.light-theme {
     --avatar-overlay-bg: rgba(0, 191, 255, 0.8);
     --status-indicator-bg: var(--success-color);
     --username-color: var(--text-color);
-    --user-role-color: var(--text-secondary-color);
+    --user-role-color: #555555;
     --stat-item-bg: var(--card-bg);
     --stat-item-border: var(--border-color);
     --stat-number-color: var(--accent-color);
-    --stat-label-color: var(--text-secondary-color);
+    --stat-label-color: #555555;
     --level-title-color: var(--decorative-color);
     --progress-header-color: var(--text-color);
     --card-header-bg: #f8f9fa;
@@ -376,31 +425,31 @@ html.light-theme {
     --footer-bg: #f8f9fa;
     --footer-color: #212529;
     --footer-border: #dee2e6;
-    --footer-text-primary: #495057;
-    --footer-text-secondary: #6c757d;
+    --footer-text-primary: #2c2c2c;
+    --footer-text-secondary: #555555;
     --footer-max-width: 1200px;
 
-    /* 第六章交互式页面相关 */
+    /* 第六章交互式页面相关 - 浅色主题 */
     --intro-card-bg: var(--card-bg);
     --intro-card-border: var(--border-color);
-    --feature-item-bg: var(--secondary-color);
-    --feature-item-border: var(--border-color);
-    --feature-item-hover-bg: var(--card-hover-bg);
+    --feature-item-bg: #f8f9fa;
+    --feature-item-border: #e9ecef;
+    --feature-item-hover-bg: #f1f3f4;
     --feature-item-hover-shadow: var(--box-shadow-light);
     --progress-card-bg: var(--card-bg);
     --progress-card-border: var(--border-color);
-    --progress-card-header-bg: var(--secondary-color);
-    --chapter-nav-bg: rgba(35, 39, 46, 0.95);
+    --progress-card-header-bg: #f8f9fa;
+    --chapter-nav-bg: rgba(255, 255, 255, 0.95);
     --chapter-nav-border: var(--border-color);
     --tab-item-color: var(--text-secondary-color);
     --tab-item-active-color: var(--accent-color);
-    --tab-item-hover-color: #d1d3d8;
-    --content-section-bg: var(--secondary-color);
+    --tab-item-hover-color: var(--accent-light-color);
+    --content-section-bg: #f8f9fa;
     --content-section-border: var(--border-color);
-    --achievement-card-bg: linear-gradient(135deg, var(--accent-color), #d1d3d8);
-    --achievement-card-shadow: 0 8px 32px rgba(176, 179, 184, 0.3);
-    --redirect-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --redirect-card-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    --achievement-card-bg: linear-gradient(135deg, var(--accent-color), var(--accent-light-color));
+    --achievement-card-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+    --redirect-card-bg: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+    --redirect-card-shadow: 0 20px 40px rgba(0, 191, 255, 0.3);
 
     /* 关于页面相关 - 浅色主题 */
     --about-page-bg: var(--body-bg);
@@ -418,8 +467,8 @@ html.light-theme {
     --about-descriptions-bg: var(--card-bg);
     --about-descriptions-cell-bg: var(--card-bg);
     --about-descriptions-border: #dee2e6;
-    --about-link-color: #667eea;
-    --about-link-hover-color: #5a67d8;
+    --about-link-color: #0066cc;
+    --about-link-hover-color: #004499;
     --about-purchase-bg: rgba(0, 191, 255, 0.05);
     --about-purchase-border: rgba(0, 191, 255, 0.2);
     --about-purchase-btn-bg: linear-gradient(135deg, #00bfff, #00a6e6);
@@ -457,13 +506,60 @@ html.light-theme {
     --ethics-case-badge-bg: #ffc107;
     --ethics-case-badge-color: #212529;
     --ethics-case-badge-border: #ffc107;
-    --ethics-encryption-demo-bg: rgba(156, 39, 176, 0.05);
-    --ethics-encryption-demo-border: rgba(156, 39, 176, 0.2);
+    --ethics-encryption-demo-bg: rgba(0, 191, 255, 0.05);
+    --ethics-encryption-demo-border: rgba(0, 191, 255, 0.2);
     --ethics-step-bg: #f8f9fa;
     --ethics-step-hover-bg: #e9ecef;
-    --ethics-step-number-bg: linear-gradient(135deg, #9c27b0, #673ab7);
-    --ethics-benefits-title-color: #7b1fa2;
+    --ethics-step-number-bg: linear-gradient(135deg, #0066cc, #004499);
+    --ethics-benefits-title-color: #0066cc;
     --ethics-benefits-check-color: #388e3c;
+
+    /* 第二章案例学习相关 - 浅色主题优化 */
+    --chapter2-header-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --chapter2-header-text: #1e293b;
+    --chapter2-header-secondary: #475569;
+    --chapter2-text-secondary: #64748b;
+    --chapter2-progress-bg: rgba(255, 255, 255, 0.9);
+    --chapter2-progress-border: rgba(203, 213, 225, 0.5);
+    --chapter2-progress-completed-bg: rgba(13, 110, 253, 0.08);
+    --chapter2-progress-completed-border: rgba(13, 110, 253, 0.25);
+    --chapter2-demo-controls-bg: rgba(13, 110, 253, 0.08);
+    --chapter2-demo-controls-border: rgba(13, 110, 253, 0.2);
+    --chapter2-info-card-bg: rgba(13, 110, 253, 0.05);
+    --chapter2-info-card-border: rgba(13, 110, 253, 0.15);
+    --chapter2-layer-demo-bg: rgba(255, 152, 0, 0.08);
+    --chapter2-layer-demo-border: rgba(255, 152, 0, 0.25);
+    --chapter2-matrix-bg: #ffffff;
+    --chapter2-matrix-border: #d1d5db;
+    --chapter2-matrix-cell-border: #e5e7eb;
+    --chapter2-network-bg: rgba(13, 110, 253, 0.06);
+    --chapter2-network-border: rgba(13, 110, 253, 0.15);
+    --chapter2-chart-placeholder-bg: #f9fafb;
+    --chapter2-chart-placeholder-border: #d1d5db;
+    --chapter2-chart-placeholder-text: #6b7280;
+    --chapter2-summary-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+    --chapter2-summary-text: #1e293b;
+
+    /* 第三章案例学习相关 - 浅色主题优化 */
+    --chapter3-header-bg: linear-gradient(135deg, var(--accent-color), var(--accent-light-color));
+    --chapter3-header-text: #ffffff;
+    --chapter3-header-secondary: rgba(255, 255, 255, 0.9);
+    --chapter3-card-bg: rgba(255, 255, 255, 0.98);
+    --chapter3-card-border: rgba(0, 191, 255, 0.2);
+    --chapter3-card-hover-shadow: 0 20px 40px -5px rgba(0, 191, 255, 0.1);
+    --chapter3-interaction-bg: rgba(248, 250, 252, 0.9);
+    --chapter3-explanation-bg: rgba(248, 250, 252, 0.95);
+    --chapter3-explanation-border: rgba(0, 191, 255, 0.2);
+    --chapter3-human-active-bg: rgba(0, 191, 255, 0.1);
+    --chapter3-human-active-border: var(--info-color);
+    --chapter3-computer-active-bg: rgba(40, 167, 69, 0.1);
+    --chapter3-computer-active-border: var(--success-color);
+    --chapter3-stats-bg: rgba(248, 250, 252, 0.95);
+    --chapter3-stats-border: rgba(0, 191, 255, 0.15);
+    --chapter3-stat-item-bg: rgba(255, 255, 255, 0.95);
+    --chapter3-stat-item-border: rgba(0, 191, 255, 0.2);
+    --chapter3-stat-item-hover-shadow: 0 8px 25px rgba(0, 191, 255, 0.2);
+    --chapter3-shimmer-bg: linear-gradient(90deg, var(--accent-color), var(--success-color), var(--info-color));
 
     /* 动画效果 */
     --transition-fast: 0.2s ease;

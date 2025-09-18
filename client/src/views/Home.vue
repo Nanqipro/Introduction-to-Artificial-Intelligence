@@ -60,7 +60,7 @@
             class="chapter-card"
             @click="goToChapter(chapter.id)"
           >
-            <div class="chapter-number">{{ chapter.chapterNumber === '0' ? '序章' : `第${chapter.chapterNumber}章` }}</div>
+            <div class="chapter-number">{{ getChapterDisplayNumber(chapter.chapterNumber) }}</div>
             <h3 class="chapter-title">{{ chapter.title }}</h3>
             <p class="chapter-summary">{{ chapter.summary }}</p>
           </div>
@@ -97,15 +97,25 @@ export default {
     async loadChapters() {
       try {
         const response = await chapterApi.getChapterOverview()
-        this.chapters = response.data || []
-        console.log('Home页面加载章节成功:', this.chapters)
+        // 过滤掉附录章节，只在章节概览中显示正章和序章
+        this.chapters = (response.data || []).filter(chapter => chapter.type !== 'appendix')
+        // Home页面加载章节成功
       } catch (error) {
-        console.error('加载章节失败:', error)
+        // 加载章节失败
         this.chapters = []
       }
     },
     goToChapter(id) {
       this.$router.push(`/chapters/${id}`)
+    },
+    getChapterDisplayNumber(chapterNumber) {
+      if (chapterNumber === '0') {
+        return '序章'
+      } else if (chapterNumber === 'appendix') {
+        return '附录'
+      } else {
+        return `第${chapterNumber}章`
+      }
     }
   }
 }

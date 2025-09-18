@@ -102,13 +102,24 @@
             上一个
           </el-button>
           
+          <!-- 根据是否是最后一个知识点显示不同按钮 -->
           <el-button 
+            v-if="currentStep < knowledgeTopics.length - 1"
             @click="nextStep" 
-            :disabled="currentStep === knowledgeTopics.length - 1"
             type="primary"
           >
             下一个
             <el-icon><ArrowRight /></el-icon>
+          </el-button>
+          
+          <el-button 
+            v-else
+            @click="completeModule" 
+            type="success"
+            :loading="isCompleting"
+          >
+            <el-icon><Check /></el-icon>
+            完成
           </el-button>
         </div>
       </el-card>
@@ -154,8 +165,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { 
-  Document, ArrowLeft, ArrowRight 
+  Document, ArrowLeft, ArrowRight, Check 
 } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 // 定义事件
 const emit = defineEmits(['progress-update'])
@@ -167,6 +179,8 @@ const showAnswer = ref(false)
 const isCorrect = ref(false)
 const completedTopics = ref(0)
 const correctAnswers = ref(0)
+const isCompleting = ref(false)
+const moduleCompleted = ref(false)
 
 // 知识点数据
 const knowledgeTopics = ref([
@@ -354,6 +368,29 @@ const getTopicStatusText = (step) => {
 const isTopicCompleted = (step) => {
   // 简化的完成判断逻辑
   return step < completedTopics.value
+}
+
+const completeModule = async () => {
+  isCompleting.value = true
+  
+  try {
+    // 模拟完成处理
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // 标记模块为已完成
+    moduleCompleted.value = true
+    completedTopics.value = knowledgeTopics.value.length
+    
+    // 发送100%完成进度
+    emit('progress-update', 'python-basics', 100)
+    
+    ElMessage.success('🎉 恭喜！Python基础模块学习完成！')
+    
+  } catch (error) {
+    ElMessage.error('完成模块时出现错误，请重试')
+  } finally {
+    isCompleting.value = false
+  }
 }
 
 // 监听进度变化

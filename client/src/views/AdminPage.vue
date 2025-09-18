@@ -343,7 +343,7 @@ export default {
       selectedType: '',
       selectedDifficulty: '',
       searchKeyword: '',
-      chapters: ['1', '2', '3', '4', '5', '6', '7'],
+      chapters: ['1', '2', '3', '4', '6', '7'], // 第五章暂未实现，已移除
       showImportModal: false,
       showCreateModal: false,
       selectedFile: null,
@@ -376,14 +376,14 @@ export default {
   methods: {
     async loadData() {
       try {
-        console.log('开始加载数据...')
+        // 开始加载数据
         
         const [questionsResponse, statsResponse] = await Promise.all([
           adminApi.getAllQuestions(),
           adminApi.getQuestionStats()
         ])
         
-        console.log('API响应:', { questionsResponse, statsResponse })
+        // API响应
         
         // 处理题目数据
         let questions = []
@@ -411,23 +411,17 @@ export default {
         }
         this.stats = stats
         
-        console.log('数据加载完成:', {
-          questionsCount: this.questions.length,
-          totalQuestions: this.totalQuestions,
-          totalPages: this.totalPages,
-          stats: this.stats
-        })
+        // 数据加载完成
         
       } catch (error) {
-        console.error('加载数据失败:', error)
-        console.log('使用模拟数据作为备用方案')
+        // 加载数据失败，使用模拟数据作为备用方案
         // 如果API调用失败，使用模拟数据
         this.loadMockData()
       }
     },
     
     loadMockData() {
-      console.log('加载模拟数据...')
+      // 加载模拟数据
       // 模拟数据，用于演示
       this.questions = [
         {
@@ -474,12 +468,7 @@ export default {
         difficultyStats: { 'easy': 1, 'medium': 2 }
       }
       
-      console.log('模拟数据加载完成:', {
-        questionsCount: this.questions.length,
-        totalQuestions: this.totalQuestions,
-        totalPages: this.totalPages,
-        stats: this.stats
-      })
+      // 模拟数据加载完成
     },
     
     async searchQuestions() {
@@ -608,7 +597,7 @@ export default {
           alert(`导入失败：${result.message}`)
         }
       } catch (error) {
-        console.error('导入失败:', error)
+        // 导入失败
         alert('导入失败：' + error.message)
       } finally {
         this.importing = false
@@ -627,7 +616,7 @@ export default {
         link.click()
         window.URL.revokeObjectURL(url)
       } catch (error) {
-        console.error('导出失败:', error)
+        // 导出失败
         alert('导出失败：' + error.message)
       }
     },
@@ -702,6 +691,13 @@ export default {
     async saveQuestion() {
       this.saving = true
       try {
+        // 验证章节ID（第5章暂未实现）
+        if (this.questionForm.chapterId === 5 || this.questionForm.chapterId === '5') {
+          alert('第5章暂未实现，请选择其他章节')
+          this.saving = false
+          return
+        }
+        
         const questionData = {
           chapterId: this.questionForm.chapterId,
           type: this.questionForm.type,
@@ -740,7 +736,7 @@ export default {
         // 更新统计数据
         this.updateStats()
       } catch (error) {
-        console.error('保存题目失败:', error)
+        // 保存题目失败
         alert('保存失败：' + error.message)
       } finally {
         this.saving = false
@@ -777,7 +773,7 @@ export default {
         // 更新统计数据
         this.updateStats()
       } catch (error) {
-        console.error('删除题目失败:', error)
+        // 删除题目失败
         alert('删除失败：' + error.message)
       }
     },
@@ -1577,4 +1573,4 @@ export default {
     grid-template-columns: 1fr;
   }
 }
-</style> 
+</style>

@@ -269,16 +269,7 @@
           </div>
         </div>
 
-        <!-- 提示区域 -->
-        <div class="hint-section" v-if="showHint && !showAnswer">
-          <div class="hint-content">
-            <div class="hint-icon">💡</div>
-            <div class="hint-text">
-              <h4>学习提示</h4>
-              <p>{{ getHintForQuestion(currentQuestion) }}</p>
-            </div>
-          </div>
-        </div>
+        <!-- 提示区域已移除 -->
 
         <!-- 答题按钮 -->
         <div class="question-actions">
@@ -571,24 +562,23 @@ export default {
   methods: {
     async loadQuestions() {
       this.loading = true
-      console.log('🚀 开始加载题目，章节ID:', this.chapterId)
+      // 开始加载题目
       
       try {
         // 直接使用默认题目，跳过API调用
-        console.log('🔄 直接使用默认题目...')
+        // 直接使用默认题目
         this.questions = this.getDefaultQuestions()
-        console.log('📚 默认题目加载完成:', this.questions.length, '道题目')
-        console.log('📋 题目详情:', this.questions)
+        // 默认题目加载完成
         
         if (this.questions.length === 0) {
-          console.warn('⚠️ 警告：没有找到章节', this.chapterId, '的题目')
+          // 警告：没有找到章节的题目
         }
       } catch (error) {
-        console.error('❌ 加载题目失败:', error)
+        // 加载题目失败
         this.questions = []
       } finally {
         this.loading = false
-        console.log('✅ 题目加载完成，loading状态:', this.loading)
+        // 题目加载完成
       }
     },
     /**
@@ -663,7 +653,7 @@ export default {
     },
     
     getDefaultQuestions() {
-      console.log('🔍 获取默认题目，章节ID:', this.chapterId)
+      // 获取默认题目
       // 根据章节ID返回默认题目
       const defaultQuestions = {
         '1': [
@@ -1031,7 +1021,7 @@ export default {
     }
     
     const questions = defaultQuestions[this.chapterId] || []
-    console.log('📚 找到默认题目:', questions.length, '道题目')
+    // 找到默认题目
     return questions
   },
   
@@ -1165,11 +1155,11 @@ export default {
         // 检查登录状态和token
         const token = localStorage.getItem('token')
         if (!token) {
-          console.log('🚫 QuizSystem - 未登录，跳过经验值添加和成就检查')
+          // QuizSystem - 未登录，跳过经验值添加和成就检查
           return
         }
         
-        console.log('🎯 开始添加经验值和检查成就...')
+        // 开始添加经验值和检查成就
         
         // 计算经验值奖励
         let experienceGained = this.finalScore // 基础经验值等于分数
@@ -1199,7 +1189,7 @@ export default {
         this.accuracyBonus = accuracyBonus
         this.perfectBonus = perfectBonus
         
-        console.log(`📈 计算得到经验值: ${experienceGained}`)
+        // 计算得到经验值
         
         // 调用后端API添加经验值
         const response = await levelApi.addExperience({
@@ -1211,7 +1201,7 @@ export default {
         
         if (response && response.code === 200) {
           const result = response.data
-          console.log('✅ 经验值添加成功:', result)
+          // 经验值添加成功
           
           // 显示经验值获得提示
           ElMessage.success(`获得 ${experienceGained} 经验值！`)
@@ -1247,7 +1237,7 @@ export default {
           // 标记章节完成（除序章外）
           if (this.chapterId && this.chapterId !== 0) {
             try {
-              console.log(`📚 标记章节 ${this.chapterId} 完成...`)
+              // 标记章节完成
               const chapterResponse = await levelApi.completeChapter({
                 chapterId: this.chapterId,
                 completionType: 'quiz',
@@ -1255,20 +1245,20 @@ export default {
               })
               
               if (chapterResponse && chapterResponse.code === 200) {
-                console.log('✅ 章节完成标记成功:', chapterResponse.data)
+                // 章节完成标记成功
                 ElMessage.success('恭喜完成本章节！')
               }
             } catch (error) {
-              console.error('❌ 标记章节完成失败:', error)
+              // 标记章节完成失败
             }
           }
           
         } else {
-          console.error('❌ 添加经验值失败:', response)
+          // 添加经验值失败
         }
         
       } catch (error) {
-        console.error('❌ 添加经验值和检查成就失败:', error)
+        // 添加经验值和检查成就失败
         ElMessage.warning('经验值添加失败，但不影响答题结果')
       }
     },
@@ -1278,11 +1268,11 @@ export default {
          // 检查登录状态和token
          const token = localStorage.getItem('token')
          if (!token) {
-           console.log('🚫 QuizSystem - checkNewAchievements: 未登录，跳过成就检查')
+           // QuizSystem - checkNewAchievements: 未登录，跳过成就检查
            return
          }
          
-         console.log('🏆 检查新获得的成就...')
+         // 检查新获得的成就
          
          const response = await levelApi.getUserAchievements()
          if (response && response.code === 200) {
@@ -1307,7 +1297,7 @@ export default {
            }
          }
        } catch (error) {
-         console.error('❌ 检查成就失败:', error)
+         // 检查成就失败
        }
      },
     
@@ -1323,7 +1313,7 @@ export default {
           rewards: this.earnedRewards
         })
       } catch (error) {
-        console.error('保存答题结果失败:', error)
+        // 保存答题结果失败
       }
     },
     restartQuiz() {
@@ -1382,15 +1372,8 @@ export default {
     },
     
     getHintForQuestion(question) {
-      if (!question) return '请仔细阅读题目内容'
-      
-      const hints = {
-        'choice': '仔细分析每个选项，排除明显错误的答案，选择最符合题意的选项。',
-        'true-false': '仔细阅读题目陈述，判断其是否符合事实或逻辑。',
-        'fill': '根据题目上下文和关键词，填写最合适的答案。'
-      }
-      
-      return hints[question.type] || '仔细阅读题目，注意关键词和细节。'
+      // 学习提示已被移除
+      return ''
     },
     
     // 新增方法

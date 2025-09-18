@@ -5,9 +5,9 @@
       <h3 class="error-title">出现了一些问题</h3>
       <p class="error-message">{{ errorMessage }}</p>
       <div class="error-actions">
-        <button @click="retry" class="btn btn-primary">
-          🔄 重试
-        </button>
+        <el-button @click="retry" type="primary" :icon="RefreshIcon">
+          重试
+        </el-button>
         <button @click="goHome" class="btn btn-secondary">
           🏠 返回首页
         </button>
@@ -27,10 +27,17 @@
 </template>
 
 <script>
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
 export default {
   name: 'ErrorBoundary',
+  components: {
+    ElButton
+  },
   data() {
     return {
+      RefreshIcon: Refresh,
       hasError: false,
       errorMessage: '',
       errorStack: '',
@@ -38,19 +45,18 @@ export default {
     }
   },
   errorCaptured(err, vm, info) {
-    console.error('ErrorBoundary 捕获到错误:', err, vm, info)
+    // ErrorBoundary 捕获到错误
     
     this.hasError = true
     this.errorMessage = err.message || '组件渲染时发生未知错误'
     this.errorStack = err.stack || info || '无堆栈信息'
     
     // 记录错误到控制台
-    console.group('🚨 错误详情')
-    console.error('错误信息:', err.message)
-    console.error('错误堆栈:', err.stack)
-    console.error('组件信息:', info)
-    console.error('Vue实例:', vm)
-    console.groupEnd()
+    // 错误详情记录
+      // 错误信息: err.message
+      // 错误堆栈: err.stack
+      // 组件信息: info
+      // Vue实例: vm
     
     return false // 阻止错误继续传播
   },
@@ -79,7 +85,7 @@ export default {
         userAgent: navigator.userAgent
       }
       
-      console.log('错误报告:', errorReport)
+      // 错误报告已生成
       
       // 显示成功提示
       this.$message({
@@ -247,4 +253,4 @@ export default {
     justify-content: center;
   }
 }
-</style> 
+</style>

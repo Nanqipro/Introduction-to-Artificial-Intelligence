@@ -78,12 +78,12 @@ export default {
   methods: {
     testClick() {
       this.clickCount++;
-      console.log('按钮被点击了！', this.clickCount);
+      // 按钮被点击了
       alert(`按钮被点击了 ${this.clickCount} 次！`);
     }
   },
   mounted() {
-    console.log('Chapter1Demo 组件已挂载！');
+    // Chapter1Demo 组件已挂载
     alert('Chapter1Demo 组件已成功加载！');
   }
 }

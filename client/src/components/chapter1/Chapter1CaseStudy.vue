@@ -254,13 +254,87 @@
       </div>
     </div>
 
+    <!-- 全局统计显示区域 -->
+    <div class="global-stats-card">
+      <div class="stats-header">
+        <h3 class="stats-title">
+          <span class="stats-icon">📊</span>
+          全局统计数据
+        </h3>
+        <p class="stats-description">查看所有用户在第一章案例演示中的表现</p>
+      </div>
+      
+      <div v-if="loadingStats" class="stats-loading">
+        <div class="loading-spinner"></div>
+        <span>加载统计数据中...</span>
+      </div>
+      
+      <div v-else-if="statsError" class="stats-error">
+        <div class="error-icon">⚠️</div>
+        <span>{{ statsError }}</span>
+        <button @click="loadGlobalStats" class="btn btn-outline">重新加载</button>
+      </div>
+      
+      <div v-else-if="globalStats" class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <span class="stat-value">{{ globalStats.totalUsers || 0 }}</span>
+            <span class="stat-label">参与用户</span>
+          </div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-icon">📝</div>
+          <div class="stat-content">
+            <span class="stat-value">{{ globalStats.totalAttempts || 0 }}</span>
+            <span class="stat-label">总答题次数</span>
+          </div>
+        </div>
+        
+        <div class="stat-item highlight">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-content">
+            <span class="stat-value accuracy-rate">{{ formatAccuracyRate(globalStats.accuracyRate) }}</span>
+            <span class="stat-label">全局准确率</span>
+          </div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <span class="stat-value">{{ globalStats.correctAnswers || 0 }}</span>
+            <span class="stat-label">正确答案数</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stats-footer">
+        <el-button 
+          @click="loadGlobalStats" 
+          :loading="loadingStats"
+          type="primary"
+          class="refresh-btn"
+          :icon="RefreshIcon"
+          size="default"
+        >
+          刷新数据
+        </el-button>
+      </div>
+    </div>
 
   </div>
 </template>
 
 <script>
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
 export default {
   name: 'Chapter1CaseStudy',
+  components: {
+    ElButton
+  },
   props: {
     chapterId: {
       type: [String, Number],
@@ -270,6 +344,7 @@ export default {
   emits: ['case-completed', 'all-cases-completed'],
   data() {
     return {
+      RefreshIcon: Refresh,
       questionResults: {},
       questionAnswers: {
         1: { A: 'human', B: 'ai' },
@@ -373,7 +448,7 @@ export default {
         const response = await this.fetchGlobalStats()
         this.globalStats = response
       } catch (error) {
-        console.error('加载全局统计数据失败:', error)
+        // 加载全局统计数据失败
         this.statsError = '加载统计数据失败，请稍后重试'
         // 设置默认数据以防API失败
         this.globalStats = {
@@ -394,7 +469,7 @@ export default {
         const response = await quizApi.getChapter1GlobalStats()
         return response.data
       } catch (error) {
-        console.error('获取全局统计数据失败:', error)
+        // 获取全局统计数据失败
         // 如果API调用失败，返回模拟数据
         return {
           totalUsers: 1247,
@@ -409,13 +484,26 @@ export default {
     async submitAnswerData(questionId, option, isCorrect) {
       try {
         const { quizApi } = await import('@/services/api')
+        
+        // 获取正确答案
+        const questionData = this.questionAnswers[questionId]
+        let correctAnswer = ''
+        
+        // 根据题目类型确定正确答案
+        if (questionData) {
+          // 找出哪个选项是 'human' (真实的)
+          if (questionData.A === 'human') {
+            correctAnswer = 'A'
+          } else if (questionData.B === 'human') {
+            correctAnswer = 'B'
+          }
+        }
+        
         const answerData = {
-          chapterId: this.chapterId,
-          questionId: questionId,
-          selectedOption: option,
-          isCorrect: isCorrect,
-          timestamp: new Date().toISOString(),
-          chapterType: 'case-study'
+          questionId: questionId.toString(),
+          userAnswer: option,
+          correctAnswer: correctAnswer,
+          chapterType: 'chapter1_case_study'
         }
         
         await quizApi.submitChapter1Answer(answerData)
@@ -425,8 +513,21 @@ export default {
           this.loadGlobalStats()
         }, 500)
       } catch (error) {
-        console.error('提交答题数据失败:', error)
+        // 提交答题数据失败
       }
+    },
+    
+    // 格式化准确率为百分比
+    formatAccuracyRate(rate) {
+      if (rate === null || rate === undefined) {
+        return '0.0%'
+      }
+      // 如果已经是百分比格式，直接返回
+      if (typeof rate === 'string' && rate.includes('%')) {
+        return rate
+      }
+      // 如果是数字，转换为百分比
+      return `${Number(rate).toFixed(1)}%`
     }
   }
 }
@@ -841,7 +942,269 @@ export default {
 }
 
 /* 全局统计卡片样式 */
+.global-stats-card {
+  background: var(--card-bg, #292c33);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 3rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
 
+.stats-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stats-title {
+  font-size: 1.5rem;
+  color: var(--text-color, #f5f6fa);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.stats-icon {
+  font-size: 1.25rem;
+}
+
+.stats-description {
+  color: var(--text-secondary-color, #b0b3b8);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.stats-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--text-secondary-color, #b0b3b8);
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-top: 2px solid var(--primary-color, #18191a);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.stats-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--error-color, #f56565);
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  background: var(--secondary-color, #23272e);
+  border: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.stat-item.highlight {
+  background: linear-gradient(135deg, var(--primary-color, #18191a) 0%, var(--primary-gradient-end, #232526) 100%);
+  border-color: var(--primary-color, #18191a);
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg, #292c33);
+  border-radius: 8px;
+}
+
+.stat-item.highlight .stat-icon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color, #f5f6fa);
+}
+
+.accuracy-rate {
+  color: var(--success-color, #48bb78);
+  font-size: 1.75rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary-color, #b0b3b8);
+  font-weight: 500;
+}
+
+.stats-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--card-border, rgba(57, 59, 64, 0.18));
+}
+
+.refresh-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+  color: #ffffff !important;
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.refresh-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.refresh-btn.is-loading {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Element Plus 按钮图标样式优化 */
+.refresh-btn .el-icon {
+  margin-right: 8px !important;
+  font-size: 16px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.refresh-btn:hover .el-icon {
+  transform: rotate(180deg) !important;
+}
+
+.refresh-btn.is-loading .el-icon {
+  animation: refresh-spin 1s linear infinite !important;
+}
+
+@keyframes refresh-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 亮色主题适配 */
+:root.light-theme .global-stats-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+:root.light-theme .stats-title {
+  color: #1a202c;
+}
+
+:root.light-theme .stats-description {
+  color: #4a5568;
+}
+
+:root.light-theme .stat-item {
+  background: #f7fafc;
+  border-color: #e2e8f0;
+}
+
+:root.light-theme .stat-item.highlight {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #3b82f6;
+}
+
+:root.light-theme .stat-icon {
+  background: #ffffff;
+}
+
+:root.light-theme .stat-item.highlight .stat-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:root.light-theme .stat-value {
+  color: #1a202c;
+}
+
+:root.light-theme .stat-label {
+  color: #4a5568;
+}
+
+:root.light-theme .stats-footer {
+  border-color: #e2e8f0;
+}
+
+/* 亮色主题下的刷新按钮样式 */
+:root.light-theme .refresh-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25) !important;
+}
+
+:root.light-theme .refresh-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35) !important;
+}
+
+:root.light-theme .refresh-btn:active {
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25) !important;
+}
+
+:root.light-theme .refresh-btn.is-loading {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+}
+
+:root.light-theme .stats-loading {
+  color: #4a5568;
+}
+
+:root.light-theme .loading-spinner {
+  border-color: #e2e8f0;
+  border-top-color: #3b82f6;
+}
 
 @media (max-width: 768px) {
   .case-study-options {
@@ -873,6 +1236,42 @@ export default {
   .btn {
     width: 100%;
     padding: 1.5rem;
+  }
+  
+  /* 全局统计卡片移动端样式 */
+  .global-stats-card {
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .stat-item {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.25rem;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .accuracy-rate {
+    font-size: 1.5rem;
+  }
+  
+  .stats-title {
+    font-size: 1.25rem;
   }
 }
 </style>

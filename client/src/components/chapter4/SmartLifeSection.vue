@@ -44,8 +44,8 @@
         </div>
         <div class="card-content">
           <p class="card-description">
-            以小米全屋智能为例，通过米家App统一控制，实现设备间的智能联动。Yeelight智能灯可根据环境光线自动调节，
-            米家空调能学习用户作息习惯智能调温，小爱音箱作为控制中枢，让语音控制成为可能，打造真正的智慧生活体验。
+            以智能家居系统为例，通过统一的控制平台，实现设备间的智能联动。智能照明可根据环境光线自动调节，
+            智能空调能学习用户作息习惯智能调温，智能音箱作为控制中枢，让语音控制成为可能，打造真正的智慧生活体验。
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@
         </div>
         <div class="card-content">
           <p class="card-description">
-            以小爱同学为代表的智能语音助手，集成了先进的语音识别和自然语言处理技术，支持方言识别，
+            智能语音助手集成了先进的语音识别和自然语言处理技术，支持方言识别，
             可控制全屋智能设备、查询天气信息、播放音乐、设置提醒等，真正实现了"动口不动手"的智能生活体验。
           </p>
         </div>
@@ -101,15 +101,7 @@
             </ul>
           </div>
           
-          <div class="device-specifications">
-            <h4>技术规格</h4>
-            <div class="spec-grid">
-              <div v-for="(value, key) in selectedDeviceDetail?.specifications" :key="key" class="spec-item">
-                <span class="spec-label">{{ key }}:</span>
-                <span class="spec-value">{{ value }}</span>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
@@ -118,17 +110,17 @@
     <div v-if="showVoiceDialog" class="voice-dialog-modal" @click="showVoiceDialog = false">
       <div class="voice-dialog-content" @click.stop>
         <div class="voice-dialog-header">
-          <h3>🎤 小爱同学智能对话</h3>
+          <h3>🎤 智能语音助手对话</h3>
           <button class="close-btn" @click="showVoiceDialog = false">×</button>
         </div>
         <div class="voice-dialog-body">
           <div class="conversation">
             <div class="message user-message">
-              <div class="message-content">小爱同学，帮我打开客厅的灯</div>
+              <div class="message-content">小助手，帮我打开客厅的灯</div>
               <div class="message-time">19:30</div>
             </div>
             <div class="message ai-message">
-              <div class="message-content">好的，已为您打开客厅的Yeelight智能灯，当前亮度70%，色温3000K</div>
+              <div class="message-content">好的，已为您打开客厅的智能灯，当前亮度70%，色温3000K</div>
               <div class="message-time">19:30</div>
             </div>
             <div class="message user-message">
@@ -170,99 +162,69 @@ const showVoiceDialog = ref(false)
 const smartDevices = ref([
   { 
     id: 'light', 
-    name: 'Yeelight智能灯', 
-    brand: '小米生态链', 
+    name: '智能照明灯', 
+    brand: '智能家居品牌', 
     features: ['色温调节', '亮度调节', '场景模式'], 
     style: { top: '20%', left: '15%' },
-    description: 'Yeelight智能灯采用先进的LED技术，支持1600万种颜色调节，可根据时间自动调整色温，营造舒适的光照环境。',
+    description: '智能照明灯采用先进的LED技术，支持1600万种颜色调节，可根据时间自动调整色温，营造舒适的光照环境。',
     technologies: ['WiFi连接', 'LED调光技术', '色温控制', '场景联动'],
     scenarios: ['阅读模式：暖白光护眼', '观影模式：柔和昏暗', '起床模式：渐亮唤醒', '睡眠模式：自动关闭'],
-    specifications: {
-      power: '9W',
-      brightness: '800流明',
-      colorTemp: '1700K-6500K',
-      lifespan: '25000小时'
-    }
+
   },
   { 
     id: 'ac', 
-    name: '米家空调', 
-    brand: '小米', 
+    name: '智能空调', 
+    brand: '智能家电品牌', 
     features: ['远程控制', '定时开关', '节能模式'], 
     style: { top: '15%', right: '20%' },
-    description: '米家空调搭载变频技术和AI学习算法，能够智能学习用户习惯，自动调节温度，实现舒适节能的室内环境。',
+    description: '智能空调搭载变频技术和AI学习算法，能够智能学习用户习惯，自动调节温度，实现舒适节能的室内环境。',
     technologies: ['变频技术', 'AI温控算法', '远程控制', '节能优化'],
     scenarios: ['回家模式：提前制冷', '睡眠模式：静音运行', '外出模式：自动关闭', '节能模式：智能调温'],
-    specifications: {
-      cooling: '1.5匹',
-      energyLevel: '一级能效',
-      noise: '≤18dB',
-      coverage: '16-25㎡'
-    }
+
   },
   { 
     id: 'camera', 
-    name: '小白摄像头', 
-    brand: '小米', 
+    name: '智能摄像头', 
+    brand: '安防设备品牌', 
     features: ['1080P高清', '夜视功能', '移动侦测'], 
     style: { top: '10%', right: '10%' },
-    description: '小白摄像头配备高清镜头和红外夜视功能，支持AI人形检测和异常行为识别，为家庭安全提供24小时守护。',
+    description: '智能摄像头配备高清镜头和红外夜视功能，支持AI人形检测和异常行为识别，为家庭安全提供24小时守护。',
     technologies: ['1080P高清录制', '红外夜视', 'AI人形检测', '云端存储'],
     scenarios: ['安防监控：24小时守护', '远程查看：手机实时观看', '异常报警：智能识别入侵', '双向通话：远程沟通'],
-    specifications: {
-      resolution: '1920×1080',
-      nightVision: '10米红外',
-      storage: '本地+云端',
-      connectivity: 'WiFi 2.4GHz'
-    }
+
   },
   { 
     id: 'speaker', 
-    name: '小爱音箱', 
-    brand: '小米', 
+    name: '智能音箱', 
+    brand: '智能音频品牌', 
     features: ['语音控制', '音乐播放', '智能问答'], 
     style: { bottom: '20%', left: '25%' },
-    description: '小爱音箱作为智能家居的控制中枢，集成了小爱同学语音助手，支持语音控制全屋设备，提供丰富的内容服务。',
+    description: '智能音箱作为智能家居的控制中枢，集成了语音助手，支持语音控制全屋设备，提供丰富的内容服务。',
     technologies: ['语音识别', '自然语言处理', '远场拾音', '智能联动'],
     scenarios: ['语音控制：动口不动手', '音乐播放：海量曲库', '信息查询：天气新闻', '设备联动：一句话控制'],
-    specifications: {
-      microphones: '6麦克风阵列',
-      speaker: '2.25英寸全频',
-      connectivity: 'WiFi + 蓝牙',
-      power: '12W'
-    }
+
   },
   { 
     id: 'robot', 
-    name: '米家扫地机器人', 
-    brand: '小米', 
+    name: '智能扫地机器人', 
+    brand: '智能清洁品牌', 
     features: ['激光导航', '智能清扫', '自动回充'], 
     style: { bottom: '15%', right: '30%' },
-    description: '米家扫地机器人采用激光雷达导航技术，能够精确建图规划路径，智能识别房间类型，提供个性化清扫方案。',
+    description: '智能扫地机器人采用激光雷达导航技术，能够精确建图规划路径，智能识别房间类型，提供个性化清扫方案。',
     technologies: ['激光雷达', 'SLAM算法', '路径规划', '智能识别'],
     scenarios: ['定时清扫：按时自动工作', '分区清扫：指定区域清理', '禁区设置：避开敏感区域', '远程控制：手机操控'],
-    specifications: {
-      navigation: 'LDS激光雷达',
-      suction: '2100Pa大吸力',
-      battery: '5200mAh',
-      runtime: '150分钟'
-    }
+
   },
   { 
     id: 'purifier', 
-    name: '米家空气净化器', 
-    brand: '小米', 
+    name: '智能空气净化器', 
+    brand: '空气净化品牌', 
     features: ['PM2.5检测', '智能净化', '静音运行'], 
     style: { bottom: '25%', left: '45%' },
-    description: '米家空气净化器配备高精度传感器，实时监测空气质量，智能调节净化模式，为家庭提供清新健康的空气环境。',
+    description: '智能空气净化器配备高精度传感器，实时监测空气质量，智能调节净化模式，为家庭提供清新健康的空气环境。',
     technologies: ['激光传感器', '三层过滤', '智能算法', '静音技术'],
     scenarios: ['自动模式：智能调节风速', '睡眠模式：超静音运行', '手动模式：自定义设置', '儿童锁：防误操作'],
-    specifications: {
-      cadr: '330m³/h',
-      coverage: '23-40㎡',
-      noise: '≤34dB',
-      filter: 'H13级HEPA'
-    }
+
   }
 ])
 
@@ -276,7 +238,7 @@ const handleSmartHomeLeave = () => {
 }
 
 const handleSmartDeviceClick = (device) => {
-  console.log(`点击了智能设备: ${device.name} - ${device.brand}`)
+  // 点击了智能设备
   selectedDeviceDetail.value = device
   showDeviceDetail.value = true
   emit('interaction')
@@ -290,7 +252,7 @@ const closeDeviceDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 </script>
 
@@ -681,98 +643,5 @@ const onImageClick = (imageType) => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .section-title {
-  color: var(--text-color);
-}
-
-.light-theme .section-subtitle {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .content-card {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .content-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 191, 255, 0.15);
-  border-color: var(--accent-color);
-}
-
-.light-theme .device-info {
-  background: var(--card-bg);
-}
-
-.light-theme .device-name {
-  color: var(--text-color);
-}
-
-.light-theme .device-brand {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .card-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .device-detail-content,
-.light-theme .voice-dialog-content {
-  background: var(--card-bg);
-}
-
-.light-theme .device-detail-header,
-.light-theme .voice-dialog-header {
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .device-detail-header h3,
-.light-theme .voice-dialog-header h3 {
-  color: var(--text-color);
-}
-
-.light-theme .close-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .device-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .device-technologies h4,
-.light-theme .device-scenarios h4,
-.light-theme .device-specifications h4 {
-  color: var(--text-color);
-}
-
-.light-theme .scenario-list li {
-  color: var(--text-secondary-color);
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .spec-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .spec-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .spec-value {
-  color: var(--text-color);
-}
-
-.light-theme .ai-message .message-content {
-  background: var(--secondary-color);
-  color: var(--text-color);
-}
-
-.light-theme .message-time {
-  color: var(--text-muted-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

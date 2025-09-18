@@ -10,6 +10,7 @@ create table user (
                       nickname varchar(10)  default '' comment '昵称',
                       email varchar(128) default '' comment '邮箱',
                       user_pic varchar(128) default '' comment '头像',
+                      role varchar(20) default 'user' comment '用户角色(admin/user)',
                       level int default 1 comment '用户等级',
                       experience int default 0 comment '经验值',
                       total_score int default 0 comment '总分数',
@@ -69,12 +70,19 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 
 -- 插入管理员用户
-INSERT INTO user (username, password, nickname, email, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time) 
-VALUES ('admin', MD5('admin'), 'Admin', 'admin@example.com', 1, 0, 0, 0, 0, 0, NOW(), NOW());
+INSERT INTO user (username, password, nickname, email, role, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time) 
+VALUES ('goodlabAdmin', MD5('goodlabPwd'), 'GoodLab管理员', 'admin@goodlab.com', 'admin', 1, 0, 0, 0, 0, 0, NOW(), NOW());
 
 -- 插入测试用户
-INSERT INTO user (username, password, nickname, email, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time) 
-VALUES ('test', MD5('test'), 'TestUser', 'test@example.com', 1, 0, 0, 0, 0, 0, NOW(), NOW());
+INSERT INTO user (username, password, nickname, email, role, level, experience, total_score, completed_chapters, quiz_count, correct_answers, create_time, update_time) 
+VALUES ('test', MD5('test'), 'TestUser', 'test@example.com', 'user', 1, 0, 0, 0, 0, 0, NOW(), NOW());
+
+-- 为现有用户添加角色字段（如果表已存在）
+ALTER TABLE user ADD COLUMN IF NOT EXISTS role varchar(20) default 'user' comment '用户角色(admin/user)' AFTER user_pic;
+
+-- 更新现有管理员账号
+UPDATE user SET role = 'admin' WHERE username = 'goodlabAdmin';
+UPDATE user SET username = 'goodlabAdmin', password = MD5('goodlabPwd'), nickname = 'GoodLab管理员', role = 'admin' WHERE username = 'admin';
 
 -- 插入章节示例数据
 INSERT INTO chapters (title, content, order_num) VALUES 
@@ -116,12 +124,14 @@ CREATE TABLE IF NOT EXISTS chapter1_global_stats (
     correct_answers INT DEFAULT 0 COMMENT '正确答案总数',
     accuracy_rate DECIMAL(5,2) DEFAULT 0.00 COMMENT '全局准确率',
     completion_rate DECIMAL(5,2) DEFAULT 0.00 COMMENT '完成率',
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间'
+    chapter_type VARCHAR(50) DEFAULT 'chapter1_case_study' COMMENT '章节类型',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间'
 ) COMMENT '第一章案例演示全局统计表';
 
 -- 初始化全局统计数据
-INSERT INTO chapter1_global_stats (total_users, total_attempts, correct_answers, accuracy_rate, completion_rate) 
-VALUES (0, 0, 0, 0.00, 0.00);
+INSERT INTO chapter1_global_stats (total_users, total_attempts, correct_answers, accuracy_rate, completion_rate, chapter_type) 
+VALUES (0, 0, 0, 0.00, 0.00, 'chapter1_case_study');
 
 -- 验证插入结果
 SELECT * FROM user;

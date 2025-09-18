@@ -165,10 +165,9 @@
               <span class="btn-icon">📋</span>
               查看答案解析
             </button>
-            <button class="retry-quiz-btn" @click="retryQuiz">
-              <span class="btn-icon">🔄</span>
+            <el-button class="retry-quiz-btn" @click="retryQuiz" type="primary" :icon="RefreshIcon">
               重新测验
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
@@ -231,6 +230,11 @@
 
 <script setup>
 import { ref, computed, defineEmits } from 'vue'
+import { ElButton } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
+
+// 图标引用
+const RefreshIcon = Refresh
 
 // Props
 const props = defineProps({
@@ -286,7 +290,7 @@ const quizQuestions = ref([
   {
     id: 3,
     category: '智慧娱乐',
-    question: '流媒体平台如Netflix使用AI技术主要是为了？',
+    question: '流媒体平台使用AI技术主要是为了？',
     options: [
       '提高视频画质',
       '个性化内容推荐',
@@ -294,7 +298,7 @@ const quizQuestions = ref([
       '增加存储容量'
     ],
     correct: 1,
-    explanation: 'Netflix等流媒体平台主要使用协同过滤、深度学习等AI算法分析用户观看历史和偏好，为每个用户提供个性化的内容推荐，提升用户体验和平台粘性。'
+    explanation: '流媒体平台主要使用协同过滤、深度学习等AI算法分析用户观看历史和偏好，为每个用户提供个性化的内容推荐，提升用户体验和平台粘性。'
   },
   {
     id: 4,
@@ -393,7 +397,7 @@ const startQuiz = () => {
   finalScore.value = 0
   showAnswer.value = false
   emit('interaction')
-  console.log('开始测验')
+  // 开始测验
 }
 
 const selectAnswer = (index) => {
@@ -413,7 +417,7 @@ const submitAnswer = () => {
     }
     
     emit('interaction')
-    console.log(`提交答案: ${selectedAnswer.value}, 正确答案: ${currentQuestion.value.correct}`)
+    // 提交答案
   }
 }
 
@@ -434,7 +438,7 @@ const finishQuiz = () => {
     answers: userAnswers.value
   })
   emit('interaction')
-  console.log(`测验完成，得分: ${finalScore.value}/${quizQuestions.value.length}`)
+  // 测验完成
 }
 
 const retryQuiz = () => {
@@ -447,13 +451,13 @@ const retryQuiz = () => {
   finalScore.value = 0
   showAnswer.value = false
   emit('interaction')
-  console.log('重新开始测验')
+  // 重新开始测验
 }
 
 const reviewAnswers = () => {
   showReview.value = true
   emit('interaction')
-  console.log('查看答案解析')
+  // 查看答案解析
 }
 
 const closeReview = () => {
@@ -1239,158 +1243,5 @@ const getFeedbackMessage = () => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .section-title {
-  color: var(--text-color);
-}
-
-.light-theme .section-subtitle {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .intro-content {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .intro-content h4 {
-  color: var(--text-color);
-}
-
-.light-theme .intro-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .stat-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-active {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .quiz-progress {
-  background: var(--secondary-color);
-}
-
-.light-theme .progress-text {
-  color: var(--text-color);
-}
-
-.light-theme .question-text {
-  color: var(--text-color);
-}
-
-.light-theme .option-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .option-item:hover {
-  background: var(--border-color);
-}
-
-.light-theme .option-text {
-  color: var(--text-color);
-}
-
-.light-theme .question-explanation {
-  background: var(--secondary-color);
-}
-
-.light-theme .question-explanation h5 {
-  color: var(--text-color);
-}
-
-.light-theme .question-explanation p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-results {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .results-header h4 {
-  color: var(--text-color);
-}
-
-.light-theme .final-score {
-  color: var(--text-color);
-}
-
-.light-theme .score-total {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .results-analysis {
-  background: var(--secondary-color);
-}
-
-.light-theme .analysis-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .results-feedback {
-  background: var(--secondary-color);
-}
-
-.light-theme .results-feedback h5 {
-  color: var(--text-color);
-}
-
-.light-theme .results-feedback p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .quiz-review {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .review-header {
-  background: var(--card-bg);
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .review-header h4 {
-  color: var(--text-color);
-}
-
-.light-theme .close-review-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-review-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .review-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .review-question-text {
-  color: var(--text-color);
-}
-
-.light-theme .review-option {
-  background: var(--card-bg);
-}
-
-.light-theme .review-option-text {
-  color: var(--text-color);
-}
-
-.light-theme .review-explanation {
-  background: var(--card-bg);
-}
-
-.light-theme .review-explanation h6 {
-  color: var(--text-color);
-}
-
-.light-theme .review-explanation p {
-  color: var(--text-secondary-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

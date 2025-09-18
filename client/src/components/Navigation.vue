@@ -88,11 +88,14 @@
               统计
             </el-dropdown-item>
             <div class="dropdown-divider"></div>
-            <el-dropdown-item @click="goToPage('/admin')">
-              <el-icon style="margin-right: 12px;"><Setting /></el-icon>
-              管理
-            </el-dropdown-item>
-            <div class="dropdown-divider"></div>
+            <!-- 只有管理员才显示管理菜单 -->
+            <template v-if="currentUser?.role === 'admin'">
+              <el-dropdown-item @click="goToPage('/admin')">
+                <el-icon style="margin-right: 12px;"><Setting /></el-icon>
+                管理
+              </el-dropdown-item>
+              <div class="dropdown-divider"></div>
+            </template>
             <el-dropdown-item @click="goToPage('/about')">
               <el-icon style="margin-right: 12px;"><InfoFilled /></el-icon>
               关于
@@ -117,39 +120,24 @@ const { isLoggedIn, currentUser, logout, checkAuthStatus, forceRefreshAuth } = u
 const activePath = computed(() => route.path)
 
 const goToPage = async (path) => {
-  console.log('🧭 Navigation: 准备跳转到', path)
-  console.log('🧭 Navigation: 当前登录状态', isLoggedIn.value)
-  console.log('🧭 Navigation: 当前用户信息', currentUser.value)
-  console.log('🧭 Navigation: localStorage token:', localStorage.getItem('token') ? 'exists' : 'null')
-  
   try {
     await router.push(path)
-    console.log('🧭 Navigation: 跳转成功到', path)
   } catch (error) {
-    console.error('🧭 Navigation: 跳转失败', error)
+    // Navigation: 跳转失败
   }
 }
 
 const handleProfileClick = async () => {
-  console.log('🎯 个人中心点击事件触发')
-  
   // 直接从localStorage获取token，不依赖useAuth的响应式状态
   const localToken = localStorage.getItem('token')
   
-  console.log('🎯 Token状态检查:', {
-    hasLocalToken: !!localToken,
-    tokenPreview: localToken ? localToken.substring(0, 30) + '...' : 'null'
-  })
-  
   if (!localToken) {
-    console.error('❌ 没有找到token，需要重新登录')
     logout()
     router.push('/login')
     return
   }
   
   // 直接跳转，让路由守卫和页面自己处理认证
-  console.log('🚀 准备跳转到个人中心页面')
   goToPage('/profile')
 }
 
@@ -162,14 +150,11 @@ const handleLogout = () => {
 const handleStorageChange = async (event) => {
   // 只处理token相关的变化，避免过度响应
   if (event.key === 'token' || event.key === 'userInfo') {
-    console.log('🧭 Navigation: localStorage变化，重新检查认证状态', event.key)
     // 延迟一下，确保localStorage操作完成
     setTimeout(async () => {
       // 只有在有token时才刷新认证状态
       if (localStorage.getItem('token')) {
         await forceRefreshAuth()
-      } else {
-        console.log('🧭 Navigation: 无token，跳过认证状态刷新')
       }
     }, 100)
   }
@@ -177,8 +162,6 @@ const handleStorageChange = async (event) => {
 
 // 初始化时检查认证状态
 onMounted(async () => {
-  console.log('🧭 Navigation: 组件挂载，开始检查认证状态')
-  
   // 监听localStorage变化
   window.addEventListener('storage', handleStorageChange)
   
@@ -187,21 +170,12 @@ onMounted(async () => {
     try {
       // 只有在有token的情况下才进行认证相关操作
       if (localStorage.getItem('token')) {
-        console.log('🧭 Navigation: 发现token，进行认证状态检查')
         // 先强制刷新认证状态
         await forceRefreshAuth()
         await checkAuthStatus()
-      } else {
-        console.log('🧭 Navigation: 无token，跳过所有认证检查')
       }
-      
-      console.log('🧭 Navigation: 认证状态检查完成', {
-        isLoggedIn: isLoggedIn.value,
-        hasCurrentUser: !!currentUser.value,
-        hasToken: !!localStorage.getItem('token')
-      })
     } catch (error) {
-      console.warn('🧭 Navigation: 认证状态检查失败:', error.message)
+      // 认证状态检查失败
     }
   }, 100) // 延迟100ms避免并发请求
   
@@ -253,8 +227,16 @@ onMounted(async () => {
   background: #fff;
   box-shadow: 0 2px 8px rgba(var(--text-secondary-color-rgb, 176, 179, 184), 0.10);
   border-radius: 50%;
-  padding: 0.2rem;
+  padding: 0;
   flex-shrink: 0; // 防止图标被压缩
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 .brand-text {

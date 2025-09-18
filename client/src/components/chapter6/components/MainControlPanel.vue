@@ -254,6 +254,10 @@ watch(() => props.visualizationMode, (newVal) => {
     box-shadow: var(--box-shadow);
     position: relative;
     overflow: hidden;
+    height: 100%;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
     
     &::before {
       content: '';
@@ -292,19 +296,28 @@ watch(() => props.visualizationMode, (newVal) => {
       color: var(--text-color);
       position: relative;
       z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .training-controls, .dataset-selection, .network-config {
       padding: 1rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     // 训练控制样式
     .training-controls {
+      justify-content: space-between;
+      
       .control-buttons {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         margin-bottom: 1.5rem;
+        flex-shrink: 0;
 
         .control-button {
           width: 100%;
@@ -350,6 +363,8 @@ watch(() => props.visualizationMode, (newVal) => {
       }
 
       .speed-control {
+        margin-top: auto; // 推到底部
+        
         .speed-label {
           color: var(--text-color);
           font-weight: 500;
@@ -367,9 +382,17 @@ watch(() => props.visualizationMode, (newVal) => {
     // 数据集选择样式
     .dataset-selection {
       .dataset-info {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--secondary-color);
+        border-radius: 12px;
+        border: 1px solid var(--border-light-color);
+        flex-shrink: 0;
 
         .current-dataset {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           margin-bottom: 1rem;
 
           .dataset-name {
@@ -389,9 +412,12 @@ watch(() => props.visualizationMode, (newVal) => {
           gap: 1rem;
 
           .stat-item {
+            display: flex;
+            gap: 0.5rem;
+
             .stat-label {
               color: var(--text-secondary-color);
-              font-size: 0.9rem;
+              font-weight: 500;
             }
 
             .stat-value {
@@ -407,12 +433,18 @@ watch(() => props.visualizationMode, (newVal) => {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+        flex: 1;
+        overflow-y: auto;
+        max-height: 200px;
 
         .dataset-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
           padding: 1rem;
           border-radius: 12px;
           background: var(--secondary-color);
-          border: 1px solid var(--border-light-color);
+          border: 2px solid var(--border-light-color);
           color: var(--text-color);
           cursor: pointer;
           transition: all 0.3s ease;
@@ -451,18 +483,26 @@ watch(() => props.visualizationMode, (newVal) => {
 
           .dataset-icon {
             color: inherit;
+            font-size: 1.5rem;
+            flex-shrink: 0;
           }
 
           .dataset-details {
+            flex: 1;
+            
             .dataset-title {
               font-weight: 600;
               margin-bottom: 0.25rem;
+              color: inherit;
+              font-size: 1rem;
             }
 
             .dataset-description {
               font-size: 0.9rem;
               opacity: 0.8;
               margin-bottom: 0.5rem;
+              color: inherit;
+              line-height: 1.4;
             }
 
             .dataset-meta {
@@ -470,6 +510,14 @@ watch(() => props.visualizationMode, (newVal) => {
               gap: 1rem;
               font-size: 0.8rem;
               opacity: 0.7;
+              color: inherit;
+              
+              span {
+                background: rgba(0, 191, 255, 0.2);
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 500;
+              }
             }
           }
         }
@@ -478,16 +526,55 @@ watch(() => props.visualizationMode, (newVal) => {
 
     // 网络配置样式
     .network-config {
+      justify-content: space-between;
+      
       .config-item {
         display: flex;
         align-items: center;
         gap: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--secondary-color);
+        border-radius: 12px;
+        border: 1px solid var(--border-light-color);
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: var(--btn-primary-bg);
+          border-color: var(--accent-color);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px var(--glow-color);
+        }
 
         span {
           color: var(--text-color);
           font-weight: 500;
           min-width: 80px;
+          flex-shrink: 0;
+        }
+        
+        .el-input-number,
+        .el-select,
+        .el-radio-group {
+          flex: 1;
+        }
+      }
+      
+      .config-item:last-child {
+        margin-top: auto;
+        margin-bottom: 0;
+        background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--btn-hover-bg) 100%);
+        
+        .el-button {
+          width: 100%;
+          background: transparent;
+          border: none;
+          color: white;
+          font-weight: 600;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+          }
         }
       }
     }
@@ -729,20 +816,54 @@ html.light-theme .main-control-panel {
 
     .dataset-options {
       .dataset-item {
-        background: #f8f9fa;
-        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        border: 2px solid #e9ecef;
         color: #212529;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
         &:hover {
-          background: #e9ecef;
+          background: #f8f9fa;
+          border-color: #3b82f6;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+          color: #1d4ed8;
         }
 
         &.active {
           background: #3b82f6;
           color: #ffffff;
           border-color: #3b82f6;
+          box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .dataset-details {
+          .dataset-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: inherit;
+          }
+
+          .dataset-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            color: inherit;
+          }
+
+          .dataset-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            color: inherit;
+            
+            span {
+              background: rgba(59, 130, 246, 0.1);
+              padding: 2px 8px;
+              border-radius: 12px;
+              font-weight: 500;
+            }
+          }
         }
       }
     }
@@ -750,8 +871,45 @@ html.light-theme .main-control-panel {
 
   .network-config {
     .config-item {
+      background: #f8f9fa;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        background: #e9ecef;
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+      }
+      
       span {
         color: #212529;
+      }
+      
+      &:last-child {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border-color: #3b82f6;
+        
+        &:hover {
+          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+          border-color: #2563eb;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .el-button {
+          background: transparent !important;
+          border: none !important;
+          color: #ffffff !important;
+          font-weight: 600;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+          }
+          
+          .el-icon {
+            color: #ffffff !important;
+          }
+        }
       }
     }
   }

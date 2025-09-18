@@ -15,15 +15,14 @@
       <!-- 用户头像和基本信息 -->
       <ProfileHero 
         :user-info="userInfo"
-        :user-stats="userStats"
+        
         :user-achievements="userAchievements"
         @show-avatar-dialog="showAvatarDialog = true"
       />
       
       <!-- 主要内容区域 -->
       <div class="profile-content">
-        <!-- 学习统计 -->
-        <StudyStats :user-stats="userStats" />
+
         
         <!-- 个人信息 -->
         <UserInfo 
@@ -71,7 +70,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import ProfileHero from '@/components/profile/ProfileHero.vue'
-import StudyStats from '@/components/profile/StudyStats.vue'
+
 import UserInfo from '@/components/profile/UserInfo.vue'
 import UserAchievements from '@/components/profile/UserAchievements.vue'
 import { useAuth } from '@/composables/useAuth'
@@ -104,24 +103,13 @@ const customUploadRequest = async (options) => {
     options.onSuccess(response)
     return response
   } catch (error) {
-    console.error('上传失败:', error)
+    // 上传失败
     options.onError(error)
     throw error
   }
 }
 
-// 用户统计数据（初始为空，挂载后从后端拉取）
-const userStats = reactive({
-  level: 0,
-  experience: 0,
-  completedChapters: 0,
-  totalScore: 0,
-  studyTime: 0,
-  achievements: 0,
-  networkProgress: 0,
-  protocolProgress: 0,
-  practiceProgress: 0
-})
+
 
 // 用户成就（从后端拉取）
 const userAchievements = ref([])
@@ -138,136 +126,55 @@ const formData = reactive({
 
 
 
-// 刷新用户统计数据的方法
-const refreshUserStats = async () => {
-  console.log('🔄 手动刷新用户统计数据...')
-  await fetchUserStatsWithRetry()
+// 刷新用户成就数据的方法
+const refreshUserAchievements = async () => {
+  // 手动刷新用户成就数据
   await fetchUserAchievementsWithRetry()
 }
 
-// 带重试机制的获取用户统计
-const fetchUserStatsWithRetry = async (maxRetries = 3) => {
-  // 检查登录状态和token
-  const token = localStorage.getItem('token')
-  if (!token || token.trim() === '' || token === 'null') {
-    console.log('🚫 UserProfile - 未登录，跳过用户统计获取')
-    // 设置默认统计数据
-    userStats.level = 1
-    userStats.experience = 0
-    userStats.completedChapters = 0
-    userStats.totalScore = 0
-    userStats.studyTime = 0
-    userStats.achievements = 0
-    userStats.networkProgress = 0
-    userStats.protocolProgress = 0
-    userStats.practiceProgress = 0
-    console.log('📊 已设置默认用户统计数据（未登录）')
-    return
-  }
-  
-  console.log('📊 开始拉取用户统计...')
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`📊 尝试获取用户统计 (${attempt}/${maxRetries})`)
-      const statsResp = await levelApi.getUserStats()
-      console.log('📊 用户统计响应:', statsResp)
-      
-      if (statsResp && statsResp.code === 200 && statsResp.data) {
-        const s = statsResp.data
-        userStats.level = s.level !== undefined ? s.level : userStats.level
-        userStats.experience = s.experience !== undefined ? s.experience : userStats.experience
-        userStats.completedChapters = s.completedChapters !== undefined ? s.completedChapters : userStats.completedChapters
-        userStats.totalScore = s.totalScore !== undefined ? s.totalScore : userStats.totalScore
-        userStats.studyTime = s.studyTime !== undefined ? s.studyTime : userStats.studyTime
-        userStats.achievements = s.achievementCount !== undefined ? s.achievementCount : userStats.achievements
-        userStats.networkProgress = s.networkProgress !== undefined ? s.networkProgress : userStats.networkProgress
-        userStats.protocolProgress = s.protocolProgress !== undefined ? s.protocolProgress : userStats.protocolProgress
-        userStats.practiceProgress = s.practiceProgress !== undefined ? s.practiceProgress : userStats.practiceProgress
-        console.log('✅ 用户统计同步完成:', userStats)
-        return // 成功获取，退出重试循环
-      }
-    } catch (error) {
-      console.error(`❌ 获取用户统计失败 (尝试 ${attempt}/${maxRetries}):`, error)
-      
-      // 检查是否是认证错误
-      if (error.message && error.message.includes('需要登录')) {
-        console.log('🚫 认证失败，设置默认数据')
-        userStats.level = 1
-        userStats.experience = 0
-        userStats.completedChapters = 0
-        userStats.totalScore = 0
-        userStats.studyTime = 0
-        userStats.achievements = 0
-        userStats.networkProgress = 0
-        userStats.protocolProgress = 0
-        userStats.practiceProgress = 0
-        console.log('📊 已设置默认用户统计数据（认证失败）')
-        return
-      }
-      
-      if (attempt === maxRetries) {
-        console.log('⚠️ 用户统计获取失败，使用默认数据')
-        // 设置默认统计数据
-        userStats.level = 1
-        userStats.experience = 0
-        userStats.completedChapters = 0
-        userStats.totalScore = 0
-        userStats.studyTime = 0
-        userStats.achievements = 0
-        userStats.networkProgress = 0
-        userStats.protocolProgress = 0
-        userStats.practiceProgress = 0
-        console.log('📊 已设置默认用户统计数据')
-      } else {
-        // 等待一段时间后重试
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
-      }
-    }
-  }
-}
+
 
 // 带重试机制的获取用户成就
 const fetchUserAchievementsWithRetry = async (maxRetries = 3) => {
   // 检查登录状态和token
   const token = localStorage.getItem('token')
   if (!token || token.trim() === '' || token === 'null') {
-    console.log('🚫 UserProfile - 未登录，跳过用户成就获取')
+    // UserProfile - 未登录，跳过用户成就获取
     // 设置默认成就数据
     userAchievements.value = []
-    console.log('🏆 已设置默认用户成就数据（未登录）')
+    // 已设置默认用户成就数据（未登录）
     return
   }
   
-  console.log('🏆 开始拉取用户成就...')
+  // 开始拉取用户成就
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`🏆 尝试获取用户成就 (${attempt}/${maxRetries})`)
+      // 尝试获取用户成就
       const achResp = await levelApi.getUserAchievements()
-      console.log('🏆 用户成就响应:', achResp)
+      // 用户成就响应
       
       if (achResp && achResp.code === 200 && Array.isArray(achResp.data)) {
         userAchievements.value = achResp.data
-        console.log('✅ 用户成就同步完成:', userAchievements.value)
+        // 用户成就同步完成
         return // 成功获取，退出重试循环
       }
     } catch (error) {
-      console.error(`❌ 获取用户成就失败 (尝试 ${attempt}/${maxRetries}):`, error)
+      // 获取用户成就失败
       
       // 检查是否是认证错误
       if (error.message && error.message.includes('需要登录')) {
-        console.log('🚫 认证失败，设置默认数据')
+        // 认证失败，设置默认数据
         userAchievements.value = []
-        console.log('🏆 已设置默认用户成就数据（认证失败）')
+        // 已设置默认用户成就数据（认证失败）
         return
       }
       
       if (attempt === maxRetries) {
-        console.log('⚠️ 用户成就获取失败，使用默认数据')
+        // 用户成就获取失败，使用默认数据
         // 设置默认成就数据
         userAchievements.value = []
-        console.log('🏆 已设置默认用户成就数据')
+        // 已设置默认用户成就数据
       } else {
         // 等待一段时间后重试
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
@@ -278,11 +185,11 @@ const fetchUserAchievementsWithRetry = async (maxRetries = 3) => {
 
 // 同步用户信息到本地状态
 const syncUserInfo = () => {
-  console.log('🔄 syncUserInfo 被调用')
-  console.log('🔍 currentUser.value:', currentUser.value)
+  // syncUserInfo 被调用
+  // currentUser.value 检查
   
   if (currentUser.value) {
-    console.log('✅ 开始同步用户信息')
+    // 开始同步用户信息
     // 更新用户基本信息
     userInfo.username = currentUser.value.username || ''
     userInfo.role = currentUser.value.role || '学生'
@@ -296,14 +203,9 @@ const syncUserInfo = () => {
     formData.school = currentUser.value.school || ''
     formData.major = currentUser.value.major || ''
     
-    console.log('✅ 用户信息同步完成:', {
-      username: userInfo.username,
-      role: userInfo.role,
-      nickname: formData.nickname,
-      email: formData.email
-    })
+    // 用户信息同步完成
   } else {
-    console.log('❌ currentUser.value 为空，无法同步用户信息')
+    // currentUser.value 为空，无法同步用户信息
   }
 }
 
@@ -315,25 +217,25 @@ watch(currentUser, () => {
 // 监听页面可见性变化，当页面重新可见时刷新数据
 const handleVisibilityChange = () => {
   if (!document.hidden && isInitialized.value) {
-    console.log('📱 页面重新可见，刷新用户数据...')
-    refreshUserStats()
+    // 页面重新可见，刷新用户数据
+    refreshUserAchievements()
   }
 }
 
 // 监听窗口焦点变化
 const handleFocus = () => {
     if (isInitialized.value) {
-      console.log('🔍 窗口获得焦点，刷新用户数据')
-      refreshUserStats()
+      // 窗口获得焦点，刷新用户数据
+      refreshUserAchievements()
     }
   }
 
   // 监听经验值更新事件
   const handleExperienceUpdate = (event) => {
-    console.log('🎯 收到经验值更新事件:', event.detail)
+    // 收到经验值更新事件
     // 延迟一点时间再刷新，确保后端数据已更新
     setTimeout(() => {
-      refreshUserStats()
+      refreshUserAchievements()
     }, 500)
   }
 
@@ -379,7 +281,7 @@ const handleSaveInfo = async (data) => {
     
     editMode.value = false
   } catch (error) {
-    console.error('保存失败:', error)
+    // 保存失败
     ElMessage.error('保存失败，请重试')
   }
 }
@@ -391,7 +293,7 @@ const handleCancelEdit = () => {
 
 const handleAvatarSuccess = async (response, file) => {
   try {
-    console.log('上传响应:', response)
+    // 上传响应
     
     // 检查响应格式
     if (response && response.code === 200 && response.data && response.data.avatarUrl) {
@@ -406,11 +308,11 @@ const handleAvatarSuccess = async (response, file) => {
       // 同步到本地状态
       syncUserInfo()
     } else {
-      console.error('上传响应格式错误:', response)
+      // 上传响应格式错误
       ElMessage.error('头像上传失败，服务器响应格式错误')
     }
   } catch (error) {
-    console.error('头像上传失败:', error)
+    // 头像上传失败
     ElMessage.error('头像上传失败，请重试')
   }
 }
@@ -437,32 +339,32 @@ const beforeAvatarUpload = (file) => {
 onMounted(async () => {
   // 防止重复初始化
   if (isInitialized.value) {
-    console.log('🚫 页面已经初始化过，跳过重复初始化')
+    // 页面已经初始化过，跳过重复初始化
     return
   }
   
-  console.log('🚀 个人中心页面加载完成')
-  console.log('🔍 初始 currentUser.value:', currentUser.value)
+  // 个人中心页面加载完成
+  // 初始 currentUser.value 检查
   
   // 先检查localStorage中的token
   const storedToken = localStorage.getItem('token')
-  console.log('🔍 页面加载时检查token:', storedToken ? 'exists' : 'null')
+  // 页面加载时检查token
   
   if (!storedToken) {
-    console.log('🚫 没有找到token，跳转到登录页')
+    // 没有找到token，跳转到登录页
     ElMessage.warning('请先登录')
     router.push('/login')
     return
   }
   
   // 有token时才同步认证状态
-  console.log('🔄 开始同步认证状态...')
+  // 开始同步认证状态
   const authResult = await checkAuthStatus()
-  console.log('🔍 同步后的响应式token状态:', token.value ? 'exists' : 'null')
+  // 同步后的响应式token状态检查
   
   // 如果认证状态检查失败且是认证问题（不是网络问题），才跳转登录页
   if (!authResult.success && authResult.message.includes('认证状态已失效')) {
-    console.log('🚫 认证状态失效，跳转到登录页')
+    // 认证状态失效，跳转到登录页
     ElMessage.warning('登录状态已失效，请重新登录')
     router.push('/login')
     return
@@ -470,21 +372,21 @@ onMounted(async () => {
   
   // 如果已有用户信息，直接同步
   if (currentUser.value) {
-    console.log('✅ 已有用户信息，直接同步')
+    // 已有用户信息，直接同步
     syncUserInfo()
   } else {
     // 获取用户信息
-    console.log('📥 获取用户信息...')
+    // 获取用户信息
     try {
       // 等待一下确保token完全设置
       await new Promise(resolve => setTimeout(resolve, 500))
       
       const result = await fetchUserInfo(true)
       if (result.success) {
-        console.log('✅ 用户信息获取成功')
+        // 用户信息获取成功
         syncUserInfo()
       } else {
-        console.error('❌ 用户信息获取失败:', result.message)
+        // 用户信息获取失败
         // 如果是网络错误，不立即跳转，给用户提示
         if (result.message.includes('网络') || result.message.includes('连接')) {
           ElMessage.warning('网络连接不稳定，请稍后刷新页面')
@@ -495,7 +397,7 @@ onMounted(async () => {
         }
       }
     } catch (error) {
-      console.error('❌ 获取用户信息异常:', error)
+      // 获取用户信息异常
       ElMessage.warning('网络连接不稳定，请稍后刷新页面')
     }
   }
@@ -505,35 +407,25 @@ onMounted(async () => {
 
   // 再次检查认证状态，确保有有效的用户信息后才拉取统计数据
   if (currentUser.value && token.value) {
-    console.log('✅ 认证状态有效，开始拉取统计数据')
-    // 拉取用户统计与成就（带重试机制和降级处理）
+    // 认证状态有效，开始拉取统计数据
+    // 拉取用户成就（带重试机制和降级处理）
     try {
       await Promise.allSettled([
-        fetchUserStatsWithRetry(),
         fetchUserAchievementsWithRetry()
       ])
-      console.log('✅ 数据获取完成（部分可能失败但不影响基本功能）')
+      // 数据获取完成（部分可能失败但不影响基本功能）
     } catch (error) {
-      console.log('⚠️ 数据获取过程中出现错误，但基本功能仍可使用:', error)
+      // 数据获取过程中出现错误，但基本功能仍可使用
     }
   } else {
-    console.log('🚫 认证状态无效，跳过统计数据获取')
+    // 认证状态无效，跳过数据获取
     // 设置默认数据
-    userStats.level = 1
-    userStats.experience = 0
-    userStats.completedChapters = 0
-    userStats.totalScore = 0
-    userStats.studyTime = 0
-    userStats.achievements = 0
-    userStats.networkProgress = 0
-    userStats.protocolProgress = 0
-    userStats.practiceProgress = 0
     userAchievements.value = []
   }
   
   // 标记已初始化
   isInitialized.value = true
-  console.log('✅ 个人中心页面初始化完成')
+  // 个人中心页面初始化完成
   
   // 添加事件监听器
     document.addEventListener('visibilitychange', handleVisibilityChange)

@@ -17,31 +17,7 @@
         <h1 class="username">{{ userInfo.username || '用户名' }}</h1>
         <p class="user-role">{{ userInfo.role || '学生' }}</p>
         
-        <div class="user-stats">
-          <div class="stat-item level-stat">
-            <span class="stat-number">{{ userStats.level || 1 }}</span>
-            <span class="stat-label">当前等级</span>
-            <div class="level-title">{{ getLevelTitle(userStats.level || 1) }}</div>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ userStats.experience || 0 }}</span>
-            <span class="stat-label">经验值</span>
-          </div>
-        </div>
-        
-        <!-- 等级进度条 -->
-        <div class="level-progress">
-          <div class="progress-header">
-            <span>等级进度</span>
-            <span>{{ getExpToNextLevel() }} 经验值升级</span>
-          </div>
-          <el-progress 
-            :percentage="getLevelProgress()" 
-            :stroke-width="8"
-            :show-text="true"
-            status="success"
-          />
-        </div>
+
       </div>
     </div>
   </div>
@@ -55,10 +31,7 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
-  userStats: {
-    type: Object,
-    default: () => ({})
-  },
+
   userAchievements: {
     type: Array,
     default: () => []
@@ -67,41 +40,7 @@ const props = defineProps({
 
 defineEmits(['showAvatarDialog'])
 
-// 获取等级标题
-const getLevelTitle = (level) => {
-  const titles = {
-    1: '初学者',
-    2: '入门者',
-    3: '进阶者',
-    4: '熟练者',
-    5: '专家',
-    6: '大师',
-    7: '传奇',
-    8: '神话',
-    9: '传说',
-    10: '至尊'
-  }
-  return titles[level] || '初学者'
-}
 
-// 计算升级所需经验值
-const getExpToNextLevel = () => {
-  const currentLevel = props.userStats.level || 1
-  const currentExp = props.userStats.experience || 0
-  const nextLevelExp = currentLevel * 1000
-  return Math.max(0, nextLevelExp - currentExp)
-}
-
-// 计算等级进度
-const getLevelProgress = () => {
-  const currentLevel = props.userStats.level || 1
-  const currentExp = props.userStats.experience || 0
-  const levelExp = currentLevel * 1000
-  const prevLevelExp = (currentLevel - 1) * 1000
-  const expInLevel = currentExp - prevLevelExp
-  const expNeeded = levelExp - prevLevelExp
-  return Math.min(100, Math.round((expInLevel / expNeeded) * 100))
-}
 </script>
 
 <style scoped lang="scss">

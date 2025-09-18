@@ -19,7 +19,7 @@ class SystemTester {
 
   // 运行所有测试
   async runAllTests() {
-    console.log('🚀 开始系统功能自测...')
+    // 开始系统功能自测
     
     try {
       await this.testApiConnectivity()
@@ -29,7 +29,7 @@ class SystemTester {
       
       return this.generateTestReport()
     } catch (error) {
-      console.error('❌ 测试过程中发生错误:', error)
+      // 测试过程中发生错误
       this.errors.push(error.message)
       return this.generateTestReport()
     }
@@ -37,7 +37,7 @@ class SystemTester {
 
   // 测试API连接性
   async testApiConnectivity() {
-    console.log('📡 测试API连接性...')
+    // 测试API连接性
     
     // 检查token状态
     const token = localStorage.getItem('token')
@@ -45,7 +45,7 @@ class SystemTester {
     if (!token) {
       this.addTestResult('API连接', '章节API', '⚠️ 跳过（未登录）')
       this.addTestResult('API连接', '用户API', '⚠️ 跳过（未登录）')
-      console.log('⚠️ 系统测试跳过API连接测试：用户未登录')
+      // 系统测试跳过API连接测试：用户未登录
       return
     }
     
@@ -72,7 +72,7 @@ class SystemTester {
 
   // 测试答题系统
   async testQuizSystem() {
-    console.log('📝 测试答题系统...')
+    // 测试答题系统
     
     // 测试题目加载
     try {
@@ -136,7 +136,7 @@ class SystemTester {
 
   // 测试答题逻辑
   testAnswerLogic(question) {
-    console.log('🧠 测试答题逻辑...')
+    // 测试答题逻辑
     
     try {
       // 测试选择题逻辑
@@ -197,7 +197,7 @@ class SystemTester {
 
   // 测试分数计算
   testScoreCalculation() {
-    console.log('🔢 测试分数计算...')
+    // 测试分数计算
     
     try {
       const testAnswers = [
@@ -245,7 +245,7 @@ class SystemTester {
 
   // 测试等级升级系统
   async testLevelUpSystem() {
-    console.log('⬆️ 测试等级升级系统...')
+    // 测试等级升级系统
     
     try {
       // 测试等级计算
@@ -292,7 +292,7 @@ class SystemTester {
 
   // 测试升级进度
   testLevelProgress() {
-    console.log('📊 测试升级进度计算...')
+    // 测试升级进度计算
     
     try {
       const testCases = [
@@ -331,7 +331,7 @@ class SystemTester {
 
   // 测试等级称号
   testLevelTitles() {
-    console.log('🏆 测试等级称号...')
+    // 测试等级称号
     
     try {
       const testCases = [
@@ -373,7 +373,7 @@ class SystemTester {
 
   // 测试用户进度
   async testUserProgress() {
-    console.log('👤 测试用户进度系统...')
+    // 测试用户进度系统
     
     try {
       // 测试进度保存
@@ -480,7 +480,7 @@ class SystemTester {
 
   // 生成测试报告
   generateTestReport() {
-    console.log('📋 生成测试报告...')
+    // 生成测试报告
     
     const passedCount = this.testResults.filter(r => r.result.includes('✅')).length
     const failedCount = this.testResults.filter(r => r.result.includes('❌')).length
@@ -501,28 +501,21 @@ class SystemTester {
     }
     
     // 控制台输出
-    console.log('\n=== 系统功能自测报告 ===')
-    console.log(`测试时间: ${report.timestamp}`)
-    console.log(`总测试数: ${report.totalTests}`)
-    console.log(`通过测试: ${report.passedTests.length}`)
-    console.log(`失败测试: ${report.failedTests.length}`)
-    console.log(`成功率: ${Math.round((report.passedTests.length / report.totalTests) * 100)}%`)
+    // 系统功能自测报告
+    // 测试时间、总测试数、通过测试、失败测试、成功率
     
     if (report.errors.length > 0) {
-      console.log('\n❌ 发现的问题:')
-      report.errors.forEach((error, index) => {
-        console.log(`${index + 1}. ${error}`)
-      })
+      // 发现的问题列表
     }
     
-    console.log('\n📊 详细测试结果:')
+    // 详细测试结果
     const categories = [...new Set(this.testResults.map(r => r.category))]
     categories.forEach(category => {
-      console.log(`\n${category}:`)
+      // 分类测试结果
       this.testResults
         .filter(r => r.category === category)
         .forEach(r => {
-          console.log(`  ${r.test}: ${r.result}`)
+          // 测试项目结果
         })
     })
     
@@ -551,7 +544,7 @@ class SystemTester {
 
   // 修复发现的问题
   async fixIssues() {
-    console.log('🔧 尝试修复发现的问题...')
+    // 尝试修复发现的问题
     
     const fixes = []
     
@@ -574,10 +567,7 @@ class SystemTester {
     }
     
     if (fixes.length > 0) {
-      console.log('\n🔧 建议的修复方案:')
-      fixes.forEach((fix, index) => {
-        console.log(`${index + 1}. ${fix}`)
-      })
+      // 建议的修复方案
       
       ElMessage({
         message: `发现 ${fixes.length} 个修复建议，请查看控制台`,

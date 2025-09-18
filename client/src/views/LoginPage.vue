@@ -131,8 +131,7 @@ const toggleMode = () => {
   // 清除验证状态
   nextTick(() => {
     formRef.value?.clearValidate()
-    console.log('切换模式:', isLogin.value ? '登录' : '注册')
-    console.log('当前验证规则:', formRules.value)
+    // 切换模式
   })
 }
 
@@ -143,29 +142,27 @@ const handleSubmit = async () => {
   if (!formRef.value) return
 
   try {
-    console.log('开始表单验证，当前模式:', isLogin.value ? '登录' : '注册')
-    console.log('表单数据:', formData)
-    console.log('验证规则:', formRules.value)
+    // 开始表单验证
     
     await formRef.value.validate()
     loading.value = true
 
     if (isLogin.value) {
       // 登录
-      console.log('执行登录逻辑')
+      // 执行登录逻辑
       const result = await login({
         username: formData.username,
         password: formData.password
       })
 
       if (result.success) {
-        console.log('✅ 登录成功，准备跳转到个人中心页面')
+        // 登录成功，准备跳转到个人中心页面
         // 登录成功后跳转到个人中心页面
         try {
           await router.push('/profile')
-          console.log('✅ 成功跳转到个人中心页面')
+          // 成功跳转到个人中心页面
         } catch (error) {
-          console.error('❌ 跳转到个人中心页面失败:', error)
+          // 跳转到个人中心页面失败
           // 如果跳转失败，尝试跳转到首页
           router.push('/')
         }
@@ -174,7 +171,7 @@ const handleSubmit = async () => {
       }
     } else {
       // 注册
-      console.log('执行注册逻辑')
+      // 执行注册逻辑
       const result = await register({
         username: formData.username,
         password: formData.password
@@ -194,8 +191,7 @@ const handleSubmit = async () => {
       }
     }
   } catch (error) {
-    console.error('表单验证失败:', error)
-    console.error('验证错误详情:', error?.errors || error?.message)
+    // 表单验证失败
     // 统一格式错误弹窗（中英文）
     const title = '格式错误 / Format Error'
     const message = `请检查输入格式：\n

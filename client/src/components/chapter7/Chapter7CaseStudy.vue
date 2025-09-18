@@ -388,7 +388,8 @@
               <div class="responsibility-chain">
                 <h6>🔗 责任链分析</h6>
                 <div class="chain-visualization">
-                  <div v-for="(entity, index) in responsibilityEntities" :key="entity.id"
+                  <!-- 监管部门卡片 - 顶部 -->
+                  <div v-for="(entity, index) in responsibilityEntities.filter(e => e.id === 'government')" :key="entity.id"
                        class="responsibility-entity"
                        @click="selectResponsibilityEntity(entity.id)"
                        :class="{ active: selectedEntity === entity.id, liable: entity.liable }">
@@ -396,6 +397,19 @@
                     <div class="entity-name">{{ entity.name }}</div>
                     <div class="entity-role">{{ entity.role }}</div>
                     <div v-if="entity.liable" class="liability-indicator">⚠️ 承担责任</div>
+                  </div>
+                  
+                  <!-- 其他两个卡片 - 底部并排 -->
+                  <div class="chain-bottom-row">
+                    <div v-for="(entity, index) in responsibilityEntities.filter(e => e.id !== 'government')" :key="entity.id"
+                         class="responsibility-entity"
+                         @click="selectResponsibilityEntity(entity.id)"
+                         :class="{ active: selectedEntity === entity.id, liable: entity.liable }">
+                      <div class="entity-icon">{{ entity.icon }}</div>
+                      <div class="entity-name">{{ entity.name }}</div>
+                      <div class="entity-role">{{ entity.role }}</div>
+                      <div v-if="entity.liable" class="liability-indicator">⚠️ 承担责任</div>
+                    </div>
                   </div>
                 </div>
                 
@@ -2194,10 +2208,24 @@ onMounted(async () => {
 }
 
 .chain-visualization {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
   margin-bottom: 20px;
+  padding: 20px;
+}
+
+.chain-bottom-row {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  width: 100%;
+}
+
+.chain-bottom-row .responsibility-entity {
+  flex: 0 0 200px;
+  max-width: 200px;
 }
 
 .responsibility-entity {
@@ -2334,14 +2362,7 @@ onMounted(async () => {
   border-radius: 15px;
   padding: 20px;
   text-align: center;
-  transition: all 0.3s ease;
   color: var(--text-color);
-}
-
-.principle-card:hover {
-  background: var(--card-hover-bg);
-  border-color: var(--accent-color);
-  transform: translateY(-3px);
 }
 
 .principle-icon {

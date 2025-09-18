@@ -40,7 +40,7 @@
         </div>
         <div class="card-content">
           <p class="card-description">
-            以特斯拉Autopilot为例，通过8个摄像头、12个超声波传感器和1个前向雷达，
+            以某知名汽车公司的自动驾驶系统为例，通过8个摄像头、12个超声波传感器和1个前向雷达，
             实现360度环境感知。AI神经网络实时处理路况信息，支持自动变道、自动泊车、
             召唤功能等，让驾驶变得更安全、更智能。
           </p>
@@ -256,7 +256,7 @@ const handleDrivingLeave = () => {
 }
 
 const handleIndicatorClick = (indicator) => {
-  console.log(`点击了驾驶指标: ${indicator.name} - ${indicator.value}`)
+  // 点击了驾驶指标
   selectedIndicator.value = indicator
   showIndicatorDetail.value = true
   emit('interaction')
@@ -270,7 +270,7 @@ const closeIndicatorDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 
 const getIndicatorStatusText = (status) => {
@@ -695,97 +695,5 @@ const getIndicatorStatusText = (status) => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .section-title {
-  color: var(--text-color);
-}
-
-.light-theme .section-subtitle {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .content-card {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .content-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 191, 255, 0.15);
-  border-color: var(--accent-color);
-}
-
-.light-theme .indicator-info {
-  background: var(--card-bg);
-}
-
-.light-theme .indicator-name {
-  color: var(--text-color);
-}
-
-.light-theme .card-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .indicator-detail-content,
-.light-theme .traffic-dialog-content {
-  background: var(--card-bg);
-}
-
-.light-theme .indicator-detail-header,
-.light-theme .traffic-dialog-header {
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .indicator-detail-header h3,
-.light-theme .traffic-dialog-header h3 {
-  color: var(--text-color);
-}
-
-.light-theme .close-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .indicator-current-value {
-  background: var(--secondary-color);
-}
-
-.light-theme .value-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .indicator-description h4,
-.light-theme .indicator-technology h4,
-.light-theme .indicator-importance h4 {
-  color: var(--text-color);
-}
-
-.light-theme .indicator-description p,
-.light-theme .indicator-importance p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .stat-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .stat-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .traffic-features h4 {
-  color: var(--text-color);
-}
-
-.light-theme .feature-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .feature-text {
-  color: var(--text-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

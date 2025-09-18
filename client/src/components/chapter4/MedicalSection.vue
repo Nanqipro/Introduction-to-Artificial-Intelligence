@@ -40,7 +40,7 @@
         </div>
         <div class="card-content">
           <p class="card-description">
-            以23andMe为代表的基因检测服务，通过AI算法分析个人基因组数据，
+            以某知名基因检测公司为代表的基因检测服务，通过AI算法分析个人基因组数据，
             预测疾病风险、药物反应和遗传特征。深度学习技术能够识别复杂的基因变异模式，
             为个性化医疗提供科学依据。
           </p>
@@ -408,7 +408,7 @@ const handleDiagnosisLeave = () => {
 }
 
 const handleGeneProjectClick = (project) => {
-  console.log(`点击了基因检测项目: ${project.name}`)
+  // 点击了基因检测项目
   selectedGeneProject.value = project
   showGeneDetail.value = true
   emit('interaction')
@@ -420,7 +420,7 @@ const closeGeneDetail = () => {
 }
 
 const handleMarkerClick = (marker) => {
-  console.log(`点击了病变标记物: ${marker.name}`)
+  // 点击了病变标记物
   selectedMarker.value = marker
   showMarkerDetail.value = true
   emit('interaction')
@@ -434,7 +434,7 @@ const closeMarkerDetail = () => {
 const onImageClick = (imageType) => {
   emit('image-click', imageType)
   emit('interaction')
-  console.log(`点击了${imageType}图片`)
+  // 点击了图片
 }
 
 const getRiskText = (riskLevel) => {
@@ -958,122 +958,5 @@ const getRiskText = (riskLevel) => {
   }
 }
 
-/* 浅色主题样式 */
-.light-theme .section-title {
-  color: var(--text-color);
-}
-
-.light-theme .section-subtitle {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .content-card {
-  background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-.light-theme .content-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 191, 255, 0.15);
-  border-color: var(--accent-color);
-}
-
-.light-theme .gene-info,
-.light-theme .marker-info {
-  background: var(--card-bg);
-}
-
-.light-theme .gene-name,
-.light-theme .marker-name {
-  color: var(--text-color);
-}
-
-.light-theme .card-description {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .gene-detail-content,
-.light-theme .marker-detail-content,
-.light-theme .treatment-dialog-content {
-  background: var(--card-bg);
-}
-
-.light-theme .gene-detail-header,
-.light-theme .marker-detail-header,
-.light-theme .treatment-dialog-header {
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .gene-detail-header h3,
-.light-theme .marker-detail-header h3,
-.light-theme .treatment-dialog-header h3 {
-  color: var(--text-color);
-}
-
-.light-theme .close-btn {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .close-btn:hover {
-  background: var(--border-color);
-  color: var(--text-color);
-}
-
-.light-theme .gene-overview,
-.light-theme .marker-overview {
-  background: var(--secondary-color);
-}
-
-.light-theme .accuracy-label,
-.light-theme .confidence-label,
-.light-theme .risk-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .gene-description h4,
-.light-theme .marker-description h4,
-.light-theme .gene-applications h4,
-.light-theme .marker-recommendations h4,
-.light-theme .gene-technologies h4 {
-  color: var(--text-color);
-}
-
-.light-theme .gene-description p,
-.light-theme .marker-description p {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .application-list li,
-.light-theme .recommendation-list li {
-  color: var(--text-secondary-color);
-  border-bottom-color: var(--border-color);
-}
-
-.light-theme .patient-profile {
-  background: var(--secondary-color);
-}
-
-.light-theme .profile-label {
-  color: var(--text-secondary-color);
-}
-
-.light-theme .profile-value {
-  color: var(--text-color);
-}
-
-.light-theme .treatment-benefits h4,
-.light-theme .treatment-example h4 {
-  color: var(--text-color);
-}
-
-.light-theme .benefit-item {
-  background: var(--secondary-color);
-}
-
-.light-theme .benefit-text {
-  color: var(--text-color);
-}
-
-.light-theme .benefit-desc {
-  color: var(--text-secondary-color);
-}
+/* 浅色主题样式已通过 theme.css 统一管理 */
 </style>

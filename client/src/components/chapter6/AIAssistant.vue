@@ -528,7 +528,7 @@ const selectKnowledgeItem = (item) => {
 
 const applySuggestion = (suggestion) => {
   // 根据建议类型执行相应操作
-  console.log('应用建议:', suggestion.action)
+  // 应用建议
   
   // 可以触发相应的学习模块
   switch (suggestion.action) {

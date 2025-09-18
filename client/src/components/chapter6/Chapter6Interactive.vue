@@ -62,48 +62,54 @@
       <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="chapter-tabs">
         <el-tab-pane label="Python基础" name="python-basics">
           <template #label>
-            <span class="tab-label">
-              <el-icon><Document /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('python-basics') }">
+              <el-icon v-if="isModuleCompleted('python-basics')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><Document /></el-icon>
               Python基础
             </span>
           </template>
         </el-tab-pane>
         <el-tab-pane label="代码实践" name="code-practice">
           <template #label>
-            <span class="tab-label">
-              <el-icon><Edit /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('code-practice') }">
+              <el-icon v-if="isModuleCompleted('code-practice')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><Edit /></el-icon>
               代码实践
             </span>
           </template>
         </el-tab-pane>
         <el-tab-pane label="数据流程" name="data-flow">
           <template #label>
-            <span class="tab-label">
-              <el-icon><DataLine /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('data-flow') }">
+              <el-icon v-if="isModuleCompleted('data-flow')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><DataLine /></el-icon>
               数据流程
             </span>
           </template>
         </el-tab-pane>
         <el-tab-pane label="神经网络实验室" name="network-training">
           <template #label>
-            <span class="tab-label">
-              <el-icon><Connection /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('network-training') }">
+              <el-icon v-if="isModuleCompleted('network-training')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><Connection /></el-icon>
               神经网络实验室
             </span>
           </template>
         </el-tab-pane>
         <el-tab-pane label="游戏化学习" name="gamified-learning">
           <template #label>
-            <span class="tab-label">
-              <el-icon><Trophy /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('gamified-learning') }">
+              <el-icon v-if="isModuleCompleted('gamified-learning')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><Trophy /></el-icon>
               游戏化学习
             </span>
           </template>
         </el-tab-pane>
         <el-tab-pane label="AI助手" name="ai-assistant">
           <template #label>
-            <span class="tab-label">
-              <el-icon><ChatDotRound /></el-icon>
+            <span class="tab-label" :class="{ 'completed': isModuleCompleted('ai-assistant') }">
+              <el-icon v-if="isModuleCompleted('ai-assistant')" class="check-icon"><Check /></el-icon>
+              <el-icon v-else><ChatDotRound /></el-icon>
               AI助手
             </span>
           </template>
@@ -134,8 +140,18 @@
           <el-card class="redirect-card">
             <div class="redirect-content">
               <el-icon class="redirect-icon"><Connection /></el-icon>
-              <h3>正在跳转到神经网络实验室...</h3>
-              <p>请稍候，系统正在为您启动交互式训练环境</p>
+              <h3>神经网络训练实验室</h3>
+              <p>点击下方按钮进入交互式神经网络训练环境</p>
+              <div class="redirect-actions">
+                <el-button 
+                  type="primary" 
+                  size="large" 
+                  @click="goToNetworkTraining"
+                  :icon="Connection"
+                >
+                  进入实验室
+                </el-button>
+              </div>
             </div>
           </el-card>
         </div>
@@ -173,7 +189,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
   Cpu, Document, Edit, DataLine, Connection,
-  Trophy, ChatDotRound
+  Trophy, ChatDotRound, Check
 } from '@element-plus/icons-vue'
 
 // 导入组件
@@ -209,27 +225,35 @@ const overallProgress = computed(() => {
   return Math.round(total / values.length)
 })
 
+// 判断模块是否已完成
+const isModuleCompleted = (moduleName) => {
+  return progressData.value[moduleName] === 100
+}
+
 // 方法
 const handleTabClick = (tab) => {
-  console.log('切换到标签页:', tab.name)
-
   // 如果点击的是神经网络实验室标签页，直接跳转到独立页面
   if (tab.name === 'network-training') {
     goToNetworkTraining()
-    // 重置回之前的标签页，避免显示空白内容
-    setTimeout(() => {
-      activeTab.value = 'data-flow'
-    }, 100)
+    return // 直接返回，不执行后续逻辑
   }
 }
 
-const goToNetworkTraining = () => {
-  router.push('/network-training')
-  ElMessage.success('正在启动神经网络训练实验室...')
+const goToNetworkTraining = async () => {
+  try {
+    await router.push('/network-training')
+    ElMessage.success('正在启动神经网络训练实验室...')
+  } catch (error) {
+    ElMessage.error('跳转失败，请重试')
+  }
 }
 
 const updateProgress = (tabName, progress) => {
-  progressData.value[tabName] = progress
+  // 使用Vue 3推荐的方式更新响应式对象
+  progressData.value = {
+    ...progressData.value,
+    [tabName]: progress
+  }
   
   // 检查是否达成成就
   if (progress === 100) {
@@ -269,6 +293,19 @@ const getTabLabel = (tabName) => {
   ::-moz-selection {
     background: var(--accent-color);
     color: #ffffff;
+  }
+}
+
+// 完成状态动画
+@keyframes checkBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -401,7 +438,29 @@ const getTabLabel = (tabName) => {
     .tab-label {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
+      width: 100%;
+      text-align: center;
+      transition: all 0.3s ease;
+      
+      &.completed {
+        color: #67c23a !important;
+        
+        .check-icon {
+          color: #67c23a;
+          animation: checkBounce 0.6s ease-in-out;
+        }
+      }
+    }
+    
+    // 完成状态的标签页样式
+    :deep(.el-tabs__item:has(.completed)) {
+      border-bottom: 3px solid #67c23a !important;
+      
+      &.is-active {
+        color: #67c23a !important;
+      }
     }
   }
 }
@@ -502,7 +561,23 @@ const getTabLabel = (tabName) => {
       p {
         font-size: 1.1rem;
         opacity: 0.9;
-        margin: 0;
+        margin: 0 0 2rem 0;
+      }
+      
+      .redirect-actions {
+        margin-top: 1.5rem;
+        
+        .el-button {
+          padding: 12px 24px;
+          font-size: 1.1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+        }
       }
     }
   }
@@ -575,20 +650,35 @@ html.light-theme .chapter6-interactive {
       }
 
       :deep(.el-tabs__item) {
-        color: var(--tab-item-color);
-        background: var(--feature-item-bg);
-        border: 1px solid var(--feature-item-border);
+        color: var(--tab-item-color) !important;
+        background: var(--feature-item-bg) !important;
+        border: 1px solid var(--feature-item-border) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 0 !important;
 
         &:hover {
-          color: var(--accent-color);
-          background: var(--feature-item-hover-bg);
+          color: var(--accent-color) !important;
+          background: var(--feature-item-hover-bg) !important;
         }
 
         &.is-active {
-          color: var(--accent-color);
-          background: var(--intro-card-bg);
-          border-bottom: 2px solid var(--accent-color);
+          color: var(--accent-color) !important;
+          background: var(--intro-card-bg) !important;
+          border-bottom: 2px solid var(--accent-color) !important;
         }
+      }
+
+      :deep(.el-tabs__item .tab-label) {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        height: 100% !important;
+        padding: 12px 16px !important;
+        gap: 0.5rem !important;
       }
     }
   }

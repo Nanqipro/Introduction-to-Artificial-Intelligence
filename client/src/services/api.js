@@ -29,14 +29,14 @@ const PUBLIC_PATHS = [
 
 // 检查是否为公开API
 const isPublicAPI = (url) => {
-  console.log('🔍 检查公开API:', { url, PUBLIC_PATHS })
+  // 检查公开API
   const isPublic = PUBLIC_PATHS.some(path => {
     if (path === '/chapters') {
       return url.startsWith('/chapters') || url.startsWith('/api/chapters')
     }
     return url.startsWith(path)
   })
-  console.log('✅ 公开API检查结果:', { url, isPublic })
+  // 公开API检查结果
   return isPublic
 }
 
@@ -47,27 +47,15 @@ api.interceptors.request.use(
     const isPublic = isPublicAPI(config.url)
     
     // 调试日志
-    console.log('🔍 API拦截器 - 请求详情:', {
-      url: config.url,
-      isPublic: isPublic,
-      hasToken: !!token,
-      tokenValue: token ? token.substring(0, 20) + '...' : 'null',
-      tokenLength: token ? token.length : 0
-    })
     
     // 为需要认证的API添加token
     if (!isPublic) {
       if (token && token.trim() !== '' && token !== 'null' && token !== 'undefined') {
         const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`
         config.headers.Authorization = authHeader
-        console.log('✅ API拦截器 - 已添加Authorization头:', authHeader.substring(0, 30) + '...')
+        // 已添加Authorization头
       } else {
-        console.error('❌ API拦截器 - 强制拒绝无效token请求:', {
-          url: config.url,
-          token: token,
-          tokenType: typeof token,
-          headers: config.headers
-        })
+        // 强制拒绝无效token请求
         // 强制抛出错误，阻止请求发送
         throw new Error('Token无效，请先登录')
       }
@@ -105,6 +93,20 @@ api.interceptors.response.use(
       if (url?.includes('/api/user/register')) {
         return Promise.reject(new Error('注册失败：' + (error.response?.data?.message || '用户名已存在或服务器错误')))
       }
+      
+      // Token过期处理：清理本地存储并跳转登录页
+      // Token已过期，清理认证状态并跳转登录页
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
+      localStorage.removeItem('user')
+      
+      // 延迟跳转，避免在某些情况下立即跳转导致的问题
+      setTimeout(() => {
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
+        }
+      }, 100)
+      
       return Promise.reject(new Error('登录已过期，请重新登录'))
     }
     
@@ -163,13 +165,9 @@ export const userApi = {
   getUserInfo: () => {
     // 检查token是否存在
     const token = localStorage.getItem('token')
-    console.log('🔍 userApi.getUserInfo - Token检查:', {
-      hasToken: !!token,
-      tokenValue: token ? token.substring(0, 20) + '...' : 'null',
-      tokenLength: token ? token.length : 0
-    })
+    // userApi.getUserInfo - Token检查
     if (!token || token.trim() === '' || token === 'null') {
-      console.log('🚫 userApi.getUserInfo - 没有有效token，拒绝请求')
+      // 没有有效token，拒绝请求
       return Promise.reject(new Error('Token不存在或无效'))
     }
     return api.get('/api/user/userInfo')
@@ -227,7 +225,7 @@ export const levelApi = {
     // 检查token是否存在
     const token = localStorage.getItem('token')
     if (!token || token.trim() === '' || token === 'null') {
-      console.log('🚫 levelApi.getUserStats - 没有有效token，拒绝请求')
+      // 没有有效token，拒绝请求
       return Promise.reject(new Error('Token不存在或无效'))
     }
     return api.get('/api/level/stats')
@@ -236,7 +234,7 @@ export const levelApi = {
     // 检查token是否存在
     const token = localStorage.getItem('token')
     if (!token || token.trim() === '' || token === 'null') {
-      console.log('🚫 levelApi.getUserAchievements - 没有有效token，拒绝请求')
+      // 没有有效token，拒绝请求
       return Promise.reject(new Error('Token不存在或无效'))
     }
     return api.get('/api/level/achievements')
