@@ -329,6 +329,7 @@
 <script>
 import { ElButton } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
+import { markRaw } from 'vue'
 
 export default {
   name: 'Chapter1CaseStudy',
@@ -344,7 +345,7 @@ export default {
   emits: ['case-completed', 'all-cases-completed'],
   data() {
     return {
-      RefreshIcon: Refresh,
+      RefreshIcon: markRaw(Refresh),
       questionResults: {},
       questionAnswers: {
         1: { A: 'human', B: 'ai' },

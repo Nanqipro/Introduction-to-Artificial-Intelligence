@@ -29,6 +29,7 @@
 <script>
 import { ElButton } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
+import { markRaw } from 'vue'
 
 export default {
   name: 'ErrorBoundary',
@@ -37,7 +38,7 @@ export default {
   },
   data() {
     return {
-      RefreshIcon: Refresh,
+      RefreshIcon: markRaw(Refresh),
       hasError: false,
       errorMessage: '',
       errorStack: '',
