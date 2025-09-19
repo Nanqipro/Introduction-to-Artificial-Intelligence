@@ -79,7 +79,7 @@
 ## 🗂️ 文件结构
 
 ```
-案例(4)/
+案例4/
 ├── full.md                     # 完整设计文档
 ├── layout.json                 # PDF布局信息
 ├── 41232a74...content_list.json # 内容列表
