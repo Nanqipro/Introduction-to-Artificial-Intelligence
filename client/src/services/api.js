@@ -2,10 +2,15 @@ import axios from 'axios'
 
 // 动态获取后端服务地址
 const getBaseURL = () => {
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    // 花生壳外网访问时，使用代理路径
-    return '/api'
+  // 生产环境 - 服务器部署
+  if (window.location.hostname === '222.204.4.108') {
+    return ''  // 使用nginx代理，直接使用相对路径
   }
+  // 花生壳外网访问
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return ''
+  }
+  // 本地开发
   return 'http://localhost:8082'
 }
 
@@ -31,8 +36,8 @@ const PUBLIC_PATHS = [
 const isPublicAPI = (url) => {
   // 检查公开API
   const isPublic = PUBLIC_PATHS.some(path => {
-    if (path === '/chapters') {
-      return url.startsWith('/chapters') || url.startsWith('/api/chapters')
+    if (path === '/api/chapters') {
+      return url.startsWith('/api/chapters') || url.startsWith('/chapters')
     }
     return url.startsWith(path)
   })
@@ -179,7 +184,7 @@ export const userApi = {
   },
   
   uploadAvatar: (formData) => {
-    return api.post('/upload/avatar', formData, {
+    return api.post('/api/upload/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   },
