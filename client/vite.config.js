@@ -40,12 +40,31 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
+    // 修复变量初始化问题
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     // 分包策略
     rollupOptions: {
       output: {
-        manualChunks: {
-          'element-plus': ['element-plus'],
-          'vue-vendor': ['vue', 'vue-router']
+        manualChunks(id) {
+          // 更安全的分包策略
+          if (id.includes('node_modules')) {
+            if (id.includes('element-plus')) {
+              return 'element-plus';
+            }
+            if (id.includes('vue') || id.includes('@vue')) {
+              return 'vue-vendor';
+            }
+            if (id.includes('echarts') || id.includes('chart')) {
+              return 'charts';
+            }
+            return 'vendor';
+          }
         }
       }
     }
