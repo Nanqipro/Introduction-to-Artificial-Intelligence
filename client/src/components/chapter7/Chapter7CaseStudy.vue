@@ -265,7 +265,7 @@
                     <div v-if="activeTechnique === 'homomorphic-encryption'" class="homomorphic-encryption-demo">
                       <div class="encryption-visualization">
                         <div class="svg-container">
-                          <object data="/案例(7)/homomorphic_encryption.svg" type="image/svg+xml" class="encryption-svg">
+                          <object data="/案例7/homomorphic_encryption.svg" type="image/svg+xml" class="encryption-svg">
                             您的浏览器不支持SVG
                           </object>
                         </div>

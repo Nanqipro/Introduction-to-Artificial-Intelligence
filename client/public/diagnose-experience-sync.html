@@ -814,16 +814,16 @@
         
         // 页面加载时的初始化
         window.addEventListener('load', function() {
-            console.log('🔍 经验值同步问题诊断工具已加载');
+            // 经验值同步问题诊断工具已加载
             
             // 监听experienceUpdated事件用于调试
             window.addEventListener('experienceUpdated', function(event) {
-                console.log('🎯 收到experienceUpdated事件:', event.detail);
+                // 收到experienceUpdated事件
             });
             
             // 监听refreshProfile事件用于调试
             window.addEventListener('refreshProfile', function(event) {
-                console.log('🔄 收到refreshProfile事件:', event.detail);
+                // 收到refreshProfile事件
             });
         });
     </script>

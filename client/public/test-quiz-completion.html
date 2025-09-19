@@ -67,16 +67,13 @@
             <p>在浏览器控制台运行以下代码：</p>
             <div class="code">
 const token = localStorage.getItem('token');
-console.log('当前token:', token ? '已登录' : '未登录');
+// 检查当前token状态
 if (token) {
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('用户ID:', payload.id);
-        console.log('用户名:', payload.username);
-        console.log('token过期时间:', new Date(payload.exp * 1000));
-        console.log('是否过期:', Date.now() > payload.exp * 1000);
+        // 显示用户信息和token状态
     } catch (e) {
-        console.error('token解析失败:', e);
+        // token解析失败
     }
 }
             </div>
@@ -88,14 +85,11 @@ if (token) {
             <div class="code">
 // 监听经验值更新事件
 window.addEventListener('experienceUpdated', function(event) {
-    console.log('🎉 经验值更新事件触发:', event.detail);
-    console.log('获得经验值:', event.detail.experienceGained);
-    console.log('新经验值:', event.detail.newExperience);
-    console.log('新等级:', event.detail.newLevel);
-    console.log('是否升级:', event.detail.leveledUp);
+    // 经验值更新事件触发
+    // 处理获得经验值、新经验值、新等级、是否升级等信息
 });
 
-console.log('✅ 经验值更新事件监听器已设置');
+// 经验值更新事件监听器已设置
             </div>
         </div>
 
@@ -141,8 +135,8 @@ console.log('✅ 经验值更新事件监听器已设置');
     </div>
 
     <script>
-        console.log('🧪 测验完成测试页面已加载');
-        console.log('请按照页面上的步骤进行测试');
+        // 测验完成测试页面已加载
+        // 请按照页面上的步骤进行测试
     </script>
 </body>
 </html>

@@ -195,7 +195,7 @@
             const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
             logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
             logElement.scrollTop = logElement.scrollHeight;
-            console.log(`[ProfileSyncTest] ${message}`);
+            // 配置文件同步测试日志
         }
 
         // 更新监听器状态显示

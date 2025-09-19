@@ -214,7 +214,7 @@
                 const result = await response.json();
                 return result;
             } catch (error) {
-                console.error('API调用失败:', error);
+                // API调用失败
                 return { code: 500, message: '网络错误: ' + error.message };
             }
         }

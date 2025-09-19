@@ -131,7 +131,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('成就数据:', data);
+                    // 成就数据获取成功
                     
                     if (data.data && data.data.length > 0) {
                         let resultHtml = `✅ 获取到 ${data.data.length} 个成就：<br><br>`;
