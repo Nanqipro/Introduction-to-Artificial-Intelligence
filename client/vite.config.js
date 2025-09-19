@@ -9,6 +9,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `@use "@/styles/variables.scss" as *;`,
+        api: 'modern-compiler' // 使用现代编译器API
       }
     }
   },
@@ -44,7 +45,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'element-plus': ['element-plus'],
-          'vue-vendor': ['vue', 'vue-router', 'pinia']
+          'vue-vendor': ['vue', 'vue-router']
         }
       }
     }
