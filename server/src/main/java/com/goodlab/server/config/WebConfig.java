@@ -34,7 +34,11 @@ public class WebConfig implements WebMvcConfigurer {
                                                 "http://localhost:3000",
                                                 "http://127.0.0.1:5173", "http://127.0.0.1:5174",
                                                 "https://102qldp675617.vicp.fun",
-                                                "https://102qldp675617.vicp.fun:8082")
+                                                "https://102qldp675617.vicp.fun:8082",
+                                                "http://222.204.4.108",
+                                                "http://222.204.4.108:80",
+                                                "http://222.204.4.108:5173",
+                                                "http://222.204.4.108:8082")
                                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                                 .allowedHeaders("*")
                                 .allowCredentials(true);
