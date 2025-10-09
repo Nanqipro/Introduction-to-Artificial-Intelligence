@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清理测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.danger:hover {
+            background: #c82333;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>清理测试页面</h1>
+        
+        <div class="status" id="status">等待操作...</div>
+        
+        <button class="button danger" onclick="deepCleanup()">深度清理</button>
+        <button class="button" onclick="checkStorage()">检查存储</button>
+        <button class="button" onclick="reloadPage()">重新加载页面</button>
+        <button class="button" onclick="clearLog()">清空日志</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            log.textContent += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function setStatus(message, type = 'warning') {
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        function clearLog() {
+            log.textContent = '';
+        }
+        
+        function deepCleanup() {
+            addLog('🧹 开始深度清理...');
+            
+            // 清理localStorage
+            const localStorageKeys = Object.keys(localStorage);
+            addLog(`📦 localStorage中有 ${localStorageKeys.length} 个项目: ${localStorageKeys.join(', ')}`);
+            localStorage.clear();
+            addLog('✅ localStorage已清空');
+            
+            // 清理sessionStorage
+            const sessionStorageKeys = Object.keys(sessionStorage);
+            addLog(`📦 sessionStorage中有 ${sessionStorageKeys.length} 个项目: ${sessionStorageKeys.join(', ')}`);
+            sessionStorage.clear();
+            addLog('✅ sessionStorage已清空');
+            
+            // 清理cookies
+            const cookies = document.cookie.split(';');
+            addLog(`🍪 有 ${cookies.length} 个cookies`);
+            cookies.forEach(cookie => {
+                const eqPos = cookie.indexOf('=');
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                if (name) {
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                    addLog(`🗑️ 清理cookie: ${name}`);
+                }
+            });
+            
+            // 清理缓存（如果支持）
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    addLog(`💾 发现 ${cacheNames.length} 个缓存: ${cacheNames.join(', ')}`);
+                    return Promise.all(
+                        cacheNames.map(cacheName => {
+                            addLog(`🗑️ 删除缓存: ${cacheName}`);
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }).then(() => {
+                    addLog('✅ 所有缓存已清理');
+                }).catch(err => {
+                    addLog(`❌ 清理缓存失败: ${err.message}`);
+                });
+            } else {
+                addLog('ℹ️ 浏览器不支持Cache API');
+            }
+            
+            setStatus('深度清理完成', 'success');
+            addLog('🎉 深度清理完成！');
+        }
+        
+        function checkStorage() {
+            addLog('🔍 检查当前存储状态...');
+            
+            // 检查localStorage
+            const localKeys = Object.keys(localStorage);
+            if (localKeys.length === 0) {
+                addLog('✅ localStorage为空');
+            } else {
+                addLog(`📦 localStorage中有 ${localKeys.length} 个项目:`);
+                localKeys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    addLog(`  - ${key}: ${value ? value.substring(0, 50) + (value.length > 50 ? '...' : '') : '(空)'}`);
+                });
+            }
+            
+            // 检查sessionStorage
+            const sessionKeys = Object.keys(sessionStorage);
+            if (sessionKeys.length === 0) {
+                addLog('✅ sessionStorage为空');
+            } else {
+                addLog(`📦 sessionStorage中有 ${sessionKeys.length} 个项目:`);
+                sessionKeys.forEach(key => {
+                    const value = sessionStorage.getItem(key);
+                    addLog(`  - ${key}: ${value ? value.substring(0, 50) + (value.length > 50 ? '...' : '') : '(空)'}`);
+                });
+            }
+            
+            // 检查cookies
+            const cookies = document.cookie;
+            if (!cookies) {
+                addLog('✅ 无cookies');
+            } else {
+                addLog(`🍪 Cookies: ${cookies}`);
+            }
+            
+            setStatus('存储检查完成', 'success');
+        }
+        
+        function reloadPage() {
+            addLog('🔄 重新加载页面...');
+            window.location.reload(true); // 强制从服务器重新加载
+        }
+        
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            addLog('📄 页面已加载');
+            checkStorage();
+        });
+    </script>
+</body>
+</html>

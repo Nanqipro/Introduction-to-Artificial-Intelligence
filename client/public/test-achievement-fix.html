@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成就显示修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #409EFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #337ecc;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f0f9ff;
+            border: 1px solid #b3d8ff;
+        }
+        .error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        .success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏆 成就显示修复测试</h1>
+    <p>测试"学习起步: undefined"错误是否已修复</p>
+
+    <div class="test-section">
+        <h3>1. 检查登录状态</h3>
+        <button class="test-button" onclick="checkLoginStatus()">检查登录状态</button>
+        <div id="login-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. 获取用户成就</h3>
+        <button class="test-button" onclick="getUserAchievements()">获取用户成就</button>
+        <div id="achievements-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. 模拟成就数据结构</h3>
+        <button class="test-button" onclick="testAchievementStructure()">测试数据结构</button>
+        <div id="structure-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. 触发第一章完成成就</h3>
+        <button class="test-button" onclick="triggerChapterAchievement()">触发章节成就</button>
+        <div id="trigger-result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+
+        function showResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isError ? 'error' : 'success'}`;
+            element.innerHTML = message;
+        }
+
+        async function checkLoginStatus() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showResult('login-result', '❌ 未登录：没有找到token', true);
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('login-result', `✅ 已登录：用户ID ${data.data.id}，用户名 ${data.data.username}`);
+                } else {
+                    showResult('login-result', `❌ 登录状态无效：${response.status}`, true);
+                }
+            } catch (error) {
+                showResult('login-result', `❌ 检查登录状态失败：${error.message}`, true);
+            }
+        }
+
+        async function getUserAchievements() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showResult('achievements-result', '❌ 未登录，无法获取成就', true);
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/api/level/achievements`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // 成就数据获取成功
+                    
+                    if (data.data && data.data.length > 0) {
+                        let resultHtml = `✅ 获取到 ${data.data.length} 个成就：<br><br>`;
+                        data.data.forEach((achievement, index) => {
+                            resultHtml += `<strong>${index + 1}. ${achievement.achievementName || '未知名称'}</strong><br>`;
+                            resultHtml += `描述: ${achievement.achievementDesc || '无描述'}<br>`;
+                            resultHtml += `类型: ${achievement.achievementType || '未知类型'}<br>`;
+                            resultHtml += `获得时间: ${achievement.earnedDate || '未知时间'}<br><br>`;
+                        });
+                        showResult('achievements-result', resultHtml);
+                    } else {
+                        showResult('achievements-result', '✅ 成功获取成就数据，但列表为空');
+                    }
+                } else {
+                    showResult('achievements-result', `❌ 获取成就失败：${response.status}`, true);
+                }
+            } catch (error) {
+                showResult('achievements-result', `❌ 获取成就异常：${error.message}`, true);
+            }
+        }
+
+        function testAchievementStructure() {
+            // 模拟后端返回的成就数据结构
+            const mockAchievement = {
+                id: 1,
+                userId: 1,
+                achievementType: "chapter_1",
+                achievementName: "学习起步",
+                achievementDesc: "完成第一个章节",
+                earnedDate: "2024-01-15T10:30:00"
+            };
+
+            let resultHtml = '✅ 正确的成就数据结构：<br><br>';
+            resultHtml += `<strong>字段映射测试：</strong><br>`;
+            resultHtml += `achievementName: "${mockAchievement.achievementName}" (前端应使用此字段，而非title)<br>`;
+            resultHtml += `achievementDesc: "${mockAchievement.achievementDesc}" (前端应使用此字段，而非description)<br><br>`;
+            resultHtml += `<strong>完整数据：</strong><br>`;
+            resultHtml += `<pre>${JSON.stringify(mockAchievement, null, 2)}</pre>`;
+            
+            showResult('structure-result', resultHtml);
+        }
+
+        async function triggerChapterAchievement() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showResult('trigger-result', '❌ 未登录，无法触发成就', true);
+                    return;
+                }
+
+                // 模拟完成第一章，触发成就检查
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        experience: 100,
+                        chapterId: 1,
+                        source: 'chapter_completion'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('trigger-result', `✅ 成功添加经验值，可能触发了成就检查。请查看用户成就列表。`);
+                    
+                    // 延迟一秒后自动获取成就
+                    setTimeout(() => {
+                        getUserAchievements();
+                    }, 1000);
+                } else {
+                    showResult('trigger-result', `❌ 添加经验值失败：${response.status}`, true);
+                }
+            } catch (error) {
+                showResult('trigger-result', `❌ 触发成就异常：${error.message}`, true);
+            }
+        }
+
+        // 页面加载时自动检查登录状态
+        window.onload = function() {
+            checkLoginStatus();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+package com.goodlab.server.controller;
+
+
+import com.goodlab.server.model.ApiResponse;
+import com.goodlab.server.pojo.User;
+import com.goodlab.server.service.UserService;
+import com.goodlab.server.utils.ExcelStudentReader;
+import com.goodlab.server.utils.JwtUtil;
+import com.goodlab.server.utils.Md5Util;
+import com.goodlab.server.utils.ThreadLocalUtil;
+import com.goodlab.server.config.LoggingConfig;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.URL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/user")
+@Validated
+public class UsersController {
+
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private ExcelStudentReader excelStudentReader;
+
+    // 注册功能已禁用 - 仅支持学号登录
+    @PostMapping("/register")
+    public ApiResponse<Void> register(@RequestParam String username,
+                           @RequestParam String password) {
+        return ApiResponse.error("注册功能已禁用，请使用学号登录");
+    }
+
+    // 登录 - 支持学号+密码验证（初始密码和修改后的密码）以及管理员账号登录
+    @PostMapping("/login")
+    public ApiResponse<String> login(@RequestParam String username,
+                       @RequestParam String password) {
+        
+        // 检查是否为管理员账号
+        boolean isAdminAccount = "goodlabAdmin".equals(username);
+        
+        // 对于非管理员账号，验证学号格式和是否存在于Excel文件中
+        if (!isAdminAccount && !excelStudentReader.isValidStudentId(username)) {
+            LoggingConfig.logLogin(null, username, false, "学号不存在或格式错误");
+            return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号");
+        }
+        
+        // 查找用户
+        User loginUser = userService.findByUserName(username);
+        if (loginUser == null) {
+            // 管理员账号不存在时直接返回错误
+            if (isAdminAccount) {
+                LoggingConfig.logLogin(null, username, false, "管理员账号不存在");
+                return ApiResponse.error("管理员账号不存在");
+            }
+            
+            // 如果用户不存在，检查是否为初始密码格式，如果是则自动创建用户
+            if (excelStudentReader.isValidPasswordFormat(username, password)) {
+                try {
+                    userService.register(username, password);
+                    loginUser = userService.findByUserName(username);
+                    LoggingConfig.logLogin(loginUser.getId(), username, true, "首次登录，自动创建用户");
+                } catch (Exception e) {
+                    LoggingConfig.logLogin(null, username, false, "用户创建失败: " + e.getMessage());
+                    return ApiResponse.error("用户创建失败");
+                }
+            } else {
+                LoggingConfig.logLogin(null, username, false, "用户不存在，密码格式不正确");
+                return ApiResponse.error("用户不存在，请使用初始密码格式：学号@ncu2025");
+            }
+        }
+        
+        // 验证密码（支持初始密码和修改后的密码）
+        if(Md5Util.getMD5String(password).equals(loginUser.getPassword())){
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", loginUser.getId());
+            claims.put("username", loginUser.getUsername());
+            String token = JwtUtil.genToken(claims);
+            LoggingConfig.logLogin(loginUser.getId(), username, true, "登录成功");
+            return ApiResponse.success(token);
+        } else {
+            LoggingConfig.logLogin(loginUser.getId(), username, false, "密码错误");
+            return ApiResponse.error("密码错误");
+        }
+    }
+
+    // 查询用户信息
+    @GetMapping("/userInfo")
+    public ApiResponse<User> userInfo() {
+
+        // 根据用户ID查询用户信息（避免用户名修改后JWT token中的用户名过期问题）
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        User user = userService.findById(userId);
+        
+        // 如果用户名是学号格式，尝试获取学生真实姓名
+        if (user != null && user.getUsername() != null && !user.getUsername().equals("goodlabAdmin")) {
+            try {
+                com.goodlab.server.pojo.StudentInfo studentInfo = excelStudentReader.getStudentInfo(user.getUsername());
+                if (studentInfo != null && studentInfo.getName() != null && !studentInfo.getName().trim().isEmpty()) {
+                    // 如果找到学生姓名，将其设置为昵称字段返回给前端
+                    user.setNickname(studentInfo.getName());
+                }
+            } catch (Exception e) {
+                // 如果获取学生信息失败，继续使用原有信息
+                System.out.println("获取学生信息失败: " + e.getMessage());
+            }
+        }
+        
+        return ApiResponse.success(user);
+    }
+
+    // 更新用户信息
+    @PutMapping("/update")
+    public ApiResponse<Void> update(@RequestBody @Validated User user) {  // @Validated用于验证参数
+        // 获取当前登录用户的ID
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer currentUserId = (Integer) claims.get("id");
+        
+        // 设置用户ID（确保只能更新当前登录用户的信息）
+        user.setId(currentUserId);
+        
+        // 禁止更新用户名 - 用户名是唯一标识，不允许修改
+        if (user.getUsername() != null) {
+            return ApiResponse.error("用户名是唯一标识，不允许修改");
+        }
+        
+        userService.update(user);
+        return ApiResponse.success(null);
+    }
+
+
+    // 更新用户头像
+    @PatchMapping("/updateAvatar")
+    public ApiResponse<Void> updateAvatar(@RequestParam String avatarUrl) {
+        userService.updateUserPic(avatarUrl);
+        return ApiResponse.success(null);
+    }
+
+    // 更新密码
+    @PatchMapping("/updatePwd")
+    public ApiResponse<Void> updatePwd(@RequestBody Map<String, String> params) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String username = (String) claims.get("username");
+        Integer userId = (Integer) claims.get("id");
+
+        // 参数校验
+        String oldPwd = params.get("oldPwd");
+        String newPwd = params.get("newPwd");
+        String confirmPwd = params.get("confirmPwd");
+        if(StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(confirmPwd)){
+            LoggingConfig.logPasswordChange(userId, username, false, "参数不能为空");
+            return ApiResponse.error("参数不能为空");
+        }
+        
+        // 验证密码是否正确
+        User user = userService.findByUserName(username);
+        if(!Md5Util.getMD5String(oldPwd).equals(user.getPassword())){
+            LoggingConfig.logPasswordChange(userId, username, false, "原密码错误");
+            return ApiResponse.error("原密码错误");
+        }
+
+        // 校验 新密码和确认密码是否一致
+        if(!newPwd.equals(confirmPwd)){
+            LoggingConfig.logPasswordChange(userId, username, false, "新密码和确认密码不一致");
+            return ApiResponse.error("新密码和确认密码不一致");
+        }
+        
+        try {
+            // 调用userService完成密码更新
+            userService.updatePwd(newPwd);
+            LoggingConfig.logPasswordChange(userId, username, true, "密码修改成功");
+            return ApiResponse.success(null);
+        } catch (Exception e) {
+            LoggingConfig.logPasswordChange(userId, username, false, "密码修改失败: " + e.getMessage());
+            return ApiResponse.error("密码修改失败");
+        }
+    }
+
+
+
+
+
+
+}

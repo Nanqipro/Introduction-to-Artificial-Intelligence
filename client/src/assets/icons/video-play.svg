@@ -1,0 +1,26 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="videoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ee5a24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 外圆框 -->
+  <circle cx="100" cy="100" r="90" fill="url(#videoGradient)" stroke="#fff" stroke-width="4">
+    <animate attributeName="r" values="85;95;85" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 播放按钮 -->
+  <polygon points="75,65 75,135 135,100" fill="white">
+    <animateTransform attributeName="transform" type="scale" values="1;1.1;1" dur="1.5s" repeatCount="indefinite"/>
+  </polygon>
+  
+  <!-- 装饰性光点 -->
+  <circle cx="60" cy="60" r="3" fill="white" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="140" cy="140" r="2" fill="white" opacity="0.6">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

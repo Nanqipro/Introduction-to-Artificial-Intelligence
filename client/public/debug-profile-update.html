@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心数据更新调试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #16213e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #0f3460;
+        }
+        .button {
+            background: #00bfff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #0099cc;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #000;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .result {
+            background: #2d3748;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #00bfff;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .data-card {
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+        }
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #4a5568;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #28a745;
+        }
+        .status.error {
+            background: #dc3545;
+        }
+        .status.warning {
+            background: #ffc107;
+            color: #000;
+        }
+        .status.info {
+            background: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 个人中心数据更新调试工具</h1>
+        
+        <div class="section">
+            <h3>📊 当前状态检查</h3>
+            <button class="button" onclick="checkLoginStatus()">检查登录状态</button>
+            <button class="button" onclick="checkEventListeners()">检查事件监听器</button>
+            <button class="button" onclick="getCurrentUserStats()">获取当前统计数据</button>
+            <div id="status-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>🎯 经验值更新测试</h3>
+            <button class="button success" onclick="testExperienceAPI()">测试经验值API</button>
+            <button class="button success" onclick="triggerExperienceEvent()">触发经验值事件</button>
+            <button class="button warning" onclick="simulateQuizComplete()">模拟测验完成</button>
+            <div id="experience-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>📡 事件系统测试</h3>
+            <button class="button" onclick="startEventMonitoring()">开始监听事件</button>
+            <button class="button warning" onclick="stopEventMonitoring()">停止监听事件</button>
+            <button class="button" onclick="testEventPropagation()">测试事件传播</button>
+            <div id="event-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>🔄 数据刷新测试</h3>
+            <button class="button" onclick="testRefreshUserStats()">测试refreshUserStats函数</button>
+            <button class="button" onclick="testAPIDirectly()">直接测试API调用</button>
+            <button class="button danger" onclick="clearLocalStorage()">清除本地存储</button>
+            <div id="refresh-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>📈 数据对比</h3>
+            <div class="data-grid" id="data-comparison" style="display:none;"></div>
+            <button class="button" onclick="captureDataSnapshot()">捕获数据快照</button>
+            <button class="button" onclick="compareData()">对比数据变化</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8082';
+        let eventListeners = [];
+        let dataSnapshots = [];
+        let isMonitoring = false;
+
+        function log(message, type = 'info') {
+            // 调试日志记录
+        }
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            let message = '=== 登录状态检查 ===\n';
+            
+            if (!token || token === 'null' || token.trim() === '') {
+                message += '❌ 未登录或token无效\n';
+                message += `Token值: ${token}\n`;
+                showResult('status-result', message, 'error');
+                return false;
+            }
+            
+            message += '✅ Token存在\n';
+            message += `Token长度: ${token.length}\n`;
+            message += `Token前缀: ${token.substring(0, 20)}...\n`;
+            
+            // 测试token有效性
+            fetch(`${API_BASE}/api/user/info`, {
+                headers: getAuthHeaders()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    message += '✅ Token有效，用户已登录\n';
+                    message += `用户名: ${data.data.username}\n`;
+                    showResult('status-result', message, 'success');
+                } else {
+                    message += '❌ Token无效或已过期\n';
+                    showResult('status-result', message, 'error');
+                }
+            })
+            .catch(error => {
+                message += `❌ 验证失败: ${error.message}\n`;
+                showResult('status-result', message, 'error');
+            });
+            
+            return true;
+        }
+
+        // 检查事件监听器
+        function checkEventListeners() {
+            let message = '=== 事件监听器检查 ===\n';
+            
+            // 检查是否有experienceUpdated监听器
+            const hasExperienceListener = window.getEventListeners ? 
+                Object.keys(window.getEventListeners(window)).includes('experienceUpdated') : 
+                'unknown';
+            
+            message += `experienceUpdated监听器: ${hasExperienceListener}\n`;
+            message += `当前监听器数量: ${eventListeners.length}\n`;
+            
+            showResult('status-result', message, 'info');
+        }
+
+        // 获取当前用户统计数据
+        async function getCurrentUserStats() {
+            if (!checkLoginStatus()) return;
+            
+            let message = '=== 获取用户统计数据 ===\n';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    message += '✅ API调用成功\n';
+                    message += `等级: ${data.data.level}\n`;
+                    message += `经验值: ${data.data.experience}\n`;
+                    message += `总分: ${data.data.totalScore}\n`;
+                    message += `完成章节: ${data.data.completedChapters}\n`;
+                    message += `学习时长: ${data.data.studyTime}\n`;
+                    showResult('status-result', message, 'success');
+                } else {
+                    message += `❌ API调用失败: ${data.message}\n`;
+                    showResult('status-result', message, 'error');
+                }
+            } catch (error) {
+                message += `❌ 请求异常: ${error.message}\n`;
+                showResult('status-result', message, 'error');
+            }
+        }
+
+        // 测试经验值API
+        async function testExperienceAPI() {
+            if (!checkLoginStatus()) return;
+            
+            let message = '=== 测试经验值API ===\n';
+            
+            try {
+                const requestData = {
+                    experience: 25,
+                    activityType: 'debug_test',
+                    chapterId: 1,
+                    score: 85
+                };
+                
+                message += `发送数据: ${JSON.stringify(requestData)}\n`;
+                
+                const response = await fetch(`${API_BASE}/api/level/addExperience`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    message += '✅ 经验值添加成功\n';
+                    message += `新经验值: ${data.data.experience}\n`;
+                    message += `新等级: ${data.data.newLevel}\n`;
+                    message += `是否升级: ${data.data.levelUp}\n`;
+                    showResult('experience-result', message, 'success');
+                } else {
+                    message += `❌ 经验值添加失败: ${data.message}\n`;
+                    showResult('experience-result', message, 'error');
+                }
+            } catch (error) {
+                message += `❌ 请求异常: ${error.message}\n`;
+                showResult('experience-result', message, 'error');
+            }
+        }
+
+        // 触发经验值事件
+        function triggerExperienceEvent() {
+            let message = '=== 触发经验值事件 ===\n';
+            
+            const eventData = {
+                experienceGained: 50,
+                newExperience: 200,
+                newLevel: 3,
+                leveledUp: false,
+                activityType: 'debug_test'
+            };
+            
+            message += `事件数据: ${JSON.stringify(eventData, null, 2)}\n`;
+            
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: eventData
+            }));
+            
+            message += '✅ 事件已触发\n';
+            showResult('experience-result', message, 'success');
+        }
+
+        // 模拟测验完成
+        async function simulateQuizComplete() {
+            let message = '=== 模拟测验完成流程 ===\n';
+            
+            // 1. 先获取当前数据
+            message += '1️⃣ 获取当前数据...\n';
+            await getCurrentUserStats();
+            
+            // 2. 添加经验值
+            message += '2️⃣ 添加经验值...\n';
+            await testExperienceAPI();
+            
+            // 3. 触发事件
+            message += '3️⃣ 触发更新事件...\n';
+            triggerExperienceEvent();
+            
+            // 4. 等待一段时间后再次获取数据
+            setTimeout(async () => {
+                message += '4️⃣ 验证数据更新...\n';
+                await getCurrentUserStats();
+                showResult('experience-result', message + '✅ 模拟流程完成', 'success');
+            }, 2000);
+        }
+
+        // 开始事件监听
+        function startEventMonitoring() {
+            if (isMonitoring) {
+                showResult('event-result', '⚠️ 已在监听中', 'warning');
+                return;
+            }
+            
+            isMonitoring = true;
+            let message = '=== 开始事件监听 ===\n';
+            
+            const experienceListener = (event) => {
+                message += `🎯 收到experienceUpdated事件:\n`;
+                message += `时间: ${new Date().toLocaleTimeString()}\n`;
+                message += `数据: ${JSON.stringify(event.detail, null, 2)}\n`;
+                showResult('event-result', message, 'success');
+            };
+            
+            window.addEventListener('experienceUpdated', experienceListener);
+            eventListeners.push({ type: 'experienceUpdated', listener: experienceListener });
+            
+            message += '✅ 开始监听experienceUpdated事件\n';
+            showResult('event-result', message, 'info');
+        }
+
+        // 停止事件监听
+        function stopEventMonitoring() {
+            isMonitoring = false;
+            
+            eventListeners.forEach(({ type, listener }) => {
+                window.removeEventListener(type, listener);
+            });
+            
+            eventListeners = [];
+            showResult('event-result', '⏹️ 已停止所有事件监听', 'info');
+        }
+
+        // 测试事件传播
+        function testEventPropagation() {
+            let message = '=== 测试事件传播 ===\n';
+            
+            // 添加临时监听器
+            const testListener = (event) => {
+                message += `✅ 事件传播正常\n`;
+                message += `接收到数据: ${JSON.stringify(event.detail)}\n`;
+                showResult('event-result', message, 'success');
+            };
+            
+            window.addEventListener('experienceUpdated', testListener);
+            
+            // 触发测试事件
+            window.dispatchEvent(new CustomEvent('experienceUpdated', {
+                detail: { test: true, timestamp: Date.now() }
+            }));
+            
+            // 清理监听器
+            setTimeout(() => {
+                window.removeEventListener('experienceUpdated', testListener);
+            }, 1000);
+        }
+
+        // 测试refreshUserStats函数
+        function testRefreshUserStats() {
+            let message = '=== 测试refreshUserStats函数 ===\n';
+            
+            // 检查是否在个人中心页面
+            if (window.location.pathname.includes('profile')) {
+                message += '✅ 在个人中心页面，可以测试\n';
+                
+                // 尝试调用refreshUserStats函数
+                if (typeof window.refreshUserStats === 'function') {
+                    message += '✅ 找到refreshUserStats函数\n';
+                    window.refreshUserStats();
+                    message += '✅ 已调用refreshUserStats函数\n';
+                } else {
+                    message += '❌ 未找到refreshUserStats函数\n';
+                }
+            } else {
+                message += '⚠️ 不在个人中心页面，请在个人中心页面测试\n';
+            }
+            
+            showResult('refresh-result', message, 'info');
+        }
+
+        // 直接测试API调用
+        async function testAPIDirectly() {
+            let message = '=== 直接测试API调用 ===\n';
+            
+            try {
+                // 测试获取用户统计
+                message += '📊 测试获取用户统计...\n';
+                const statsResponse = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const statsData = await statsResponse.json();
+                
+                if (statsData.code === 200) {
+                    message += '✅ 用户统计API正常\n';
+                } else {
+                    message += `❌ 用户统计API异常: ${statsData.message}\n`;
+                }
+                
+                // 测试获取用户成就
+                message += '🏆 测试获取用户成就...\n';
+                const achievementsResponse = await fetch(`${API_BASE}/api/level/achievements`, {
+                    headers: getAuthHeaders()
+                });
+                const achievementsData = await achievementsResponse.json();
+                
+                if (achievementsData.code === 200) {
+                    message += '✅ 用户成就API正常\n';
+                } else {
+                    message += `❌ 用户成就API异常: ${achievementsData.message}\n`;
+                }
+                
+                showResult('refresh-result', message, 'success');
+            } catch (error) {
+                message += `❌ API测试异常: ${error.message}\n`;
+                showResult('refresh-result', message, 'error');
+            }
+        }
+
+        // 清除本地存储
+        function clearLocalStorage() {
+            if (confirm('确定要清除本地存储吗？这将清除登录状态。')) {
+                localStorage.clear();
+                showResult('refresh-result', '🗑️ 本地存储已清除', 'warning');
+            }
+        }
+
+        // 捕获数据快照
+        async function captureDataSnapshot() {
+            if (!checkLoginStatus()) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/level/stats`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const snapshot = {
+                        timestamp: new Date().toLocaleTimeString(),
+                        data: data.data
+                    };
+                    
+                    dataSnapshots.push(snapshot);
+                    
+                    const grid = document.getElementById('data-comparison');
+                    grid.style.display = 'grid';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    card.innerHTML = `
+                        <h4>📸 快照 ${snapshot.timestamp}</h4>
+                        <div class="data-item"><span>等级:</span><span>${snapshot.data.level}</span></div>
+                        <div class="data-item"><span>经验值:</span><span>${snapshot.data.experience}</span></div>
+                        <div class="data-item"><span>总分:</span><span>${snapshot.data.totalScore}</span></div>
+                        <div class="data-item"><span>完成章节:</span><span>${snapshot.data.completedChapters}</span></div>
+                    `;
+                    
+                    grid.appendChild(card);
+                }
+            } catch (error) {
+                showResult('refresh-result', `❌ 捕获快照失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 对比数据变化
+        function compareData() {
+            if (dataSnapshots.length < 2) {
+                showResult('refresh-result', '⚠️ 需要至少2个数据快照才能对比', 'warning');
+                return;
+            }
+            
+            const latest = dataSnapshots[dataSnapshots.length - 1];
+            const previous = dataSnapshots[dataSnapshots.length - 2];
+            
+            let message = '=== 数据变化对比 ===\n';
+            message += `时间范围: ${previous.timestamp} → ${latest.timestamp}\n\n`;
+            
+            const fields = ['level', 'experience', 'totalScore', 'completedChapters'];
+            fields.forEach(field => {
+                const oldValue = previous.data[field] || 0;
+                const newValue = latest.data[field] || 0;
+                const change = newValue - oldValue;
+                
+                if (change !== 0) {
+                    message += `${field}: ${oldValue} → ${newValue} (${change > 0 ? '+' : ''}${change})\n`;
+                } else {
+                    message += `${field}: ${oldValue} (无变化)\n`;
+                }
+            });
+            
+            showResult('refresh-result', message, 'info');
+        }
+
+        // 页面加载时自动检查状态
+        window.addEventListener('load', () => {
+            log('调试工具已加载');
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

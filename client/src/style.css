@@ -1,0 +1,60 @@
+/* 全局基础样式重置与现代感设置 */
+:root {
+  font-family: system-ui, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+a,
+button,
+input,
+textarea,
+select,
+.nav-link,
+.menu-toggle {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+a:focus,
+a:active,
+a:focus-visible,
+button:focus,
+button:active,
+button:focus-visible,
+input:focus,
+input:active,
+input:focus-visible,
+textarea:focus,
+textarea:active,
+textarea:focus-visible,
+select:focus,
+select:active,
+select:focus-visible,
+.nav-link:focus,
+.nav-link:active,
+.nav-link:focus-visible,
+.menu-toggle:focus,
+.menu-toggle:active,
+.menu-toggle:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}

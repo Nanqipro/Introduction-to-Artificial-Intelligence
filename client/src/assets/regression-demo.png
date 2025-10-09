@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f8f9fa"/>
+  <text x="200" y="150" text-anchor="middle" font-family="Arial" font-size="16" fill="#666">回归演示图</text>
+  <circle cx="100" cy="100" r="3" fill="#007bff"/>
+  <circle cx="150" cy="120" r="3" fill="#007bff"/>
+  <circle cx="200" cy="140" r="3" fill="#007bff"/>
+  <circle cx="250" cy="160" r="3" fill="#007bff"/>
+  <circle cx="300" cy="180" r="3" fill="#007bff"/>
+  <line x1="80" y1="80" x2="320" y2="200" stroke="#dc3545" stroke-width="2"/>
+</svg>

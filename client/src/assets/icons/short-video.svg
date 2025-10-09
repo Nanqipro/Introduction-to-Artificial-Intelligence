@@ -1,0 +1,42 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shortVideoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9ff3;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f368e0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff3838;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 外圆框 -->
+  <circle cx="100" cy="100" r="90" fill="url(#shortVideoGradient)" stroke="#fff" stroke-width="4">
+    <animate attributeName="r" values="85;95;85" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 手机屏幕 -->
+  <rect x="75" y="50" width="50" height="100" rx="12" fill="white" stroke="#333" stroke-width="2">
+    <animateTransform attributeName="transform" type="rotate" values="0 100 100;3 100 100;0 100 100" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- 播放按钮 -->
+  <polygon points="90,80 90,120 115,100" fill="#ff3838">
+    <animate attributeName="fill" values="#ff3838;#f368e0;#ff3838" dur="1.5s" repeatCount="indefinite"/>
+  </polygon>
+  
+  <!-- 音乐符号 -->
+  <circle cx="135" cy="75" r="8" fill="white" opacity="0.9">
+    <animate attributeName="cy" values="70;80;70" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <path d="M135 75 Q145 70 150 75" stroke="white" stroke-width="2" fill="none">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- 点赞心形 -->
+  <path d="M65 120 Q60 115 65 110 Q70 115 65 120 Q60 115 55 120 Q60 125 65 120" fill="white" opacity="0.8">
+    <animateTransform attributeName="transform" type="scale" values="0.8;1.2;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- 闪烁效果 -->
+  <circle cx="140" cy="130" r="3" fill="white">
+    <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/>
+  </circle>
+</svg>

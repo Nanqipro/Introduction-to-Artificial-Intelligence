@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单Token测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>简单Token测试</h1>
+        
+        <div class="status" id="status">等待操作...</div>
+        
+        <button class="button" onclick="clearStorage()">清空存储</button>
+        <button class="button" onclick="setTestToken()">设置测试Token</button>
+        <button class="button" onclick="checkToken()">检查Token</button>
+        <button class="button" onclick="testDirectRequest()">直接请求测试</button>
+        <button class="button" onclick="clearLog()">清空日志</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            log.textContent += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function setStatus(message, type = 'warning') {
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        function clearLog() {
+            log.textContent = '';
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            addLog('✅ 已清空所有存储');
+            setStatus('存储已清空', 'success');
+        }
+        
+        function setTestToken() {
+            const testToken = 'test-token-' + Date.now();
+            localStorage.setItem('token', testToken);
+            addLog(`✅ 已设置测试token: ${testToken}`);
+            setStatus('测试Token已设置', 'success');
+        }
+        
+        function checkToken() {
+            const token = localStorage.getItem('token');
+            addLog(`🔍 当前token: ${token || '(无)'}`);
+            
+            if (token) {
+                setStatus(`Token存在: ${token.substring(0, 20)}...`, 'success');
+            } else {
+                setStatus('Token不存在', 'error');
+            }
+        }
+        
+        async function testDirectRequest() {
+            const token = localStorage.getItem('token');
+            addLog(`🚀 开始直接请求测试，token: ${token || '(无)'}`);
+            
+            if (!token) {
+                addLog('❌ 没有token，不发送请求');
+                setStatus('请求被阻止：无token', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8080/user/userInfo', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                addLog(`📥 响应状态: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addLog(`✅ 响应数据: ${JSON.stringify(data, null, 2)}`);
+                    setStatus('请求成功', 'success');
+                } else {
+                    const errorText = await response.text();
+                    addLog(`❌ 请求失败: ${errorText}`);
+                    setStatus(`请求失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ 请求异常: ${error.message}`);
+                setStatus(`请求异常: ${error.message}`, 'error');
+            }
+        }
+        
+        // 页面加载时检查token
+        window.addEventListener('load', () => {
+            addLog('📄 页面已加载');
+            checkToken();
+        });
+        
+        // 监听storage变化
+        window.addEventListener('storage', (e) => {
+            addLog(`🔄 Storage变化: ${e.key} = ${e.newValue}`);
+        });
+    </script>
+</body>
+</html>
