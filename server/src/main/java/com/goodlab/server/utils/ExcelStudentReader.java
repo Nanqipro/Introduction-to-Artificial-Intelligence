@@ -22,16 +22,25 @@ public class ExcelStudentReader {
     private static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^\\d{10,12}$");
     
     // Excel文件路径
-    private static final String EXCEL_FILE_PATH = "/Users/wulinxin/Desktop/其他项目/电子教材/Introduction-to-Artificial-Intelligence-master/分课程按上课班级打印成绩登记册.xls";
+    private static final String EXCEL_FILE_PATH = "分课程按上课班级打印成绩登记册.xls";
     
     // 测试CSV文件路径
-    private static final String TEST_CSV_PATH = "/Users/wulinxin/Desktop/其他项目/电子教材/Introduction-to-Artificial-Intelligence-master/test_students.csv";
+    private static final String TEST_CSV_PATH = "test_students.csv";
     
     // 缓存学号集合，避免重复读取文件
     private static Set<String> cachedStudentIds = null;
     
     // 缓存学生详细信息，避免重复读取文件
     private static List<StudentInfo> cachedStudentInfos = null;
+    
+    /**
+     * 清除缓存，强制重新读取文件
+     */
+    public void clearCache() {
+        cachedStudentIds = null;
+        cachedStudentInfos = null;
+        System.out.println("缓存已清除，将重新读取学生信息文件");
+    }
     
     /**
      * 获取所有学生详细信息
@@ -87,18 +96,25 @@ public class ExcelStudentReader {
      * @return 是否存在
      */
     public boolean isValidStudentId(String studentId) {
+        System.out.println("开始验证学号: " + studentId);
+        
         if (studentId == null || studentId.trim().isEmpty()) {
+            System.out.println("学号为空或null");
             return false;
         }
         
         // 首先验证格式
         if (!STUDENT_ID_PATTERN.matcher(studentId).matches()) {
+            System.out.println("学号格式不正确: " + studentId);
             return false;
         }
         
         // 然后验证是否在Excel文件中
         Set<String> studentIds = getAllStudentIds();
-        return studentIds.contains(studentId);
+        boolean exists = studentIds.contains(studentId);
+        System.out.println("学号 " + studentId + " 是否存在: " + exists + ", 总学号数量: " + studentIds.size());
+        
+        return exists;
     }
     
     /**
@@ -108,18 +124,18 @@ public class ExcelStudentReader {
     private List<StudentInfo> readStudentInfosFromExcel() {
         List<StudentInfo> studentInfos = new ArrayList<>();
         
-        // 先尝试读取CSV测试文件
-        try {
-            return readStudentInfosFromCSV();
-        } catch (Exception e) {
-            System.out.println("读取CSV文件失败，尝试读取Excel文件: " + e.getMessage());
-        }
-        
-        // 如果CSV文件读取失败，尝试读取HTML格式的Excel文件
+        // 优先尝试读取HTML格式的Excel文件（完整学生名单）
         try {
             return readStudentInfosFromHTML();
         } catch (Exception e) {
-            System.out.println("读取HTML格式Excel文件失败: " + e.getMessage());
+            System.out.println("读取HTML格式Excel文件失败，尝试读取CSV测试文件: " + e.getMessage());
+        }
+        
+        // 如果Excel文件读取失败，才使用CSV测试文件作为备选
+        try {
+            return readStudentInfosFromCSV();
+        } catch (Exception e) {
+            System.out.println("读取CSV文件也失败: " + e.getMessage());
         }
         
         return studentInfos;
@@ -131,10 +147,19 @@ public class ExcelStudentReader {
     private List<StudentInfo> readStudentInfosFromCSV() throws IOException {
         List<StudentInfo> studentInfos = new ArrayList<>();
         
-        System.out.println("开始读取CSV文件: " + TEST_CSV_PATH);
+        // 使用相对于项目根目录的路径
+        String csvPath = "../" + TEST_CSV_PATH;
+        System.out.println("开始读取CSV文件: " + csvPath);
+        
+        // 检查文件是否存在
+        java.io.File csvFile = new java.io.File(csvPath);
+        if (!csvFile.exists()) {
+            System.out.println("CSV文件不存在: " + csvFile.getAbsolutePath());
+            throw new IOException("CSV文件不存在: " + csvFile.getAbsolutePath());
+        }
         
         try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.FileReader(TEST_CSV_PATH, java.nio.charset.StandardCharsets.UTF_8))) {
+                new java.io.FileReader(csvPath, java.nio.charset.StandardCharsets.UTF_8))) {
             
             String line = reader.readLine(); // 跳过标题行
             System.out.println("CSV标题行: " + line);
@@ -170,11 +195,13 @@ public class ExcelStudentReader {
     private List<StudentInfo> readStudentInfosFromHTML() throws IOException {
         List<StudentInfo> studentInfos = new ArrayList<>();
         
-        System.out.println("开始读取HTML格式Excel文件: " + EXCEL_FILE_PATH);
+        // 使用相对于项目根目录的路径
+        String excelPath = "../" + EXCEL_FILE_PATH;
+        System.out.println("开始读取HTML格式Excel文件: " + excelPath);
         
         // 使用正则表达式从HTML中提取学号
         try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.FileReader(EXCEL_FILE_PATH, java.nio.charset.StandardCharsets.UTF_8))) {
+                new java.io.FileReader(excelPath, java.nio.charset.StandardCharsets.UTF_8))) {
             
             String line;
             String currentStudentId = null;
@@ -355,14 +382,7 @@ public class ExcelStudentReader {
         }
     }
     
-    /**
-     * 清除缓存，强制重新读取Excel文件
-     */
-    public void clearCache() {
-        System.out.println("清除学生信息缓存");
-        cachedStudentIds = null;
-        cachedStudentInfos = null;
-    }
+
     
     /**
      * 获取学号总数

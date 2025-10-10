@@ -17,16 +17,20 @@
       
       <!-- 通知管理器 -->
       <NotificationManager ref="notificationManager" />
+      
+      <!-- 首次登录密码修改弹窗 -->
+      <FirstLoginPasswordChange v-if="showFirstLoginModal" />
     </ErrorBoundary>
   </div>
 </template>
 
 <script>
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref, computed, watch } from 'vue'
 import Navigation from './components/Navigation.vue'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import NotificationManager from './components/NotificationManager.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
+import FirstLoginPasswordChange from './components/FirstLoginPasswordChange.vue'
 import { useAuth } from '@/composables/useAuth'
 
 export default {
@@ -35,11 +39,34 @@ export default {
     Navigation,
     ErrorBoundary,
     NotificationManager,
-    ThemeSwitcher
+    ThemeSwitcher,
+    FirstLoginPasswordChange
   },
   setup() {
-    const { checkAuthStatus } = useAuth()
+    const { checkAuthStatus, isLoggedIn, currentUser, fetchUserInfo } = useAuth()
     const notificationManager = ref(null)
+
+    // 检查是否需要显示首次登录密码修改弹窗
+    const showFirstLoginModal = computed(() => {
+      if (!isLoggedIn.value || !currentUser.value) {
+        console.log('首次登录检查: 未登录或无用户信息', { isLoggedIn: isLoggedIn.value, currentUser: currentUser.value })
+        return false
+      }
+      
+      // 检查用户是否为首次登录且不是管理员
+      const userInfo = currentUser.value
+      const isFirstLogin = userInfo.isFirstLogin === true || userInfo.isFirstLogin === 'true'
+      const isAdmin = userInfo.role === '管理员' || userInfo.role === 'admin'
+      
+      console.log('首次登录检查:', {
+        userInfo,
+        isFirstLogin,
+        isAdmin,
+        shouldShow: isFirstLogin && !isAdmin
+      })
+      
+      return isFirstLogin && !isAdmin
+    })
 
     // 提供全局通知方法
     const showNotification = (options) => {
@@ -74,15 +101,21 @@ export default {
     })
 
     // 应用启动时检查认证状态
-    onMounted(() => {
+    onMounted(async () => {
       // 只有在有token的情况下才检查认证状态
-      if (localStorage.getItem('token')) {
-        checkAuthStatus()
+      const token = localStorage.getItem('token')
+      if (token) {
+        await checkAuthStatus()
+        // 如果有token但没有用户信息，尝试获取用户信息
+        if (!currentUser.value) {
+          await fetchUserInfo()
+        }
       }
     })
 
     return {
-      notificationManager
+      notificationManager,
+      showFirstLoginModal
     }
   }
 }

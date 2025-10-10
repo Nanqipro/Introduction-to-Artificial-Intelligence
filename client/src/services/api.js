@@ -198,6 +198,12 @@ export const userApi = {
     return api.patch('/api/user/updatePwd', requestData)
   },
   
+  // 首次登录密码修改
+  firstLoginPasswordChange: (newPassword) => {
+    const params = new URLSearchParams({ newPassword })
+    return api.post(`/api/user/first-login-password-change?${params}`)
+  },
+  
   // 密码重置相关API
   sendPasswordResetEmail: (email) => {
     return api.post('/password-reset/send-email', { email })

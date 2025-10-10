@@ -235,8 +235,21 @@ const formRules = {
       validator: (rule, value, callback) => {
         if (passwordData.currentPassword && !value) {
           callback(new Error('请输入新密码'))
-        } else if (value && value.length < 6) {
-          callback(new Error('新密码长度不能少于6位'))
+        } else if (value && value.length < 8) {
+          callback(new Error('新密码长度不能少于8位'))
+        } else if (value) {
+          // 强密码验证：至少包含数字、字母和特殊字符中的两种
+          const hasNumber = /\d/.test(value)
+          const hasLetter = /[a-zA-Z]/.test(value)
+          const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?@]/.test(value)
+          
+          const typeCount = [hasNumber, hasLetter, hasSpecial].filter(Boolean).length
+          
+          if (typeCount < 2) {
+            callback(new Error('密码必须包含数字、字母、特殊字符中的至少两种'))
+          } else {
+            callback()
+          }
         } else {
           callback()
         }

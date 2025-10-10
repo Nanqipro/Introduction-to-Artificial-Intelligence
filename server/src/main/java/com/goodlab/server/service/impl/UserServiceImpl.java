@@ -155,5 +155,10 @@ public class UserServiceImpl implements UserService {
         
         return false;
     }
+    
+    @Override
+    public void updateFirstLogin(Integer userId) {
+        userMapper.updateFirstLogin(userId);
+    }
 
 }

@@ -44,7 +44,33 @@ export function useAuth() {
 
   // 计算属性
   const isLoggedIn = computed(() => !!token.value)
-  const currentUser = computed(() => userInfo.value)
+  const currentUser = computed(() => {
+    // 如果有用户信息，直接返回
+    if (userInfo.value) {
+      console.log('currentUser: 使用userInfo', userInfo.value)
+      return userInfo.value
+    }
+    
+    // 如果没有用户信息但有token，尝试从token中解析基本信息
+    if (token.value) {
+      const payload = parseJwtPayload(token.value)
+      if (payload) {
+        console.log('currentUser: 从JWT解析', {
+          id: payload.id,
+          username: payload.username,
+          isFirstLogin: payload.isFirstLogin
+        })
+        return {
+          id: payload.id,
+          username: payload.username,
+          isFirstLogin: payload.isFirstLogin
+        }
+      }
+    }
+    
+    console.log('currentUser: 返回null')
+    return null
+  })
 
   // 登录
   const login = async (loginData) => {
@@ -271,6 +297,26 @@ export function useAuth() {
       return { success: false, message: error.message }
     }
   }
+  
+  // 首次登录密码修改
+  const firstLoginPasswordChange = async (newPassword) => {
+    try {
+      const response = await userApi.firstLoginPasswordChange(newPassword)
+
+      if (response.code === 200) {
+        ElMessage.success('密码修改成功，请重新登录')
+        // 清除当前登录状态
+        logout()
+        return { success: true }
+      } else {
+        ElMessage.error(response.message || '密码修改失败')
+        return { success: false, message: response.message }
+      }
+    } catch (error) {
+      ElMessage.error(error.message || '密码修改失败')
+      return { success: false, message: error.message }
+    }
+  }
 
   // 登出
   const logout = () => {
@@ -430,6 +476,7 @@ export function useAuth() {
     updateUserInfo,
     updateAvatar,
     updatePassword,
+    firstLoginPasswordChange,
     checkAuthStatus,
     forceRefreshAuth
   }
@@ -438,4 +485,19 @@ export function useAuth() {
   globalAuthState = instance
 
   return instance
+}
+
+// 解析JWT token的payload部分
+const parseJwtPayload = (token) => {
+  try {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+    return JSON.parse(jsonPayload)
+  } catch (error) {
+    console.error('解析JWT token失败:', error)
+    return null
+  }
 }

@@ -14,9 +14,18 @@ public class JwtUtil {
 
     // 接收业务数据,生成token并返回
     public static String genToken(Map<String, Object> claims) {
+        Object idObj = claims.get("id");
+        Integer id = null;
+        if (idObj instanceof Long) {
+            id = ((Long) idObj).intValue();
+        } else if (idObj instanceof Integer) {
+            id = (Integer) idObj;
+        }
+        
         return JWT.create()
-                .withClaim("id", (Integer) claims.get("id"))
+                .withClaim("id", id)
                 .withClaim("username", (String) claims.get("username"))
+                .withClaim("isFirstLogin", (Boolean) claims.get("isFirstLogin"))
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12))
                 .sign(Algorithm.HMAC256(KEY));
     }
@@ -30,6 +39,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", jwt.getClaim("id").asInt());
         claims.put("username", jwt.getClaim("username").asString());
+        claims.put("isFirstLogin", jwt.getClaim("isFirstLogin").asBoolean());
 
         return claims;
     }

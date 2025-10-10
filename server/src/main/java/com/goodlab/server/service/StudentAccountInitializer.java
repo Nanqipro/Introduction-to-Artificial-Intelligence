@@ -101,7 +101,7 @@ public class StudentAccountInitializer {
             String initialPassword = studentId + "@ncu2025";
             String encodedPassword = Md5Util.getMD5String(initialPassword);
             
-            userMapper.updatePwd(encodedPassword, user.getId());
+            userMapper.updatePwd(encodedPassword, user.getId().intValue());
             
             return "密码重置成功，新密码为: " + initialPassword;
             

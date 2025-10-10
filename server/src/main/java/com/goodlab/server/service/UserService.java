@@ -45,4 +45,7 @@ public interface UserService {
     
     // 验证邮箱验证码
     boolean verifyEmailCode(String email, String code);
+    
+    // 更新首次登录状态
+    void updateFirstLogin(Integer userId);
 }

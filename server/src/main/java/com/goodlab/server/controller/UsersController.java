@@ -4,6 +4,7 @@ package com.goodlab.server.controller;
 import com.goodlab.server.model.ApiResponse;
 import com.goodlab.server.pojo.User;
 import com.goodlab.server.service.UserService;
+import com.goodlab.server.mapper.UserMapper;
 import com.goodlab.server.utils.ExcelStudentReader;
 import com.goodlab.server.utils.JwtUtil;
 import com.goodlab.server.utils.Md5Util;
@@ -28,6 +29,9 @@ public class UsersController {
     private UserService userService;
     
     @Autowired
+    private UserMapper userMapper;
+    
+    @Autowired
     private ExcelStudentReader excelStudentReader;
 
     // 注册功能已禁用 - 仅支持学号登录
@@ -48,7 +52,11 @@ public class UsersController {
         // 对于非管理员账号，验证学号格式和是否存在于Excel文件中
         if (!isAdminAccount && !excelStudentReader.isValidStudentId(username)) {
             LoggingConfig.logLogin(null, username, false, "学号不存在或格式错误");
-            return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号");
+            // 清除缓存并重试一次
+            excelStudentReader.clearCache();
+            if (!excelStudentReader.isValidStudentId(username)) {
+                return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号");
+            }
         }
         
         // 查找用户
@@ -65,7 +73,7 @@ public class UsersController {
                 try {
                     userService.register(username, password);
                     loginUser = userService.findByUserName(username);
-                    LoggingConfig.logLogin(loginUser.getId(), username, true, "首次登录，自动创建用户");
+                    LoggingConfig.logLogin(loginUser.getId().intValue(), username, true, "首次登录，自动创建用户");
                 } catch (Exception e) {
                     LoggingConfig.logLogin(null, username, false, "用户创建失败: " + e.getMessage());
                     return ApiResponse.error("用户创建失败");
@@ -81,11 +89,23 @@ public class UsersController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
+            
+            // 检查是否使用默认密码格式，如果是则强制要求修改密码
+            boolean isUsingDefaultPassword = !isAdminAccount && excelStudentReader.isValidPasswordFormat(username, password);
+            boolean shouldShowFirstLogin = loginUser.getIsFirstLogin() || isUsingDefaultPassword;
+            claims.put("isFirstLogin", shouldShowFirstLogin);
+            
+            // 添加调试日志
+            System.out.println("登录用户: " + username);
+            System.out.println("用户数据库中的isFirstLogin: " + loginUser.getIsFirstLogin());
+            System.out.println("是否使用默认密码: " + isUsingDefaultPassword);
+            System.out.println("最终的isFirstLogin: " + shouldShowFirstLogin);
+            
             String token = JwtUtil.genToken(claims);
-            LoggingConfig.logLogin(loginUser.getId(), username, true, "登录成功");
+            LoggingConfig.logLogin(loginUser.getId().intValue(), username, true, "登录成功");
             return ApiResponse.success(token);
         } else {
-            LoggingConfig.logLogin(loginUser.getId(), username, false, "密码错误");
+            LoggingConfig.logLogin(loginUser.getId().intValue(), username, false, "密码错误");
             return ApiResponse.error("密码错误");
         }
     }
@@ -124,7 +144,7 @@ public class UsersController {
         Integer currentUserId = (Integer) claims.get("id");
         
         // 设置用户ID（确保只能更新当前登录用户的信息）
-        user.setId(currentUserId);
+        user.setId(currentUserId.longValue());
         
         // 禁止更新用户名 - 用户名是唯一标识，不允许修改
         if (user.getUsername() != null) {
@@ -141,6 +161,59 @@ public class UsersController {
     public ApiResponse<Void> updateAvatar(@RequestParam String avatarUrl) {
         userService.updateUserPic(avatarUrl);
         return ApiResponse.success(null);
+    }
+
+    // 首次登录密码修改
+    @PostMapping("/first-login-password-change")
+    public ApiResponse<String> firstLoginPasswordChange(@RequestParam String newPassword) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        String username = (String) claims.get("username");
+        Boolean isFirstLogin = (Boolean) claims.get("isFirstLogin");
+        
+        // 检查是否为首次登录
+        if (isFirstLogin == null || !isFirstLogin) {
+            return ApiResponse.error("非首次登录用户无法使用此接口");
+        }
+        
+        // 检查是否为管理员
+        if ("goodlabAdmin".equals(username)) {
+            return ApiResponse.error("管理员账号无需修改密码");
+        }
+        
+        // 验证新密码格式
+        if (newPassword == null || newPassword.length() < 8) {
+            return ApiResponse.error("密码长度不能少于8位");
+        }
+        
+        // 强密码验证：至少包含数字、字母和特殊字符中的两种
+        boolean hasNumber = newPassword.matches(".*\\d.*");
+        boolean hasLetter = newPassword.matches(".*[a-zA-Z].*");
+        boolean hasSpecial = newPassword.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?@].*");
+        
+        int typeCount = 0;
+        if (hasNumber) typeCount++;
+        if (hasLetter) typeCount++;
+        if (hasSpecial) typeCount++;
+        
+        if (typeCount < 2) {
+            return ApiResponse.error("密码必须包含数字、字母、特殊字符中的至少两种");
+        }
+        
+        try {
+            // 更新密码
+            String md5Password = Md5Util.getMD5String(newPassword);
+            userMapper.updatePwd(md5Password, userId);
+            
+            // 更新首次登录状态
+            userService.updateFirstLogin(userId);
+            
+            LoggingConfig.logPasswordChange(userId, username, true, "首次登录密码修改成功");
+            return ApiResponse.success("密码修改成功，请重新登录");
+        } catch (Exception e) {
+            LoggingConfig.logPasswordChange(userId, username, false, "首次登录密码修改失败: " + e.getMessage());
+            return ApiResponse.error("密码修改失败");
+        }
     }
 
     // 更新密码
@@ -170,6 +243,27 @@ public class UsersController {
         if(!newPwd.equals(confirmPwd)){
             LoggingConfig.logPasswordChange(userId, username, false, "新密码和确认密码不一致");
             return ApiResponse.error("新密码和确认密码不一致");
+        }
+        
+        // 验证新密码格式（强密码验证）
+        if (newPwd.length() < 8) {
+            LoggingConfig.logPasswordChange(userId, username, false, "密码长度不能少于8位");
+            return ApiResponse.error("密码长度不能少于8位");
+        }
+        
+        // 强密码验证：至少包含数字、字母和特殊字符中的两种
+        boolean hasNumber = newPwd.matches(".*\\d.*");
+        boolean hasLetter = newPwd.matches(".*[a-zA-Z].*");
+        boolean hasSpecial = newPwd.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?@].*");
+        
+        int typeCount = 0;
+        if (hasNumber) typeCount++;
+        if (hasLetter) typeCount++;
+        if (hasSpecial) typeCount++;
+        
+        if (typeCount < 2) {
+            LoggingConfig.logPasswordChange(userId, username, false, "密码必须包含数字、字母、特殊字符中的至少两种");
+            return ApiResponse.error("密码必须包含数字、字母、特殊字符中的至少两种");
         }
         
         try {

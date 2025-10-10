@@ -49,14 +49,6 @@
             登录
           </el-button>
         </el-form-item>
-
-        <div class="form-footer">
-          <div class="login-hint">
-            <p>初次登录密码格式：学号@ncu2025</p>
-            <p>例如：2021001234@ncu2025</p>
-            <p>登录后可在个人中心修改密码</p>
-          </div>
-        </div>
       </el-form>
     </div>
   </div>
@@ -87,12 +79,69 @@ const formData = reactive({
 // 表单验证规则
 const formRules = computed(() => ({
   username: [
-    { required: true, message: '请输入学号', trigger: 'blur' },
-    { pattern: /^\d{10,12}$/, message: '学号必须为10-12位数字', trigger: 'blur' }
+    { required: true, message: '请输入学号或管理员账号', trigger: 'blur' },
+    { 
+      validator: (rule, value, callback) => {
+        if (!value) {
+          callback()
+          return
+        }
+        // 允许管理员账号或10-12位数字学号
+        const isAdmin = value === 'goodlabAdmin'
+        const isStudentId = /^\d{10,12}$/.test(value)
+        
+        if (!isAdmin && !isStudentId) {
+          callback(new Error('请输入10-12位数字学号或管理员账号'))
+        } else {
+          callback()
+        }
+      }, 
+      trigger: 'blur' 
+    }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 4, message: '密码长度不能少于4位', trigger: 'blur' }
+    { 
+      validator: (rule, value, callback) => {
+        if (!value) {
+          callback()
+          return
+        }
+        
+        // 获取当前用户名
+        const username = formData.username
+        
+        // 如果是管理员账号，只需要最少4位密码
+        if (username === 'goodlabAdmin') {
+          if (value.length < 4) {
+            callback(new Error('密码长度不能少于4位'))
+          } else {
+            callback()
+          }
+          return
+        }
+        
+        // 对于普通用户，执行强密码验证
+        if (value.length < 8) {
+          callback(new Error('密码长度不能少于8位'))
+          return
+        }
+        
+        // 强密码验证：至少包含数字、字母和特殊字符中的两种
+        const hasNumber = /\d/.test(value)
+        const hasLetter = /[a-zA-Z]/.test(value)
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?@]/.test(value)
+        
+        const typeCount = [hasNumber, hasLetter, hasSpecial].filter(Boolean).length
+        
+        if (typeCount < 2) {
+          callback(new Error('密码必须包含数字、字母、特殊字符中的至少两种'))
+        } else {
+          callback()
+        }
+      }, 
+      trigger: 'blur' 
+    }
   ]
 }))
 
@@ -112,6 +161,17 @@ const handleSubmit = async () => {
     })
 
     if (result.success) {
+      // 登录成功，等待一下确保token设置完成
+      await nextTick()
+      
+      // 尝试获取用户信息
+      const { fetchUserInfo } = useAuth()
+      try {
+        await fetchUserInfo()
+      } catch (error) {
+        console.log('登录后获取用户信息失败，但不影响登录流程')
+      }
+      
       // 登录成功，准备跳转到个人中心页面
       try {
         await router.push('/profile')
@@ -127,7 +187,7 @@ const handleSubmit = async () => {
   } catch (error) {
     // 表单验证失败
     const title = '输入格式错误'
-    const message = `请检查输入格式：\n• 学号：10位数字\n• 密码：学号@ncu2025格式`
+    const message = `请检查输入格式：\n• 学号：10-12位数字\n• 密码：至少8位，包含数字、字母、特殊字符中的至少两种`
     try {
       await ElMessageBox.alert(message, title, { type: 'warning', confirmButtonText: '知道了' })
     } catch (_) {}
@@ -326,6 +386,24 @@ const handleSubmit = async () => {
     font-size: 0.85rem;
     line-height: 1.4;
     opacity: 0.8;
+    
+    .password-requirement {
+      color: var(--primary-color, #4a90e2);
+      font-weight: 500;
+      margin-top: 0.5rem;
+      opacity: 1;
+    }
+    
+    .admin-hint {
+      color: #e74c3c;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      opacity: 1;
+      background: rgba(231, 76, 60, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
   }
 }
 
