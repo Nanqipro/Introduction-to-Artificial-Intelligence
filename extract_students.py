@@ -19,7 +19,7 @@ for i, (student_id, name) in enumerate(matches, 1):
     password_plain = f"{student_id}@ncu2025"
     password = hashlib.md5(password_plain.encode()).hexdigest()
     
-    sql = f"INSERT INTO user (id, username, password, nickname, role) VALUES ({i + 1}, '{student_id}', '{password}', '{name}', 'student');"
+    sql = f"INSERT INTO user (id, username, password, nickname, role, create_time, update_time) VALUES ({i + 1}, '{student_id}', '{password}', '{name}', 'student', NOW(), NOW());"
     sql_statements.append(sql)
 
 # 将SQL语句写入文件
