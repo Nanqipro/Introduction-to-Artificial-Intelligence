@@ -31,19 +31,38 @@ public class WebConfig implements WebMvcConfigurer {
         private String uploadPath;
 
         // 配置跨域访问
+        // 安全原则：只允许明确信任的域名，避免使用通配符
         @Override
         public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 允许所有路径的跨域访问
-                                .allowedOrigins("http://localhost:5173", "http://localhost:5174",
-                                                "http://localhost:3000",
-                                                "http://127.0.0.1:5173", "http://127.0.0.1:5174",
-                                                "https://102qldp675617.vicp.fun",
-                                                "https://102qldp675617.vicp.fun:8082",
+                                // 仅允许已知的可信源
+                                // 开发环境：localhost
+                                // 生产环境：实际部署的域名和IP
+                                .allowedOrigins(
+                                                // 本地开发环境
+                                                "http://localhost:5173", 
+                                                "http://localhost:5174",
+                                                "http://127.0.0.1:5173", 
+                                                "http://127.0.0.1:5174",
+                                                // 生产环境 - 请根据实际部署情况调整
                                                 "http://222.204.4.108",
-                                                "https://222.204.4.108")
-                                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                                .allowedHeaders("*")
-                                .allowCredentials(true);
+                                                "https://222.204.4.108"
+                                                // 注意：部署时请移除不需要的域名
+                                )
+                                // 仅允许必要的HTTP方法，禁用TRACE等危险方法
+                                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                                // 限制允许的请求头，避免使用通配符"*"
+                                .allowedHeaders(
+                                                "Content-Type", 
+                                                "Authorization", 
+                                                "X-Requested-With",
+                                                "Accept",
+                                                "Origin"
+                                )
+                                // 允许携带凭证（cookies）
+                                .allowCredentials(true)
+                                // 设置预检请求的缓存时间（秒）
+                                .maxAge(3600);
         }
 
         // 配置拦截器

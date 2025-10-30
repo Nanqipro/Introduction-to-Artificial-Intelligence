@@ -14,7 +14,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/upload")
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:5174" })
+// 使用全局CORS配置，无需在Controller级别重复配置
+// 如需特殊配置，可在此处指定
 public class UploadController {
 
     @Autowired
@@ -29,24 +30,10 @@ public class UploadController {
      * @return 上传结果
      */
     @PostMapping("/avatar")
-    public ApiResponse<Map<String, Object>> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    public ApiResponse<Map<String, Object>> uploadAvatar(
+            @RequestParam("file") MultipartFile file, 
+            HttpServletRequest request) {
         try {
-            // 验证文件
-            if (file.isEmpty()) {
-                return ApiResponse.error("文件不能为空");
-            }
-            
-            // 验证文件类型
-            String contentType = file.getContentType();
-            if (contentType == null || !contentType.startsWith("image/")) {
-                return ApiResponse.error("只能上传图片文件");
-            }
-            
-            // 验证文件大小 (5MB)
-            if (file.getSize() > 5 * 1024 * 1024) {
-                return ApiResponse.error("文件大小不能超过5MB");
-            }
-            
             // 从请求头获取token并解析用户ID
             String token = request.getHeader("Authorization");
             if (token == null || token.trim().isEmpty()) {
@@ -61,7 +48,7 @@ public class UploadController {
             Map<String, Object> claims = JwtUtil.parseToken(token);
             Integer userId = (Integer) claims.get("id");
             
-            // 上传文件
+            // 上传文件（FileUploadService内部会进行全面的安全验证）
             String avatarUrl = fileUploadService.uploadAvatar(file);
             
             // 更新用户头像
@@ -72,7 +59,14 @@ public class UploadController {
             result.put("avatarUrl", avatarUrl);
             return ApiResponse.success(result);
             
+        } catch (IllegalArgumentException e) {
+            // 文件验证失败
+            return ApiResponse.error("文件验证失败: " + e.getMessage());
+        } catch (IOException e) {
+            // 文件操作失败
+            return ApiResponse.error("文件上传失败: " + e.getMessage());
         } catch (Exception e) {
+            // 其他异常
             return ApiResponse.error("头像上传失败: " + e.getMessage());
         }
     }
