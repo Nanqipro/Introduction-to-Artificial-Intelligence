@@ -40,12 +40,13 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    // 分包策略
+    // 分包策略 - 修复模块初始化顺序问题
     rollupOptions: {
       output: {
         manualChunks: {
-          'element-plus': ['element-plus'],
-          'vue-vendor': ['vue', 'vue-router']
+          'vue-core': ['vue'],
+          'vue-router': ['vue-router'],
+          'element-plus': ['element-plus']
         }
       }
     }
