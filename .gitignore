@@ -9,6 +9,8 @@ pnpm-debug.log*
 dist/
 build/
 *.local
+client/dist/
+client/dist.7z
 
 # Environment variables
 .env
