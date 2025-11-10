@@ -5,7 +5,7 @@
         <el-avatar class="brand-icon" size="large">
           <img :src="logoUrl" alt="logo">
         </el-avatar>
-        <h2 class="login-title">学生登录</h2>
+        <h2 class="login-title">登录入口</h2>
         <p class="login-subtitle">人工智能概论与应用数字化教材平台</p>
       </div>
 
@@ -19,7 +19,7 @@
         <el-form-item prop="username">
           <el-input
             v-model="formData.username"
-            placeholder="请输入学号"
+            placeholder="请输入账号"
             size="large"
             :prefix-icon="User"
             clearable
@@ -79,19 +79,20 @@ const formData = reactive({
 // 表单验证规则
 const formRules = computed(() => ({
   username: [
-    { required: true, message: '请输入学号或管理员账号', trigger: 'blur' },
+    { required: true, message: '请输入账号', trigger: 'blur' },
     { 
       validator: (rule, value, callback) => {
         if (!value) {
           callback()
           return
         }
-        // 允许管理员账号或10-12位数字学号
+        // 允许管理员账号、教师账号（TCH_开头）或10-12位数字学号
         const isAdmin = value === 'goodlabAdmin'
+        const isTeacher = /^TCH_[a-zA-Z0-9]+$/.test(value)
         const isStudentId = /^\d{10,12}$/.test(value)
         
-        if (!isAdmin && !isStudentId) {
-          callback(new Error('请输入10-12位数字学号或管理员账号'))
+        if (!isAdmin && !isTeacher && !isStudentId) {
+          callback(new Error('请输入学号、教师账号或管理员账号'))
         } else {
           callback()
         }
@@ -111,8 +112,11 @@ const formRules = computed(() => ({
         // 获取当前用户名
         const username = formData.username
         
-        // 如果是管理员账号，只需要最少4位密码
-        if (username === 'goodlabAdmin') {
+        // 如果是管理员账号或教师账号，只需要最少4位密码
+        const isAdmin = username === 'goodlabAdmin'
+        const isTeacher = /^TCH_[a-zA-Z0-9]+$/.test(username)
+        
+        if (isAdmin || isTeacher) {
           if (value.length < 4) {
             callback(new Error('密码长度不能少于4位'))
           } else {
@@ -182,12 +186,12 @@ const handleSubmit = async () => {
         router.push('/')
       }
     } else {
-      ElMessage.error(result.message || '登录失败，请检查学号和密码')
+      ElMessage.error(result.message || '登录失败，请检查账号和密码')
     }
   } catch (error) {
     // 表单验证失败
     const title = '输入格式错误'
-    const message = `请检查输入格式：\n• 学号：10-12位数字\n• 密码：至少8位，包含数字、字母、特殊字符中的至少两种`
+    const message = `请检查输入格式：\n• 学号：10-12位数字\n• 教师账号：TCH_开头\n• 密码：至少8位，包含数字、字母、特殊字符中的至少两种`
     try {
       await ElMessageBox.alert(message, title, { type: 'warning', confirmButtonText: '知道了' })
     } catch (_) {}

@@ -41,31 +41,36 @@ public class UsersController {
         return ApiResponse.error("注册功能已禁用，请使用学号登录");
     }
 
-    // 登录 - 支持学号+密码验证（初始密码和修改后的密码）以及管理员账号登录
+    // 登录 - 支持学号+密码验证（初始密码和修改后的密码）、教师账号登录以及管理员账号登录
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestParam String username,
                        @RequestParam String password) {
         
-        // 检查是否为管理员账号
+        // 检查是否为管理员账号或教师账号
         boolean isAdminAccount = "goodlabAdmin".equals(username);
+        boolean isTeacherAccount = username.startsWith("TCH_");
         
-        // 对于非管理员账号，验证学号格式和是否存在于Excel文件中
-        if (!isAdminAccount && !excelStudentReader.isValidStudentId(username)) {
+        // 对于非管理员和非教师账号，验证学号格式和是否存在于Excel文件中
+        if (!isAdminAccount && !isTeacherAccount && !excelStudentReader.isValidStudentId(username)) {
             LoggingConfig.logLogin(null, username, false, "学号不存在或格式错误");
             // 清除缓存并重试一次
             excelStudentReader.clearCache();
             if (!excelStudentReader.isValidStudentId(username)) {
-                return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号");
+                return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号或教师账号（TCH_开头）");
             }
         }
         
         // 查找用户
         User loginUser = userService.findByUserName(username);
         if (loginUser == null) {
-            // 管理员账号不存在时直接返回错误
+            // 管理员账号或教师账号不存在时直接返回错误
             if (isAdminAccount) {
                 LoggingConfig.logLogin(null, username, false, "管理员账号不存在");
                 return ApiResponse.error("管理员账号不存在");
+            }
+            if (isTeacherAccount) {
+                LoggingConfig.logLogin(null, username, false, "教师账号不存在");
+                return ApiResponse.error("教师账号不存在");
             }
             
             // 如果用户不存在，检查是否为初始密码格式，如果是则自动创建用户
@@ -90,8 +95,8 @@ public class UsersController {
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
             
-            // 检查是否使用默认密码格式，如果是则强制要求修改密码
-            boolean isUsingDefaultPassword = !isAdminAccount && excelStudentReader.isValidPasswordFormat(username, password);
+            // 检查是否使用默认密码格式，如果是则强制要求修改密码（管理员和教师账号除外）
+            boolean isUsingDefaultPassword = !isAdminAccount && !isTeacherAccount && excelStudentReader.isValidPasswordFormat(username, password);
             boolean shouldShowFirstLogin = loginUser.getIsFirstLogin() || isUsingDefaultPassword;
             claims.put("isFirstLogin", shouldShowFirstLogin);
             
