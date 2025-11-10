@@ -53,19 +53,21 @@ export default {
         return false
       }
       
-      // 检查用户是否为首次登录且不是管理员
+      // 检查用户是否为首次登录且不是管理员或教师
       const userInfo = currentUser.value
       const isFirstLogin = userInfo.isFirstLogin === true || userInfo.isFirstLogin === 'true'
       const isAdmin = userInfo.role === '管理员' || userInfo.role === 'admin'
+      const isTeacher = userInfo.role === 'teacher' || (userInfo.username && userInfo.username.startsWith('TCH_'))
       
       console.log('首次登录检查:', {
         userInfo,
         isFirstLogin,
         isAdmin,
-        shouldShow: isFirstLogin && !isAdmin
+        isTeacher,
+        shouldShow: isFirstLogin && !isAdmin && !isTeacher
       })
       
-      return isFirstLogin && !isAdmin
+      return isFirstLogin && !isAdmin && !isTeacher
     })
 
     // 提供全局通知方法

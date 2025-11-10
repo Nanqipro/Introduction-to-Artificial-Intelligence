@@ -42,8 +42,10 @@ public class WebConfig implements WebMvcConfigurer {
                                                 // 本地开发环境
                                                 "http://localhost:5173", 
                                                 "http://localhost:5174",
+                                                "http://localhost:5175",
                                                 "http://127.0.0.1:5173", 
                                                 "http://127.0.0.1:5174",
+                                                "http://127.0.0.1:5175",
                                                 // 生产环境 - 请根据实际部署情况调整
                                                 "http://222.204.4.108",
                                                 "https://222.204.4.108"

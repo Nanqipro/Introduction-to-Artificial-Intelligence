@@ -48,7 +48,7 @@ public class UsersController {
         
         // 检查是否为管理员账号或教师账号
         boolean isAdminAccount = "goodlabAdmin".equals(username);
-        boolean isTeacherAccount = username.startsWith("TCH_");
+        boolean isTeacherAccount = username != null && username.startsWith("TCH_");
         
         // 对于非管理员和非教师账号，验证学号格式和是否存在于Excel文件中
         if (!isAdminAccount && !isTeacherAccount && !excelStudentReader.isValidStudentId(username)) {
@@ -56,7 +56,7 @@ public class UsersController {
             // 清除缓存并重试一次
             excelStudentReader.clearCache();
             if (!excelStudentReader.isValidStudentId(username)) {
-                return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号或教师账号（TCH_开头）");
+                return ApiResponse.error("学号不存在或格式错误，请输入10-12位数字学号");
             }
         }
         
@@ -68,12 +68,13 @@ public class UsersController {
                 LoggingConfig.logLogin(null, username, false, "管理员账号不存在");
                 return ApiResponse.error("管理员账号不存在");
             }
+            
             if (isTeacherAccount) {
                 LoggingConfig.logLogin(null, username, false, "教师账号不存在");
                 return ApiResponse.error("教师账号不存在");
             }
             
-            // 如果用户不存在，检查是否为初始密码格式，如果是则自动创建用户
+            // 如果用户不存在，检查是否为初始密码格式，如果是则自动创建用户（仅对学生账号）
             if (excelStudentReader.isValidPasswordFormat(username, password)) {
                 try {
                     userService.register(username, password);
@@ -95,7 +96,7 @@ public class UsersController {
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
             
-            // 检查是否使用默认密码格式，如果是则强制要求修改密码（管理员和教师账号除外）
+            // 检查是否使用默认密码格式，如果是则强制要求修改密码（仅对学生账号）
             boolean isUsingDefaultPassword = !isAdminAccount && !isTeacherAccount && excelStudentReader.isValidPasswordFormat(username, password);
             boolean shouldShowFirstLogin = loginUser.getIsFirstLogin() || isUsingDefaultPassword;
             claims.put("isFirstLogin", shouldShowFirstLogin);
@@ -125,7 +126,10 @@ public class UsersController {
         User user = userService.findById(userId);
         
         // 如果用户名是学号格式，尝试获取学生真实姓名
-        if (user != null && user.getUsername() != null && !user.getUsername().equals("goodlabAdmin")) {
+        // 对于教师账号（TCH_开头）和管理员账号，不需要从Excel获取信息
+        if (user != null && user.getUsername() != null 
+            && !user.getUsername().equals("goodlabAdmin") 
+            && !user.getUsername().startsWith("TCH_")) {
             try {
                 com.goodlab.server.pojo.StudentInfo studentInfo = excelStudentReader.getStudentInfo(user.getUsername());
                 if (studentInfo != null && studentInfo.getName() != null && !studentInfo.getName().trim().isEmpty()) {
@@ -181,9 +185,13 @@ public class UsersController {
             return ApiResponse.error("非首次登录用户无法使用此接口");
         }
         
-        // 检查是否为管理员
+        // 检查是否为管理员或教师
         if ("goodlabAdmin".equals(username)) {
             return ApiResponse.error("管理员账号无需修改密码");
+        }
+        
+        if (username != null && username.startsWith("TCH_")) {
+            return ApiResponse.error("教师账号无需修改密码");
         }
         
         // 验证新密码格式
