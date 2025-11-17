@@ -10,6 +10,8 @@ import AdminPage from '../views/AdminPage.vue'
 import LoginPage from '../views/LoginPage.vue'
 import UserProfile from '../views/UserProfile.vue'
 import SystemTestPage from '../views/SystemTestPage.vue'
+import Feedback from '../views/Feedback.vue'
+import AdminFeedback from '../views/AdminFeedback.vue'
 
 
 
@@ -87,12 +89,33 @@ const routes = [
     }
   },
   {
+    path: '/feedback',
+    name: 'Feedback',
+    component: Feedback,
+    meta: {
+      title: '问题反馈',
+      description: '学生提交反馈与查看处理进度',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/admin',
     name: 'AdminPage',
     component: AdminPage,
     meta: {
       title: '管理员控制台',
       description: '题目管理和Excel导入功能',
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/feedback',
+    name: 'AdminFeedback',
+    component: AdminFeedback,
+    meta: {
+      title: '反馈管理',
+      description: '管理员查看与处理学生反馈',
       requiresAuth: true,
       requiresAdmin: true
     }

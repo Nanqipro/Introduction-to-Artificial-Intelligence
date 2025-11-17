@@ -120,18 +120,7 @@
           </div>
           
           <div class="password-grid">
-            <el-form-item label="当前密码" prop="currentPassword">
-              <el-input
-                v-model="passwordData.currentPassword"
-                type="password"
-                placeholder="请输入当前密码"
-                show-password
-              >
-                <template #prefix>
-                  <el-icon><Lock /></el-icon>
-                </template>
-              </el-input>
-            </el-form-item>
+            
             
             <el-form-item label="新密码" prop="newPassword">
               <el-input
@@ -197,14 +186,12 @@ const formRef = ref()
 
 // 密码修改数据
 const passwordData = reactive({
-  currentPassword: '',
   newPassword: '',
   confirmPassword: ''
 })
 
 // 重置密码数据
 const resetPasswordData = () => {
-  passwordData.currentPassword = ''
   passwordData.newPassword = ''
   passwordData.confirmPassword = ''
 }
@@ -218,41 +205,42 @@ const formRules = {
   phone: [
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
   ],
-  currentPassword: [
-    { 
-      validator: (rule, value, callback) => {
-        if (passwordData.newPassword && !value) {
-          callback(new Error('请输入当前密码'))
-        } else {
-          callback()
-        }
-      }, 
-      trigger: 'blur' 
-    }
-  ],
   newPassword: [
     { 
       validator: (rule, value, callback) => {
-        if (passwordData.currentPassword && !value) {
-          callback(new Error('请输入新密码'))
-        } else if (value && value.length < 8) {
-          callback(new Error('新密码长度不能少于8位'))
-        } else if (value) {
-          // 强密码验证：至少包含数字、字母和特殊字符中的两种
-          const hasNumber = /\d/.test(value)
-          const hasLetter = /[a-zA-Z]/.test(value)
-          const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?@]/.test(value)
-          
-          const typeCount = [hasNumber, hasLetter, hasSpecial].filter(Boolean).length
-          
-          if (typeCount < 2) {
-            callback(new Error('密码必须包含数字、字母、特殊字符中的至少两种'))
-          } else {
-            callback()
-          }
-        } else {
+        const val = passwordData.newPassword
+        const wantChange = !!passwordData.newPassword || !!passwordData.confirmPassword
+
+        // 如果不改密码，直接通过
+        if (!wantChange) {
           callback()
+          return
         }
+
+        // 改密码时必须填写新密码
+        if (!val) {
+          callback(new Error('请输入新密码'))
+          return
+        }
+
+        // 长度校验
+        if (val.length < 8) {
+          callback(new Error('新密码长度不能少于8位'))
+          return
+        }
+
+        // 强密码验证：至少包含数字、字母和特殊字符中的两种
+        const hasNumber = /\d/.test(val)
+        const hasLetter = /[a-zA-Z]/.test(val)
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?@]/.test(val)
+        const typeCount = [hasNumber, hasLetter, hasSpecial].filter(Boolean).length
+        
+        if (typeCount < 2) {
+          callback(new Error('密码必须包含数字、字母、特殊字符中的至少两种'))
+          return
+        }
+        
+        callback()
       }, 
       trigger: 'blur' 
     }
@@ -260,13 +248,20 @@ const formRules = {
   confirmPassword: [
     { 
       validator: (rule, value, callback) => {
-        if (passwordData.newPassword && !value) {
-          callback(new Error('请确认新密码'))
-        } else if (value && value !== passwordData.newPassword) {
-          callback(new Error('两次输入的密码不一致'))
-        } else {
+        const wantChange = !!passwordData.newPassword || !!passwordData.confirmPassword
+        if (!wantChange) {
           callback()
+          return
         }
+        if (!passwordData.confirmPassword) {
+          callback(new Error('请确认新密码'))
+          return
+        }
+        if (passwordData.confirmPassword !== passwordData.newPassword) {
+          callback(new Error('两次输入的密码不一致'))
+          return
+        }
+        callback()
       }, 
       trigger: 'blur' 
     }
@@ -284,12 +279,11 @@ const handleSave = async () => {
     }
     
     // 如果有密码修改
-    if (passwordData.currentPassword || passwordData.newPassword || passwordData.confirmPassword) {
-      if (passwordData.currentPassword && passwordData.newPassword && passwordData.confirmPassword) {
+    if (passwordData.newPassword || passwordData.confirmPassword) {
+      if (passwordData.newPassword && passwordData.confirmPassword) {
         saveData.passwordChange = {
-          currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-          confirmPassword: passwordData.confirmPassword // 添加确认密码字段
+          confirmPassword: passwordData.confirmPassword
         }
       }
     }

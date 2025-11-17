@@ -78,7 +78,7 @@
             </template>
             <el-descriptions title="《人工智能概论》" :column="1" border>
               <el-descriptions-item label="编写团队">GoodLab</el-descriptions-item>
-              <el-descriptions-item label="出版年份">2024年</el-descriptions-item>
+              <el-descriptions-item label="出版年份">2025年</el-descriptions-item>
               <el-descriptions-item label="章节数量">8章（含续章）</el-descriptions-item>
               <el-descriptions-item label="内容涵盖">
                 人工智能基础理论、核心技术、实际应用、伦理思考
@@ -154,7 +154,7 @@
                 <div class="leader-card">
                   <div class="leader-info">
                     <div class="leader-name">徐子晨教授</div>
-                    <div class="leader-position">南昌大学数学与计算机学院副院长</div>
+                    <div class="leader-position">人工智能学院副院长</div>
                     <div class="leader-description">
                       南昌大学项目组主要负责人之一，高层次引进人才，学科方向带头人，江西省"双千计划"首批入选者。主要从事计算机体系结构、数值计算、系统优化和存储系统等领域的教研工作。其在与本项目申请相关的领域开展了一些前期的研究工作，并取得了一系列站在国际前沿的创新性研究成果，以第一作者发表体系结构、数据库、分布式系统及可持续计算等方向旗舰期刊、会议文章50余篇，是TKDE/TC/TPDS/TCC等期刊的文章审稿人及客座编辑。发表国家授权发明专利10余件。获得20余项国家自然基金、教育部、科技部重点研发计划、省重点研发计划及华为、腾讯、微软、亚马逊、谷歌等国内外纵、横向基金资助。项目负责人在多源数据融合方面具有深厚研究基础，以第一完成人身份完成了"面向时空大数据的智能平台关键技术及应用"创新成果，并获得了2023年江西省科技进步奖一等奖。
                     </div>

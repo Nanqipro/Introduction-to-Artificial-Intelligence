@@ -20,7 +20,7 @@ public class HttpMethodFilter implements Filter {
 
     // 允许的HTTP方法白名单
     private static final Set<String> ALLOWED_METHODS = new HashSet<>(
-        Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+        Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
     );
     
     // 危险的HTTP方法（需要明确禁用）

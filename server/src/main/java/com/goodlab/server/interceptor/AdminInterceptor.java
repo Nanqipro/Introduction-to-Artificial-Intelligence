@@ -26,12 +26,10 @@ public class AdminInterceptor implements HandlerInterceptor {
         }
         
         String requestURI = request.getRequestURI();
-        System.out.println("AdminInterceptor: 检查管理员权限 - " + requestURI);
         
         // 获取当前用户信息
         Map<String, Object> claims = ThreadLocalUtil.get();
         if (claims == null) {
-            System.out.println("AdminInterceptor: 用户未登录");
             response.setStatus(401);
             return false;
         }
@@ -42,21 +40,17 @@ public class AdminInterceptor implements HandlerInterceptor {
         // 查询用户详细信息
         User user = userService.findById(userId);
         if (user == null) {
-            System.out.println("AdminInterceptor: 用户不存在 - ID: " + userId);
             response.setStatus(401);
             return false;
         }
         
         // 检查用户角色
         if (!"admin".equals(user.getRole())) {
-            System.out.println("AdminInterceptor: 用户无管理员权限 - 用户名: " + username + ", 角色: " + user.getRole());
             response.setStatus(403);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"code\":1,\"message\":\"访问被拒绝：只有管理员才能访问此功能\"}");
             return false;
         }
-        
-        System.out.println("AdminInterceptor: 管理员权限验证通过 - 用户名: " + username);
         return true;
     }
 }

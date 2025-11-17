@@ -2,15 +2,11 @@ import axios from 'axios'
 
 // 动态获取后端服务地址
 const getBaseURL = () => {
-  // 生产环境 - 服务器部署
+  // 生产环境 - 服务器部署（通过 Nginx 反向代理）
   if (window.location.hostname === '222.204.4.108') {
-    return ''  // 使用nginx代理，直接使用相对路径
+    return '' // 使用相对路径，走服务器反向代理
   }
-  // 花生壳外网访问
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return ''
-  }
-  // 本地开发
+  // 本地开发或局域网访问，一律直连后端 8082（避免非 localhost 场景相对路径导致 Network Error）
   return 'http://localhost:8082'
 }
 
@@ -117,6 +113,7 @@ api.interceptors.response.use(
     
     // 处理其他错误
     const message = error.response?.data?.message || 
+                   error.message || 
                    (error.response ? '服务器错误' : '网络连接失败')
     return Promise.reject(new Error(message))
   }
@@ -177,7 +174,12 @@ export const userApi = {
     }
     return api.get('/api/user/userInfo')
   },
-  updateUserInfo: (userInfo) => api.put('/api/user/update', userInfo),
+  updateUserInfo: (userInfo) => {
+    // 后端禁止修改用户名；为避免触发错误，移除 username 字段
+    const payload = { ...userInfo }
+    delete payload.username
+    return api.put('/api/user/update', payload)
+  },
   updateAvatar: (avatarUrl) => {
     const params = new URLSearchParams({ avatarUrl })
     return api.patch(`/api/user/updateAvatar?${params}`)
@@ -189,11 +191,10 @@ export const userApi = {
     })
   },
   updatePassword: (passwordData) => {
-    // 转换参数名以匹配后端API期望的格式
+    // 仅提交新密码与确认密码
     const requestData = {
-      oldPwd: passwordData.currentPassword,
       newPwd: passwordData.newPassword,
-      confirmPwd: passwordData.confirmPassword // 修复：使用实际的确认密码而不是新密码
+      confirmPwd: passwordData.confirmPassword
     }
     return api.patch('/api/user/updatePwd', requestData)
   },
@@ -258,6 +259,15 @@ export const levelApi = {
   completeChapter: (chapterData) => {
     return api.post('/api/level/completeChapter', chapterData)
   }
+}
+
+// 反馈相关API
+export const feedbackApi = {
+  submit: (data) => api.post('/api/feedback', data),
+  myList: () => api.get('/api/feedback/my'),
+  allList: () => api.get('/api/feedback/all'),
+  adminList: () => api.get('/api/admin/feedback'),
+  adminUpdate: (id, data) => api.patch(`/api/admin/feedback/${id}`, data)
 }
 
 // 管理员相关API

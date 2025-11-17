@@ -47,7 +47,6 @@ export function useAuth() {
   const currentUser = computed(() => {
     // 如果有用户信息，直接返回
     if (userInfo.value) {
-      console.log('currentUser: 使用userInfo', userInfo.value)
       return userInfo.value
     }
     
@@ -55,11 +54,7 @@ export function useAuth() {
     if (token.value) {
       const payload = parseJwtPayload(token.value)
       if (payload) {
-        console.log('currentUser: 从JWT解析', {
-          id: payload.id,
-          username: payload.username,
-          isFirstLogin: payload.isFirstLogin
-        })
+        // 已关闭控制台输出
         return {
           id: payload.id,
           username: payload.username,
@@ -68,7 +63,6 @@ export function useAuth() {
       }
     }
     
-    console.log('currentUser: 返回null')
     return null
   })
 
@@ -241,8 +235,7 @@ export function useAuth() {
       // 更新用户信息响应
 
       if (response.code === 200) {
-        // 更新成功后重新获取用户信息
-        await fetchUserInfo()
+        // 由调用方决定是否刷新用户信息，避免重复请求
         ElMessage.success('更新成功')
         return { success: true }
       } else {
@@ -285,6 +278,14 @@ export function useAuth() {
       const response = await userApi.updatePassword(passwordData)
 
       if (response.code === 200) {
+        // 不在此处触发刷新，由调用方合并刷新，避免重复请求
+        // 防御性：本地状态清除首次登录标志，避免误弹窗
+        if (userInfo.value) {
+          userInfo.value.isFirstLogin = false
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
+          }
+        }
         ElMessage.success('密码更新成功')
         return { success: true }
       } else {

@@ -113,6 +113,8 @@ const customUploadRequest = async (options) => {
 
 // 用户成就（从后端拉取）
 const userAchievements = ref([])
+// 保存过程中的状态，用于在保存期间避免额外的网络刷新
+const isSaving = ref(false)
 
 // 表单数据 - 从认证状态获取
 const formData = reactive({
@@ -193,7 +195,9 @@ const syncUserInfo = () => {
     // 更新用户基本信息
     userInfo.username = currentUser.value.username || ''
     userInfo.nickname = currentUser.value.nickname || ''  // 添加nickname同步
-    userInfo.role = currentUser.value.role || '学生'
+    // 角色显示映射：admin->管理员，teacher->教师，其余为学生
+    const r = currentUser.value.role
+    userInfo.role = r === 'admin' ? '管理员' : (r === 'teacher' ? '教师' : '学生')
     userInfo.avatar = currentUser.value.userPic || ''
     
     // 更新表单数据
@@ -217,7 +221,7 @@ watch(currentUser, () => {
 
 // 监听页面可见性变化，当页面重新可见时刷新数据
 const handleVisibilityChange = () => {
-  if (!document.hidden && isInitialized.value) {
+  if (!document.hidden && isInitialized.value && !isSaving.value) {
     // 页面重新可见，刷新用户数据
     refreshUserAchievements()
   }
@@ -225,7 +229,7 @@ const handleVisibilityChange = () => {
 
 // 监听窗口焦点变化
 const handleFocus = () => {
-    if (isInitialized.value) {
+    if (isInitialized.value && !isSaving.value) {
       // 窗口获得焦点，刷新用户数据
       refreshUserAchievements()
     }
@@ -242,49 +246,77 @@ const handleFocus = () => {
 
 // 方法
 const handleSaveInfo = async (data) => {
-  try {
-    let updateSuccess = false
-    let passwordSuccess = false
-    
-    // 更新用户基本信息
-    if (data.userInfo) {
-      const result = await updateUserInfo(data.userInfo)
-      if (result.success) {
-        updateSuccess = true
-        // 重新从服务器获取最新用户信息
-        await fetchUserInfo()
-        // 同步到本地状态
-        syncUserInfo()
-      } else {
-        ElMessage.error(result.message || '用户信息保存失败')
-        return
+  if (isSaving.value) return
+  isSaving.value = true
+  let updateSuccess = false
+  let passwordSuccess = false
+  let needRefresh = false
+
+  // 更新用户基本信息（如存在）
+  if (data.userInfo) {
+    // 只在确实有变更时才提交，以避免无意义请求导致的网络波动
+    const fieldsToCheck = ['nickname', 'email', 'phone', 'school', 'major']
+    const hasUserInfoChanges = fieldsToCheck.some(f => {
+      const newVal = (data.userInfo?.[f] ?? '')
+      const oldVal = (currentUser.value?.[f] ?? '')
+      return String(newVal) !== String(oldVal)
+    })
+
+    if (!hasUserInfoChanges) {
+      // 无变更，跳过资料更新
+    } else {
+      try {
+        const result = await updateUserInfo(data.userInfo)
+        if (result.success) {
+          updateSuccess = true
+          needRefresh = true
+        } else {
+          ElMessage.error(result.message || '用户信息保存失败')
+        }
+      } catch (e) {
+        ElMessage.error(e.message || '用户信息保存失败')
       }
     }
-    
-    // 如果有密码修改
-    if (data.passwordChange) {
+  }
+
+  // 如果有密码修改
+  if (data.passwordChange && (data.passwordChange.newPassword || data.passwordChange.confirmPassword)) {
+    try {
       const passwordResult = await updatePassword(data.passwordChange)
       if (passwordResult.success) {
         passwordSuccess = true
         ElMessage.success('密码修改成功')
+        needRefresh = true
       } else {
         ElMessage.error(passwordResult.message || '密码修改失败')
-        return
       }
+    } catch (e) {
+      ElMessage.error(e.message || '密码修改失败')
     }
-    
-    // 根据操作结果显示消息
-    if (updateSuccess && passwordSuccess) {
-      ElMessage.success('个人信息和密码修改成功')
-    } else if (updateSuccess) {
-      ElMessage.success('个人信息保存成功')
-    }
-    
-    editMode.value = false
-  } catch (error) {
-    // 保存失败
-    ElMessage.error('保存失败，请重试')
   }
+
+  // 合并刷新：只在需要时刷新一次，且不让刷新失败影响保存结果
+  if (needRefresh) {
+    try {
+      await fetchUserInfo(true)
+      syncUserInfo()
+    } catch (e) {
+      // 刷新失败不影响退出编辑与结果提示
+    }
+  }
+
+  // 根据操作结果显示消息
+  if (updateSuccess && passwordSuccess) {
+    ElMessage.success('个人信息和密码修改成功')
+  } else if (updateSuccess) {
+    ElMessage.success('个人信息保存成功')
+  }
+
+  // 有任一成功则退出编辑模式
+  if (updateSuccess || passwordSuccess) {
+    editMode.value = false
+  }
+  isSaving.value = false
 }
 
 const handleCancelEdit = () => {

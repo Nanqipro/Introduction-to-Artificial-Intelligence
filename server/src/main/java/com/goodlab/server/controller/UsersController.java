@@ -96,16 +96,11 @@ public class UsersController {
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
             
-            // 检查是否使用默认密码格式，如果是则强制要求修改密码（仅对学生账号）
-            boolean isUsingDefaultPassword = !isAdminAccount && !isTeacherAccount && excelStudentReader.isValidPasswordFormat(username, password);
-            boolean shouldShowFirstLogin = loginUser.getIsFirstLogin() || isUsingDefaultPassword;
+            // 仅依据数据库中的 is_first_login 字段控制首次登录改密
+            boolean shouldShowFirstLogin = Boolean.TRUE.equals(loginUser.getIsFirstLogin());
             claims.put("isFirstLogin", shouldShowFirstLogin);
             
-            // 添加调试日志
-            System.out.println("登录用户: " + username);
-            System.out.println("用户数据库中的isFirstLogin: " + loginUser.getIsFirstLogin());
-            System.out.println("是否使用默认密码: " + isUsingDefaultPassword);
-            System.out.println("最终的isFirstLogin: " + shouldShowFirstLogin);
+            // 已移除调试日志，避免控制台输出敏感信息
             
             String token = JwtUtil.genToken(claims);
             LoggingConfig.logLogin(loginUser.getId().intValue(), username, true, "登录成功");
@@ -133,12 +128,13 @@ public class UsersController {
             try {
                 com.goodlab.server.pojo.StudentInfo studentInfo = excelStudentReader.getStudentInfo(user.getUsername());
                 if (studentInfo != null && studentInfo.getName() != null && !studentInfo.getName().trim().isEmpty()) {
-                    // 如果找到学生姓名，将其设置为昵称字段返回给前端
-                    user.setNickname(studentInfo.getName());
+                    // 仅在昵称为空或未设置时回填学生姓名，避免覆盖用户自定义昵称
+                    if (user.getNickname() == null || user.getNickname().trim().isEmpty()) {
+                        user.setNickname(studentInfo.getName());
+                    }
                 }
             } catch (Exception e) {
-                // 如果获取学生信息失败，继续使用原有信息
-                System.out.println("获取学生信息失败: " + e.getMessage());
+                // 如果获取学生信息失败，继续使用原有信息（不输出控制台）
             }
         }
         
@@ -240,16 +236,18 @@ public class UsersController {
         String oldPwd = params.get("oldPwd");
         String newPwd = params.get("newPwd");
         String confirmPwd = params.get("confirmPwd");
-        if(StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(confirmPwd)){
-            LoggingConfig.logPasswordChange(userId, username, false, "参数不能为空");
-            return ApiResponse.error("参数不能为空");
+        if(StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(confirmPwd)){
+            LoggingConfig.logPasswordChange(userId, username, false, "新密码或确认密码不能为空");
+            return ApiResponse.error("新密码或确认密码不能为空");
         }
         
-        // 验证密码是否正确
-        User user = userService.findByUserName(username);
-        if(!Md5Util.getMD5String(oldPwd).equals(user.getPassword())){
-            LoggingConfig.logPasswordChange(userId, username, false, "原密码错误");
-            return ApiResponse.error("原密码错误");
+        // 如果提供了旧密码，则进行验证；否则跳过（按需求允许仅输入新密码修改）
+        if (!StringUtils.isEmpty(oldPwd)) {
+            User user = userService.findByUserName(username);
+            if(!Md5Util.getMD5String(oldPwd).equals(user.getPassword())){
+                LoggingConfig.logPasswordChange(userId, username, false, "原密码错误");
+                return ApiResponse.error("原密码错误");
+            }
         }
 
         // 校验 新密码和确认密码是否一致
@@ -282,6 +280,9 @@ public class UsersController {
         try {
             // 调用userService完成密码更新
             userService.updatePwd(newPwd);
+            // 若用户修改了密码，视为已完成首次登录流程，清除首次登录标记
+            // 这样后续登录不会再触发首次登录强制改密
+            userService.updateFirstLogin(userId);
             LoggingConfig.logPasswordChange(userId, username, true, "密码修改成功");
             return ApiResponse.success(null);
         } catch (Exception e) {

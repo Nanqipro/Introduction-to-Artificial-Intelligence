@@ -44,9 +44,9 @@
 1. 登录后点击导航栏右侧的用户头像
 2. 选择"个人中心"
 3. 可以进行以下操作：
-   - 编辑基本信息（昵称、邮箱）
+   - 编辑基本信息（昵称、邮箱、电话等）
    - 更换头像（输入图片URL）
-   - 修改密码
+   - 修改密码（可选，不输入新密码/确认新密码则不触发改密）
 
 ### 4. 用户登出
 
@@ -97,14 +97,14 @@ await userApi.login({ username, password })
 // 获取用户信息
 await userApi.getUserInfo()
 
-// 更新用户信息
-await userApi.updateUserInfo({ id, nickname, email })
+// 更新用户信息（不要携带 username）
+await userApi.updateUserInfo({ id, nickname, email, phone })
 
 // 更新头像
 await userApi.updateAvatar(avatarUrl)
 
-// 更新密码
-await userApi.updatePassword({ old_pwd, new_pwd, re_pwd })
+// 更新密码（仅提交新密码与确认密码；允许不提供旧密码）
+await userApi.updatePassword({ newPassword, confirmPassword })
 ```
 
 ### 状态管理
@@ -180,8 +180,9 @@ const { isLoggedIn, currentUser } = useAuth()
 
 1. **登录后页面没有更新** - 检查是否正确使用了 `useAuth` composable
 2. **token过期** - 系统会自动处理，用户需要重新登录
-3. **跨域问题** - 后端已配置CORS，支持前端域名访问
+3. **跨域问题** - 后端已启用全局 CorsFilter；预检 OPTIONS 必须返回 200 并带允许头/方法/来源
 4. **API请求失败** - 检查后端服务是否正常运行在8082端口
+   - 开发环境前端统一直连 `http://localhost:8082`，避免相对路径被代理或跨域拦截
 
 ### 调试技巧
 

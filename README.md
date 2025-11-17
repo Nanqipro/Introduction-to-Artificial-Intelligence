@@ -780,3 +780,35 @@ ps aux | grep java    # 后端进程
 ⭐ 如果这个项目对您有帮助，请给我们一个星标！
 
 📚 让我们一起推动人工智能教育的数字化转型！
+## 用户资料与改密说明（重要）
+
+- 用户名不可修改：后台严格禁止更新 `username`，前端在提交资料更新时已自动移除该字段；如携带会返回“用户名是唯一标识，不允许修改”。
+- 资料编辑与改密解耦：
+  - 仅修改昵称/邮箱等资料时，不会触发密码校验或改密请求；只有输入了“新密码/确认新密码”时才进行密码规则校验与提交。
+  - 密码规则：长度≥8，至少包含两类字符（数字/字母/特殊字符）。
+- 首次登录判定：仅由数据库字段 `is_first_login` 控制；默认密码仅用于自动建号，不再用作是否强制改密的依据。
+- 修改密码接口：`PATCH /api/user/updatePwd`
+  - 参数：`{ newPwd, confirmPwd }`（允许不提供旧密码）；
+  - 成功后后端会清除 `is_first_login`，前端刷新一次用户信息并退出编辑模式。
+
+## CORS 与 Network Error 处理
+
+- 预检生效：已启用全局 `CorsFilter`，允许来源 `http://localhost:*`、`http://127.0.0.1:*`、`http://222.204.4.108:*`，方法 `GET/POST/PUT/PATCH/DELETE/OPTIONS`，并允许所有请求头（含 `authorization`）。
+- 典型报错“Ensure CORS response header values are valid / Network Error”：
+  - 原因多为预检返回 403；已修复为 200，并回显 `Access-Control-Allow-Origin`。
+  - 若仍异常，请检查访问域是否在白名单，并查看浏览器 Network 面板失败的具体请求。
+- 前端直连后端：开发/测试环境统一直连 `http://localhost:8082`，避免相对路径在非本地域名下触发代理或跨域异常。
+
+## 验证步骤（开发环境）
+
+- 登录并获取用户信息：`curl http://localhost:8082/api/user/userInfo`（需携带 Authorization）。
+- 修改资料（仅昵称）：`PUT /api/user/update`，不携带 `username`；成功后页面退出编辑模式。
+- 修改密码：`PATCH /api/user/updatePwd`，仅 `{ newPwd, confirmPwd }`；成功后用新密码登录，JWT 中 `isFirstLogin=false`。
+- 预检检查：
+  ```
+  curl -i -X OPTIONS http://localhost:8082/api/user/updatePwd \
+    -H 'Origin: http://localhost:5173' \
+    -H 'Access-Control-Request-Method: PATCH' \
+    -H 'Access-Control-Request-Headers: content-type, authorization'
+  ```
+  预期返回 200，并含 `Access-Control-Allow-Origin/Methods/Headers/Credentials`。

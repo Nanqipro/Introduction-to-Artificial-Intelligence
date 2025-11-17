@@ -7,7 +7,7 @@
       </main>
       <footer class="app-footer">
         <div class="footer-content">
-          <p>&copy; 2024 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
+          <p>&copy; 2025 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
           <p class="footer-tech">由GOODLAB开发团队构建</p>
         </div>
       </footer>
@@ -49,7 +49,6 @@ export default {
     // 检查是否需要显示首次登录密码修改弹窗
     const showFirstLoginModal = computed(() => {
       if (!isLoggedIn.value || !currentUser.value) {
-        console.log('首次登录检查: 未登录或无用户信息', { isLoggedIn: isLoggedIn.value, currentUser: currentUser.value })
         return false
       }
       
@@ -57,15 +56,9 @@ export default {
       const userInfo = currentUser.value
       const isFirstLogin = userInfo.isFirstLogin === true || userInfo.isFirstLogin === 'true'
       const isAdmin = userInfo.role === '管理员' || userInfo.role === 'admin'
-      const isTeacher = userInfo.role === 'teacher' || (userInfo.username && userInfo.username.startsWith('TCH_'))
+      const isTeacher = userInfo.role === '教师' || userInfo.role === 'teacher'
       
-      console.log('首次登录检查:', {
-        userInfo,
-        isFirstLogin,
-        isAdmin,
-        isTeacher,
-        shouldShow: isFirstLogin && !isAdmin && !isTeacher
-      })
+      // 关闭控制台输出，避免泄露信息
       
       return isFirstLogin && !isAdmin && !isTeacher
     })

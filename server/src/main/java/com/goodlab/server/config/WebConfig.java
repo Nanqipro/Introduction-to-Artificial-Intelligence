@@ -85,12 +85,7 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addInterceptor(adminInterceptor)
                                 .addPathPatterns("/api/admin/**");
 
-                System.out.println(
-                                "拦截器配置完成 - 登录拦截器放行路径: /api/users/login, /api/users/register, /api/user/login, /api/user/register, /api/chapters/**, /api/quiz/**, /error, /uploads/**, /api/upload/**, /api/chapter1-case-study/**");
-                System.out.println(
-                                "管理员拦截器拦截路径: /api/admin/**");
-                System.out.println(
-                                "注意: /api/level/** 和其他需要认证的接口需要登录访问，/api/admin/** 需要管理员权限");
+                // 移除控制台输出，避免泄露拦截器配置细节
         }
         
         // 配置静态资源访问
@@ -100,6 +95,6 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addResourceHandler("/uploads/**")
                         .addResourceLocations("file:" + uploadPath);
                         
-                System.out.println("静态资源配置完成 - 上传文件访问路径: /uploads/** -> file:" + uploadPath);
+                // 关闭控制台输出
         }
 }

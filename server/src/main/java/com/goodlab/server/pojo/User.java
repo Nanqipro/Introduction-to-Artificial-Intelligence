@@ -1,5 +1,6 @@
 package com.goodlab.server.pojo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -13,10 +14,15 @@ public class User {
     private String nickname; // 昵称
     private String email; // 邮箱
     private String phone; // 电话
+    private String gender; // 性别
     private String role; // 角色：student(学生), teacher(教师), admin(管理员)
+    private LocalDate birthday; // 生日
+    private String location; // 地理位置
+    private String bio; // 个人简介
     private String studentId; // 学号
     private String className; // 班级
     private String major; // 专业
+    private String school; // 学校
     private String college; // 学院
     private Integer grade; // 年级
     private String avatar; // 头像URL
@@ -100,6 +106,38 @@ public class User {
         this.role = role;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     public String getStudentId() {
         return studentId;
     }
@@ -122,6 +160,14 @@ public class User {
 
     public void setMajor(String major) {
         this.major = major;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
     }
 
     public String getCollege() {

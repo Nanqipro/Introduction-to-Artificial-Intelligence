@@ -87,6 +87,10 @@
               <el-icon style="margin-right: 12px;"><DataAnalysis /></el-icon>
               统计
             </el-dropdown-item>
+            <el-dropdown-item @click="goToPage('/feedback')">
+              <el-icon style="margin-right: 12px;"><QuestionFilled /></el-icon>
+              反馈
+            </el-dropdown-item>
             <div class="dropdown-divider"></div>
             <!-- 只有管理员才显示管理菜单 -->
             <template v-if="currentUser?.role === 'admin'">
