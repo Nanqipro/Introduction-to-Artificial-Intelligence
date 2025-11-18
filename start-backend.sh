@@ -18,6 +18,10 @@ DB_USER=root
 DB_PASS=root123456
 DB_NAME=AI_platform
 
+# 可选：是否重置并重建反馈表（默认 false）。
+# 运行时可通过环境变量开启：RESET_FEEDBACK_TABLE=true ./start-backend.sh
+RESET_FEEDBACK_TABLE=${RESET_FEEDBACK_TABLE:-false}
+
 # 检查 Docker MySQL 是否运行
 echo -e "${YELLOW}检查 MySQL Docker 容器状态...${NC}"
 if docker ps | grep -q ai_platform_mysql; then
@@ -55,9 +59,15 @@ mysql_import_file() {
   docker exec -i ai_platform_mysql mysql --default-character-set=utf8mb4 -uroot -proot123456 -D "$DB_NAME" < "$1"
 }
 
-# 修复必要列（幂等）
+# 修复必要列（幂等，兼容 MySQL 5.7/8.0）
 echo -e "${YELLOW}检查并修复 user 表必需列...${NC}"
-mysql_exec "ALTER TABLE user ADD COLUMN IF NOT EXISTS is_first_login TINYINT(1) DEFAULT 1; ALTER TABLE user ADD COLUMN IF NOT EXISTS last_login_time DATETIME NULL;" > /dev/null 2>&1 && echo -e "${GREEN}✓ 列检查完成${NC}" || echo -e "${YELLOW}⚠ 列检查失败或已存在，继续${NC}"
+# 逐列添加，若已存在则忽略错误继续
+mysql_exec "ALTER TABLE user ADD COLUMN is_first_login TINYINT(1) DEFAULT 1;" \
+  && echo -e "${GREEN}✓ 已添加 is_first_login 列${NC}" \
+  || echo -e "${YELLOW}is_first_login 已存在，跳过${NC}"
+mysql_exec "ALTER TABLE user ADD COLUMN last_login_time DATETIME NULL;" \
+  && echo -e "${GREEN}✓ 已添加 last_login_time 列${NC}" \
+  || echo -e "${YELLOW}last_login_time 已存在，跳过${NC}"
 
 # 统一库与表字符集为 utf8mb4，防止中文昵称乱码
 echo -e "${YELLOW}统一库/表字符集为 utf8mb4...${NC}"
@@ -93,8 +103,15 @@ mysql_exec "DELETE u1 FROM user u1 INNER JOIN user u2 ON u1.username=u2.username
 mysql_exec "ALTER TABLE user ADD UNIQUE INDEX uniq_username (username);" || true
 mysql_exec "SELECT COUNT(*) AS total_users, (SELECT COUNT(*) FROM user u JOIN (SELECT username FROM user GROUP BY username HAVING COUNT(*)>1) d ON u.username=d.username) AS dup_users FROM user;" || true
 
-# 创建反馈表（幂等）
-echo -e "${YELLOW}确保 feedback 反馈表存在...${NC}"
+# 创建/重建反馈表
+if [ "$RESET_FEEDBACK_TABLE" = "true" ]; then
+  echo -e "${YELLOW}已启用重置反馈表：删除并按新结构重建 feedback...${NC}"
+  mysql_exec "SET FOREIGN_KEY_CHECKS=0; DROP TABLE IF EXISTS feedback; SET FOREIGN_KEY_CHECKS=1;" \
+    && echo -e "${GREEN}✓ 已删除旧 feedback 表${NC}" \
+    || echo -e "${RED}✗ 删除旧 feedback 表失败${NC}"
+fi
+
+echo -e "${YELLOW}确保 feedback 反馈表存在(如不存在则创建)...${NC}"
 mysql_exec "CREATE TABLE IF NOT EXISTS feedback (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
