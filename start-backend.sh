@@ -22,6 +22,9 @@ DB_NAME=AI_platform
 # 运行时可通过环境变量开启：RESET_FEEDBACK_TABLE=true ./start-backend.sh
 RESET_FEEDBACK_TABLE=${RESET_FEEDBACK_TABLE:-false}
 
+## 延后 user.id 类型检测到容器与数据库连接正常后进行
+USER_ID_TYPE=""
+
 # 检查 Docker MySQL 是否运行
 echo -e "${YELLOW}检查 MySQL Docker 容器状态...${NC}"
 if docker ps | grep -q ai_platform_mysql; then
@@ -47,6 +50,16 @@ if [ $? -eq 0 ]; then
 else
   echo -e "${RED}✗ 数据库连接失败，请检查 MySQL 容器${NC}"
   exit 1
+fi
+
+# 在数据库连接成功后检测 user.id 列类型，以便创建匹配外键的反馈表
+echo -e "${YELLOW}检测 user.id 列类型以匹配外键...${NC}"
+USER_ID_TYPE=$(docker exec -i ai_platform_mysql mysql -uroot -proot123456 -N -B -e "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='${DB_NAME}' AND TABLE_NAME='user' AND COLUMN_NAME='id' LIMIT 1")
+if [ -z "$USER_ID_TYPE" ]; then
+  echo -e "${YELLOW}未检测到 user.id 类型，默认使用 INT${NC}"
+  USER_ID_TYPE="INT"
+else
+  echo -e "${GREEN}✓ user.id 类型: ${USER_ID_TYPE}${NC}"
 fi
 
 # 封装执行命令（Docker 模式，指定数据库）
@@ -100,7 +113,10 @@ mysql_exec "SELECT COUNT(*) AS total_users, SUM(role='admin') AS admin_count, SU
 # 去重并添加唯一索引（避免重复用户名导致登录异常）
 echo -e "${YELLOW}去重重复用户名并添加唯一索引...${NC}"
 mysql_exec "DELETE u1 FROM user u1 INNER JOIN user u2 ON u1.username=u2.username AND u1.id < u2.id;" || true
-mysql_exec "ALTER TABLE user ADD UNIQUE INDEX uniq_username (username);" || true
+echo -e "${YELLOW}检查 uniq_username 索引是否存在...${NC}"
+mysql_exec "SET @idx_exists := (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA='${DB_NAME}' AND TABLE_NAME='user' AND INDEX_NAME='uniq_username');
+SET @create_stmt := IF(@idx_exists=0, 'ALTER TABLE `user` ADD UNIQUE INDEX `uniq_username` (`username`);', 'SELECT 1;');
+PREPARE stmt FROM @create_stmt; EXECUTE stmt; DEALLOCATE PREPARE stmt;" || true
 mysql_exec "SELECT COUNT(*) AS total_users, (SELECT COUNT(*) FROM user u JOIN (SELECT username FROM user GROUP BY username HAVING COUNT(*)>1) d ON u.username=d.username) AS dup_users FROM user;" || true
 
 # 创建/重建反馈表
@@ -112,19 +128,20 @@ if [ "$RESET_FEEDBACK_TABLE" = "true" ]; then
 fi
 
 echo -e "${YELLOW}确保 feedback 反馈表存在(如不存在则创建)...${NC}"
-mysql_exec "CREATE TABLE IF NOT EXISTS feedback (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  content TEXT NOT NULL,
-  category VARCHAR(50) DEFAULT '',
-  status VARCHAR(20) DEFAULT 'NEW',
-  admin_reply TEXT,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id),
-  INDEX idx_status (status),
-  FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
-);" && echo -e "${GREEN}✓ feedback 表已就绪${NC}" || echo -e "${RED}✗ 创建 feedback 表失败${NC}"
+mysql_exec "CREATE TABLE IF NOT EXISTS \`feedback\` (
+  \`id\` BIGINT NOT NULL AUTO_INCREMENT,
+  \`user_id\` ${USER_ID_TYPE} NOT NULL,
+  \`content\` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
+  \`category\` VARCHAR(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  \`status\` VARCHAR(20) COLLATE utf8mb4_unicode_ci DEFAULT 'NEW',
+  \`admin_reply\` TEXT COLLATE utf8mb4_unicode_ci,
+  \`created_at\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  \`updated_at\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (\`id\`),
+  KEY \`idx_user_id\` (\`user_id\`),
+  KEY \`idx_status\` (\`status\`),
+  CONSTRAINT \`feedback_ibfk_1\` FOREIGN KEY (\`user_id\`) REFERENCES \`user\` (\`id\`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" && echo -e "${GREEN}✓ feedback 表已就绪${NC}" || echo -e "${RED}✗ 创建 feedback 表失败${NC}"
 
 # 确保备份管理员账号存在（幂等）
 mysql_exec "INSERT INTO user (username,password,nickname,email,role,level,experience,total_score,completed_chapters,quiz_count,correct_answers,create_time,update_time)
