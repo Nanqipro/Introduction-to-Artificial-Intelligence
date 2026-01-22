@@ -2,12 +2,8 @@ import axios from 'axios'
 
 // 动态获取后端服务地址
 const getBaseURL = () => {
-  const hostname = window.location.hostname
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:8082'
-  }
-  if (hostname === '222.204.4.108' || hostname === 'szjc.ncu.edu.cn') {
-    return ''
   }
   return ''
 }
