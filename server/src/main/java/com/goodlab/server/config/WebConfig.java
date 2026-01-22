@@ -47,6 +47,8 @@ public class WebConfig implements WebMvcConfigurer {
                                                 "http://127.0.0.1:5174",
                                                 "http://127.0.0.1:5175",
                                                 // 生产环境 - 请根据实际部署情况调整
+                                                "http://szjc.ncu.edu.cn",
+                                                "https://szjc.ncu.edu.cn",
                                                 "http://222.204.4.108",
                                                 "https://222.204.4.108"
                                                 // 注意：部署时请移除不需要的域名
