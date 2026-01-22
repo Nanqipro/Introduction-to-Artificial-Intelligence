@@ -21,7 +21,9 @@ public class CorsConfig implements WebMvcConfigurer {
         config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:*",
                 "http://127.0.0.1:*",
-                "http://222.204.4.108:*"
+                "http://222.204.4.108:*",
+                "http://szjc.ncu.edu.cn",
+                "https://szjc.ncu.edu.cn"
         ));
         // 允许所有请求头（包含 authorization、content-type 等）
         config.setAllowedHeaders(Arrays.asList("*"));
