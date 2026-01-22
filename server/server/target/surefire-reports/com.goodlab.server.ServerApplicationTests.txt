@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.goodlab.server.ServerApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.443 s - in com.goodlab.server.ServerApplicationTests
