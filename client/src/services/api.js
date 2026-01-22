@@ -2,12 +2,10 @@ import axios from 'axios'
 
 // 动态获取后端服务地址
 const getBaseURL = () => {
-  // 生产环境 - 服务器部署（通过 Nginx 反向代理）
-  if (window.location.hostname === '222.204.4.108') {
-    return '' // 使用相对路径，走服务器反向代理
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:8082'
   }
-  // 本地开发或局域网访问，一律直连后端 8082（避免非 localhost 场景相对路径导致 Network Error）
-  return 'http://localhost:8082'
+  return ''
 }
 
 // 创建axios实例
@@ -46,9 +44,9 @@ api.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
     const isPublic = isPublicAPI(config.url)
-    
+
     // 调试日志
-    
+
     // 为需要认证的API添加token
     if (!isPublic) {
       if (token && token.trim() !== '' && token !== 'null' && token !== 'undefined') {
@@ -61,12 +59,12 @@ api.interceptors.request.use(
         throw new Error('Token无效，请先登录')
       }
     }
-    
+
     // 处理FormData
     if (config.data instanceof FormData) {
       delete config.headers['Content-Type']
     }
-    
+
     return config
   },
   error => Promise.reject(error)
@@ -94,27 +92,27 @@ api.interceptors.response.use(
       if (url?.includes('/api/user/register')) {
         return Promise.reject(new Error('注册失败：' + (error.response?.data?.message || '用户名已存在或服务器错误')))
       }
-      
+
       // Token过期处理：清理本地存储并跳转登录页
       // Token已过期，清理认证状态并跳转登录页
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
       localStorage.removeItem('user')
-      
+
       // 延迟跳转，避免在某些情况下立即跳转导致的问题
       setTimeout(() => {
         if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
           window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
         }
       }, 100)
-      
+
       return Promise.reject(new Error('登录已过期，请重新登录'))
     }
-    
+
     // 处理其他错误
-    const message = error.response?.data?.message || 
-                   error.message || 
-                   (error.response ? '服务器错误' : '网络连接失败')
+    const message = error.response?.data?.message ||
+      error.message ||
+      (error.response ? '服务器错误' : '网络连接失败')
     return Promise.reject(new Error(message))
   }
 )
@@ -154,7 +152,7 @@ export const userApi = {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   },
-  
+
   login: (userData) => {
     const formData = new URLSearchParams()
     formData.append('username', userData.username)
@@ -163,7 +161,7 @@ export const userApi = {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   },
-  
+
   getUserInfo: () => {
     // 检查token是否存在
     const token = localStorage.getItem('token')
@@ -184,7 +182,7 @@ export const userApi = {
     const params = new URLSearchParams({ avatarUrl })
     return api.patch(`/api/user/updateAvatar?${params}`)
   },
-  
+
   uploadAvatar: (formData) => {
     return api.post('/api/upload/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
@@ -198,31 +196,31 @@ export const userApi = {
     }
     return api.patch('/api/user/updatePwd', requestData)
   },
-  
+
   // 首次登录密码修改
   firstLoginPasswordChange: (newPassword) => {
     const params = new URLSearchParams({ newPassword })
     return api.post(`/api/user/first-login-password-change?${params}`)
   },
-  
+
   // 密码重置相关API
   sendPasswordResetEmail: (email) => {
     return api.post('/password-reset/send-email', { email })
   },
-  
+
   validatePasswordResetToken: (token) => {
     return api.post('/password-reset/validate-token', { token })
   },
-  
+
   resetPassword: (resetData) => {
     return api.post('/password-reset/reset', resetData)
   },
-  
+
   // 邮箱验证相关API
   sendEmailVerificationCode: (email) => {
     return api.post('/email-verification/send-code', { email })
   },
-  
+
   verifyEmailCode: (verificationData) => {
     return api.post('/email-verification/verify', verificationData)
   }
@@ -279,14 +277,14 @@ export const adminApi = {
   updateQuestion: (id, question) => api.put(`/api/admin/questions/${id}`, question),
   deleteQuestion: (id) => api.delete(`/api/admin/questions/${id}`),
   getQuestionsByChapter: (chapterId) => api.get(`/api/admin/questions/chapter/${chapterId}`),
-  
+
   // 文件导入
   importQuestions: (file) => {
     const formData = new FormData()
     formData.append('file', file)
     return api.post('/api/admin/questions/import', formData)
   },
-  
+
   // 统计信息
   getQuestionStats: () => api.get('/api/admin/questions/stats'),
   healthCheck: () => api.get('/api/admin/health')
