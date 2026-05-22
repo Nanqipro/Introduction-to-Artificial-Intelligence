@@ -189,8 +189,8 @@ export const userApi = {
     })
   },
   updatePassword: (passwordData) => {
-    // 仅提交新密码与确认密码
     const requestData = {
+      oldPwd: passwordData.oldPassword,
       newPwd: passwordData.newPassword,
       confirmPwd: passwordData.confirmPassword
     }

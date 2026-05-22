@@ -236,18 +236,20 @@ public class UsersController {
         String oldPwd = params.get("oldPwd");
         String newPwd = params.get("newPwd");
         String confirmPwd = params.get("confirmPwd");
-        if(StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(confirmPwd)){
+        if(!StringUtils.hasText(oldPwd)){
+            LoggingConfig.logPasswordChange(userId, username, false, "原密码不能为空");
+            return ApiResponse.error("原密码不能为空");
+        }
+        if(!StringUtils.hasText(newPwd) || !StringUtils.hasText(confirmPwd)){
             LoggingConfig.logPasswordChange(userId, username, false, "新密码或确认密码不能为空");
             return ApiResponse.error("新密码或确认密码不能为空");
         }
-        
-        // 如果提供了旧密码，则进行验证；否则跳过（按需求允许仅输入新密码修改）
-        if (!StringUtils.isEmpty(oldPwd)) {
-            User user = userService.findByUserName(username);
-            if(!Md5Util.getMD5String(oldPwd).equals(user.getPassword())){
-                LoggingConfig.logPasswordChange(userId, username, false, "原密码错误");
-                return ApiResponse.error("原密码错误");
-            }
+
+        // 强制验证旧密码，防止持有 token 的攻击者直接改密劫持账号
+        User user = userService.findByUserName(username);
+        if(!Md5Util.getMD5String(oldPwd).equals(user.getPassword())){
+            LoggingConfig.logPasswordChange(userId, username, false, "原密码错误");
+            return ApiResponse.error("原密码错误");
         }
 
         // 校验 新密码和确认密码是否一致

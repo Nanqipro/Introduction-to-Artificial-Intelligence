@@ -18,6 +18,17 @@ DB_USER=root
 DB_PASS=root123456
 DB_NAME=AI_platform
 
+# 从 server/.env 加载敏感环境变量（JWT_SECRET 等），该文件不进入版本库
+ENV_FILE="$(dirname "$0")/server/.env"
+if [ -f "$ENV_FILE" ]; then
+    set -a
+    source "$ENV_FILE"
+    set +a
+else
+    echo -e "${RED}✗ 缺少 server/.env 文件，请创建并配置 JWT_SECRET${NC}"
+    exit 1
+fi
+
 # 可选：是否重置并重建反馈表（默认 false）。
 # 运行时可通过环境变量开启：RESET_FEEDBACK_TABLE=true ./start-backend.sh
 RESET_FEEDBACK_TABLE=${RESET_FEEDBACK_TABLE:-false}

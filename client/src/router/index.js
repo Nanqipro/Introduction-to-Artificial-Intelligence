@@ -192,9 +192,7 @@ router.beforeEach(async (to, from, next) => {
   
   // 如果路由需要管理员权限但用户不是管理员，显示权限不足
   if (to.meta.requiresAdmin && currentUser?.role !== 'admin') {
-    // 需要管理员权限但用户角色不符
-    // 可以跳转到一个权限不足的页面，或者显示提示
-    alert('访问被拒绝：只有管理员才能访问此功能\n\n管理员账号：goodlabAdmin\n管理员密码：goodlabPwd')
+    alert('访问被拒绝：您没有管理员权限')
     next('/')
     return
   }

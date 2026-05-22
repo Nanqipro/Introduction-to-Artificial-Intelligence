@@ -78,10 +78,18 @@ public class PasswordResetController {
             return Result.error("重置令牌不能为空");
         }
         
-        if (newPassword == null || newPassword.length() < 6) {
-            return Result.error("密码长度不能少于6位");
+        if (newPassword == null || newPassword.length() < 8) {
+            return Result.error("密码长度不能少于8位");
         }
-        
+
+        boolean hasNumber = newPassword.matches(".*\\d.*");
+        boolean hasLetter = newPassword.matches(".*[a-zA-Z].*");
+        boolean hasSpecial = newPassword.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?@].*");
+        int typeCount = (hasNumber ? 1 : 0) + (hasLetter ? 1 : 0) + (hasSpecial ? 1 : 0);
+        if (typeCount < 2) {
+            return Result.error("密码必须包含数字、字母、特殊字符中的至少两种");
+        }
+
         boolean resetSuccess = userService.resetPasswordByToken(token, newPassword);
         if (!resetSuccess) {
             return Result.error("密码重置失败，令牌无效或已过期");

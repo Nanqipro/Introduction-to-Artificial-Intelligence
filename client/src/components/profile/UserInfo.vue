@@ -120,8 +120,20 @@
           </div>
           
           <div class="password-grid">
-            
-            
+
+            <el-form-item label="原密码" prop="oldPassword">
+              <el-input
+                v-model="passwordData.oldPassword"
+                type="password"
+                placeholder="请输入当前密码"
+                show-password
+              >
+                <template #prefix>
+                  <el-icon><Lock /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+
             <el-form-item label="新密码" prop="newPassword">
               <el-input
                 v-model="passwordData.newPassword"
@@ -134,7 +146,7 @@
                 </template>
               </el-input>
             </el-form-item>
-            
+
             <el-form-item label="确认新密码" prop="confirmPassword">
               <el-input
                 v-model="passwordData.confirmPassword"
@@ -186,12 +198,14 @@ const formRef = ref()
 
 // 密码修改数据
 const passwordData = reactive({
+  oldPassword: '',
   newPassword: '',
   confirmPassword: ''
 })
 
 // 重置密码数据
 const resetPasswordData = () => {
+  passwordData.oldPassword = ''
   passwordData.newPassword = ''
   passwordData.confirmPassword = ''
 }
@@ -205,11 +219,24 @@ const formRules = {
   phone: [
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
   ],
+  oldPassword: [
+    {
+      validator: (rule, value, callback) => {
+        const wantChange = !!passwordData.oldPassword || !!passwordData.newPassword || !!passwordData.confirmPassword
+        if (wantChange && !passwordData.oldPassword) {
+          callback(new Error('请输入当前密码'))
+          return
+        }
+        callback()
+      },
+      trigger: 'blur'
+    }
+  ],
   newPassword: [
-    { 
+    {
       validator: (rule, value, callback) => {
         const val = passwordData.newPassword
-        const wantChange = !!passwordData.newPassword || !!passwordData.confirmPassword
+        const wantChange = !!passwordData.oldPassword || !!passwordData.newPassword || !!passwordData.confirmPassword
 
         // 如果不改密码，直接通过
         if (!wantChange) {
@@ -248,7 +275,7 @@ const formRules = {
   confirmPassword: [
     { 
       validator: (rule, value, callback) => {
-        const wantChange = !!passwordData.newPassword || !!passwordData.confirmPassword
+        const wantChange = !!passwordData.oldPassword || !!passwordData.newPassword || !!passwordData.confirmPassword
         if (!wantChange) {
           callback()
           return
@@ -279,9 +306,10 @@ const handleSave = async () => {
     }
     
     // 如果有密码修改
-    if (passwordData.newPassword || passwordData.confirmPassword) {
-      if (passwordData.newPassword && passwordData.confirmPassword) {
+    if (passwordData.oldPassword || passwordData.newPassword || passwordData.confirmPassword) {
+      if (passwordData.oldPassword && passwordData.newPassword && passwordData.confirmPassword) {
         saveData.passwordChange = {
+          oldPassword: passwordData.oldPassword,
           newPassword: passwordData.newPassword,
           confirmPassword: passwordData.confirmPassword
         }

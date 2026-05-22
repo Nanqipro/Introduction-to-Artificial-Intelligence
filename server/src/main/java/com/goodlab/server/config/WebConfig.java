@@ -82,13 +82,14 @@ public class WebConfig implements WebMvcConfigurer {
                                 .excludePathPatterns(
                                                 "/api/users/login", "/api/users/register",
                                                 "/api/user/login", "/api/user/register",
-                                                "/api/chapters/**",
-                                                // quiz: 仅放行只读公开接口，/history、/stats、POST /results 需鉴权
+                                                // 章节只读公开接口精确枚举，避免通配符意外暴露写接口
+                                                "/api/chapters", "/api/chapters/all",
+                                                "/api/chapters/health", "/api/chapters/*",
+                                                // quiz: 仅放行只读公开接口，/results 含学生成绩需鉴权
                                                 "/api/quiz/questions/**",
                                                 "/api/quiz/leaderboard",
                                                 "/api/quiz/db-questions/**",
                                                 "/api/quiz/question-stats",
-                                                "/api/quiz/results/*",
                                                 "/api/quiz/health",
                                                 "/error", "/uploads/**", "/api/upload/**",
                                                 "/api/chapter1-case-study/**");

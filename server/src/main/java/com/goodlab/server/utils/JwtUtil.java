@@ -21,6 +21,10 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
+        if (secretValue == null || secretValue.contains("INSECURE_PLACEHOLDER")) {
+            throw new IllegalStateException(
+                "JWT密钥未配置：请设置环境变量 JWT_SECRET（建议使用 openssl rand -base64 64 生成）");
+        }
         KEY = secretValue;
     }
 
