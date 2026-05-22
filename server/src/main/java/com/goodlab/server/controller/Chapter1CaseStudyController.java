@@ -111,17 +111,4 @@ public class Chapter1CaseStudyController {
         }
     }
 
-    /**
-     * 手动更新全局统计数据（管理员接口）
-     * POST /api/chapter1-case-study/update-stats
-     */
-    @PostMapping("/update-stats")
-    public ApiResponse<String> updateGlobalStats() {
-        try {
-            chapter1CaseStudyService.updateGlobalStats();
-            return ApiResponse.success("全局统计数据更新成功");
-        } catch (Exception e) {
-            return ApiResponse.error("更新全局统计数据失败: " + e.getMessage());
-        }
-    }
 }

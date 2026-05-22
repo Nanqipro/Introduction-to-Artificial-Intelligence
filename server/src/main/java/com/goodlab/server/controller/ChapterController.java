@@ -4,7 +4,10 @@ import com.goodlab.server.model.ApiResponse;
 import com.goodlab.server.model.Chapter;
 import com.goodlab.server.service.ChapterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,59 +66,6 @@ public class ChapterController {
             }
         } catch (Exception e) {
             return ApiResponse.error("获取章节详情失败: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * 创建新章节
-     * POST /api/chapters
-     */
-    @PostMapping
-    public ApiResponse<Chapter> createChapter(@RequestBody Chapter chapter) {
-        try {
-            Chapter createdChapter = chapterService.createChapter(chapter);
-            return ApiResponse.success(createdChapter);
-        } catch (Exception e) {
-            return ApiResponse.error("创建章节失败: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * 更新章节
-     * PUT /api/chapters/{id}
-     */
-    @PutMapping("/{id}")
-    public ApiResponse<Chapter> updateChapter(@PathVariable String id, @RequestBody Chapter chapter) {
-        try {
-            if (!chapterService.chapterExists(id)) {
-                return ApiResponse.error(404, "章节不存在");
-            }
-            chapter.setId(id);
-            Chapter updatedChapter = chapterService.updateChapter(chapter);
-            return ApiResponse.success(updatedChapter);
-        } catch (Exception e) {
-            return ApiResponse.error("更新章节失败: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * 删除章节
-     * DELETE /api/chapters/{id}
-     */
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteChapter(@PathVariable String id) {
-        try {
-            if (!chapterService.chapterExists(id)) {
-                return ApiResponse.error(404, "章节不存在");
-            }
-            boolean deleted = chapterService.deleteChapter(id);
-            if (deleted) {
-                return ApiResponse.success();
-            } else {
-                return ApiResponse.error("删除章节失败");
-            }
-        } catch (Exception e) {
-            return ApiResponse.error("删除章节失败: " + e.getMessage());
         }
     }
     

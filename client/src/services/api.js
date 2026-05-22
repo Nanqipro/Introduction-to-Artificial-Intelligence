@@ -122,9 +122,9 @@ export const chapterApi = {
   getChapterOverview: () => api.get('/api/chapters'),
   getAllChapters: () => api.get('/api/chapters/all'),
   getChapterById: (id) => api.get(`/api/chapters/${id}`),
-  createChapter: (chapter) => api.post('/api/chapters', chapter),
-  updateChapter: (id, chapter) => api.put(`/api/chapters/${id}`, chapter),
-  deleteChapter: (id) => api.delete(`/api/chapters/${id}`),
+  createChapter: (chapter) => api.post('/api/admin/chapters', chapter),
+  updateChapter: (id, chapter) => api.put(`/api/admin/chapters/${id}`, chapter),
+  deleteChapter: (id) => api.delete(`/api/admin/chapters/${id}`),
   healthCheck: () => api.get('/api/chapters/health')
 }
 
@@ -263,7 +263,6 @@ export const levelApi = {
 export const feedbackApi = {
   submit: (data) => api.post('/api/feedback', data),
   myList: () => api.get('/api/feedback/my'),
-  allList: () => api.get('/api/feedback/all'),
   adminList: () => api.get('/api/admin/feedback'),
   adminUpdate: (id, data) => api.patch(`/api/admin/feedback/${id}`, data)
 }

@@ -61,21 +61,4 @@ public class FeedbackController {
         }
     }
 
-    /**
-     * 查询全部用户反馈（登录用户均可查看）
-     */
-    @GetMapping("/all")
-    public ApiResponse<List<Feedback>> getAllFeedback() {
-        Map<String, Object> claims = ThreadLocalUtil.get();
-        Integer userId = claims != null ? (Integer) claims.get("id") : null;
-        if (userId == null) {
-            return ApiResponse.error("用户未登录");
-        }
-        try {
-            List<Feedback> list = feedbackService.getAllFeedback();
-            return ApiResponse.success(list);
-        } catch (Exception e) {
-            return ApiResponse.error("获取全部反馈失败: " + e.getMessage());
-        }
-    }
 }

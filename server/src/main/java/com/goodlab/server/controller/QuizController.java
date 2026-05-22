@@ -1,11 +1,11 @@
 package com.goodlab.server.controller;
 
 import com.goodlab.server.model.ApiResponse;
-import com.goodlab.server.pojo.Question;
 import com.goodlab.server.dto.QuestionDTO;
 import com.goodlab.server.model.QuizResult;
 import com.goodlab.server.service.QuizService;
 import com.goodlab.server.service.QuestionService;
+import com.goodlab.server.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,12 @@ public class QuizController {
     @PostMapping("/results")
     public ApiResponse<QuizResult> saveQuizResult(@RequestBody Map<String, Object> resultData) {
         try {
-            QuizResult result = quizService.saveQuizResult(resultData);
+            Integer userId = null;
+            Map<String, Object> claims = ThreadLocalUtil.get();
+            if (claims != null) {
+                userId = (Integer) claims.get("id");
+            }
+            QuizResult result = quizService.saveQuizResult(resultData, userId);
             return ApiResponse.success(result);
         } catch (Exception e) {
             return ApiResponse.error("保存答题结果失败: " + e.getMessage());
@@ -45,7 +50,9 @@ public class QuizController {
     @GetMapping("/history")
     public ApiResponse<List<QuizResult>> getUserQuizHistory() {
         try {
-            List<QuizResult> history = quizService.getUserQuizHistory();
+            Map<String, Object> claims = ThreadLocalUtil.get();
+            Integer userId = (Integer) claims.get("id");
+            List<QuizResult> history = quizService.getUserQuizHistory(userId);
             return ApiResponse.success(history);
         } catch (Exception e) {
             return ApiResponse.error("获取答题历史失败: " + e.getMessage());
@@ -55,7 +62,9 @@ public class QuizController {
     @GetMapping("/stats")
     public ApiResponse<Map<String, Object>> getUserStats() {
         try {
-            Map<String, Object> stats = quizService.getUserStats();
+            Map<String, Object> claims = ThreadLocalUtil.get();
+            Integer userId = (Integer) claims.get("id");
+            Map<String, Object> stats = quizService.getUserStats(userId);
             return ApiResponse.success(stats);
         } catch (Exception e) {
             return ApiResponse.error("获取用户统计失败: " + e.getMessage());

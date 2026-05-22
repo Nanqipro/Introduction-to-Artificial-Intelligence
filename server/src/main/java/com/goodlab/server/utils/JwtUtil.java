@@ -3,14 +3,26 @@ package com.goodlab.server.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class JwtUtil {
 
-    private static final String KEY = "GOODLAB";
+    @Value("${jwt.secret}")
+    private String secretValue;
+
+    private static String KEY;
+
+    @PostConstruct
+    public void init() {
+        KEY = secretValue;
+    }
 
     // 接收业务数据,生成token并返回
     public static String genToken(Map<String, Object> claims) {

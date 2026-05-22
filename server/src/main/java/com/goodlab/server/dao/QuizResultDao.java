@@ -25,6 +25,42 @@ public class QuizResultDao {
         return new ArrayList<>(results.values());
     }
 
+    public List<QuizResult> getResultsByUserId(Integer userId) {
+        return results.values().stream()
+                .filter(r -> userId != null && userId.equals(r.getUserId()))
+                .sorted(Comparator.comparing(QuizResult::getCompletedAt).reversed())
+                .toList();
+    }
+
+    public Map<String, Object> getUserStatsByUserId(Integer userId) {
+        List<QuizResult> userResults = results.values().stream()
+                .filter(r -> userId != null && userId.equals(r.getUserId()))
+                .toList();
+
+        if (userResults.isEmpty()) {
+            return Map.of(
+                    "totalQuizzes", 0,
+                    "averageScore", 0.0,
+                    "totalScore", 0,
+                    "bestScore", 0,
+                    "completedChapters", new HashSet<>());
+        }
+
+        double averageScore = userResults.stream().mapToInt(QuizResult::getScore).average().orElse(0.0);
+        int totalScore = userResults.stream().mapToInt(QuizResult::getScore).sum();
+        int bestScore = userResults.stream().mapToInt(QuizResult::getScore).max().orElse(0);
+        Set<String> completedChapters = userResults.stream()
+                .map(QuizResult::getChapterId)
+                .collect(HashSet::new, HashSet::add, HashSet::addAll);
+
+        return Map.of(
+                "totalQuizzes", userResults.size(),
+                "averageScore", Math.round(averageScore * 100.0) / 100.0,
+                "totalScore", totalScore,
+                "bestScore", bestScore,
+                "completedChapters", completedChapters);
+    }
+
     public List<QuizResult> getResultsByChapter(String chapterId) {
         return results.values().stream()
                 .filter(result -> chapterId.equals(result.getChapterId()))

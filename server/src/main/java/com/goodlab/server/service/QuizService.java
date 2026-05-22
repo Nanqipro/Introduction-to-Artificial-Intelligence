@@ -23,8 +23,9 @@ public class QuizService {
         return questionDao.getQuestionsByChapter(chapterId);
     }
 
-    public QuizResult saveQuizResult(Map<String, Object> resultData) {
+    public QuizResult saveQuizResult(Map<String, Object> resultData, Integer userId) {
         QuizResult result = new QuizResult();
+        result.setUserId(userId);
         result.setChapterId((String) resultData.get("chapterId"));
         result.setScore((Integer) resultData.get("score"));
 
@@ -48,12 +49,12 @@ public class QuizService {
         return quizResultDao.save(result);
     }
 
-    public List<QuizResult> getUserQuizHistory() {
-        return quizResultDao.getAllResults();
+    public List<QuizResult> getUserQuizHistory(Integer userId) {
+        return quizResultDao.getResultsByUserId(userId);
     }
 
-    public Map<String, Object> getUserStats() {
-        return quizResultDao.getUserStats();
+    public Map<String, Object> getUserStats(Integer userId) {
+        return quizResultDao.getUserStatsByUserId(userId);
     }
 
     public List<QuizResult> getLeaderboard() {

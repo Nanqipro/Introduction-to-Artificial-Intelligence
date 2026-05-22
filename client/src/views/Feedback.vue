@@ -28,22 +28,7 @@
     <div v-if="error" style="margin-top:12px; color:#c33;">{{ error }}</div>
 
     <hr style="margin:24px 0;" />
-    <h3>全部反馈</h3>
-    <div v-if="loadingAll">正在加载全部反馈...</div>
-    <div v-else>
-      <div v-if="allList.length === 0" style="color:#666;">暂无反馈</div>
-      <ul>
-        <li v-for="item in allList" :key="item.id" style="margin-bottom:12px; padding:8px; border:1px solid #eee; border-radius:6px;">
-          <div style="font-size:14px; color:#888;">{{ formatDate(item.createdAt) }} · 状态：{{ item.status }} · 用户：{{ item.nickname || '未知' }}</div>
-          <div style="margin-top:6px; white-space:pre-wrap;">{{ item.content }}</div>
-          <div v-if="item.adminReply" style="margin-top:6px; background:#f7f7f7; padding:8px; border-radius:4px;">
-            管理员回复：{{ item.adminReply }}
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <h3 style="margin-top:20px;">我的反馈记录</h3>
+    <h3>我的反馈记录</h3>
     <div v-if="loadingList">正在加载我的反馈...</div>
     <div v-else>
       <div v-if="list.length === 0" style="color:#666;">你还没有提交过反馈</div>
@@ -71,9 +56,7 @@ export default {
       message: '',
       error: '',
       list: [],
-      allList: [],
-      loadingList: false,
-      loadingAll: false
+      loadingList: false
     }
   },
   methods: {
@@ -112,17 +95,6 @@ export default {
         this.loadingList = false
       }
     },
-    async fetchAll() {
-      this.loadingAll = true
-      try {
-        const res = await feedbackApi.allList()
-        this.allList = res?.data || []
-      } catch (e) {
-        // 不阻断页面，仅提示
-      } finally {
-        this.loadingAll = false
-      }
-    },
     formatDate(dt) {
       if (!dt) return ''
       try {
@@ -133,7 +105,7 @@ export default {
     }
   },
   async mounted() {
-    await Promise.all([this.fetchList(), this.fetchAll()])
+    await this.fetchList()
   }
 }
 </script>

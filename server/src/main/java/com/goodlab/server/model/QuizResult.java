@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class QuizResult {
     private Long id;
+    private Integer userId;
     private String chapterId;
     private Integer score;
     private Double accuracy;
@@ -40,6 +41,14 @@ public class QuizResult {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getChapterId() {
