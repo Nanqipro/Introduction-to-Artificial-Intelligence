@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(textutil -convert txt -stdout \"/Users/nanpipro/Documents/gitlocal/Introduction-to-Artificial-Intelligence/2026051501-人工智能学院- 越权访问.doc\")"
+    ]
+  }
+}
