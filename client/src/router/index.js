@@ -22,7 +22,7 @@ const routes = [
     component: Home,
     meta: {
       title: '首页',
-      description: '人工智能概论与应用数字化教材平台首页'
+      description: '人工智能概论数字化教材平台首页'
     }
   },
   {

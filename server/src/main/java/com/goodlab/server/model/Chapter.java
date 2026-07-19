@@ -2,7 +2,7 @@ package com.goodlab.server.model;
 
 /**
  * 章节数据模型
- * 用于表示《人工智能概论与应用》教材的章节信息
+ * 用于表示《人工智能概论》教材的章节信息
  */
 public class Chapter {
     

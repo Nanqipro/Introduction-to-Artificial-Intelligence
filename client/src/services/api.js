@@ -22,8 +22,8 @@ const PUBLIC_PATHS = [
   '/api/chapters',
   '/api/user/register',
   '/api/user/login',
-  '/password-reset',
-  '/email-verification'
+  '/api/password-reset',
+  '/api/email-verification'
 ]
 
 // 检查是否为公开API

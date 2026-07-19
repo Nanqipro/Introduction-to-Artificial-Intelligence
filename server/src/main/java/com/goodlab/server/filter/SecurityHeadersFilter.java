@@ -44,7 +44,7 @@ public class SecurityHeadersFilter implements Filter {
             "style-src 'self' 'unsafe-inline'; " +
             "img-src 'self' data: https:; " +
             "font-src 'self' data:; " +
-            "connect-src 'self' http://localhost:* http://127.0.0.1:* http://222.204.4.108:*; " +
+            "connect-src 'self'; " +
             "frame-ancestors 'self';");
         
         // Referrer策略
@@ -80,4 +80,3 @@ public class SecurityHeadersFilter implements Filter {
         // 过滤器销毁时的清理工作
     }
 }
-

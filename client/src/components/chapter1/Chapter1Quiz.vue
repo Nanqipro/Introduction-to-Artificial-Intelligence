@@ -173,11 +173,11 @@ export default {
     },
     getImageSrc(questionId, option) {
       const imageMap = {
-        1: { A: '/images/chapter1/A_真实照片.png', B: '/images/chapter1/A_ai生成.png' },
-        3: { A: '/images/chapter1/B_真实图片.png', B: '/images/chapter1/B_ai生成.png' },
-        6: { A: '/images/chapter1/C_真实图片.png', B: '/images/chapter1/C_ai生成.png' },
-        7: { A: '/images/chapter1/D_真实图片.png', B: '/images/chapter1/D_ai生成.png' },
-        9: { A: '/images/chapter1/E_真实图片.png', B: '/images/chapter1/E_ai生成.png' }
+        1: { A: '/images/chapter1/A_真实照片.png', B: '/images/chapter1/A_ai生成.jpg' },
+        3: { A: '/images/chapter1/B_真实图片.png', B: '/images/chapter1/B_ai生成.jpg' },
+        6: { A: '/images/chapter1/C_真实图片.jpg', B: '/images/chapter1/C_ai生成.jpg' },
+        7: { A: '/images/chapter1/D_真实图片.jpg', B: '/images/chapter1/D_ai生成.jpg' },
+        9: { A: '/images/chapter1/E_真实图片.jpg', B: '/images/chapter1/E_ai生成.png' }
       }
       return imageMap[questionId]?.[option] || ''
     }

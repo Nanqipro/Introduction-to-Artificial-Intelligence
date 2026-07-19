@@ -94,7 +94,7 @@ export default {
           title: '题目 1：雪纺裙的图片',
           // A 真实 / B AI
           aSrc: '/images/chapter1/A_真实照片.png',
-          bSrc: '/images/chapter1/A_ai生成.png',
+          bSrc: '/images/chapter1/A_ai生成.jpg',
           answer: { A: 'human', B: 'ai' },
           state: { answered: false, correct: false, message: '' }
         },
@@ -102,30 +102,30 @@ export default {
           id: 'q3',
           title: '题目 3：城市街景（阿姆斯特丹）',
           aSrc: '/images/chapter1/B_真实图片.png',
-          bSrc: '/images/chapter1/B_ai生成.png',
+          bSrc: '/images/chapter1/B_ai生成.jpg',
           answer: { A: 'human', B: 'ai' },
           state: { answered: false, correct: false, message: '' }
         },
         {
           id: 'q6',
           title: '题目 6：麻辣烫店铺',
-          aSrc: '/images/chapter1/C_真实图片.png',
-          bSrc: '/images/chapter1/C_ai生成.png',
+          aSrc: '/images/chapter1/C_真实图片.jpg',
+          bSrc: '/images/chapter1/C_ai生成.jpg',
           answer: { A: 'human', B: 'ai' },
           state: { answered: false, correct: false, message: '' }
         },
         {
           id: 'q7',
           title: '题目 7：沸腾的火锅',
-          aSrc: '/images/chapter1/D_真实图片.png',
-          bSrc: '/images/chapter1/D_ai生成.png',
+          aSrc: '/images/chapter1/D_真实图片.jpg',
+          bSrc: '/images/chapter1/D_ai生成.jpg',
           answer: { A: 'human', B: 'ai' },
           state: { answered: false, correct: false, message: '' }
         },
         {
           id: 'q9',
           title: '题目 9：古典画作 vs AI 画作',
-          aSrc: '/images/chapter1/E_真实图片.png',
+          aSrc: '/images/chapter1/E_真实图片.jpg',
           bSrc: '/images/chapter1/E_ai生成.png',
           answer: { A: 'human', B: 'ai' },
           state: { answered: false, correct: false, message: '' }

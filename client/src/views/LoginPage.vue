@@ -6,7 +6,7 @@
           <img :src="logoUrl" alt="logo">
         </el-avatar>
         <h2 class="login-title">登录入口</h2>
-        <p class="login-subtitle">人工智能概论与应用数字化教材平台</p>
+        <p class="login-subtitle">《人工智能概论》数字化教材平台</p>
       </div>
 
       <el-form
@@ -86,13 +86,12 @@ const formRules = computed(() => ({
           callback()
           return
         }
-        // 允许管理员账号、教师账号(TCH_开头)或10-12位数字学号
-        const isAdmin = value === 'goodlabAdmin'
-        const isTeacher = /^TCH_/.test(value)
+        // 学生使用10-12位数字学号；教职工账号由授权学校自行配置。
         const isStudentId = /^\d{10,12}$/.test(value)
+        const isStaffAccount = /^[A-Za-z][A-Za-z0-9_-]{3,31}$/.test(value)
         
-        if (!isAdmin && !isTeacher && !isStudentId) {
-          callback(new Error('请输入10-12位数字学号、教师账号(TCH_开头)或管理员账号'))
+        if (!isStudentId && !isStaffAccount) {
+          callback(new Error('请输入10-12位数字学号或学校分配的教职工账号'))
         } else {
           callback()
         }
@@ -109,23 +108,6 @@ const formRules = computed(() => ({
           return
         }
         
-        // 获取当前用户名
-        const username = formData.username
-        
-        // 如果是管理员账号或教师账号，只需要最少4位密码
-        const isAdmin = username === 'goodlabAdmin'
-        const isTeacher = /^TCH_/.test(username)
-        
-        if (isAdmin || isTeacher) {
-          if (value.length < 4) {
-            callback(new Error('密码长度不能少于4位'))
-          } else {
-            callback()
-          }
-          return
-        }
-        
-        // 对于学生用户，执行强密码验证
         if (value.length < 8) {
           callback(new Error('密码长度不能少于8位'))
           return
@@ -191,7 +173,7 @@ const handleSubmit = async () => {
   } catch (error) {
     // 表单验证失败
     const title = '输入格式错误'
-    const message = `请检查输入格式：\n• 学号：10-12位数字\n• 教师账号：TCH_开头\n• 学生密码：至少8位，包含数字、字母、特殊字符中的至少两种\n• 教师/管理员密码：至少4位`
+    const message = `请检查输入格式：\n• 学号：10-12位数字\n• 教职工账号：学校分配的字母数字账号\n• 密码：至少8位，包含数字、字母、特殊字符中的至少两种`
     try {
       await ElMessageBox.alert(message, title, { type: 'warning', confirmButtonText: '知道了' })
     } catch (_) {}

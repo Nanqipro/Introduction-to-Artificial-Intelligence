@@ -1,5 +1,10 @@
-# Vue 3 + Vite
+# 数字教材前端
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+这里是《人工智能概论》数字化教材的 Vue 3 前端。项目总览、访问边界和完整开发方式见仓库根目录 [README](../README.md)。
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+```bash
+npm ci
+npm run dev
+```
+
+要求 Node.js 18 或更高版本。正式章节数据、授权账号和学习记录由后端服务提供；前端仓库不包含真实师生数据。

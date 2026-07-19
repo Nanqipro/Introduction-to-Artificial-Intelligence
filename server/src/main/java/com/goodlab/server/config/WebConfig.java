@@ -30,31 +30,17 @@ public class WebConfig implements WebMvcConfigurer {
         @Value("${file.upload.path:uploads/}")
         private String uploadPath;
 
+        @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173}")
+        private String[] allowedOrigins;
+
         // 配置跨域访问
         // 安全原则：只允许明确信任的域名，避免使用通配符
         @Override
         public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 允许所有路径的跨域访问
-                                // 仅允许已知的可信源
-                                // 开发环境：localhost
-                                // 生产环境：实际部署的域名和IP
-                                .allowedOrigins(
-                                                // 本地开发环境
-                                                "http://localhost:5173", 
-                                                "http://localhost:5174",
-                                                "http://localhost:5175",
-                                                "http://127.0.0.1:5173", 
-                                                "http://127.0.0.1:5174",
-                                                "http://127.0.0.1:5175",
-                                                // 生产环境 - 请根据实际部署情况调整
-                                                "http://szjc.ncu.edu.cn",
-                                                "https://szjc.ncu.edu.cn",
-                                                "http://222.204.4.108",
-                                                "https://222.204.4.108"
-                                                // 注意：部署时请移除不需要的域名
-                                )
+                                .allowedOrigins(allowedOrigins)
                                 // 仅允许必要的HTTP方法，禁用TRACE等危险方法
-                                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                                 // 限制允许的请求头，避免使用通配符"*"
                                 .allowedHeaders(
                                                 "Content-Type", 
@@ -91,7 +77,7 @@ public class WebConfig implements WebMvcConfigurer {
                                                 "/api/quiz/db-questions/**",
                                                 "/api/quiz/question-stats",
                                                 "/api/quiz/health",
-                                                "/error", "/uploads/**", "/api/upload/**",
+                                                "/error", "/uploads/**",
                                                 "/api/chapter1-case-study/**");
                 
                 // 管理员权限拦截器 - 只拦截管理员相关接口

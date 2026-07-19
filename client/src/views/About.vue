@@ -137,7 +137,7 @@
             <div class="team-section">
               <h3 class="team-title">📚 教材编写团队</h3>
               <p class="team-description">
-                <a href="https://good.ncu.edu.cn/" target="_blank" rel="noopener noreferrer" class="goodlab-link">GoodLab团队</a>负责《人工智能概论与应用》教材的编写工作
+                <a href="https://good.ncu.edu.cn/" target="_blank" rel="noopener noreferrer" class="goodlab-link">GoodLab团队</a>负责《人工智能概论》教材的编写工作
               </p>
             </div>
             

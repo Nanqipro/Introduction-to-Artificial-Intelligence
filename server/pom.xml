@@ -14,21 +14,8 @@
 	<groupId>com.goodlab</groupId>
 	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>server</name>
-	<description>server</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>ai-textbook-server</name>
+	<description>《人工智能概论》数字化教材后端服务</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -84,18 +71,6 @@
 			<artifactId>java-jwt</artifactId>
 			<version>4.4.0</version>
 		</dependency>
-		<!-- 单元测试坐标 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		
 		<!-- Apache POI for Excel processing -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

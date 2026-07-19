@@ -3,7 +3,7 @@ package com.goodlab.server.service.impl;
 import com.goodlab.server.mapper.UserMapper;
 import com.goodlab.server.pojo.User;
 import com.goodlab.server.service.UserService;
-import com.goodlab.server.utils.Md5Util;
+import com.goodlab.server.utils.PasswordUtil;
 import com.goodlab.server.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
     // 内存存储验证码（生产环境建议使用Redis）
     private final Map<String, String> emailVerificationCodes = new ConcurrentHashMap<>();
     private final Map<String, LocalDateTime> codeExpiryTimes = new ConcurrentHashMap<>();
+    private final SecureRandom secureRandom = new SecureRandom();
 
     @Override
     public User findByUserName(String username) {
@@ -37,10 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(String username, String password) {
-        // 加密 将明文改成密文
-        String md5String = Md5Util.getMD5String(password);
-        // 添加用户
-        userMapper.add(username, md5String);
+        userMapper.add(username, PasswordUtil.encode(password));
     }
 
     // 更新用户信息
@@ -75,8 +73,7 @@ public class UserServiceImpl implements UserService {
     public void updatePwd(String newPwd) {
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
-        String md5String = Md5Util.getMD5String(newPwd);
-        userMapper.updatePwd(md5String, id);
+        userMapper.updatePwd(PasswordUtil.encode(newPwd), id);
     }
     
     @Override
@@ -111,7 +108,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         
-        String hashedPassword = Md5Util.getMD5String(newPassword);
+        String hashedPassword = PasswordUtil.encode(newPassword);
         userMapper.resetPasswordByToken(token, hashedPassword);
         return true;
     }
@@ -119,8 +116,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String generateEmailVerificationCode(String email) {
         // 生成6位数字验证码
-        Random random = new Random();
-        String code = String.format("%06d", random.nextInt(1000000));
+        String code = String.format("%06d", secureRandom.nextInt(1_000_000));
         
         // 存储验证码和过期时间
         emailVerificationCodes.put(email, code);

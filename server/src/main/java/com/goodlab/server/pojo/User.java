@@ -1,5 +1,6 @@
 package com.goodlab.server.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
 public class User {
     private Long id;
     private String username; // 用户名（学号）
-    private String password; // 密码
+    @JsonIgnore
+    private String password; // 密码摘要不得出现在API响应中
     private String name; // 姓名
     private String nickname; // 昵称
     private String email; // 邮箱

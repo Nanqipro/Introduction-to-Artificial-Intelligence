@@ -1,97 +1,58 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Dependencies and build output
+/client/node_modules/
+/client/dist/
+/server/target/
 
-# Build outputs
-dist/
-build/
-*.local
-client/dist/
-client/dist.7z
-
-# Environment variables
+# Local environment and credentials
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+!/server/.env.example
+*.pem
+*.p12
+*.pfx
 
-# IDE and editor files
-.vscode/
-.idea/
+# Runtime data
+/server/uploads/
+/logs/
+/*.pid
+*.log
+
+# Private publication exclusions (kept locally, never committed)
+/.private/
+/AI-GOODLAB/
+
+# Institution-specific account imports and generated SQL
+/insert_students.sql
+/update_student_passwords.sql
+/分课程按上课班级打印成绩登记册.xls
+
+# Editor, agent, and operating-system state
+/.claude/settings.local.json
+/.codex/
+/.cursor/
+/.idea/
+/.vscode/
+*.iml
 *.swp
 *.swo
 *~
-
-# OS generated files
 .DS_Store
-.DS_Store?
+**/.DS_Store
 ._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Logs
-logs
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
+# Language and test caches
+__pycache__/
+*.py[cod]
 coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
+.nyc_output/
 .eslintcache
 
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# Next.js build output
-.next
-
-# Nuxt.js build / generate output
-.nuxt
-
-# Storybook build outputs
-.out
-.storybook-out
-
-# Temporary folders
+# Temporary files
 tmp/
-temp/ 
-
-client/node_modules/
+temp/
+*.bak
+*.tmp
+*.tgz

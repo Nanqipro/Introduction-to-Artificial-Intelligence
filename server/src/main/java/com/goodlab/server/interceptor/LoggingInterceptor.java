@@ -34,10 +34,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
         // 获取请求信息
         String method = request.getMethod();
         String url = request.getRequestURI();
-        String queryString = request.getQueryString();
-        if (queryString != null) {
-            url += "?" + queryString;
-        }
         
         // 获取客户端IP
         String ip = getClientIpAddress(request);
@@ -77,11 +73,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
         String xRealIp = request.getHeader("X-Real-IP");
         if (xRealIp != null && !xRealIp.isEmpty() && !"unknown".equalsIgnoreCase(xRealIp)) {
             return xRealIp;
-        }
-        
-        String xForwardedProto = request.getHeader("X-Forwarded-Proto");
-        if (xForwardedProto != null && !xForwardedProto.isEmpty() && !"unknown".equalsIgnoreCase(xForwardedProto)) {
-            return xForwardedProto;
         }
         
         return request.getRemoteAddr();

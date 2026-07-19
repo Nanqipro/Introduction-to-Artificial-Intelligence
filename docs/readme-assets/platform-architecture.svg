@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-labelledby="title desc">
+  <title id="title">数字化教材平台架构</title>
+  <desc id="desc">学习者通过Vue前端访问章节、实验和测验，Spring Boot提供认证与学习服务，MySQL保存授权账号及学习数据</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c1f2f"/>
+      <stop offset="1" stop-color="#173c3b"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#8ed0b0"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="620" rx="28" fill="url(#bg)"/>
+  <text x="720" y="72" text-anchor="middle" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="38" font-weight="800" fill="#f2fff7">从内容呈现到学习闭环</text>
+  <text x="720" y="108" text-anchor="middle" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="18" fill="#b9dfca">前后端分离 · 账号访问受限 · 仓库不包含真实师生数据</text>
+  <g stroke="#8ed0b0" stroke-width="5" fill="none" marker-end="url(#arrow)">
+    <path d="M292 312H404"/>
+    <path d="M716 312H828"/>
+    <path d="M1140 312H1244"/>
+  </g>
+  <g font-family="system-ui, 'Noto Sans SC', sans-serif" filter="url(#shadow)">
+    <g transform="translate(68 202)">
+      <rect width="224" height="220" rx="24" fill="#f5f8ff"/>
+      <circle cx="112" cy="66" r="34" fill="#4f70b5"/>
+      <path d="M82 144c0-25 18-43 30-43s30 18 30 43" fill="#4f70b5"/>
+      <text x="112" y="180" text-anchor="middle" font-size="24" font-weight="800" fill="#203047">学习者</text>
+      <text x="112" y="207" text-anchor="middle" font-size="15" fill="#5c6980">学生 · 教师</text>
+    </g>
+    <g transform="translate(404 174)">
+      <rect width="312" height="276" rx="24" fill="#e7fff1"/>
+      <text x="28" y="48" font-size="17" font-weight="700" fill="#398061">体验层</text>
+      <text x="28" y="90" font-size="30" font-weight="800" fill="#173f32">Vue 3 + Vite</text>
+      <g font-size="17" fill="#315c4d">
+        <text x="28" y="137">• 章节与多媒体内容</text>
+        <text x="28" y="173">• 交互实验与可视化</text>
+        <text x="28" y="209">• 测验、进度与反馈</text>
+        <text x="28" y="245">• 响应式主题界面</text>
+      </g>
+    </g>
+    <g transform="translate(828 174)">
+      <rect width="312" height="276" rx="24" fill="#fff5dc"/>
+      <text x="28" y="48" font-size="17" font-weight="700" fill="#a0671f">服务层</text>
+      <text x="28" y="90" font-size="30" font-weight="800" fill="#53391d">Spring Boot</text>
+      <g font-size="17" fill="#6b5334">
+        <text x="28" y="137">• JWT 身份认证</text>
+        <text x="28" y="173">• 章节、题库与测验 API</text>
+        <text x="28" y="209">• 学习记录与成就</text>
+        <text x="28" y="245">• 反馈和管理员能力</text>
+      </g>
+    </g>
+    <g transform="translate(1244 202)">
+      <rect width="128" height="220" rx="24" fill="#e6f3ff"/>
+      <ellipse cx="64" cy="62" rx="38" ry="18" fill="#4e89b8"/>
+      <path d="M26 62v82c0 10 17 18 38 18s38-8 38-18V62" fill="#8bc1e9"/>
+      <ellipse cx="64" cy="102" rx="38" ry="18" fill="none" stroke="#4e89b8" stroke-width="4"/>
+      <ellipse cx="64" cy="144" rx="38" ry="18" fill="none" stroke="#4e89b8" stroke-width="4"/>
+      <text x="64" y="195" text-anchor="middle" font-size="21" font-weight="800" fill="#2a506e">MySQL 8</text>
+    </g>
+  </g>
+  <g transform="translate(246 500)" font-family="system-ui, 'Noto Sans SC', sans-serif">
+    <rect width="948" height="70" rx="20" fill="#ffffff" fill-opacity=".09" stroke="#bce8cf" stroke-opacity=".35"/>
+    <text x="474" y="29" text-anchor="middle" font-size="16" font-weight="700" fill="#c8edda">公开代码边界</text>
+    <text x="474" y="52" text-anchor="middle" font-size="16" fill="#effaf4">真实学号名单、密码、头像、成绩、生产环境配置与教材完整源稿均不属于公开仓库内容</text>
+  </g>
+</svg>

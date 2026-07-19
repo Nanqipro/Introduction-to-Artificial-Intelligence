@@ -6,21 +6,6 @@ import 'element-plus/dist/index.css'
 import './styles/theme.css'
 import { useAuth } from '@/composables/useAuth'
 
-// 全局关闭控制台输出（防止在F12控制台暴露信息）
-(() => {
-  const noop = () => {}
-  const methods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'group', 'groupCollapsed', 'groupEnd']
-  for (const m of methods) {
-    try {
-      console[m] = noop
-    } catch (_) {
-      /* ignore */
-    }
-  }
-  // 关闭Vue生产环境devtools标志（进一步减少调试信息）
-  try { window.__VUE_PROD_DEVTOOLS__ = false } catch (_) {}
-})()
-
 // 创建应用实例
 const app = createApp(App)
 app.use(router)

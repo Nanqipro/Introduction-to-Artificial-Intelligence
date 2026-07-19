@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="560" viewBox="0 0 1440 560" role="img" aria-labelledby="title desc">
+  <title id="title">《人工智能概论》数字化教材平台</title>
+  <desc id="desc">深绿色教材主题横幅，介绍2025年出版的应用驱动人工智能数字化教材</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071d18"/>
+      <stop offset="0.55" stop-color="#123d31"/>
+      <stop offset="1" stop-color="#205a45"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#a9e7c5" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#a9e7c5" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#d6f5e3" stroke-opacity=".08"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#00110d" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="560" rx="28" fill="url(#bg)"/>
+  <rect width="1440" height="560" rx="28" fill="url(#grid)"/>
+  <circle cx="1240" cy="74" r="270" fill="url(#glow)"/>
+  <circle cx="1120" cy="480" r="190" fill="none" stroke="#c8f3d9" stroke-opacity=".18" stroke-width="2"/>
+  <circle cx="1120" cy="480" r="130" fill="none" stroke="#c8f3d9" stroke-opacity=".18" stroke-width="2"/>
+  <g filter="url(#shadow)">
+    <rect x="86" y="70" width="238" height="42" rx="21" fill="#d8f6e4"/>
+    <text x="205" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#174b39">2025 · 数字化教材</text>
+  </g>
+  <text x="86" y="218" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="78" font-weight="800" letter-spacing="3" fill="#f5fff8">人工智能概论</text>
+  <text x="90" y="282" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="31" font-weight="600" fill="#bdeacf">应用驱动的人工智能 · 从纸质教材走向交互学习</text>
+  <text x="90" y="343" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="22" fill="#e0f6e9">章节导学 · 可视化实验 · 知识测验 · 学习进度</text>
+  <g transform="translate(90 406)" font-family="system-ui, sans-serif" font-size="17" font-weight="700">
+    <rect width="162" height="48" rx="14" fill="#f2c95c"/>
+    <text x="81" y="31" text-anchor="middle" fill="#27331d">Vue 3 + Vite</text>
+    <rect x="178" width="176" height="48" rx="14" fill="#d8f6e4"/>
+    <text x="266" y="31" text-anchor="middle" fill="#174b39">Spring Boot</text>
+    <rect x="370" width="146" height="48" rx="14" fill="#9fd8ff"/>
+    <text x="443" y="31" text-anchor="middle" fill="#16354b">MySQL 8</text>
+  </g>
+  <g transform="translate(1032 152)" filter="url(#shadow)">
+    <path d="M0 30 124 0l124 30-124 30Z" fill="#f2c95c"/>
+    <path d="M22 46v108c0 27 46 52 102 52s102-25 102-52V46L124 72Z" fill="#d8f6e4"/>
+    <path d="M248 30v104" stroke="#f2c95c" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="248" cy="146" r="14" fill="#f2c95c"/>
+    <rect x="78" y="104" width="92" height="66" rx="14" fill="#205a45"/>
+    <text x="124" y="149" text-anchor="middle" font-family="system-ui, sans-serif" font-size="34" font-weight="800" fill="#f5fff8">AI</text>
+  </g>
+  <text x="1352" y="514" text-anchor="end" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="16" fill="#c5ead4">GOODLAB · 南昌大学</text>
+</svg>

@@ -21,7 +21,7 @@
           <div class="layer-content">
             <div class="layer-image">
                <img
-                 src="/案例2/卷积层.gif"
+                 src="/images/chapter2/layers/convolution.gif"
                  alt="卷积层动画演示"
                  class="layer-demo"
                  @click="enlargeImage($event, 'convolution')"
@@ -78,7 +78,7 @@
           <div class="layer-content">
             <div class="layer-image">
                <img
-                 src="/案例2/池化层.gif"
+                 src="/images/chapter2/layers/pooling.gif"
                  alt="池化层动画演示"
                  class="layer-demo"
                  @click="enlargeImage($event, 'pooling')"
@@ -163,7 +163,7 @@
           <div class="layer-content">
             <div class="layer-image">
                <img
-                 src="/案例2/全连接层.png"
+                 src="/images/chapter2/layers/fully-connected.png"
                  alt="全连接层结构图"
                  class="layer-demo"
                  @click="enlargeImage($event, 'fc')"

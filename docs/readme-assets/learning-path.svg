@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="700" viewBox="0 0 1440 700" role="img" aria-labelledby="title desc">
+  <title id="title">《人工智能概论》学习路径</title>
+  <desc id="desc">从生活中的人工智能开始，依次学习基础、核心技术、应用、提示工程、Python项目和伦理思考</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5fbf7"/>
+      <stop offset="1" stop-color="#e7f4ec"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#43846b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#214c3c" flood-opacity=".15"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="700" rx="28" fill="url(#bg)"/>
+  <text x="720" y="78" text-anchor="middle" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="38" font-weight="800" fill="#173f32">一条从“认识 AI”到“负责任使用 AI”的学习路径</text>
+  <text x="720" y="116" text-anchor="middle" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="18" fill="#507466">8 个阶段 · 概念、案例、实验与思考彼此衔接</text>
+  <g stroke="#43846b" stroke-width="4" fill="none" marker-end="url(#arrow)">
+    <path d="M330 246H410"/>
+    <path d="M670 246H750"/>
+    <path d="M1010 246H1090"/>
+    <path d="M1220 332C1220 410 1135 430 1010 430"/>
+    <path d="M1090 520H1010"/>
+    <path d="M750 520H670"/>
+    <path d="M410 520H330"/>
+  </g>
+  <g font-family="system-ui, 'Noto Sans SC', sans-serif" filter="url(#shadow)">
+    <g transform="translate(70 170)">
+      <rect width="260" height="152" rx="22" fill="#1f5a46"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#bce8ce">序章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">生活中的人工智能</text>
+      <text x="24" y="112" font-size="16" fill="#ddf5e6">从日常场景建立直觉</text>
+    </g>
+    <g transform="translate(410 170)">
+      <rect width="260" height="152" rx="22" fill="#28745a"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#d0f1dd">第 1 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">初识人工智能</text>
+      <text x="24" y="112" font-size="16" fill="#e2f7ea">定义、历史、图灵测试</text>
+    </g>
+    <g transform="translate(750 170)">
+      <rect width="260" height="152" rx="22" fill="#358b6d"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#e0f7e9">第 2 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">人工智能基础</text>
+      <text x="24" y="112" font-size="16" fill="#e7f8ee">机器学习与深度学习</text>
+    </g>
+    <g transform="translate(1090 170)">
+      <rect width="260" height="152" rx="22" fill="#3f9a79"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#e5faed">第 3 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">AI 核心技术</text>
+      <text x="24" y="112" font-size="16" fill="#ecfbf2">视觉、语言、生成式 AI</text>
+    </g>
+    <g transform="translate(1090 444)">
+      <rect width="260" height="152" rx="22" fill="#d6973d"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#fff3d2">第 4 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">人工智能的应用</text>
+      <text x="24" y="112" font-size="16" fill="#fff7e3">生活、交通、医疗等案例</text>
+    </g>
+    <g transform="translate(750 444)">
+      <rect width="260" height="152" rx="22" fill="#cf7b3d"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#fff0df">第 5 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">提示工程</text>
+      <text x="24" y="112" font-size="16" fill="#fff2e6">方法、技巧与应用</text>
+    </g>
+    <g transform="translate(410 444)">
+      <rect width="260" height="152" rx="22" fill="#b7633e"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#ffe7dc">第 6 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">第一个 AI 项目</text>
+      <text x="24" y="112" font-size="16" fill="#ffebe2">Python 与项目实践</text>
+    </g>
+    <g transform="translate(70 444)">
+      <rect width="260" height="152" rx="22" fill="#93483a"/>
+      <text x="24" y="40" font-size="18" font-weight="700" fill="#ffe3de">第 7 章</text>
+      <text x="24" y="78" font-size="25" font-weight="800" fill="#fff">人工智能的思考</text>
+      <text x="24" y="112" font-size="16" fill="#ffe8e3">偏见、伦理与社会影响</text>
+    </g>
+  </g>
+  <text x="720" y="656" text-anchor="middle" font-family="system-ui, 'Noto Sans SC', sans-serif" font-size="17" fill="#547a6a">附录提供专业名词解释，方便跨专业读者随学随查</text>
+</svg>

@@ -7,7 +7,7 @@
       </main>
       <footer class="app-footer">
         <div class="footer-content">
-          <p>&copy; 2025 GoodLab. 《人工智能概论与应用》数字化教材平台</p>
+          <p>&copy; 2025 GoodLab. 《人工智能概论》数字化教材平台</p>
           <p class="footer-tech">由GOODLAB开发团队构建</p>
         </div>
       </footer>

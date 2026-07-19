@@ -1,7 +1,8 @@
 {
-  "name": "client",
+  "name": "ai-textbook-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "《人工智能概论》数字化教材前端",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,5 +34,8 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "sass-embedded": "^1.89.2",
     "vite": "^5.4.11"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

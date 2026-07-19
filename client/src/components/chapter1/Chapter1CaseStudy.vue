@@ -27,7 +27,7 @@
         <div class="option-card option-b clickable" @click="selectOption(1, 'B')">
           <h4 class="option-label">B</h4>
           <div class="option-image">
-            <img src="/images/chapter1/A_ai生成.png" alt="B 选项图片" />
+            <img src="/images/chapter1/A_ai生成.jpg" alt="B 选项图片" />
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
         <div class="option-card option-b clickable" @click="selectOption(3, 'B')">
           <h4 class="option-label">B</h4>
           <div class="option-image">
-            <img src="/images/chapter1/B_ai生成.png" alt="B AI 图片" />
+            <img src="/images/chapter1/B_ai生成.jpg" alt="B AI 图片" />
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@
         <div class="option-card option-a clickable" @click="selectOption(6, 'A')">
           <h4 class="option-label">A</h4>
           <div class="option-image">
-            <img src="/images/chapter1/C_真实图片.png" alt="A 真实图片" />
+            <img src="/images/chapter1/C_真实图片.jpg" alt="A 真实图片" />
           </div>
         </div>
         
@@ -133,7 +133,7 @@
         <div class="option-card option-b clickable" @click="selectOption(6, 'B')">
           <h4 class="option-label">B</h4>
           <div class="option-image">
-            <img src="/images/chapter1/C_ai生成.png" alt="B AI 图片" />
+            <img src="/images/chapter1/C_ai生成.jpg" alt="B AI 图片" />
           </div>
         </div>
       </div>
@@ -160,7 +160,7 @@
         <div class="option-card option-a clickable" @click="selectOption(7, 'A')">
           <h4 class="option-label">A</h4>
           <div class="option-image">
-            <img src="/images/chapter1/D_真实图片.png" alt="A 真实图片" />
+            <img src="/images/chapter1/D_真实图片.jpg" alt="A 真实图片" />
           </div>
         </div>
         
@@ -168,7 +168,7 @@
         <div class="option-card option-b clickable" @click="selectOption(7, 'B')">
           <h4 class="option-label">B</h4>
           <div class="option-image">
-            <img src="/images/chapter1/D_ai生成.png" alt="B AI 图片" />
+            <img src="/images/chapter1/D_ai生成.jpg" alt="B AI 图片" />
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@
         <div class="option-card option-a clickable" @click="selectOption(9, 'A')">
           <h4 class="option-label">A</h4>
           <div class="option-image">
-            <img src="/images/chapter1/E_真实图片.png" alt="A 真实画作" />
+            <img src="/images/chapter1/E_真实图片.jpg" alt="A 真实画作" />
           </div>
         </div>
         
