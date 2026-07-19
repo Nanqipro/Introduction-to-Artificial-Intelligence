@@ -28,7 +28,7 @@
 /分课程按上课班级打印成绩登记册.xls
 
 # Editor, agent, and operating-system state
-/.claude/settings.local.json
+/.claude/
 /.codex/
 /.cursor/
 /.idea/
